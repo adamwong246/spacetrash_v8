@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>spacetrash_v7</title>
+  <script src="index.js"></script>
+  <style>
+    #displays {
+      position: relative;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      /* background-color: white; */
+    }
+
+    #control {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      background-color: grey;
+      width: 20rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="displays">
+    <canvas id="layer-0"></canvas>
+    <canvas id="layer-1"></canvas>
+  </div>
+  <div id="react-root"></div>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "spacetrash_v8",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "adam wong <adamwong246@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "nuke": "rm -rf dist/** && rm -rf node_modules && yarn install",
+    "build": "esbuild --loader:.html=copy --outdir=dist src/index.ts src/index.html",
+    "dev": "esbuild --serve --loader:.html=copy --outdir=dist src/index.ts src/index.html"
+  },
+  "dependencies": {
+    "esbuild": "^0.21.5"
+  }
+}
