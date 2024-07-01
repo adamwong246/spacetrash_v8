@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "nuke": "rm -rf dist/** && rm -rf node_modules && yarn install",
-    "build": "esbuild --bundle --format=esm --loader:.html=copy --outdir=dist src/index.tsx src/index.html",
-    "dev": "esbuild --serve --bundle --format=esm --loader:.html=copy --outdir=dist src/index.tsx src/index.html"
+    "build": "esbuild --bundle --format=esm --loader:.html=copy --outdir=dist src/index.tsx src/index.html src/ecs-worker.ts",
+    "dev": "esbuild --serve --bundle --format=esm --loader:.html=copy --outdir=dist src/index.tsx src/index.html src/ecs-worker.ts"
   },
   "dependencies": {
     "esbuild": "^0.21.5",

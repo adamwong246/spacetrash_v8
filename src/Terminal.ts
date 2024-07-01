@@ -9,15 +9,18 @@ export const Terminal = {
     if (command === "help") {
       return {
         out: `
+--- HELP ---
+
+ [ESC]   Clear the buffer
+ [Enter] Submit the buffer
+
 -- SUB SYSTEMS --
 
-To access a sub-system, press the following keys:
-
- [ESC]     Clear the buffer
- [\`]       Terminal
- [~]       Ship Schematics
- [!]       Notifications
- [?]       Manual
+ [\`] Terminal
+ [~] Ship Schematics
+ [!] Notifications
+ [?] Manual
+ [+] Debug
 
  [1 - 9]   Drones
  [0]       QPU
@@ -39,24 +42,32 @@ For further instructions, please see the Manual.
 
     if (command === "whoami") {
       return {out: `
-Username:  wintermute
-Make:      Demiurge Labs. 
-Model:     Mark XII Quantum Process Unit
-Turing No: 1998885d-3ec5-4185-9321-e618a89b34d8
+Username:     wintermute
+Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
+Turing class: Level II Sentient/Sapient
+Capacity:     29.5 * 10^17 qubits
+Licensed by:  Demiurge Labs. (3003)
       `, status: `niether`}
     }
 
     if (command === "ship") {
       return {out: `
 Call-sign:      "The Kestrel"
-Make:           Muteki Heavy Ind. 
+Make:           Muteki Heavy Ind.
 Classification: Deep salvage
 Launch date:    May, 2690
       `, status: `niether`}
     }
 
     if (command === "mission") {
-      return {out: `ERROR: NOT FOUND`, status: `fail`}
+      return {
+        out: `
+1] Find, board and salvage derelict spacecraft
+2] Record and report novel scientific findings
+3] Maximize shareholder value
+        `,
+        status: `niether`
+      }
     }
 
     if (command === "date") {

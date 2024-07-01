@@ -5,8 +5,46 @@ import UiRoot from './UiRoot';
 import { IUiState, SetUiState, initialUiState } from './UiState';
 import { Terminal } from './Terminal';
 
-export default function ReactRoot(props: {}) {
+const ecs = new Worker("./ecs-worker.js");
+
+
+// const useCanvas = (callback) => {
+//   const canvasRef = React.useRef<HTMLCanvasElement>(null)
+
+//   let offscreen;
+
+//   React.useEffect(() => {
+//     const canvas = canvasRef.current as HTMLCanvasElement;
+
+//     offscreen = canvas.transferControlToOffscreen()
+//     console.log("offscreen", offscreen)
+//     // canvas.transfer
+//     // ecs.postMessage(["canvas", offscreen], [offscreen]);
+//     // callback([canvas, ctx]);
+//   }, []);
+
+//   return [canvasRef, offscreen];
+// }
+
+
+export default function ReactRoot(
+  props: {
+    // canvas: HTMLCanvasElement
+  }) {
   const [uiState, setuiState]: [IUiState, SetUiState] = useState<IUiState>(initialUiState);
+  // const [canvasRef, offscreen] = useCanvas(([canvas, ctx]) => {
+  //   // ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //   // const x = canvas.width;
+  //   // const y = canvas.height;
+  //   // setPosition({ x, y });
+  // });
+  // const c0 = (props.canvas as HTMLCanvasElement).transferControlToOffscreen()
+  // console.log("canvas", props.canvas);
+  // ecs.postMessage(["canvas", props.canvas]);
+
+  // ecs.onmessage = e => {
+  //   console.log("hello ecs message", e);
+  // };
 
   useEffect(() => {
     const handleEsc = async (event) => {
@@ -21,6 +59,8 @@ export default function ReactRoot(props: {}) {
         setuiState({ ...uiState, mode: `manual` })
       } else if (event.key === '!') {
         setuiState({ ...uiState, mode: `notifications` })
+      } else if (event.key === '+') {
+        setuiState({ ...uiState, mode: `debug` })
       } else if (event.key === '`') {
         if (uiState.mode === `terminal`) {
           setuiState({ ...uiState, mode: `map` })
@@ -38,11 +78,11 @@ export default function ReactRoot(props: {}) {
         // props.worker.postMessage(["terminal-submit", uiState.terminalBuffer]);
         // debugger;
         const com = Terminal.processCommand(uiState.terminalBuffer);
-        
+
         setuiState({
           ...uiState,
           mode: com.status === "niether" ? "terminal" : uiState.mode,
-          lastCommandStatus: com.status=== "fail" ? com.out : null,
+          lastCommandStatus: com.status === "fail" ? com.out : null,
           terminalBuffer: "",
           terminalhistory: [
             ...uiState.terminalhistory,
@@ -64,69 +104,28 @@ export default function ReactRoot(props: {}) {
           //   terminalBuffer: uiState.terminalBuffer + event.key,
           // })  
         }
-        
+
       }
     };
     window.addEventListener('keydown', handleEsc);
 
-    // let frameId;
-    // const frame = async (time) => {
-    //   const delta = time - uiState.time;
-    //   let turn = uiState.turn;
-    //   frameId = requestAnimationFrame(frame);
-    //   const tpf = Math.round(uiState.delta / uiState.frame);
-    //   // const framesPerTurn = Math.round(frameId / uiState.turn);
-
-
-    //   if (tpf > 1) {
-    //     console.log("tpf", tpf)
-    //     engine.lock();
-    //     Promise.all(Array.from(Array(tpf).keys()).map(function (t) {
-    //       let actor = scheduler.next();
-    //       if (actor) {
-    //         scheduler.setDuration(1)
-    //         return actor.act();
-    //       }
-
-    //     })).then((v) => {
-    //       engine.unlock();
-    //       setuiState({
-    //         ...uiState,
-    //         delta,
-    //         time,
-    //         frame: frameId,
-    //         turn: uiState.turn + tpf
-    //       });
-    //     })
-
-    //   } else {
-    //     setuiState({
-    //       ...uiState,
-    //       delta,
-    //       time,
-    //       frame: frameId,
-    //       turn,
-    //     });
-    //   }
-
-
-
-    // };
-    // requestAnimationFrame(frame);
-
     return () => {
       window.removeEventListener('keydown', handleEsc);
-      // cancelAnimationFrame(frameId);
     };
   }, [uiState]);
 
   return (
     <>
-      {/* <div id="control">
-        <pre>{JSON.stringify(uiState, null, 2)}</pre>
-      </div> */}
-
-      <UiRoot uiState={uiState} setuiState={setuiState} />
+      <div id="control">
+        <pre>{JSON.stringify(uiState.mode, null, 2)}</pre>
+      </div>
+      <UiRoot
+        uiState={uiState}
+        setuiState={setuiState}
+        // canvasRef={canvasRef}
+        ecs={ecs}
+        // offscreen={offscreen}
+      />
     </>
   );
 }
