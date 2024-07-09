@@ -1,0 +1,18 @@
+{
+  "type": "application",
+  "name": "drones",
+
+  "icon": "icon.png",
+  "singleton": true,
+  "title": {
+    "key": "My Drones"
+  },
+  "description": {
+    "key": "My Drones"
+  },
+  "hidden": false,
+
+  "files": [
+    "apps/drones/index.js"
+  ]
+}

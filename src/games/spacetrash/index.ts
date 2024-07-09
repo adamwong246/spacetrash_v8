@@ -17,8 +17,8 @@ import { Hackable } from "./Systems/hackable";
 
 const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
 state.connect(`boot`, `menu`);
-state.connect(`menu`, `mainloop`);
-state.connect(`mainloop`, `gameover`);
+// state.connect(`menu`, `mainloop`);
+// state.connect(`mainloop`, `gameover`);
 // state.connect(`gameover`, `menu`);
 // state.connect(`mainloop`, `pause`);
 // state.connect(`pause`, `mainloop`);
@@ -33,34 +33,41 @@ const bootSceneView = new View('bootscene_view_v0', (ctx) => {
 
 state.setView('boot', bootSceneView);
 
-const menuSceneView = new Scene(
+const menuSceneView = new View(
   'menuscene_view_v0',
-  new Map<System<ISpaceTrashSystems>, (ctx: CanvasRenderingContext2D) => void>([
-    [
-      SpaceTrashSystems.gui,
-      (ctx) => {
-        ctx.font = "48px serif";
-        ctx.fillText("Menu", 10, 50);
-      }
-    ],
-  ])
+  (ctx) => {
+    ctx.font = "48px serif";
+    ctx.fillText("Menu", 10, 50);
+  }
 );
+// const menuSceneView = new Scene(
+//   'menuscene_view_v0',
+//   new Map<System<ISpaceTrashSystems>, (ctx: CanvasRenderingContext2D) => void>([
+//     [
+//       SpaceTrashSystems.gui,
+//       (ctx) => {
+//         ctx.font = "48px serif";
+//         ctx.fillText("Menu", 10, 50);
+//       }
+//     ],
+//   ])
+// );
 
 state.setView('menu', menuSceneView);
 
-const mainloopSceneView = new Scene(
-  'mainloop_view_v0',
-  new Map<System<ISpaceTrashSystems>, (ctx: CanvasRenderingContext2D) => void>([
-  [
-    SpaceTrashSystems.physical,
-    (ctx) => {
-      ctx.font = "48px serif";
-      ctx.fillText("Physical", 10, 50);
-    }
-  ],
-]));
+// const mainloopSceneView = new Scene(
+//   'mainloop_view_v0',
+//   new Map<System<ISpaceTrashSystems>, (ctx: CanvasRenderingContext2D) => void>([
+//   [
+//     SpaceTrashSystems.physical,
+//     (ctx) => {
+//       ctx.font = "48px serif";
+//       ctx.fillText("Physical", 10, 50);
+//     }
+//   ],
+// ]));
 
-state.setView('mainloop', mainloopSceneView);
+// state.setView('mainloop', mainloopSceneView);
 
 // const gameoverSceneView = new Scene('gameover_view_v0', (ctx) => {
 //   ctx.fillText("Gameover", 10, 50);

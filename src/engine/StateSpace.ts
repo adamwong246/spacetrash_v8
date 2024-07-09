@@ -26,7 +26,6 @@ export class StateSpace extends DirectedGraph  {
   }
 
   getView(key): View {
-    console.log("mark1", key)
     return this.graph.getNodeAttribute(key, 'view');
   }
 

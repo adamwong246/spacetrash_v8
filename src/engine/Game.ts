@@ -24,7 +24,7 @@ export class Game<SystemKeys extends string> {
   }
 
   inputEvent(event: any) {
-    if (event.type === "keydown") {
+    if (true) {
       const ns = this.state.graph.outNeighbors(this.state.currrent);
       if (ns.length) {
         const n = ns[0];
@@ -44,7 +44,6 @@ export class Game<SystemKeys extends string> {
   draw() {
     const s = this.state.getView(this.state.currrent);
     this.canvasContext.clearRect(0, 0, 800, 600);
-    console.log(s)
     s.draw(this.canvasContext);
   }
 

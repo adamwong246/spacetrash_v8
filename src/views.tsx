@@ -85,7 +85,6 @@ const Debug = (props: {
   ecs: any;
   // offscreen: any;
 }) => {
-  console.log("mark1", props)
   return <p>debug</p>
   // props.ecs.postMessage(["canvas", props.offscreen], [props.offscreen]);
 
