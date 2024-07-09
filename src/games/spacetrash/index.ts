@@ -184,6 +184,8 @@ class Drone extends SpaceTrashEntityComponent {
 }
 
 export class Spacetrash extends Game<ISpaceTrashSystems> {
+  secondaryCanvasContext: CanvasRenderingContext2D
+
   constructor(
     canvasContext: CanvasRenderingContext2D
   ) {
@@ -199,6 +201,26 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
     this.ecs.addEntityComponent(drone0);
     this.ecs.addEntityComponent(drone1);
     this.ecs.addEntityComponent(slime0);
-
   }
+
+  addSecondaryDisplay(secondaryCanvasContext: CanvasRenderingContext2D) {
+    this.secondaryCanvasContext = secondaryCanvasContext;
+    this.secondaryAnimationLoop();
+  }
+
+  secondaryAnimationLoop() {
+    this.secondaryDraw();
+    requestAnimationFrame(() => this.secondaryAnimationLoop());
+  }
+
+  
+  secondaryDraw() {
+    // const s = this.state.getView(this.state.currrent);
+    // this.secondaryCanvasContext.clearRect(0, 0, 800, 600);
+    this.secondaryCanvasContext.strokeStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+    this.secondaryCanvasContext.font = "48px serif";
+    this.secondaryCanvasContext.strokeText("Hello world", 10, 50);
+    // s.draw(this.canvasContext);
+  }
+
 }

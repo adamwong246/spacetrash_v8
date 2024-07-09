@@ -5,7 +5,7 @@ import UiRoot from './UiRoot';
 import { IUiState, SetUiState, initialUiState } from './UiState';
 import { Terminal } from './Terminal';
 
-const ecs = new Worker("./ecs-worker.js");
+const ecs = new Worker("./worker.js");
 
 
 // const useCanvas = (callback) => {
@@ -29,9 +29,10 @@ const ecs = new Worker("./ecs-worker.js");
 
 export default function ReactRoot(
   props: {
-    // canvas: HTMLCanvasElement
-  }) {
-  const [uiState, setuiState]: [IUiState, SetUiState] = useState<IUiState>(initialUiState);
+    worker: Worker
+  }
+) {
+  const [uiState, setuiState]: [IUiState, SetUiState] = useState(initialUiState);
   // const [canvasRef, offscreen] = useCanvas(([canvas, ctx]) => {
   //   // ctx.fillRect(0, 0, canvas.width, canvas.height);
   //   // const x = canvas.width;
@@ -116,14 +117,14 @@ export default function ReactRoot(
 
   return (
     <>
-      <div id="control">
+      {/* <div id="control">
         <pre>{JSON.stringify(uiState.mode, null, 2)}</pre>
-      </div>
+      </div> */}
       <UiRoot
         uiState={uiState}
         setuiState={setuiState}
         // canvasRef={canvasRef}
-        ecs={ecs}
+        worker={props.worker}
         // offscreen={offscreen}
       />
     </>

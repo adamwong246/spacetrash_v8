@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useEffect } from "react";
 
 import { IUiState, SetUiState } from './UiState';
-
-// const ecs = new Worker("./ecs-worker.js");
 
 const Term = (props: { uiState: IUiState, setuiState: SetUiState }) => {
   // const termHistory = props.uiState.terminalhistory.slice(0,-1)
@@ -33,8 +31,28 @@ ${props2.out}
   </pre>
 };
 
-const ShipMap = (props: { uiState: IUiState, setuiState: SetUiState }) => {
-  return <p>the map goes here</p>
+const ShipMap = (props: {
+  uiState: IUiState,
+  setuiState: SetUiState,
+  worker: Worker;
+}) => {
+
+  const canvasRef = useRef(null)
+  
+  useEffect(() => {
+    if (canvasRef.current) {
+      const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
+      props.worker.postMessage(["2nd-canvas", offscreen], [offscreen]);  
+    }
+  }, [canvasRef]);
+
+  return <div>
+    <p>the map goes here</p>
+    <canvas
+      ref={canvasRef}
+      // tabindex="1"
+      id="shipmap" width="800" height="600"></canvas>
+    </div>
 };
 
 const Manual = (props: { uiState: IUiState, setuiState: SetUiState }) => {
@@ -82,7 +100,7 @@ const Debug = (props: {
   uiState: IUiState,
   setuiState: SetUiState,
   // canvasRef: any
-  ecs: any;
+  worker: Worker;
   // offscreen: any;
 }) => {
   return <p>debug</p>
@@ -145,7 +163,7 @@ const AppBody = (props: {
   uiState: IUiState,
   setuiState: SetUiState,
   // canvasRef: any
-  ecs: any;
+  worker: Worker
   // offscreen: any;
 }) => {
   if (props.uiState.mode === "debug") {
@@ -153,7 +171,7 @@ const AppBody = (props: {
       uiState={props.uiState}
       setuiState={props.setuiState}
       // canvasRef={props.canvasRef}
-      ecs={props.ecs}
+      worker={props.worker}
       // offscreen={props.offscreen}
     />
   }
@@ -161,7 +179,11 @@ const AppBody = (props: {
     return <Term uiState={props.uiState} setuiState={props.setuiState} />
   }
   if (props.uiState.mode === "map") {
-    return <ShipMap uiState={props.uiState} setuiState={props.setuiState} />
+    return <ShipMap
+      worker={props.worker}
+      uiState={props.uiState}
+      setuiState={props.setuiState}
+    />
   }
   if (props.uiState.mode === "notifications") {
     return <Notifications uiState={props.uiState} setuiState={props.setuiState} />
@@ -183,16 +205,16 @@ export const Main = (props: {
   uiState: IUiState,
   setuiState: SetUiState,
   // canvasRef: any
-  ecs: any;
+  worker: Worker
   // offscreen: any;
 }) => {
-  return (<p id="app-body">
+  return (<div id="app-body">
     <AppBody
       uiState={props.uiState}
       setuiState={props.setuiState}
       // canvasRef={props.canvasRef}
-      ecs={props.ecs}
+      worker={props.worker}
       // offscreen={props.offscreen}
     />
-  </p>)
+  </div>)
 };

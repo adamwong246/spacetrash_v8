@@ -1913,14 +1913,11 @@ var GUIable = class extends System {
     super();
   }
   doPreLogic(entitiesComponent) {
-    console.log("gui pre loop");
     return {};
   }
   doLogic(prelogic) {
-    console.log("gui loop");
   }
   doPostLogic(logic) {
-    console.log("gui post loop");
   }
 };
 var SpaceTrashSystems = {
@@ -2156,6 +2153,7 @@ var Drone = class extends SpaceTrashEntityComponent {
   }
 };
 var Spacetrash = class extends Game {
+  secondaryCanvasContext;
   constructor(canvasContext) {
     super(
       state,
@@ -2169,18 +2167,36 @@ var Spacetrash = class extends Game {
     this.ecs.addEntityComponent(drone1);
     this.ecs.addEntityComponent(slime0);
   }
+  addSecondaryDisplay(secondaryCanvasContext) {
+    this.secondaryCanvasContext = secondaryCanvasContext;
+    this.secondaryAnimationLoop();
+  }
+  secondaryAnimationLoop() {
+    this.secondaryDraw();
+    requestAnimationFrame(() => this.secondaryAnimationLoop());
+  }
+  secondaryDraw() {
+    this.secondaryCanvasContext.strokeStyle = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    this.secondaryCanvasContext.font = "48px serif";
+    this.secondaryCanvasContext.strokeText("Hello world", 10, 50);
+  }
 };
 
 // src/worker.ts
 var sp;
 self.onmessage = function handleMessageFromMain(msg) {
-  console.log("message from main received in worker:", msg.data);
   if (msg.data[0] === "canvas") {
     sp = new Spacetrash(msg.data[1].getContext("2d")).start();
   }
   if (msg.data[0] === "inputEvent") {
     if (sp) {
       sp.inputEvent(msg.data[1]);
+    }
+  }
+  if (msg.data[0] === "2nd-canvas") {
+    console.log("2nd canvas");
+    if (sp) {
+      sp.addSecondaryDisplay(msg.data[1].getContext("2d"));
     }
   }
 };

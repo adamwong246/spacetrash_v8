@@ -14,14 +14,14 @@ export class GUIable extends System<unknown> {
     super()
   }
   doPreLogic(entitiesComponent: IEntitiesComponent): any {
-    console.log("gui pre loop")
+    // console.log("gui pre loop")
     return {};
   }
   doLogic(prelogic) {
-    console.log("gui loop")
+    // console.log("gui loop")
   }
   doPostLogic(logic) {
-    console.log("gui post loop")
+    // console.log("gui post loop")
   }
 }
 

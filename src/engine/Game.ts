@@ -17,7 +17,7 @@ export class Game<SystemKeys extends string> {
     this.ecs = new ECS(systems);
   }
 
-  start(): Game<string> {
+  start() {
     this.animationLoop();
     this.ecs.logicLoop();
     return this;
