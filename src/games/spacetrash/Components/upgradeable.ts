@@ -1,12 +1,16 @@
-import { Component } from "../engine/ECS";
+import Component from "../../../engine/Component";
 
-export class PhysicsComponent extends Component<unknown> {
+import { SpaceTrashSystems } from "../Systems";
+
+import { ISpaceTrashComponents } from ".";
+
+export class UpgradeableComponent extends Component<unknown, ISpaceTrashComponents> {
   x: number;
   y: number;
   r: number;
   
   constructor(x: number = 0, y: number = 0, r: number = 0) {
-    super(["upgradeable"]);
+    super([SpaceTrashSystems.physical]);
   }
 
   getMove(): unknown {

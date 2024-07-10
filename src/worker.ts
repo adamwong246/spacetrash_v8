@@ -1,13 +1,12 @@
 import { Spacetrash } from "./games/spacetrash";
 
-let sp: Spacetrash;
+const sp = new Spacetrash().start();
 
 self.onmessage = function handleMessageFromMain(msg) {
-  // console.log("message from main received in worker:", msg.data);
+  console.log("message from main received in worker:", msg.data);
 
   if (msg.data[0] === 'canvas') {
-    sp = new Spacetrash(msg.data[1].getContext("2d"))
-      .start();
+    sp.registerCanvas('alpha', true, msg.data[1].getContext("2d"))
   }
   if (msg.data[0] === 'inputEvent') {
     if (sp) {
@@ -15,9 +14,6 @@ self.onmessage = function handleMessageFromMain(msg) {
     } 
   }
   if (msg.data[0] === '2nd-canvas') {
-    console.log("2nd canvas")
-    if (sp) {
-      sp.addSecondaryDisplay(msg.data[1].getContext("2d"))  
-    } 
+    sp.registerCanvas('beta', true, msg.data[1].getContext("2d"));
   }
 };

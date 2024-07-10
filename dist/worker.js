@@ -1716,94 +1716,16 @@ var StateSpace = class extends DirectedGraph {
     this.end = end;
     this.currrent = start;
   }
-  check() {
-    console.log("do asserts here");
+  get(key) {
+    return this.graph.getNodeAttribute(key, "scene");
   }
-  setView(key, view) {
-    this.graph.setNodeAttribute(key, "view", view);
-  }
-  getView(key) {
-    return this.graph.getNodeAttribute(key, "view");
+  set(key, scene) {
+    this.graph.setNodeAttribute(key, "scene", scene);
   }
 };
 
 // src/engine/ECS.ts
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(
-    /[018]/g,
-    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
-  );
-}
-var ECS = class {
-  entities = [];
-  systems;
-  database;
-  constructor(systems) {
-    this.systems = systems;
-    this.database = new Database();
-  }
-  addEntityComponent(entityComponent) {
-    this.database.addEntityComponent(entityComponent);
-  }
-  logicLoop() {
-    Object.entries(this.systems).forEach(([systemKey, system]) => {
-      system.loop(this.database, systemKey);
-    });
-  }
-};
-var Entity = class {
-};
-var Component = class {
-  systems;
-  constructor(systems) {
-    this.systems = systems;
-  }
-};
-var System = class {
-  constructor() {
-  }
-  loop(database, system) {
-    setInterval((d, s) => this.logicLoop(d, s), 1e3, database, system);
-  }
-  async logicLoop(database, system) {
-    const entitiesComponent = database.getEntitiesComponent(system);
-    const prelogic = await this.doPreLogic(entitiesComponent);
-    const logic = await this.doLogic(prelogic);
-    await this.doPostLogic(logic);
-  }
-};
-var Database = class {
-  entities = {};
-  components = {};
-  constructor() {
-  }
-  addEntityComponent(entityComponent) {
-    const { entity, components } = entityComponent;
-    const eid = this.addEntity(entity);
-    this.addComponents(components, eid);
-  }
-  addEntity(entity) {
-    const uuid = uuidv4();
-    this.entities[uuid] = entity;
-    return uuid;
-  }
-  addComponents(components, entity_uid) {
-    components.forEach((component) => {
-      this.components[uuidv4()] = {
-        component,
-        entity_uid
-      };
-    });
-  }
-  getEntitiesComponent(system) {
-    return Object.values(this.components).filter((c) => {
-      return c.component.systems.find((s) => s === system);
-    }).map(({ entity_uid, component }) => {
-      return [this.entities[entity_uid], component];
-    });
-  }
-};
-var EntityComponents = class {
+var EntityComponent = class {
   entity;
   components;
   constructor(entity, components) {
@@ -1811,42 +1733,87 @@ var EntityComponents = class {
     this.components = components;
   }
 };
+var ECS = class {
+  systems;
+  entities;
+  components;
+  constructor(systems) {
+    this.systems = systems;
+    this.entities = [];
+    this.components = [];
+  }
+  flash(scene) {
+    this.entities = [];
+    this.components = [];
+    scene.entityComponents.forEach((ec) => {
+      const endx = this.entities.push([ec.constructor.name, []]);
+      ec.components.forEach((c) => {
+        this.entities[endx - 1][1].push(
+          this.components.push([
+            c.constructor.name,
+            c.payload
+          ])
+        );
+      });
+    });
+  }
+  getEntitiesComponent(system) {
+    console.log("compononents", this.components);
+    return [];
+  }
+  logicLoop() {
+    Object.entries(this.systems).forEach(([systemKey, system]) => {
+      system.loop(this, systemKey);
+    });
+  }
+};
 
 // src/engine/Game.ts
 var Game = class {
   state;
-  canvasContext;
+  canvasContexts;
   ecs;
-  constructor(state2, canvasContext, systems) {
+  constructor(state2, systems) {
     this.state = state2;
-    this.canvasContext = canvasContext;
     this.ecs = new ECS(systems);
+    this.canvasContexts = {};
   }
-  start() {
-    this.animationLoop();
-    this.ecs.logicLoop();
-    return this;
+  update(to) {
+    this.ecs.flash(this.state.get(to));
+    this.state.currrent = to;
   }
   inputEvent(event) {
     if (true) {
       const ns = this.state.graph.outNeighbors(this.state.currrent);
       if (ns.length) {
-        const n = ns[0];
-        console.log(this.state.currrent, ns, n);
-        this.state.currrent = n;
+        this.update(ns[0]);
       } else {
         console.log("no further states");
       }
     }
   }
-  animationLoop() {
-    this.draw();
-    requestAnimationFrame(() => this.animationLoop());
+  registerCanvas(key, run, context) {
+    this.canvasContexts[key] = { run, context };
+    this.animationLoop(key);
   }
-  draw() {
-    const s = this.state.getView(this.state.currrent);
-    this.canvasContext.clearRect(0, 0, 800, 600);
-    s.draw(this.canvasContext);
+  start() {
+    this.ecs.logicLoop();
+    Object.keys(this.canvasContexts).forEach((k) => {
+      const { run, context } = this.canvasContexts[k];
+      if (run) {
+        this.animationLoop(k);
+      }
+    });
+    return this;
+  }
+  animationLoop(key) {
+    this.draw(key);
+    requestAnimationFrame(() => this.canvasContexts[key].run && this.animationLoop(key));
+  }
+  draw(key) {
+    const s = this.state.get(this.state.currrent);
+    this.canvasContexts[key].context.clearRect(0, 0, 800, 600);
+    s.draw(key, this.canvasContexts[key].context);
   }
 };
 
@@ -1860,22 +1827,46 @@ var Tree = class {
 
 // src/engine/View.ts
 var Scene = class extends Tree {
+  entityComponents;
   systems;
-  // draw: (ctx: CanvasRenderingContext2D, system: System<string>) => void;
-  constructor(name, systems) {
+  constructor(name, entityComponents, systems) {
     super(name);
-    this.systems = this.systems;
+    this.entityComponents = entityComponents;
+    this.systems = systems;
   }
-  draw(canvasContext) {
-    this.systems.forEach((drawSystem) => {
-    });
+  draw(key, ctx) {
+    this.systems.forEach(
+      (drawer, system) => {
+        drawer(ctx, this.entityComponents);
+      }
+    );
   }
 };
 var View = class extends Scene {
   draw;
-  constructor(name, draw) {
-    super(name, /* @__PURE__ */ new Map());
+  constructor(name, entityComponents, draw) {
+    super(name, entityComponents, /* @__PURE__ */ new Map());
     this.draw = draw;
+  }
+};
+
+// src/engine/System.ts
+var System = class {
+  frame;
+  components = [];
+  constructor() {
+    this.frame = new Uint32Array(1);
+    this.frame[0] = 0;
+  }
+  loop(ecs, system) {
+    setInterval((d, s) => this.logicLoop(d, s), 1e3, ecs, system);
+  }
+  async logicLoop(ecs, system) {
+    this.frame[0] = this.frame[0] + 1;
+    const entitiesComponent = ecs.getEntitiesComponent(this);
+    const prelogic = await this.doPreLogic(entitiesComponent);
+    const logic = await this.doLogic(prelogic);
+    await this.doPostLogic(logic);
   }
 };
 
@@ -1893,21 +1884,7 @@ var FOV = class extends System {
   }
 };
 
-// src/games/spacetrash/Systems/physical.ts
-var Physical = class extends System {
-  constructor() {
-    super();
-  }
-  doPreLogic(entitiesComponent) {
-    return {};
-  }
-  doLogic(prelogic) {
-  }
-  doPostLogic(logic) {
-  }
-};
-
-// src/games/spacetrash/Systems/index.ts
+// src/games/spacetrash/Systems/guiable.ts
 var GUIable = class extends System {
   constructor() {
     super();
@@ -1920,16 +1897,44 @@ var GUIable = class extends System {
   doPostLogic(logic) {
   }
 };
+
+// src/games/spacetrash/Systems/physical.ts
+var Physical = class extends System {
+  constructor() {
+    super();
+  }
+  doPreLogic(entitiesComponent) {
+    console.log("physics pre loop");
+    return {};
+  }
+  doLogic(prelogic) {
+    console.log("physics loop");
+  }
+  doPostLogic(logic) {
+    console.log("physics post loop");
+  }
+};
+
+// src/games/spacetrash/Systems/index.ts
 var SpaceTrashSystems = {
   gui: new GUIable(),
   physical: new Physical(),
   casting: new FOV()
-  // upgradeable: new Upgradeable(),
-  // power: new ShipPower(),
-  // doors: new ShipDoor(),
-  // atmosphere: new ShipAtmosphere(),
-  // fluids: new ShipFluids(),
-  // hack: new Hackable(),
+};
+
+// src/engine/Entity.ts
+var Entity = class {
+};
+
+// src/engine/Component.ts
+var Component = class {
+  // type: IComponents;
+  systems;
+  // runType: string;
+  payload;
+  constructor(systems) {
+    this.systems = systems;
+  }
 };
 
 // src/games/spacetrash/Components/casting/in.ts
@@ -1950,6 +1955,11 @@ var AttackableComponent = class extends InCastingComponent {
   fov;
   threshold = 0;
   ray;
+  // constructor() {
+  //   super(
+  //     // SpaceTrashComponents.attackable
+  //   );
+  // }
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -1984,7 +1994,10 @@ var OutCastingComponent = class extends Component {
   ray;
   intensity;
   constructor() {
-    super([SpaceTrashSystems.casting]);
+    super(
+      [SpaceTrashSystems.casting]
+      // type
+    );
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -2100,23 +2113,8 @@ var PowerStoringComponent = class extends PoweredComponent {
   }
 };
 
-// src/games/spacetrash/index.ts
-var state = new StateSpace("stateSpace_v0", "boot", "goodbye");
-state.connect(`boot`, `menu`);
-var bootSceneView = new View("bootscene_view_v0", (ctx) => {
-  ctx.font = "48px serif";
-  ctx.fillText("Boot", 10, 50);
-});
-state.setView("boot", bootSceneView);
-var menuSceneView = new View(
-  "menuscene_view_v0",
-  (ctx) => {
-    ctx.font = "48px serif";
-    ctx.fillText("Menu", 10, 50);
-  }
-);
-state.setView("menu", menuSceneView);
-var SpaceTrashEntityComponent = class extends EntityComponents {
+// src/games/spacetrash/Entities/index.ts
+var SpaceTrashEntityComponent = class extends EntityComponent {
   constructor(entity, physics, casts, ...components) {
     super(entity, [physics, ...casts, ...components]);
   }
@@ -2152,41 +2150,60 @@ var Drone = class extends SpaceTrashEntityComponent {
     );
   }
 };
+
+// src/games/spacetrash/index.ts
+var state = new StateSpace("stateSpace_v0", "boot", "goodbye");
+state.connect(`boot`, `menu`);
+state.connect(`menu`, `mainloop`);
+state.set("boot", new View("bootscene_view_v0", [], (key, ctx) => {
+  ctx.font = "32px sans-serif";
+  ctx.fillText("Boot", 10, 50);
+}));
+state.set("menu", new View(
+  "menuscene_view_v0",
+  [],
+  (key, ctx) => {
+    ctx.font = "48px serif";
+    ctx.strokeStyle = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    ctx.strokeText("Hello world", 10, 50);
+  }
+));
+state.set("mainloop", new Scene(
+  "mainloop_view_v0",
+  [
+    new Drone(),
+    new Drone(1, 1, 1),
+    new Slime(10, 10, 1)
+  ],
+  /* @__PURE__ */ new Map([
+    [
+      SpaceTrashSystems.physical,
+      (ctx, ecs) => {
+        ctx.font = "48px serif";
+        ctx.fillText(`Physical ${SpaceTrashSystems.physical.frame[0]}`, 10, 50);
+        ecs.forEach(({ entity, components }) => {
+          components.forEach((c) => {
+          });
+        });
+      }
+    ]
+  ])
+));
 var Spacetrash = class extends Game {
-  secondaryCanvasContext;
-  constructor(canvasContext) {
+  constructor() {
     super(
       state,
-      canvasContext,
       SpaceTrashSystems
     );
-    const drone0 = new Drone();
-    const drone1 = new Drone(1, 1, 1);
-    const slime0 = new Slime(10, 10, 1);
-    this.ecs.addEntityComponent(drone0);
-    this.ecs.addEntityComponent(drone1);
-    this.ecs.addEntityComponent(slime0);
-  }
-  addSecondaryDisplay(secondaryCanvasContext) {
-    this.secondaryCanvasContext = secondaryCanvasContext;
-    this.secondaryAnimationLoop();
-  }
-  secondaryAnimationLoop() {
-    this.secondaryDraw();
-    requestAnimationFrame(() => this.secondaryAnimationLoop());
-  }
-  secondaryDraw() {
-    this.secondaryCanvasContext.strokeStyle = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    this.secondaryCanvasContext.font = "48px serif";
-    this.secondaryCanvasContext.strokeText("Hello world", 10, 50);
   }
 };
 
 // src/worker.ts
-var sp;
+var sp = new Spacetrash().start();
 self.onmessage = function handleMessageFromMain(msg) {
+  console.log("message from main received in worker:", msg.data);
   if (msg.data[0] === "canvas") {
-    sp = new Spacetrash(msg.data[1].getContext("2d")).start();
+    sp.registerCanvas("alpha", true, msg.data[1].getContext("2d"));
   }
   if (msg.data[0] === "inputEvent") {
     if (sp) {
@@ -2194,9 +2211,6 @@ self.onmessage = function handleMessageFromMain(msg) {
     }
   }
   if (msg.data[0] === "2nd-canvas") {
-    console.log("2nd canvas");
-    if (sp) {
-      sp.addSecondaryDisplay(msg.data[1].getContext("2d"));
-    }
+    sp.registerCanvas("beta", true, msg.data[1].getContext("2d"));
   }
 };

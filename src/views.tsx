@@ -47,10 +47,8 @@ const ShipMap = (props: {
   }, [canvasRef]);
 
   return <div>
-    <p>the map goes here</p>
     <canvas
       ref={canvasRef}
-      // tabindex="1"
       id="shipmap" width="800" height="600"></canvas>
     </div>
 };

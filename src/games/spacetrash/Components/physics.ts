@@ -1,8 +1,12 @@
-import { Component } from "../../../engine/ECS";
+
+import Component from "../../../engine/Component";
+
 import { SpaceTrashSystems } from "../Systems";
+
+import { ISpaceTrashComponents } from ".";
 import { ConveyanceComponent } from "./conveyance";
 
-export class PhysicsComponent extends Component<unknown> {
+export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> {
   x: number;
   y: number;
   

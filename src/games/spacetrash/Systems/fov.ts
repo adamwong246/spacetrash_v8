@@ -1,6 +1,8 @@
-import { System } from "../../../engine/ECS";
+import { System } from "../../../engine/System";
 
-export class FOV extends System<unknown> {
+import { ISpaceTrashSystems } from ".";
+
+export class FOV extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }

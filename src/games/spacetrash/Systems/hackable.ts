@@ -1,6 +1,8 @@
-import { System } from "../../../engine/ECS";
+import { System } from "../../../engine/System";
 
-export class Hackable extends System<unknown> {
+import { ISpaceTrashSystems } from ".";
+
+export class Hackable extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }

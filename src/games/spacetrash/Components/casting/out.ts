@@ -1,15 +1,22 @@
-import { IRays } from "../../../spacetrash";
-import { SpaceTrashSystems } from "../../Systems";
-import { Component, System } from "../../../../engine/ECS";
+import Component from "../../../../engine/Component";
 
-export abstract class OutCastingComponent extends Component<unknown> {
+import { IRays } from "../../../spacetrash";
+
+import { SpaceTrashSystems } from "../../Systems";
+
+import { ISpaceTrashComponents, SpaceTrashComponents } from "..";
+
+
+export abstract class OutCastingComponent extends Component<unknown, ISpaceTrashComponents> {
   fov: number;
   dropoff: (x: number) => number;
   ray: IRays;
   intensity: number;
 
   constructor() {
-    super([SpaceTrashSystems.casting]);
+    super([SpaceTrashSystems.casting],
+      // type
+    );
   }
 
   getMove(): unknown {

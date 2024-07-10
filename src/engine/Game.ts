@@ -1,50 +1,62 @@
-import { ISystems } from ".";
-import { ECS, System } from "./ECS";
+import { ECS } from "./ECS";
 import { StateSpace } from "./StateSpace";
+import { System } from "./System";
 
 export class Game<SystemKeys extends string> {
   state: StateSpace;
-  canvasContext: CanvasRenderingContext2D;
+  canvasContexts: Record<string, { run: boolean, context: CanvasRenderingContext2D }>;
   ecs: ECS<SystemKeys>
 
   constructor(
     state: StateSpace,
-    canvasContext: CanvasRenderingContext2D,
     systems: Record<SystemKeys, System<SystemKeys>>
   ) {
     this.state = state;
-    this.canvasContext = canvasContext;
     this.ecs = new ECS(systems);
+    this.canvasContexts = {};
   }
 
-  start() {
-    this.animationLoop();
-    this.ecs.logicLoop();
-    return this;
+  update(to: string) {
+    this.ecs.flash(this.state.get(to));
+    this.state.currrent = to;
   }
 
   inputEvent(event: any) {
     if (true) {
       const ns = this.state.graph.outNeighbors(this.state.currrent);
       if (ns.length) {
-        const n = ns[0];
-        console.log(this.state.currrent, ns, n)
-        this.state.currrent = n;      
+        this.update(ns[0]);
       } else {
         console.log("no further states")
-      }  
+      }
     }
   }
 
-  animationLoop() {
-    this.draw();
-    requestAnimationFrame(() => this.animationLoop());
+  registerCanvas(key: string, run: boolean, context: CanvasRenderingContext2D) {
+    this.canvasContexts[key] = { run, context };
+    this.animationLoop(key);
   }
 
-  draw() {
-    const s = this.state.getView(this.state.currrent);
-    this.canvasContext.clearRect(0, 0, 800, 600);
-    s.draw(this.canvasContext);
+  start() {
+    this.ecs.logicLoop();
+    Object.keys(this.canvasContexts).forEach(((k) => {
+      const { run, context } = this.canvasContexts[k];
+      if (run) {
+        this.animationLoop(k);
+      }
+    }))
+    return this;
+  }
+
+  animationLoop(key: string) {
+    this.draw(key);
+    requestAnimationFrame(() => this.canvasContexts[key].run && this.animationLoop(key));
+  }
+
+  draw(key: string) {
+    const s = this.state.get(this.state.currrent);
+    this.canvasContexts[key].context.clearRect(0, 0, 800, 600);
+    s.draw(key, this.canvasContexts[key].context);
   }
 
 }

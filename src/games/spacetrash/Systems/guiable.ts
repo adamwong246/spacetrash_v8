@@ -2,18 +2,18 @@ import { System } from "../../../engine/System";
 
 import { ISpaceTrashSystems } from ".";
 
-export class Physical extends System<ISpaceTrashSystems> {
+export class GUIable extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
   doPreLogic(entitiesComponent): any {
-    console.log("physics pre loop")
+    // console.log("gui pre loop")
     return {};
   }
   doLogic(prelogic) {
-    console.log("physics loop")
+    // console.log("gui loop")
   }
   doPostLogic(logic) {
-    console.log("physics post loop")
+    // console.log("gui post loop")
   }
 }

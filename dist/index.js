@@ -23566,7 +23566,7 @@ var ShipMap = (props) => {
       props.worker.postMessage(["2nd-canvas", offscreen], [offscreen]);
     }
   }, [canvasRef]);
-  return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("p", null, "the map goes here"), /* @__PURE__ */ import_react.default.createElement(
+  return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement(
     "canvas",
     {
       ref: canvasRef,
@@ -23817,7 +23817,6 @@ Launch date:    May, 2690
 };
 
 // src/ReactRoot.tsx
-var ecs = new Worker("./worker.js");
 function ReactRoot(props) {
   const [uiState, setuiState] = (0, import_react3.useState)(initialUiState);
   (0, import_react3.useEffect)(() => {

@@ -1,73 +1,53 @@
-import { System } from "./ECS";
-import { Tree, Leaf, Branch } from "./Tree";
 
-
+import { EntityComponent } from "./ECS";
+import { System } from "./System";
+import { Tree } from "./Tree";
 
 export class Scene extends Tree  {
-  systems: Map<System<unknown>, (ctx: CanvasRenderingContext2D) => void>;
-  // draw: (ctx: CanvasRenderingContext2D, system: System<string>) => void;
+  entityComponents: EntityComponent[];
+  systems: Map<System<string>, (
+    ctx: CanvasRenderingContext2D,
+    ecs: EntityComponent[],
+  ) => void>;
 
   constructor(
     name: string,
-    systems: Map<System<unknown>, (ctx: CanvasRenderingContext2D) => void>
+    entityComponents: EntityComponent[],
+    systems: Map<System<string>, (
+      ctx: CanvasRenderingContext2D,
+      ecs: EntityComponent[],
+    ) => void>
   ) {
     super(name);
-    this.systems = this.systems;
+    this.entityComponents = entityComponents;
+    this.systems = systems;
   }
 
   draw(
-    canvasContext: CanvasRenderingContext2D
+    key: string,
+    ctx: CanvasRenderingContext2D
   ) {
-    this.systems.forEach((drawSystem) => {
-
-    })
-    // this.contextDraw(canvasContext);
-    // canvasContext.fillStyle = "blue";
-    // canvasContext.fillRect(20, 20, 75, 50);
+    this.systems.forEach(
+      (
+        drawer: (
+          c: CanvasRenderingContext2D,
+          ecs: EntityComponent[],
+        ) => void,
+        system: System<string>,
+      ) => {
+        drawer(ctx, this.entityComponents)
+  });
   }
 }
 
 export class View extends Scene  {
-  draw: (ctx: CanvasRenderingContext2D) => void;
+  draw: (key: string, ctx: CanvasRenderingContext2D) => void;
 
-  constructor(name: string, draw: (ctx: CanvasRenderingContext2D) => void) {
-    super(name, new Map());
+  constructor(
+    name: string,
+    entityComponents: EntityComponent[],
+    draw: (key: string, ctx: CanvasRenderingContext2D) => void) {
+    super(name, entityComponents, new Map());
     this.draw = draw;
   }
 }
-
-// export class Scene extends View_CanvasContext  {
-//   constructor(name: string, draw: (ctx: CanvasRenderingContext2D) => void) {
-//     super(name, draw);
-//   }
-
-//   draw(
-//     canvasContext: CanvasRenderingContext2D,
-//     system: System<unknown>
-//   ) {
-//     this.contextDraw(canvasContext);
-//     // canvasContext.fillStyle = "blue";
-//     // canvasContext.fillRect(20, 20, 75, 50);
-//   }
-// }
-
-
-// // export class View_Container extends Branch  {
-// //   constructor(name: string, root: View) {
-// //     super(name, root);
-// //   }
-// //   add(view: View) {
-    
-// //   }
-// //   draw(canvasContext: CanvasRenderingContext2D) {
-// //     canvasContext.fillStyle = "blue";
-// //     canvasContext.fillRect(20, 20, 75, 50);
-// //   }
-// // }
-
-// // export class View  {
-// //   constructor(name: string, draw: (ctx: CanvasRenderingContext2D) => void) {
-
-// //   }
-  
-// // }

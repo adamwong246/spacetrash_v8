@@ -1,6 +1,8 @@
-import { System } from "../../../engine/ECS";
+import { System } from "../../../engine/System";
 
-export  class ShipPower extends System<unknown> {
+import { ISpaceTrashSystems } from ".";
+
+export  class ShipPower extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
@@ -16,7 +18,7 @@ export  class ShipPower extends System<unknown> {
   }
 }
 
-export class ShipDoor extends System<unknown> {
+export class ShipDoor extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
@@ -32,7 +34,7 @@ export class ShipDoor extends System<unknown> {
   }
 }
 
-export class ShipAtmosphere extends System<unknown> {
+export class ShipAtmosphere extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
@@ -48,7 +50,7 @@ export class ShipAtmosphere extends System<unknown> {
   }
 }
 
-export class ShipFluids extends System<unknown> {
+export class ShipFluids extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
@@ -64,7 +66,7 @@ export class ShipFluids extends System<unknown> {
   }
 }
 
-export class ShipDocking extends System<unknown> {
+export class ShipDocking extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
@@ -80,7 +82,7 @@ export class ShipDocking extends System<unknown> {
   }
 }
 
-export class ShipSubLight extends System<unknown> {
+export class ShipSubLight extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
@@ -96,7 +98,7 @@ export class ShipSubLight extends System<unknown> {
   }
 }
 
-export class ShipFTL extends System<unknown> {
+export class ShipFTL extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }

@@ -5,47 +5,12 @@ import UiRoot from './UiRoot';
 import { IUiState, SetUiState, initialUiState } from './UiState';
 import { Terminal } from './Terminal';
 
-const ecs = new Worker("./worker.js");
-
-
-// const useCanvas = (callback) => {
-//   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-
-//   let offscreen;
-
-//   React.useEffect(() => {
-//     const canvas = canvasRef.current as HTMLCanvasElement;
-
-//     offscreen = canvas.transferControlToOffscreen()
-//     console.log("offscreen", offscreen)
-//     // canvas.transfer
-//     // ecs.postMessage(["canvas", offscreen], [offscreen]);
-//     // callback([canvas, ctx]);
-//   }, []);
-
-//   return [canvasRef, offscreen];
-// }
-
-
 export default function ReactRoot(
   props: {
     worker: Worker
   }
 ) {
   const [uiState, setuiState]: [IUiState, SetUiState] = useState(initialUiState);
-  // const [canvasRef, offscreen] = useCanvas(([canvas, ctx]) => {
-  //   // ctx.fillRect(0, 0, canvas.width, canvas.height);
-  //   // const x = canvas.width;
-  //   // const y = canvas.height;
-  //   // setPosition({ x, y });
-  // });
-  // const c0 = (props.canvas as HTMLCanvasElement).transferControlToOffscreen()
-  // console.log("canvas", props.canvas);
-  // ecs.postMessage(["canvas", props.canvas]);
-
-  // ecs.onmessage = e => {
-  //   console.log("hello ecs message", e);
-  // };
 
   useEffect(() => {
     const handleEsc = async (event) => {
@@ -76,8 +41,7 @@ export default function ReactRoot(
           setuiState({ ...uiState, mode: `map` })
         }
       } else if (event.key === 'Enter') {
-        // props.worker.postMessage(["terminal-submit", uiState.terminalBuffer]);
-        // debugger;
+        
         const com = Terminal.processCommand(uiState.terminalBuffer);
 
         setuiState({

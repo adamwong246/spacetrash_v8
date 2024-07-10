@@ -17,16 +17,14 @@ export class StateSpace extends DirectedGraph  {
     this.currrent = start;
   }
   
-  check() {
-    console.log("do asserts here")
+  get(key): Scene {
+    return this.graph.getNodeAttribute(key, 'scene');
+  }
+  
+  set(key, scene: Scene) {
+    this.graph.setNodeAttribute(key, 'scene', scene);
   }
 
-  setView(key, view: Scene) {
-    this.graph.setNodeAttribute(key, 'view', view);
-  }
-
-  getView(key): View {
-    return this.graph.getNodeAttribute(key, 'view');
-  }
+  
 
 }

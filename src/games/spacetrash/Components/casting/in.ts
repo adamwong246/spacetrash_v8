@@ -1,14 +1,18 @@
+import { ISpaceTrashComponents, SpaceTrashComponents } from "..";
+import Component from "../../../../engine/Component";
 
 import { IRays } from "../../../spacetrash";
-import { SpaceTrashSystems } from "../../Systems";
-import { Component } from "../../../../engine/ECS";
 
-export abstract class InCastingComponent extends Component<unknown> {
+import { SpaceTrashSystems } from "../../Systems";
+
+export abstract class InCastingComponent extends Component<unknown, ISpaceTrashComponents> {
   fov: number;
   threshold: number;
   ray: IRays
 
-  constructor() {
+  constructor(
+    // type: ISpaceTrashComponents
+  ) {
     super([SpaceTrashSystems.casting]);
   }
 
@@ -28,6 +32,12 @@ export class AttackableComponent extends InCastingComponent {
   threshold = 0;
   ray: 'attack' 
 
+  // constructor() {
+  //   super(
+  //     // SpaceTrashComponents.attackable
+  //   );
+  // }
+
   getMove(): unknown {
     throw new Error("Method not implemented.");
   }
@@ -38,6 +48,7 @@ export class AttackableComponent extends InCastingComponent {
     // this.r = move.r;
   }
 }
+
 
 export class MicrophoneComponent extends InCastingComponent {
   fov: 1;

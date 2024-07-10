@@ -1,7 +1,10 @@
-import { SpaceTrashSystems } from "../Systems";
-import { Component } from "../../../engine/ECS";
+import Component from "../../../engine/Component";
 
-export abstract class ConveyanceComponent extends Component<unknown> {
+import { SpaceTrashSystems } from "../Systems";
+
+import { ISpaceTrashComponents } from ".";
+
+export abstract class ConveyanceComponent extends Component<unknown, ISpaceTrashComponents> {
   constructor() {
     super([SpaceTrashSystems.physical]);
   }
