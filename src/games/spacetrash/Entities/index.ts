@@ -6,7 +6,7 @@ import { UnmovingComponent, SpawningComponent, PanningComponent, WheeledComponen
 import { PhysicsComponent, PhysicsSetComponent, PhysicsActorComponent } from "../Components/physics";
 import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, PowerStoringComponent } from "../Components/power";
 
-export  class SpaceTrashEntityComponent extends EntityComponent {
+export class SpaceTrashEntityComponent extends EntityComponent {
   constructor(
     entity: Entity,
     physics: PhysicsComponent,
@@ -39,10 +39,16 @@ export class Door extends SpaceTrashEntityComponent {
 }
 
 export class Slime extends SpaceTrashEntityComponent {
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
+  constructor(
+    x: number = 0,
+    y: number = 0,
+    r: number = 0,
+    dx: number = 0,
+    dy: number = 0,
+  ) {
     super(
       new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new SpawningComponent()),
+      new PhysicsActorComponent(x, y, r, new SpawningComponent(), dx, dy),
       [
         new ThermalComponent(),
         new MeleeComponent(1),
@@ -82,10 +88,16 @@ export class ReactorConsole extends SpaceTrashEntityComponent {
 }
 
 export class SecurityTurret extends SpaceTrashEntityComponent {
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
+  constructor(
+    x: number = 0,
+    y: number = 0,
+    r: number = 0,
+    dx: number = 0,
+    dy: number = 0,
+  ) {
     super(
       new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new PanningComponent()),
+      new PhysicsActorComponent(x, y, r, new PanningComponent(), dx, dy),
       [
         new AttackableComponent(),
         new GunComponent(),
@@ -98,10 +110,16 @@ export class SecurityTurret extends SpaceTrashEntityComponent {
 
 export class Drone extends SpaceTrashEntityComponent {
 
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
+  constructor(
+    x: number = 0,
+    y: number = 0,
+    r: number = 0,
+    dx: number = 0,
+    dy: number = 0,
+  ) {
     super(
       new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new WheeledComponent()),
+      new PhysicsActorComponent(x, y, r, new WheeledComponent(), dx, dy),
       [
         new LitComponent(),
         new CameraComponent(),

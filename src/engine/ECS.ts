@@ -1,7 +1,7 @@
 import { System } from './System';
 import Component from './Component';
 import { Entity } from './Entity';
-import { Scene } from './View';
+import { View } from './View';
 
 export abstract class EntityComponent {
   entity: Entity
@@ -17,45 +17,44 @@ export class ECS<SystemKeys extends string> {
 
   systems: Record<SystemKeys, System<SystemKeys>>;
 
-  entities: [string, number[]][]
-  components: [string, object][]
+  // entities: [string, number[]][]
+  // components: [any][]
+  entityComponents: EntityComponent[];
 
   constructor(systems: Record<SystemKeys, System<SystemKeys>>) {
     this.systems = systems;
-    this.entities = [];
-    this.components = [];
+    // this.entities = [];
+    // this.components = [];
+    this.entityComponents = [];
   }
 
-  flash(scene: Scene) {
-    this.entities = [];
-    this.components = [];
+  flash(scene: View) {
+    this.entityComponents = scene.entityComponents;
+    // this.entities = [];
+    // this.components = [];
 
-    scene.entityComponents.forEach((ec) => {
-      ec.components.forEach((c) => {
-        this.entities[this.entities.push([ec.constructor.name, []]) - 1][1]
-          .push(
-            this.components
-              .push([
-                c.constructor.name,
-                c.payload
-              ])
-          );
-      })
-    })
+    // scene.entityComponents.forEach((ec) => {
+    //   ec.components.forEach((c) => {
+    //     this.entities[this.entities.push([ec.constructor.name, []]) - 1][1]
+    //       .push(
+    //         this.components
+    //           .push([
+    //             c
+    //           ])
+    //       );
+    //   })
+    // })
 
   }
 
   getEntitiesComponent(system: System<SystemKeys>): EntityComponent[] {
-    // console.log("entities", this.entities);
-    // console.log("compononents", this.components);
-    return [];
-    // return this.entityComponents.filter((ec) => {
-    //   return ec.components.find((c) => {
-    //     return c.systems.filter((s) => {
-    //       return s === system;
-    //     })
-    //   })
-    // })
+    return this.entityComponents.filter((ec) => {
+      return ec.components.find((c) => {
+        return c.systems.filter((s) => {
+          return s === system;
+        })
+      })
+    })
   }
 
   logicLoop() {

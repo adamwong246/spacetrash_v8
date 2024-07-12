@@ -14,6 +14,7 @@ export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> 
     super([SpaceTrashSystems.physical]);
     this.x = x;
     this.y = y;
+    // debugger
   }
 
   getMove(): unknown {
@@ -28,17 +29,21 @@ export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> 
 }
 
 export class PhysicsActorComponent extends PhysicsComponent {
-  x: number;
-  y: number;
+  dx: number;
+  dy: number;
   r: number;
   
   constructor(
     x: number = 0,
     y: number = 0,
     r: number = 0,
-    conveyance: ConveyanceComponent
+    conveyance: ConveyanceComponent,
+    dx: number,
+    dy: number,
   ) {
     super(x, y);
+    this.dx = dx;
+    this.dy = dy;
     this.r = r;
   }
 
@@ -55,8 +60,8 @@ export class PhysicsActorComponent extends PhysicsComponent {
 
 type IDirs = `north` | `south` | `east` | `west`;
 export class PhysicsSetComponent extends PhysicsComponent {
-  x: number;
-  y: number;
+  // x: number;
+  // y: number;
   r: IDirs;
   
   constructor(x: number = 0, y: number = 0, r: IDirs) {

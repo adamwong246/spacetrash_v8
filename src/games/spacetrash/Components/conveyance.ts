@@ -24,6 +24,7 @@ export class WheeledComponent extends ConveyanceComponent {
   forwardback: 0 | 1 | -1;
   leftright: 0 | 1 | -1;
 
+  
   getMove(): unknown {
     throw new Error("Method not implemented.");
   }

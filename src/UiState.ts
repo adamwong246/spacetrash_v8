@@ -1,4 +1,4 @@
-import { IECS } from "./ecs";
+// import { IECS } from "./ecs";
 
 export type IWithName = {
   name: string;
@@ -63,7 +63,7 @@ export type IUiState = {
     0: IDrones,
     1: IDrones
   }
-  ecs: IECS
+  // ecs: IECS
 }
 
 export type SetUiState = (uiState: IUiState) => IUiState;
@@ -71,7 +71,7 @@ export type SetUiState = (uiState: IUiState) => IUiState;
 export const initialUiState = {
   ecs: {},
   lastCommandStatus: null,
-  mode: 'terminal',
+  mode: 'manual',
   terminalBuffer: ``,
   terminalhistory: [],
   time: 0,

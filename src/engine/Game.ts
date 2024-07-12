@@ -21,17 +21,6 @@ export class Game<SystemKeys extends string> {
     this.state.currrent = to;
   }
 
-  inputEvent(event: any) {
-    if (true) {
-      const ns = this.state.graph.outNeighbors(this.state.currrent);
-      if (ns.length) {
-        this.update(ns[0]);
-      } else {
-        console.log("no further states")
-      }
-    }
-  }
-
   registerCanvas(key: string, run: boolean, context: CanvasRenderingContext2D) {
     this.canvasContexts[key] = { run, context };
     this.animationLoop(key);
@@ -56,7 +45,7 @@ export class Game<SystemKeys extends string> {
   draw(key: string) {
     const s = this.state.get(this.state.currrent);
     this.canvasContexts[key].context.clearRect(0, 0, 800, 600);
-    s.draw(key, this.canvasContexts[key].context);
+    s.draw(this.canvasContexts[key].context);
   }
 
 }

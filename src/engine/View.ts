@@ -1,53 +1,38 @@
 
 import { EntityComponent } from "./ECS";
-import { System } from "./System";
 import { Tree } from "./Tree";
 
-export class Scene extends Tree  {
+export type IPaint = (
+  ecs: EntityComponent[],
+  ctx: CanvasRenderingContext2D,
+  events: any[],
+) => void;
+
+export class View extends Tree {
+  
   entityComponents: EntityComponent[];
-  systems: Map<System<string>, (
-    ctx: CanvasRenderingContext2D,
-    ecs: EntityComponent[],
-  ) => void>;
+  paint: IPaint;
+  events: any[] = [];
 
   constructor(
     name: string,
     entityComponents: EntityComponent[],
-    systems: Map<System<string>, (
-      ctx: CanvasRenderingContext2D,
-      ecs: EntityComponent[],
-    ) => void>
+    paint: IPaint,
   ) {
     super(name);
     this.entityComponents = entityComponents;
-    this.systems = systems;
+    this.paint = paint;
   }
 
   draw(
-    key: string,
-    ctx: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D,
   ) {
-    this.systems.forEach(
-      (
-        drawer: (
-          c: CanvasRenderingContext2D,
-          ecs: EntityComponent[],
-        ) => void,
-        system: System<string>,
-      ) => {
-        drawer(ctx, this.entityComponents)
-  });
+    this.paint(this.entityComponents, ctx, this.events);
+    this.events = [];
   }
-}
 
-export class View extends Scene  {
-  draw: (key: string, ctx: CanvasRenderingContext2D) => void;
-
-  constructor(
-    name: string,
-    entityComponents: EntityComponent[],
-    draw: (key: string, ctx: CanvasRenderingContext2D) => void) {
-    super(name, entityComponents, new Map());
-    this.draw = draw;
+  inputEvent(inputEvent: Event) {
+    this.events.push(inputEvent);
   }
+
 }

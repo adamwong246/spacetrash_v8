@@ -1,6 +1,7 @@
+import Component from "../../../engine/Component";
+
 import { AttackableComponent } from "./casting/in";
 import { MeleeComponent } from "./casting/out";
-
 import { PhysicsActorComponent, PhysicsSetComponent } from "./physics";
 
 export type ISpaceTrashComponents = "physicsActor" | "physicsSet" | "attackable" | 'Melee'; 
@@ -10,4 +11,8 @@ export const SpaceTrashComponents: Record<ISpaceTrashComponents, any> = {
   'physicsSet': PhysicsSetComponent,
   'attackable': AttackableComponent,
   'Melee': MeleeComponent,
+}
+
+export abstract class SpaceTrashComponent extends Component<unknown, ISpaceTrashComponents> {
+  
 }

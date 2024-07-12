@@ -1716,11 +1716,17 @@ var StateSpace = class extends DirectedGraph {
     this.end = end;
     this.currrent = start;
   }
+  jump(key) {
+    this.currrent = key;
+  }
   get(key) {
-    return this.graph.getNodeAttribute(key, "scene");
+    return this.graph.getNodeAttribute(key, "View");
   }
   set(key, scene) {
-    this.graph.setNodeAttribute(key, "scene", scene);
+    this.graph.setNodeAttribute(key, "View", scene);
+  }
+  inputEvent(inputEvent) {
+    this.graph.getNodeAttribute(this.currrent, "View").inputEvent(inputEvent);
   }
 };
 
@@ -1735,31 +1741,24 @@ var EntityComponent = class {
 };
 var ECS = class {
   systems;
-  entities;
-  components;
+  // entities: [string, number[]][]
+  // components: [any][]
+  entityComponents;
   constructor(systems) {
     this.systems = systems;
-    this.entities = [];
-    this.components = [];
+    this.entityComponents = [];
   }
   flash(scene) {
-    this.entities = [];
-    this.components = [];
-    scene.entityComponents.forEach((ec) => {
-      const endx = this.entities.push([ec.constructor.name, []]);
-      ec.components.forEach((c) => {
-        this.entities[endx - 1][1].push(
-          this.components.push([
-            c.constructor.name,
-            c.payload
-          ])
-        );
-      });
-    });
+    this.entityComponents = scene.entityComponents;
   }
   getEntitiesComponent(system) {
-    console.log("compononents", this.components);
-    return [];
+    return this.entityComponents.filter((ec) => {
+      return ec.components.find((c) => {
+        return c.systems.filter((s) => {
+          return s === system;
+        });
+      });
+    });
   }
   logicLoop() {
     Object.entries(this.systems).forEach(([systemKey, system]) => {
@@ -1782,16 +1781,6 @@ var Game = class {
     this.ecs.flash(this.state.get(to));
     this.state.currrent = to;
   }
-  inputEvent(event) {
-    if (true) {
-      const ns = this.state.graph.outNeighbors(this.state.currrent);
-      if (ns.length) {
-        this.update(ns[0]);
-      } else {
-        console.log("no further states");
-      }
-    }
-  }
   registerCanvas(key, run, context) {
     this.canvasContexts[key] = { run, context };
     this.animationLoop(key);
@@ -1813,7 +1802,7 @@ var Game = class {
   draw(key) {
     const s = this.state.get(this.state.currrent);
     this.canvasContexts[key].context.clearRect(0, 0, 800, 600);
-    s.draw(key, this.canvasContexts[key].context);
+    s.draw(this.canvasContexts[key].context);
   }
 };
 
@@ -1826,27 +1815,21 @@ var Tree = class {
 };
 
 // src/engine/View.ts
-var Scene = class extends Tree {
+var View = class extends Tree {
   entityComponents;
-  systems;
-  constructor(name, entityComponents, systems) {
+  paint;
+  events = [];
+  constructor(name, entityComponents, paint) {
     super(name);
     this.entityComponents = entityComponents;
-    this.systems = systems;
+    this.paint = paint;
   }
-  draw(key, ctx) {
-    this.systems.forEach(
-      (drawer, system) => {
-        drawer(ctx, this.entityComponents);
-      }
-    );
+  draw(ctx) {
+    this.paint(this.entityComponents, ctx, this.events);
+    this.events = [];
   }
-};
-var View = class extends Scene {
-  draw;
-  constructor(name, entityComponents, draw) {
-    super(name, entityComponents, /* @__PURE__ */ new Map());
-    this.draw = draw;
+  inputEvent(inputEvent) {
+    this.events.push(inputEvent);
   }
 };
 
@@ -1859,14 +1842,13 @@ var System = class {
     this.frame[0] = 0;
   }
   loop(ecs, system) {
-    setInterval((d, s) => this.logicLoop(d, s), 1e3, ecs, system);
+    setInterval((d, s) => this.logicLoop(d, s), 3, ecs, system);
   }
   async logicLoop(ecs, system) {
     this.frame[0] = this.frame[0] + 1;
     const entitiesComponent = ecs.getEntitiesComponent(this);
-    const prelogic = await this.doPreLogic(entitiesComponent);
-    const logic = await this.doLogic(prelogic);
-    await this.doPostLogic(logic);
+    await this.doPreLogic(entitiesComponent);
+    await this.doPostLogic(entitiesComponent);
   }
 };
 
@@ -1903,15 +1885,50 @@ var Physical = class extends System {
   constructor() {
     super();
   }
-  doPreLogic(entitiesComponent) {
-    console.log("physics pre loop");
-    return {};
+  doPreLogic(entitiesComponents) {
+    entitiesComponents.forEach((ec) => {
+      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+      d.x = d.x + d.dx;
+      d.y = d.y + d.dy;
+    });
   }
-  doLogic(prelogic) {
-    console.log("physics loop");
-  }
-  doPostLogic(logic) {
-    console.log("physics post loop");
+  doPostLogic(entitiesComponents) {
+    entitiesComponents.forEach((ec) => {
+      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+      for (let y = 0; y < entitiesComponents.length - 1; y++) {
+        for (let x = 1; x < y + 2; x++) {
+          const a = entitiesComponents[y];
+          const b = entitiesComponents[x];
+          const ad = a.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+          const bd = b.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+          const d2 = Math.pow(ad.x - bd.x, 2) + Math.pow(ad.y - bd.y, 2);
+          if (d2 < 1 && d2 !== 0) {
+            ad.x = ad.x - ad.dx * 3;
+            ad.y = ad.y - ad.dy * 3;
+            bd.x = bd.x - bd.dx * 3;
+            bd.y = bd.y - bd.dy * 3;
+            const ddx = (ad.dx + bd.dx) / 2;
+            const ddy = (ad.dy + bd.dy) / 2;
+            ad.dx = ddx;
+            ad.dy = ddy;
+            bd.dx = ddx;
+            bd.dy = ddy;
+          }
+        }
+      }
+      if (d.x < 0) {
+        d.x = 40 + d.dx * 2;
+      }
+      if (d.x > 40) {
+        d.x = d.dx * 2;
+      }
+      if (d.y < 0) {
+        d.y = 30 + d.dy * 2;
+      }
+      if (d.y > 30) {
+        d.y = d.dy * 2;
+      }
+    });
   }
 };
 
@@ -1928,22 +1945,28 @@ var Entity = class {
 
 // src/engine/Component.ts
 var Component = class {
-  // type: IComponents;
   systems;
-  // runType: string;
-  payload;
   constructor(systems) {
     this.systems = systems;
   }
+  // abstract payload(): any
 };
 
-// src/games/spacetrash/Components/casting/in.ts
-var InCastingComponent = class extends Component {
+// src/games/spacetrash/Components/casting/out.ts
+var OutCastingComponent = class extends Component {
   fov;
-  threshold;
   ray;
+  intensity;
+  dropoff;
   constructor() {
     super([SpaceTrashSystems.casting]);
+  }
+  payload() {
+    return {
+      fov: this.fov,
+      threshold: this.intensity,
+      ray: this.ray
+    };
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -1951,15 +1974,93 @@ var InCastingComponent = class extends Component {
   setMove(move) {
   }
 };
-var AttackableComponent = class extends InCastingComponent {
-  fov;
-  threshold = 0;
+var AttackingComponent = class extends OutCastingComponent {
   ray;
-  // constructor() {
-  //   super(
-  //     // SpaceTrashComponents.attackable
-  //   );
-  // }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+var MeleeComponent = class extends AttackingComponent {
+  fov = 1;
+  dropoff = (x) => x < 2 ? 10 : 0;
+  constructor(intensity) {
+    super();
+    this.intensity = intensity;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+var LitComponent = class extends OutCastingComponent {
+  dropoff = (x) => 1 / (x ^ 2);
+  ray;
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+
+// src/games/spacetrash/Components/physics.ts
+var PhysicsComponent = class extends Component {
+  x;
+  y;
+  constructor(x = 0, y = 0) {
+    super([SpaceTrashSystems.physical]);
+    this.x = x;
+    this.y = y;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+var PhysicsActorComponent = class extends PhysicsComponent {
+  dx;
+  dy;
+  r;
+  constructor(x = 0, y = 0, r = 0, conveyance, dx, dy) {
+    super(x, y);
+    this.dx = dx;
+    this.dy = dy;
+    this.r = r;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+
+// src/games/spacetrash/Components/index.ts
+var SpaceTrashComponent = class extends Component {
+};
+
+// src/games/spacetrash/Components/casting/in.ts
+var InCastingComponent = class extends SpaceTrashComponent {
+  fov;
+  threshold;
+  ray;
+  constructor() {
+    super([SpaceTrashSystems.casting]);
+  }
+  payload() {
+    return {
+      fov: this.fov,
+      threshold: this.threshold,
+      ray: this.ray
+    };
+  }
+};
+var AttackableComponent = class extends InCastingComponent {
+  fov = 1;
+  threshold = 0;
+  ray = 2 /* attack */;
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -1979,47 +2080,6 @@ var CameraComponent = class extends InCastingComponent {
 var ThermalComponent = class extends InCastingComponent {
   fov = 1;
   threshold = 0;
-  ray;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/games/spacetrash/Components/casting/out.ts
-var OutCastingComponent = class extends Component {
-  fov;
-  dropoff;
-  ray;
-  intensity;
-  constructor() {
-    super(
-      [SpaceTrashSystems.casting]
-      // type
-    );
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var MeleeComponent = class extends OutCastingComponent {
-  dropoff = (x) => x < 2 ? 10 : 0;
-  fov = 1;
-  constructor(intensity) {
-    super();
-    this.intensity = intensity;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var LitComponent = class extends OutCastingComponent {
-  dropoff = (x) => 1 / (x ^ 2);
   ray;
   getMove() {
     throw new Error("Method not implemented.");
@@ -2050,36 +2110,6 @@ var WheeledComponent = class extends ConveyanceComponent {
 };
 var SpawningComponent = class extends ConveyanceComponent {
   direction;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/games/spacetrash/Components/physics.ts
-var PhysicsComponent = class extends Component {
-  x;
-  y;
-  constructor(x = 0, y = 0) {
-    super([SpaceTrashSystems.physical]);
-    this.x = x;
-    this.y = y;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var PhysicsActorComponent = class extends PhysicsComponent {
-  x;
-  y;
-  r;
-  constructor(x = 0, y = 0, r = 0, conveyance) {
-    super(x, y);
-    this.r = r;
-  }
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -2125,10 +2155,10 @@ var SpaceTrashEntity = class extends Entity {
   }
 };
 var Slime = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0) {
+  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0) {
     super(
       new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new SpawningComponent()),
+      new PhysicsActorComponent(x, y, r, new SpawningComponent(), dx, dy),
       [
         new ThermalComponent(),
         new MeleeComponent(1)
@@ -2137,10 +2167,10 @@ var Slime = class extends SpaceTrashEntityComponent {
   }
 };
 var Drone = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0) {
+  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0) {
     super(
       new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new WheeledComponent()),
+      new PhysicsActorComponent(x, y, r, new WheeledComponent(), dx, dy),
       [
         new LitComponent(),
         new CameraComponent(),
@@ -2155,39 +2185,71 @@ var Drone = class extends SpaceTrashEntityComponent {
 var state = new StateSpace("stateSpace_v0", "boot", "goodbye");
 state.connect(`boot`, `menu`);
 state.connect(`menu`, `mainloop`);
-state.set("boot", new View("bootscene_view_v0", [], (key, ctx) => {
+state.set("boot", new View("bootscene_view_v0", [], (ecs, ctx, events) => {
+  events.forEach((event) => {
+    if (event.type === "mouseup") {
+      state.jump("menu");
+    }
+  });
   ctx.font = "32px sans-serif";
-  ctx.fillText("Boot", 10, 50);
+  ctx.fillText("click the mouse", 10, 50);
 }));
 state.set("menu", new View(
   "menuscene_view_v0",
   [],
-  (key, ctx) => {
+  (ecs, ctx, events) => {
+    events.forEach((event) => {
+      if (event.type === "keydown") {
+        state.jump("mainloop");
+      }
+    });
     ctx.font = "48px serif";
-    ctx.strokeStyle = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    ctx.strokeText("Hello world", 10, 50);
+    ctx.strokeText("press any key", 10, 50);
   }
 ));
-state.set("mainloop", new Scene(
+var mouseX = 0;
+var mouseY = 0;
+state.set("mainloop", new View(
   "mainloop_view_v0",
   [
     new Drone(),
-    new Drone(1, 1, 1),
-    new Slime(10, 10, 1)
+    new Drone(1, 2, 3, 3e-3, 2e-3),
+    new Slime(10, 10, 1, 1e-3, 0.05)
+    // ...([...new Array(50)].map((nil) => {
+    //   return new Drone(
+    //     Math.random() * 20 ,
+    //     Math.random() * 20 ,
+    //     Math.random() * (Math.random() - 1),
+    //     (Math.random() - 0.5) / 10 ,
+    //     (Math.random() - 0.5) / 10 ,
+    //   );
+    // }))
   ],
-  /* @__PURE__ */ new Map([
-    [
-      SpaceTrashSystems.physical,
-      (ctx, ecs) => {
-        ctx.font = "48px serif";
-        ctx.fillText(`Physical ${SpaceTrashSystems.physical.frame[0]}`, 10, 50);
-        ecs.forEach(({ entity, components }) => {
-          components.forEach((c) => {
-          });
-        });
+  (ecs, ctx, events) => {
+    events.forEach((event) => {
+      if (event.type === "mousemove") {
+        mouseX = event.x;
+        mouseY = event.y;
       }
-    ]
-  ])
+    });
+    ctx.beginPath();
+    ctx.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = "transparent";
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "blue";
+    ctx.stroke();
+    ecs.forEach((ec) => {
+      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+      ctx.beginPath();
+      ctx.arc(d.x * 10, d.y * 20, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = "black";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "red";
+      ctx.stroke();
+    });
+  }
 ));
 var Spacetrash = class extends Game {
   constructor() {
@@ -2201,13 +2263,12 @@ var Spacetrash = class extends Game {
 // src/worker.ts
 var sp = new Spacetrash().start();
 self.onmessage = function handleMessageFromMain(msg) {
-  console.log("message from main received in worker:", msg.data);
   if (msg.data[0] === "canvas") {
     sp.registerCanvas("alpha", true, msg.data[1].getContext("2d"));
   }
   if (msg.data[0] === "inputEvent") {
     if (sp) {
-      sp.inputEvent(msg.data[1]);
+      sp.state.inputEvent(msg.data[1]);
     }
   }
   if (msg.data[0] === "2nd-canvas") {

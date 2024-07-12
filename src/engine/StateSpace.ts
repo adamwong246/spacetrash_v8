@@ -1,7 +1,7 @@
 import { DirectedGraph } from "./DirectedGraph";
-import { Scene, View } from "./View";
+import { View } from "./View";
 
-export class StateSpace extends DirectedGraph  {
+export class StateSpace extends DirectedGraph {
   start: string;
   end: string;
   currrent: string;
@@ -16,15 +16,21 @@ export class StateSpace extends DirectedGraph  {
     this.end = end;
     this.currrent = start;
   }
-  
-  get(key): Scene {
-    return this.graph.getNodeAttribute(key, 'scene');
-  }
-  
-  set(key, scene: Scene) {
-    this.graph.setNodeAttribute(key, 'scene', scene);
+
+  jump(key): void{
+    this.currrent = key;
   }
 
-  
+  get(key): View {
+    return this.graph.getNodeAttribute(key, 'View');
+  }
+
+  set(key, scene: View) {
+    this.graph.setNodeAttribute(key, 'View', scene);
+  }
+
+  inputEvent(inputEvent: Event): void {
+    (this.graph.getNodeAttribute(this.currrent, 'View') as View).inputEvent(inputEvent);
+  }
 
 }

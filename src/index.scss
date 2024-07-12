@@ -31,8 +31,15 @@
 .Window_MyApplicationWindow {
 }
 
+.dragging{
+  opacity: 0.5;
+}
 
-@import '~@osjs/standard-theme/dist/main.css';
-@import '~@osjs/client/dist/main.css';
-@import '~@osjs/gui/dist/main.css';
-@import '~@osjs/panels/dist/main.css';
+// @import './engine/FlexModal/Mask.scss';
+@import './engine/FlexModal/index.scss';
+// @import 'react-resizable-draggable-modal/build/style.css';
+// @import 'react-drag-resize-dock-modal/dist/index.css';
+// @import '~@osjs/standard-theme/dist/main.css';
+// @import '~@osjs/client/dist/main.css';
+// @import '~@osjs/gui/dist/main.css';
+// @import '~@osjs/panels/dist/main.css';

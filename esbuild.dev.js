@@ -3,17 +3,18 @@ import { sassPlugin } from 'esbuild-sass-plugin'
 
 esbuild.context({
   bundle: true,
-  outbase: 'src',
+  // outbase: 'src',
   format: "esm",
   entryPoints: [
     './src/index.tsx',
     './src/index.html',
     './src/worker.ts',
     './src/index.scss',
+    // './node_modules/react-drag-resize-dock-modal/dist/index.css'
   ],
-  bundle: true,
+
   outdir: "./dist",
-  external: ["osjs"],
+
 
   loader: {
     '.css': 'copy',

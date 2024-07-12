@@ -21,6 +21,7 @@
     "@osjs/gui": "^4.1.0",
     "@osjs/panels": "^3.0.32",
     "@osjs/standard-theme": "^4.0.9",
+    "@types/react": "^18.3.3",
     "esbuild": "^0.21.5",
     "esbuild-sass-plugin": "^3.3.1",
     "graphology": "^0.25.4",
@@ -28,6 +29,7 @@
     "graphology-types": "^0.24.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-resizable-draggable-modal": "^0.0.1",
     "restructure": "^3.0.2"
   }
 }

@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from "react";
 
 import { IUiState, SetUiState } from './UiState';
+import { UICanvas } from "./engine/UI/UICanvas";
+import { UIWindow } from "./engine/UI/UIWindow";
+// import { UICanvas, UIWindow } from "./engine/UI";
 
 const Term = (props: { uiState: IUiState, setuiState: SetUiState }) => {
   // const termHistory = props.uiState.terminalhistory.slice(0,-1)
@@ -37,24 +40,41 @@ const ShipMap = (props: {
   worker: Worker;
 }) => {
 
-  const canvasRef = useRef(null)
+  return (<UICanvas worker={props.worker} message={"2nd-canvas"}></UICanvas>);
+//   const canvasRef = useRef(null)
   
-  useEffect(() => {
-    if (canvasRef.current) {
-      const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
-      props.worker.postMessage(["2nd-canvas", offscreen], [offscreen]);  
-    }
-  }, [canvasRef]);
+//   useEffect(() => {
+//     if (canvasRef.current) {
+//       const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
+//       props.worker.postMessage(["2nd-canvas", offscreen], [offscreen]);  
+//     }
+//   }, [canvasRef]);
 
-  return <div>
-    <canvas
-      ref={canvasRef}
-      id="shipmap" width="800" height="600"></canvas>
-    </div>
+//   return <div style={{
+//     position: "absolute",
+//     top: 10,
+//     left: 10,
+//     right: 20, 
+//     bottom: 30
+//   }}>
+//     <canvas
+//       ref={canvasRef}
+//       id="shipmap" width="800" height="600"></canvas>
+//     </div>
 };
 
-const Manual = (props: { uiState: IUiState, setuiState: SetUiState }) => {
-  return <p>the Manual goes here</p>
+const Manual = (props: {
+  uiState: IUiState,
+  setuiState: SetUiState,
+  worker: Worker;
+  setDesktop: (x) => void;
+}) => {
+  return (<UIWindow
+    windowkey="manual"
+    worker={props.worker}
+    children={<p>the Manual goes here</p>}
+    setDesktop={props.setDesktop}
+  ></UIWindow>);
 };
 
 const Drone = (props: { drone: number, uiState: IUiState, setuiState: SetUiState }) => {
@@ -136,7 +156,7 @@ export const Footer = (props: { uiState: IUiState, setuiState: SetUiState }) => 
       name="terminal-input"
       placeholder={lastLog}
       value={props.uiState.terminalBuffer}
-      autoFocus={true}
+      // autoFocus={true}
       onBlur={({ target }) => target.focus()}
       onChange={(e) => {
         const lastChar = e.target.value[e.target.value.length - 1];
@@ -160,17 +180,14 @@ export const Footer = (props: { uiState: IUiState, setuiState: SetUiState }) => 
 const AppBody = (props: {
   uiState: IUiState,
   setuiState: SetUiState,
-  // canvasRef: any
   worker: Worker
-  // offscreen: any;
+  setDesktop: (x) => void;
 }) => {
   if (props.uiState.mode === "debug") {
     return <Debug
       uiState={props.uiState}
       setuiState={props.setuiState}
-      // canvasRef={props.canvasRef}
       worker={props.worker}
-      // offscreen={props.offscreen}
     />
   }
   if (props.uiState.mode === "terminal") {
@@ -187,7 +204,12 @@ const AppBody = (props: {
     return <Notifications uiState={props.uiState} setuiState={props.setuiState} />
   }
   if (props.uiState.mode === "manual") {
-    return <Manual uiState={props.uiState} setuiState={props.setuiState} />
+    return <Manual
+      worker={props.worker}
+      uiState={props.uiState}
+      setuiState={props.setuiState}
+      setDesktop={props.setDesktop}
+    />
   }
   if (props.uiState.mode === "self") {
     return <Self uiState={props.uiState} setuiState={props.setuiState} />
@@ -202,17 +224,15 @@ const AppBody = (props: {
 export const Main = (props: {
   uiState: IUiState,
   setuiState: SetUiState,
-  // canvasRef: any
+  setDesktop: (x) => void;
   worker: Worker
-  // offscreen: any;
 }) => {
   return (<div id="app-body">
     <AppBody
       uiState={props.uiState}
       setuiState={props.setuiState}
-      // canvasRef={props.canvasRef}
       worker={props.worker}
-      // offscreen={props.offscreen}
+      setDesktop={props.setDesktop}
     />
   </div>)
 };

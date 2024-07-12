@@ -9,32 +9,11 @@ export const Terminal = {
     if (command === "help") {
       return {
         out: `
---- HELP ---
-
- [ESC]   Clear the buffer
- [Enter] Submit the buffer
-
--- SUB SYSTEMS --
-
- [\`] Terminal
- [~] Ship Schematics
- [!] Notifications
- [?] Manual
- [+] Debug
-
- [1 - 9]   Drones
- [0]       QPU
-
--- COMMANDS --
-
  "help"    high-level help menu
  "whoami"  display user's information
  "ship"    display the ship's information
  "mission" display the mission
  "date"    display the current date
-
-For further instructions, please see the Manual.
-
       `,
         status: 'niether'
       }

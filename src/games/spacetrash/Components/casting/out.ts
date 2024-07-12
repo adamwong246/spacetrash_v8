@@ -1,22 +1,27 @@
 import Component from "../../../../engine/Component";
 
-import { IRays } from "../../../spacetrash";
+import { ERays, IRays } from "../../../spacetrash";
 
 import { SpaceTrashSystems } from "../../Systems";
 
 import { ISpaceTrashComponents, SpaceTrashComponents } from "..";
 
-
 export abstract class OutCastingComponent extends Component<unknown, ISpaceTrashComponents> {
   fov: number;
-  dropoff: (x: number) => number;
-  ray: IRays;
+  ray: ERays;
   intensity: number;
+  dropoff: (x: number) => number;
 
   constructor() {
-    super([SpaceTrashSystems.casting],
-      // type
-    );
+    super([SpaceTrashSystems.casting]);
+  }
+
+  payload() {
+    return {
+      fov: this.fov,
+      threshold: this.intensity,
+      ray: this.ray,
+    }
   }
 
   getMove(): unknown {
@@ -31,9 +36,7 @@ export abstract class OutCastingComponent extends Component<unknown, ISpaceTrash
 }
 
 export abstract class AttackingComponent extends OutCastingComponent {
-  dropoff: (x: number) => number;
-  
-  ray = 'attack' as IRays
+  ray: ERays.attack;
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
@@ -46,13 +49,13 @@ export abstract class AttackingComponent extends OutCastingComponent {
   }
 }
 
-export class MeleeComponent extends OutCastingComponent {
+export class MeleeComponent extends AttackingComponent {
+  fov = 1;
   dropoff = (x) => x < 2 ? 10 : 0;
-  fov = 1
-
+  
   constructor(intensity: number) {
     super();
-    this.intensity = intensity;  
+    this.intensity = intensity;
   }
 
   getMove(): unknown {
@@ -83,7 +86,7 @@ export class GunComponent extends OutCastingComponent {
 
 export class LitComponent extends OutCastingComponent {
   dropoff = (x) => 1 / (x ^ 2);
-  ray: 'light' 
+  ray: ERays.light
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
