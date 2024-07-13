@@ -1,5 +1,7 @@
 export default function stringifyEvent(e) {
-  const obj = {};
+  const obj = {
+    boundingClient: e.target.getBoundingClientRect()
+  };
   for (let k in e) {
     obj[k] = e[k];
   }

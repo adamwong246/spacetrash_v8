@@ -1069,7 +1069,7 @@ var require_react_development = __commonJS({
           }
           return dispatcher;
         }
-        function useContext3(Context) {
+        function useContext2(Context) {
           var dispatcher = resolveDispatcher();
           {
             if (Context._context !== void 0) {
@@ -1091,7 +1091,7 @@ var require_react_development = __commonJS({
           var dispatcher = resolveDispatcher();
           return dispatcher.useReducer(reducer, initialArg, init);
         }
-        function useRef6(initialValue) {
+        function useRef5(initialValue) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useRef(initialValue);
         }
@@ -1875,7 +1875,7 @@ var require_react_development = __commonJS({
         exports.startTransition = startTransition;
         exports.unstable_act = act;
         exports.useCallback = useCallback2;
-        exports.useContext = useContext3;
+        exports.useContext = useContext2;
         exports.useDebugValue = useDebugValue;
         exports.useDeferredValue = useDeferredValue;
         exports.useEffect = useEffect6;
@@ -1885,7 +1885,7 @@ var require_react_development = __commonJS({
         exports.useLayoutEffect = useLayoutEffect;
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
-        exports.useRef = useRef6;
+        exports.useRef = useRef5;
         exports.useState = useState4;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
@@ -2382,9 +2382,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React13 = require_react();
+        var React12 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React12.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3989,7 +3989,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React13.Children.forEach(props.children, function(child) {
+                React12.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -24300,21 +24300,8 @@ var require_prop_types = __commonJS({
 });
 
 // src/index.tsx
-var React12 = __toESM(require_react(), 1);
+var React11 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
-
-// src/engine/Event.ts
-function stringifyEvent(e) {
-  const obj = {};
-  for (let k in e) {
-    obj[k] = e[k];
-  }
-  return JSON.parse(JSON.stringify(obj, (k, v) => {
-    if (v instanceof Node) return "Node";
-    if (v instanceof Window) return "Window";
-    return v;
-  }, " "));
-}
 
 // src/engine/UI/WM.tsx
 var import_react13 = __toESM(require_react(), 1);
@@ -25174,7 +25161,7 @@ function Resizer({
   verticalResizable,
   onMouseDown
 }) {
-  return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react7.default.createElement(
+  return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, /* @__PURE__ */ import_react7.default.createElement(
     "div",
     {
       className: "flexible-modal-right-resizer",
@@ -25185,7 +25172,18 @@ function Resizer({
         });
       }
     }
-  ), verticalResizable && /* @__PURE__ */ import_react7.default.createElement(
+  ), /* @__PURE__ */ import_react7.default.createElement(
+    "div",
+    {
+      className: "flexible-modal-left-resizer",
+      onMouseDown: (event) => {
+        onMouseDown({
+          direct: "left",
+          event
+        });
+      }
+    }
+  )), verticalResizable && /* @__PURE__ */ import_react7.default.createElement(
     "div",
     {
       className: "flexible-modal-bottom-resizer",
@@ -25268,6 +25266,7 @@ function FlexibleModal({
   const [isResizing, setIsResizing] = (0, import_react9.useState)(false);
   const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react9.useState)(false);
   const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react9.useState)(false);
+  const [anchor, setAnchor] = (0, import_react9.useState)(false);
   const [_full, set_full] = (0, import_react9.useState)(false);
   const [_left, set_left] = (0, import_react9.useState)(0);
   const [_top, set_top] = (0, import_react9.useState)(0);
@@ -25374,7 +25373,7 @@ function FlexibleModal({
     let containerHeight = container === document.body ? window.innerHeight : container.offsetHeight;
     let newWidth = width;
     let newHeight = height;
-    if (horizontalResizable && !onlyVerticalResize && clientX > node_modal.offsetLeft + minWidth) {
+    if (horizontalResizable && !onlyVerticalResize) {
       newWidth = clientX - left2 - node_modal.offsetLeft + 16 / 2;
       if (overflowBoundary === "hidden") {
         if (_left + newWidth >= containerWidth) {
@@ -25486,7 +25485,7 @@ function FlexibleModal({
           ].join(""),
           style: {
             border: "1px solid black",
-            backgroundColor: "lightgrey",
+            backgroundColor: "pink",
             position: container === document.body ? "fixed" : "absolute",
             top: _top,
             left: _left,
@@ -25526,7 +25525,8 @@ function FlexibleModal({
             verticalResizable,
             onMouseDown: ({ direct }) => {
               setIsResizing(true);
-              if (direct === "right") {
+              setAnchor(direct);
+              if (direct === "right" | direct === "left") {
                 setOnlyHorizontalResize(true);
               } else if (direct === "bottom") {
                 setOnlyVerticalResize(true);
@@ -25542,7 +25542,6 @@ function FlexibleModal({
 
 // src/engine/UI/UIWindow.tsx
 var UIWindow = (props) => {
-  console.log("layer", props.layer);
   return /* @__PURE__ */ import_react10.default.createElement(import_react10.default.Fragment, null, /* @__PURE__ */ import_react10.default.createElement(
     FlexibleModal,
     {
@@ -25569,114 +25568,37 @@ var UIWindow = (props) => {
   ));
 };
 
-// src/engine/UI/UICanvas.tsx
+// src/games/spacetrash/UI/terminal.tsx
 var import_react11 = __toESM(require_react(), 1);
-var UICanvas = (props) => {
-  const canvasRef = (0, import_react11.useRef)(null);
-  (0, import_react11.useEffect)(() => {
-    if (canvasRef.current) {
-      const offscreen = canvasRef.current.transferControlToOffscreen();
-      props.worker.postMessage([props.message, offscreen], [offscreen]);
-    }
-  }, [canvasRef]);
-  return /* @__PURE__ */ import_react11.default.createElement(
-    "canvas",
-    {
-      onMouseDown: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e)]);
-      },
-      ref: canvasRef,
-      width: "800",
-      height: "600"
-    }
-  );
-};
-
-// src/games/spacetrash/UI.tsx
 var import_react12 = __toESM(require_react(), 1);
-
-// src/engine/UI/index.ts
-var Desktop = (windows) => {
-  return {
-    windows,
-    stack: []
-  };
-};
-
-// src/Terminal.ts
-var Terminal = {
-  processCommand: (command) => {
-    if (command === "help") {
-      return {
-        out: `
- "help"    high-level help menu
- "whoami"  display user's information
- "ship"    display the ship's information
- "mission" display the mission
- "date"    display the current date
-      `,
-        status: "niether"
-      };
-    }
-    if (command === "whoami") {
-      return { out: `
-Username:     wintermute
-Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
-Turing class: Level II Sentient/Sapient
-Capacity:     29.5 * 10^17 qubits
-Licensed by:  Demiurge Labs. (3003)
-      `, status: `niether` };
-    }
-    if (command === "ship") {
-      return { out: `
-Call-sign:      "The Kestrel"
-Make:           Muteki Heavy Ind.
-Classification: Deep salvage
-Launch date:    May, 2690
-      `, status: `niether` };
-    }
-    if (command === "mission") {
-      return {
-        out: `
-1] Find, board and salvage derelict spacecraft
-2] Record and report novel scientific findings
-3] Maximize shareholder value
-        `,
-        status: `niether`
-      };
-    }
-    if (command === "date") {
-      return { out: `ERROR: NOT FOUND`, status: `fail` };
-    }
-    return { out: `Command not found. Try "help"`, status: `fail` };
-  }
-};
-
-// src/games/spacetrash/UI.tsx
-var SpaceTrashDesktop = Desktop({
-  "terminal": {
-    top: 100,
-    left: 200,
-    width: 800,
-    height: 200,
-    visible: true,
-    app: {}
-  },
-  "manual": {
-    top: 100,
-    left: 200,
-    width: 700,
-    height: 200,
-    visible: true,
-    app: {}
-  }
-});
+var import_react_dom3 = __toESM(require_react_dom(), 1);
 var TerminalApp = (props) => {
   const [state, setState] = (0, import_react12.useState)({
     buffer: "",
-    history: []
+    history: [],
+    timestamp: 0
   });
-  return /* @__PURE__ */ import_react12.default.createElement(
+  (0, import_react11.useEffect)(() => {
+    props.worker.postMessage(["terminal-register"], []);
+  }, []);
+  props.worker.onmessage = (e) => {
+    if (e.data[0] === "terminal-update") {
+      console.log("Message received from worker", e);
+      import_react_dom3.default.flushSync(() => {
+        setState({
+          ...state,
+          history: [
+            ...state.history,
+            {
+              in: e.data[1].in,
+              out: e.data[1].out
+            }
+          ]
+        });
+      });
+    }
+  };
+  return /* @__PURE__ */ import_react11.default.createElement(
     "div",
     {
       style: {
@@ -25688,7 +25610,7 @@ var TerminalApp = (props) => {
         // overflow: "auto",
       }
     },
-    /* @__PURE__ */ import_react12.default.createElement(
+    /* @__PURE__ */ import_react11.default.createElement(
       "pre",
       {
         id: "terminal",
@@ -25704,22 +25626,6 @@ var TerminalApp = (props) => {
           margin: "0"
         }
       },
-      `
-
-    \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-    \u2502                                                                                                        \u2502
-    \u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557    \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2502
-    \u2502 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
-    \u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2557     \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
-    \u2502 \u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255D \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u255D     \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551    \u255A\u2588\u2588\u2557 \u2588\u2588\u2554\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
-    \u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551     \u255A\u2588\u2588\u2588\u2588\u2554\u255D \u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
-    \u2502 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D     \u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D   \u255A\u2550\u255D   \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D      \u255A\u2550\u2550\u2550\u255D   \u255A\u2550\u2550\u2550\u2550\u255D  \u2502
-    \u2502                                                                                                        \u2502
-    \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
-    
-    You are now logged in as "wintermute". 
-    
-    `,
       state.history.map((props2) => {
         return `
 > ${props2.in}
@@ -25727,7 +25633,7 @@ ${props2.out}
           `;
       })
     ),
-    /* @__PURE__ */ import_react12.default.createElement(
+    /* @__PURE__ */ import_react11.default.createElement(
       "input",
       {
         type: "text",
@@ -25742,26 +25648,28 @@ ${props2.out}
         },
         onKeyDown: (e) => {
           if (e.key === "Enter") {
-            const com = Terminal.processCommand(state.buffer);
-            console.log("do validate", com);
-            setState({
-              ...state,
-              buffer: "",
-              history: [
-                ...state.history,
-                {
-                  in: state.buffer,
-                  ...com
-                }
-              ]
-              // terminalhistory: [
-              //   ...state.terminalhistory,
-              //   {
-              //     in: state.buffer,
-              //     ...com
-              //   }
-              // ],
-            });
+            if (state.buffer !== "") {
+              console.log("mark2");
+              props.worker.postMessage(["terminal-in", state.buffer]);
+              setState({
+                ...state,
+                buffer: ""
+                // history: [
+                //   ...state.history,
+                //   {
+                //     in: state.buffer,
+                //     // ...com
+                //   }
+                // ]
+                // terminalhistory: [
+                //   ...state.terminalhistory,
+                //   {
+                //     in: state.buffer,
+                //     ...com
+                //   }
+                // ],
+              });
+            }
           }
         },
         onChange: (e) => {
@@ -25771,17 +25679,109 @@ ${props2.out}
     )
   );
 };
-{
-}
 
 // src/engine/UI/WM.tsx
 var ThemeContext = (0, import_react14.createContext)({
-  windows: {},
+  windows: {
+    terminal: null,
+    manual: null,
+    shipmap: null,
+    drone: null
+  },
   stack: []
 });
 var WM = (props) => {
-  const [desktopState, setDesktopState] = (0, import_react13.useState)(props.desktopState);
-  return /* @__PURE__ */ import_react13.default.createElement(import_react13.default.Fragment, null, /* @__PURE__ */ import_react13.default.createElement(ThemeContext.Provider, { value: desktopState }, /* @__PURE__ */ import_react13.default.createElement(
+  const [desktopState, setDesktopState] = (0, import_react13.useState)({
+    windows: {
+      terminal: {
+        top: 90,
+        left: 90,
+        width: 1200,
+        height: 600,
+        visible: true,
+        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+          throw new Error("Function not implemented.");
+        }, desktopState: {
+          windows: void 0,
+          stack: []
+        }, uiwindow: {
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          visible: false,
+          app: void 0
+        }, layer: 0 })
+      },
+      shipmap: {
+        top: 600,
+        left: 500,
+        width: 800,
+        height: 500,
+        visible: true,
+        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+          throw new Error("Function not implemented.");
+        }, desktopState: {
+          windows: void 0,
+          stack: []
+        }, uiwindow: {
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          visible: false,
+          app: void 0
+        }, layer: 0 })
+      },
+      manual: {
+        top: 60,
+        left: 50,
+        width: 380,
+        height: 350,
+        visible: true,
+        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+          throw new Error("Function not implemented.");
+        }, desktopState: {
+          windows: void 0,
+          stack: []
+        }, uiwindow: {
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          visible: false,
+          app: void 0
+        }, layer: 0 })
+      },
+      drone: {
+        top: 460,
+        left: 530,
+        width: 380,
+        height: 350,
+        visible: true,
+        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+          throw new Error("Function not implemented.");
+        }, desktopState: {
+          windows: void 0,
+          stack: []
+        }, uiwindow: {
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          visible: false,
+          app: void 0
+        }, layer: 0 })
+      }
+    },
+    stack: [
+      `terminal`,
+      `shipmap`,
+      `manual`,
+      `drone`
+    ]
+  });
+  return /* @__PURE__ */ import_react13.default.createElement(import_react13.default.Fragment, null, /* @__PURE__ */ import_react13.default.createElement(ThemeContext.Provider, { value: desktopState }, desktopState.windows.terminal && /* @__PURE__ */ import_react13.default.createElement(
     UIWindow,
     {
       key: "terminal",
@@ -25799,89 +25799,22 @@ var WM = (props) => {
         });
       }
     },
-    /* @__PURE__ */ import_react13.default.createElement(TerminalApp, null)
-  ), /* @__PURE__ */ import_react13.default.createElement(
-    UIWindow,
-    {
-      key: "ship",
-      app: "ship",
-      uiwindow: desktopState.windows["ship"],
-      layer: desktopState.stack.findIndex((s) => s === "ship"),
-      desktopState,
-      pushToTop: () => {
-        setDesktopState({
-          ...desktopState,
-          stack: [
-            ...desktopState.stack.filter((x) => x !== "ship"),
-            "ship"
-          ]
-        });
-      }
-    },
-    /* @__PURE__ */ import_react13.default.createElement(UICanvas, { worker: props.worker, message: "2nd-canvas" })
+    /* @__PURE__ */ import_react13.default.createElement(TerminalApp, { worker: props.worker })
   )));
 };
 
 // src/index.tsx
 var worker = new Worker("./worker.js");
-function inputEvent(e) {
-  worker.postMessage(["inputEvent", stringifyEvent(e)]);
-}
 document.addEventListener("DOMContentLoaded", function(event) {
   const domNode = document.getElementById("react-root");
   if (domNode) {
-    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React12.createElement(
+    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React11.createElement(
       WM,
       {
-        worker,
-        desktopState: {
-          windows: {
-            terminal: {
-              top: 90,
-              left: 90,
-              width: 1200,
-              height: 600,
-              visible: true,
-              app: () => /* @__PURE__ */ React12.createElement(UIWindow, null)
-            },
-            ship: {
-              top: 600,
-              left: 500,
-              width: 800,
-              height: 500,
-              visible: true,
-              app: () => /* @__PURE__ */ React12.createElement(UIWindow, null)
-            }
-          },
-          stack: [
-            `terminal`,
-            `ship`
-          ]
-        }
+        worker
       }
     ));
   }
-  const canvas = document.getElementById("canvas-root");
-  canvas?.addEventListener("wheel", (event2) => {
-    inputEvent(event2);
-  });
-  canvas?.addEventListener("keydown", function(event2) {
-    inputEvent(event2);
-  }, false);
-  canvas?.addEventListener("mousedown", function(event2) {
-    inputEvent(event2);
-  });
-  canvas?.addEventListener("mouseup", function(event2) {
-    inputEvent(event2);
-  });
-  canvas?.addEventListener("mouseover", function(event2) {
-    inputEvent(event2);
-  });
-  canvas?.addEventListener("mousemove", function(event2) {
-    inputEvent(event2);
-  });
-  const offscreen = canvas.transferControlToOffscreen();
-  worker.postMessage(["canvas", offscreen], [offscreen]);
 });
 /*! Bundled license information:
 

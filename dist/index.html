@@ -9,13 +9,23 @@
   <link rel="stylesheet" href="index.css">
   <!-- <link rel="stylesheet" href="/_.._/node_modules/react-drag-resize-dock-modal/index.css"> -->
   <style>
-    
+    body, html, #panel-pro-container, #react-root{
+      height: 100%;
+      width: 100%;
+    }
+
+    .panel {
+      background-color: grey;
+      height: 100%;
+      width: 100%;
+      border: 1px solid black;
+    }
   </style>
 
 </head>
 
 <body>
-  <canvas  tabindex="1" id="canvas-root" width="400" height="300"></canvas>
+  <!-- <canvas  tabindex="1" id="canvas-root" width="400" height="300"></canvas> -->
   <div id="react-root" />
 </body>
 

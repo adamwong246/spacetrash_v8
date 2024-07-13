@@ -1,7 +1,7 @@
 import { DirectedGraph as GraphologyDirectedGraph } from "graphology";
 
 import { DirectedGraph } from "./DirectedGraph";
-import { View } from "./View";
+import { Scene } from "./Scene";
 
 export abstract class Tree   {
   name: string;
@@ -15,11 +15,11 @@ export abstract class Tree   {
 
 export class Root extends Tree   {
   name: string;
-  root: View;
+  root: Scene<any>;
 
   constructor(
     name: string,
-    root: View,
+    root: Scene<any>,
   ) {
     super(name);
   }
@@ -27,12 +27,12 @@ export class Root extends Tree   {
 
 export class Branch extends Tree   {
   name: string;
-  // parent: View;
-  children: View;
+  // parent: Scene;
+  children: Scene<any>;
 
   constructor(
     name: string,
-    // parent: View,
+    // parent: Scene,
   ) {
     super(name);
   }
@@ -40,11 +40,11 @@ export class Branch extends Tree   {
 
 export class Leaf extends Tree   {
   name: string;
-  // parent: View;
+  // parent: Scene;
 
   constructor(
     name: string,
-    // parent: View,
+    // parent: Scene,
   ) {
     super(name);
   }

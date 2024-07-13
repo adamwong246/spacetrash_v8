@@ -22,6 +22,7 @@ export abstract class System<SystemKeys extends string> {
   }
 
   async logicLoop(ecs: ECS<SystemKeys>, system: SystemKeys) {
+    // console.log("System.logicLoop", system)
     this.frame[0] = this.frame[0] + 1;
     
     const entitiesComponent = ecs.getEntitiesComponent(this);

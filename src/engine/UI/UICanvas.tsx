@@ -1,27 +1,40 @@
 import React, { useContext, useRef, useEffect } from "react";
 import stringifyEvent from "../Event";
-import { ThemeContext } from "./WM";
 
 export const UICanvas = (props: {
   worker: Worker;
-  message: string;
+  app: string;
 }) => {
-  // const theme = useContext(ThemeContext);
-  // console.log("theme", theme)
-  // const className = 'panel-' + theme;
-
   const canvasRef = useRef(null)
 
   useEffect(() => {
     if (canvasRef.current) {
       const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
-      props.worker.postMessage([props.message, offscreen], [offscreen]);
+      props.worker.postMessage([props.app + "-register", offscreen], [offscreen]);
     }
   }, [canvasRef]);
 
-  return     <canvas
-  onMouseDown={(e) => { props.worker.postMessage(["inputEvent", stringifyEvent(e)]); }}
-  ref={canvasRef}
-  width="800"
-  height="600"></canvas>
+  return <canvas
+    tabIndex={1}
+    onKeyUp={(e) => {
+      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    }}
+    onKeyDown={(e) => {
+      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    }}
+    onMouseDown={(e) => {
+      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    }}
+    onMouseUp={(e) => {
+      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    }}
+    onMouseOver={(e) => {
+      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    }}
+    onMouseMove={(e) => {
+      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    }}
+    ref={canvasRef}
+    width="800"
+    height="600"></canvas>
 };

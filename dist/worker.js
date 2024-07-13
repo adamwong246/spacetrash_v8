@@ -1716,29 +1716,28 @@ var StateSpace = class extends DirectedGraph {
     this.end = end;
     this.currrent = start;
   }
-  jump(key) {
-    this.currrent = key;
+  setCurrent(key) {
+    return this.currrent = key;
   }
+  getCurrent() {
+    return this.graph.getNodeAttribute(this.currrent, "Scene");
+  }
+  // jump(key): void{
+  //   this.currrent = key;
+  //   console.log("jumped to", this.currrent)
+  // }
   get(key) {
-    return this.graph.getNodeAttribute(key, "View");
+    return this.graph.getNodeAttribute(key, "Scene");
   }
   set(key, scene) {
-    this.graph.setNodeAttribute(key, "View", scene);
+    this.graph.setNodeAttribute(key, "Scene", scene);
   }
   inputEvent(inputEvent) {
-    this.graph.getNodeAttribute(this.currrent, "View").inputEvent(inputEvent);
+    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent);
   }
 };
 
 // src/engine/ECS.ts
-var EntityComponent = class {
-  entity;
-  components;
-  constructor(entity, components) {
-    this.entity = entity;
-    this.components = components;
-  }
-};
 var ECS = class {
   systems;
   // entities: [string, number[]][]
@@ -1749,7 +1748,6 @@ var ECS = class {
     this.entityComponents = [];
   }
   flash(scene) {
-    this.entityComponents = scene.entityComponents;
   }
   getEntitiesComponent(system) {
     return this.entityComponents.filter((ec) => {
@@ -1761,6 +1759,7 @@ var ECS = class {
     });
   }
   logicLoop() {
+    console.log("logic loop is running");
     Object.entries(this.systems).forEach(([systemKey, system]) => {
       system.loop(this, systemKey);
     });
@@ -1769,21 +1768,30 @@ var ECS = class {
 
 // src/engine/Game.ts
 var Game = class {
+  postMessage;
   state;
   canvasContexts;
   ecs;
-  constructor(state2, systems) {
-    this.state = state2;
+  constructor(state, systems, postMessage2) {
+    this.state = state;
+    this.postMessage = postMessage2;
     this.ecs = new ECS(systems);
     this.canvasContexts = {};
+    this.update = this.update.bind(this);
   }
   update(to) {
-    this.ecs.flash(this.state.get(to));
-    this.state.currrent = to;
+    this.state.setCurrent(to);
+    const newScene = this.state.getCurrent();
+    newScene.boot(to, this.ecs, this.postMessage);
   }
-  registerCanvas(key, run, context) {
-    this.canvasContexts[key] = { run, context };
+  register(key, run, context, callback) {
+    this.canvasContexts[key] = { run, context, callback };
     this.animationLoop(key);
+    console.log("animation loop running", key);
+    const s = this.state.get(this.state.currrent);
+    const clbk = this.canvasContexts[key].callback;
+    s.boot(key, this.ecs, clbk || (() => {
+    }));
   }
   start() {
     this.ecs.logicLoop();
@@ -1800,36 +1808,20 @@ var Game = class {
     requestAnimationFrame(() => this.canvasContexts[key].run && this.animationLoop(key));
   }
   draw(key) {
+    console.log("Game.draw", this.state.currrent);
     const s = this.state.get(this.state.currrent);
-    this.canvasContexts[key].context.clearRect(0, 0, 800, 600);
-    s.draw(this.canvasContexts[key].context);
-  }
-};
-
-// src/engine/Tree.ts
-var Tree = class {
-  name;
-  constructor(name) {
-    this.name = name;
-  }
-};
-
-// src/engine/View.ts
-var View = class extends Tree {
-  entityComponents;
-  paint;
-  events = [];
-  constructor(name, entityComponents, paint) {
-    super(name);
-    this.entityComponents = entityComponents;
-    this.paint = paint;
-  }
-  draw(ctx) {
-    this.paint(this.entityComponents, ctx, this.events);
-    this.events = [];
-  }
-  inputEvent(inputEvent) {
-    this.events.push(inputEvent);
+    const ctx = this.canvasContexts[key].context;
+    const clbk = this.canvasContexts[key].callback;
+    if (ctx) {
+      ctx.clearRect(0, 0, 800, 600);
+    }
+    s.draw(
+      ctx,
+      key,
+      clbk || (() => {
+      }),
+      this.ecs.entityComponents
+    );
   }
 };
 
@@ -1939,339 +1931,267 @@ var SpaceTrashSystems = {
   casting: new FOV()
 };
 
-// src/engine/Entity.ts
-var Entity = class {
-};
-
-// src/engine/Component.ts
-var Component = class {
-  systems;
-  constructor(systems) {
-    this.systems = systems;
+// src/engine/Tree.ts
+var Tree = class {
+  name;
+  constructor(name) {
+    this.name = name;
   }
-  // abstract payload(): any
 };
 
-// src/games/spacetrash/Components/casting/out.ts
-var OutCastingComponent = class extends Component {
-  fov;
-  ray;
-  intensity;
-  dropoff;
+// src/engine/Scene.ts
+var Scene = class extends Tree {
+  // entityComponents: IECSComponents;
+  appLogic;
+  events = [];
+  constructor(name, appLogic) {
+    super(name);
+    this.appLogic = appLogic;
+  }
+  boot(stateKey, ecs, bootReplier) {
+    Object.keys(this.appLogic).forEach((k) => {
+      this.appLogic[k][0](ecs, bootReplier);
+    });
+    this.events = [];
+  }
+  draw(ctx, app, bootReplier, entityComponents) {
+    this.appLogic[app][1](
+      // this.entityComponents,
+      entityComponents,
+      ctx,
+      this.events,
+      bootReplier
+    );
+    this.events = [];
+  }
+  inputEvent(inputEvent) {
+    this.events.push(inputEvent);
+  }
+};
+
+// src/Terminal.ts
+var SpaceTrashTerminal = class {
+  // update: (to: string) => void
   constructor() {
-    super([SpaceTrashSystems.casting]);
+    return this;
   }
-  payload() {
+  login() {
+    return { in: "", out: "You are now logged in" };
+  }
+  boot() {
     return {
-      fov: this.fov,
-      threshold: this.intensity,
-      ray: this.ray
+      in: "booting...",
+      out: `
+
+\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
+\u2502                                                                                                        \u2502
+\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557    \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2502
+\u2502 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
+\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2557     \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
+\u2502 \u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255D \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u255D     \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551    \u255A\u2588\u2588\u2557 \u2588\u2588\u2554\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
+\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551     \u255A\u2588\u2588\u2588\u2588\u2554\u255D \u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
+\u2502 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D     \u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D   \u255A\u2550\u255D   \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D      \u255A\u2550\u2550\u2550\u255D   \u255A\u2550\u2550\u2550\u2550\u255D  \u2502
+\u2502                                                                                                        \u2502
+\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
+    
+Boot sequence complete
+QNET signal established
+You are now online
+    `
     };
   }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var AttackingComponent = class extends OutCastingComponent {
-  ray;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var MeleeComponent = class extends AttackingComponent {
-  fov = 1;
-  dropoff = (x) => x < 2 ? 10 : 0;
-  constructor(intensity) {
-    super();
-    this.intensity = intensity;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var LitComponent = class extends OutCastingComponent {
-  dropoff = (x) => 1 / (x ^ 2);
-  ray;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
+  processCommand(command, stateUpdater) {
+    if (command === "login") {
+      stateUpdater("menu");
+      return {
+        out: `authenticating...`,
+        status: "niether"
+      };
+    }
+    if (command === "help") {
+      return {
+        out: `
 
-// src/games/spacetrash/Components/physics.ts
-var PhysicsComponent = class extends Component {
-  x;
-  y;
-  constructor(x = 0, y = 0) {
-    super([SpaceTrashSystems.physical]);
-    this.x = x;
-    this.y = y;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var PhysicsActorComponent = class extends PhysicsComponent {
-  dx;
-  dy;
-  r;
-  constructor(x = 0, y = 0, r = 0, conveyance, dx, dy) {
-    super(x, y);
-    this.dx = dx;
-    this.dy = dy;
-    this.r = r;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/games/spacetrash/Components/index.ts
-var SpaceTrashComponent = class extends Component {
-};
-
-// src/games/spacetrash/Components/casting/in.ts
-var InCastingComponent = class extends SpaceTrashComponent {
-  fov;
-  threshold;
-  ray;
-  constructor() {
-    super([SpaceTrashSystems.casting]);
-  }
-  payload() {
-    return {
-      fov: this.fov,
-      threshold: this.threshold,
-      ray: this.ray
-    };
-  }
-};
-var AttackableComponent = class extends InCastingComponent {
-  fov = 1;
-  threshold = 0;
-  ray = 2 /* attack */;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var CameraComponent = class extends InCastingComponent {
-  fov;
-  threshold = 10;
-  ray;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var ThermalComponent = class extends InCastingComponent {
-  fov = 1;
-  threshold = 0;
-  ray;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/games/spacetrash/Components/conveyance.ts
-var ConveyanceComponent = class extends Component {
-  constructor() {
-    super([SpaceTrashSystems.physical]);
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var WheeledComponent = class extends ConveyanceComponent {
-  forwardback;
-  leftright;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var SpawningComponent = class extends ConveyanceComponent {
-  direction;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/games/spacetrash/Components/power.ts
-var PoweredComponent = class extends Component {
-  constructor() {
-    super(
-      []
-      // [SpaceTrashSystems.power]
-    );
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var PowerStoringComponent = class extends PoweredComponent {
-  voltsCurrent;
-  voltsMax;
-  amps;
-  damage;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/games/spacetrash/Entities/index.ts
-var SpaceTrashEntityComponent = class extends EntityComponent {
-  constructor(entity, physics, casts, ...components) {
-    super(entity, [physics, ...casts, ...components]);
-  }
-};
-var SpaceTrashEntity = class extends Entity {
-  constructor() {
-    super();
-  }
-};
-var Slime = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0) {
-    super(
-      new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new SpawningComponent(), dx, dy),
-      [
-        new ThermalComponent(),
-        new MeleeComponent(1)
-      ]
-    );
-  }
-};
-var Drone = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0) {
-    super(
-      new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new WheeledComponent(), dx, dy),
-      [
-        new LitComponent(),
-        new CameraComponent(),
-        new AttackableComponent()
-      ],
-      new PowerStoringComponent()
-    );
+ "whoami"  display user information
+ "ship"    display ship information
+ "mission" display the mission
+ "date"    display the current date
+ "login"   log into the SpaceTrash network
+      `,
+        status: "niether"
+      };
+    }
+    if (command === "whoami") {
+      return {
+        out: `
+Username:     wintermute
+Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
+Turing class: Level II Sentient/Sapient
+Capacity:     29.5 * 10^17 qubits
+Licensed by:  Demiurge Labs. (3003)
+      `,
+        status: `niether`
+      };
+    }
+    if (command === "ship") {
+      return {
+        out: `
+Call-sign:      "The Kestrel"
+Make:           Muteki Heavy Ind.
+Classification: Deep salvage
+Launch date:    May, 2690
+      `,
+        status: `niether`
+      };
+    }
+    if (command === "mission") {
+      return {
+        out: `
+1] Find, board and salvage derelict spacecraft
+2] Record and report novel scientific findings
+3] Maximize shareholder value
+        `,
+        status: `niether`
+      };
+    }
+    if (command === "date") {
+      return { out: `ERROR: NOT FOUND`, status: `fail` };
+    }
+    return { out: `Command not found. Try "help"`, status: `fail` };
   }
 };
 
 // src/games/spacetrash/index.ts
-var state = new StateSpace("stateSpace_v0", "boot", "goodbye");
-state.connect(`boot`, `menu`);
-state.connect(`menu`, `mainloop`);
-state.set("boot", new View("bootscene_view_v0", [], (ecs, ctx, events) => {
-  events.forEach((event) => {
-    if (event.type === "mouseup") {
-      state.jump("menu");
-    }
-  });
-  ctx.font = "32px sans-serif";
-  ctx.fillText("click the mouse", 10, 50);
-}));
-state.set("menu", new View(
-  "menuscene_view_v0",
-  [],
-  (ecs, ctx, events) => {
-    events.forEach((event) => {
-      if (event.type === "keydown") {
-        state.jump("mainloop");
-      }
-    });
-    ctx.font = "48px serif";
-    ctx.strokeText("press any key", 10, 50);
-  }
-));
-var mouseX = 0;
-var mouseY = 0;
-state.set("mainloop", new View(
-  "mainloop_view_v0",
-  [
-    new Drone(),
-    new Drone(1, 2, 3, 3e-3, 2e-3),
-    new Slime(10, 10, 1, 1e-3, 0.05)
-    // ...([...new Array(50)].map((nil) => {
-    //   return new Drone(
-    //     Math.random() * 20 ,
-    //     Math.random() * 20 ,
-    //     Math.random() * (Math.random() - 1),
-    //     (Math.random() - 0.5) / 10 ,
-    //     (Math.random() - 0.5) / 10 ,
-    //   );
-    // }))
-  ],
-  (ecs, ctx, events) => {
-    events.forEach((event) => {
-      if (event.type === "mousemove") {
-        mouseX = event.x;
-        mouseY = event.y;
-      }
-    });
-    ctx.beginPath();
-    ctx.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = "transparent";
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "blue";
-    ctx.stroke();
-    ecs.forEach((ec) => {
-      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-      ctx.beginPath();
-      ctx.arc(d.x * 10, d.y * 20, 4, 0, 2 * Math.PI);
-      ctx.fillStyle = "black";
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "red";
-      ctx.stroke();
-    });
-  }
-));
 var Spacetrash = class extends Game {
-  constructor() {
+  terminal;
+  constructor(workerPostMessage) {
+    const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
+    state.connect(`boot`, `menu`);
+    state.connect(`menu`, `mainloop`);
+    state.set("boot", new Scene(
+      "bootscene_view_v0",
+      {
+        terminal: [(ecs, reply) => {
+          console.log("-");
+          reply(this.terminal.boot());
+        }, (ecs, canvas, events, reply) => {
+        }],
+        manual: [(ecs, reply) => {
+        }, (ecs, canvas, events, reply) => {
+        }],
+        drone: [(ecs, reply) => {
+        }, (ecs, canvas, events, reply) => {
+        }],
+        shipmap: [(ecs, reply) => {
+        }, (ecs, canvas, events, reply) => {
+        }]
+      }
+    ));
+    state.set("menu", new Scene(
+      "menuscene_view_v0",
+      {
+        terminal: [(ecs, reply) => {
+          reply(["terminal-update", this.terminal.login()]);
+        }, (ecs, canvas, events, reply) => {
+        }],
+        manual: [(ecs, reply) => {
+        }, (ecs, canvas, events, reply) => {
+        }],
+        drone: [(ecs, reply) => {
+        }, (ecs, canvas, events, reply) => {
+        }],
+        shipmap: [(ecs, reply) => {
+        }, (ecs, canvas, events, reply) => {
+        }]
+      }
+    ));
     super(
       state,
-      SpaceTrashSystems
+      SpaceTrashSystems,
+      workerPostMessage
     );
+    this.terminal = new SpaceTrashTerminal();
+  }
+  async terminalIn(input) {
+    return {
+      in: input,
+      out: this.terminal.processCommand(input, this.update).out
+    };
   }
 };
 
-// src/worker.ts
-var sp = new Spacetrash().start();
-self.onmessage = function handleMessageFromMain(msg) {
-  if (msg.data[0] === "canvas") {
-    sp.registerCanvas("alpha", true, msg.data[1].getContext("2d"));
+// src/engine/UI/index.ts
+var Desktop = (windows) => {
+  return {
+    windows,
+    stack: []
+  };
+};
+
+// src/games/spacetrash/UI/index.tsx
+var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
+  ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
+  ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
+  ESpaceTrashApps2[ESpaceTrashApps2["shipmap"] = 2] = "shipmap";
+  ESpaceTrashApps2[ESpaceTrashApps2["drone"] = 3] = "drone";
+  return ESpaceTrashApps2;
+})(ESpaceTrashApps || {});
+var SpaceTrashDesktop = Desktop({
+  "terminal": {
+    top: 100,
+    left: 200,
+    width: 800,
+    height: 200,
+    visible: true,
+    app: {}
+  },
+  "manual": {
+    top: 100,
+    left: 200,
+    width: 700,
+    height: 200,
+    visible: true,
+    app: {}
   }
+});
+
+// src/worker.ts
+var sp = new Spacetrash(postMessage).start();
+self.onmessage = function handleMessageFromMain(msg) {
+  console.log("worker onMesage");
   if (msg.data[0] === "inputEvent") {
     if (sp) {
       sp.state.inputEvent(msg.data[1]);
     }
-  }
-  if (msg.data[0] === "2nd-canvas") {
-    sp.registerCanvas("beta", true, msg.data[1].getContext("2d"));
+  } else {
+    console.log("message from main received in worker:", msg.data);
+    if (msg.data[0] === "terminal-in") {
+      sp.terminalIn(msg.data[1]).then((output) => {
+        postMessage([`terminal-update`, output]);
+      });
+    }
+    Object.keys(ESpaceTrashApps).forEach((spApp) => {
+      if (msg.data[0] === `${spApp}-register`) {
+        if (msg.data.length === 1) {
+          sp.register(
+            spApp,
+            true,
+            void 0,
+            (data) => {
+              postMessage([`${spApp}-update`, data]);
+            }
+          );
+        } else {
+          sp.register(
+            spApp,
+            true,
+            msg.data[1].getContext("2d"),
+            (data) => {
+              postMessage(`${spApp}-update`, data);
+            }
+          );
+        }
+      }
+    });
   }
 };

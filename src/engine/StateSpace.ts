@@ -1,7 +1,8 @@
 import { DirectedGraph } from "./DirectedGraph";
-import { View } from "./View";
+import { Scene } from "./Scene";
 
 export class StateSpace extends DirectedGraph {
+  
   start: string;
   end: string;
   currrent: string;
@@ -17,20 +18,29 @@ export class StateSpace extends DirectedGraph {
     this.currrent = start;
   }
 
-  jump(key): void{
-    this.currrent = key;
+  setCurrent(key): void {
+    return this.currrent = key;
   }
 
-  get(key): View {
-    return this.graph.getNodeAttribute(key, 'View');
+  getCurrent(): Scene<any> {
+    return this.graph.getNodeAttribute(this.currrent, 'Scene');
   }
 
-  set(key, scene: View) {
-    this.graph.setNodeAttribute(key, 'View', scene);
+  // jump(key): void{
+  //   this.currrent = key;
+  //   console.log("jumped to", this.currrent)
+  // }
+
+  get(key): Scene<any> {
+    return this.graph.getNodeAttribute(key, 'Scene');
+  }
+
+  set(key, scene: Scene<any>) {
+    this.graph.setNodeAttribute(key, 'Scene', scene);
   }
 
   inputEvent(inputEvent: Event): void {
-    (this.graph.getNodeAttribute(this.currrent, 'View') as View).inputEvent(inputEvent);
+    (this.graph.getNodeAttribute(this.currrent, 'Scene') as Scene<any>).inputEvent(inputEvent);
   }
 
 }

@@ -1,6 +1,6 @@
 import { SpaceTrashComponent } from "..";
 
-import { ERays } from "../../../spacetrash";
+import { ERays } from "../..";
 
 import { SpaceTrashSystems } from "../../Systems";
 

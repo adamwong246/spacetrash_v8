@@ -9,6 +9,8 @@ export default function Resizer({
     <>
       {
         horizontalResizable &&
+        <>
+          
           <div
             className='flexible-modal-right-resizer'
             onMouseDown={(event) => {
@@ -18,6 +20,18 @@ export default function Resizer({
               })
             }}
           />
+
+<div
+            className='flexible-modal-left-resizer'
+            onMouseDown={(event) => {
+              onMouseDown({
+                direct: 'left',
+                event
+              })
+            }}
+          />
+
+          </>
       }
       
       {

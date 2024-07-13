@@ -59,6 +59,7 @@ export default function FlexibleModal({
 	const [isResizing, setIsResizing] = useState(false)
 	const [onlyVerticalResize, setOnlyVerticalResize] = useState(false)
 	const [onlyHorizontalResize, setOnlyHorizontalResize] = useState(false)
+	const [anchor, setAnchor] = useState(false)
 
 	const [_full, set_full] = useState(false)
 	const [_left, set_left] = useState(0)
@@ -206,8 +207,8 @@ export default function FlexibleModal({
 
 		if (
 			horizontalResizable &&
-			!onlyVerticalResize &&
-			clientX > node_modal.offsetLeft + minWidth
+			!onlyVerticalResize
+			// && clientX > node_modal.offsetLeft + minWidth
 		) {
 			newWidth = clientX - left - node_modal.offsetLeft + 16 / 2
 
@@ -366,7 +367,7 @@ export default function FlexibleModal({
 							}
 							style={{
 								border: "1px solid black",
-								backgroundColor: "lightgrey",
+								backgroundColor: "pink",
 								position: container === document.body
 									? 'fixed'
 									: 'absolute',
@@ -413,8 +414,9 @@ export default function FlexibleModal({
 									verticalResizable={verticalResizable}
 									onMouseDown={({ direct }) => {
 										setIsResizing(true)
+										setAnchor(direct);
 
-										if (direct === 'right') {
+										if (direct === 'right' | direct === 'left') {
 											setOnlyHorizontalResize(true)
 										} else if (direct === 'bottom') {
 											setOnlyVerticalResize(true)

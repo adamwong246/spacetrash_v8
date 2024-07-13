@@ -1,7 +1,8 @@
 import { System } from './System';
 import Component from './Component';
 import { Entity } from './Entity';
-import { View } from './View';
+import { Scene } from './Scene';
+// import { Scene } from './Scene';
 
 export abstract class EntityComponent {
   entity: Entity
@@ -28,8 +29,8 @@ export class ECS<SystemKeys extends string> {
     this.entityComponents = [];
   }
 
-  flash(scene: View) {
-    this.entityComponents = scene.entityComponents;
+  flash(scene: Scene<any>) {
+    // this.entityComponents = scene.entityComponents;
     // this.entities = [];
     // this.components = [];
 
@@ -58,6 +59,7 @@ export class ECS<SystemKeys extends string> {
   }
 
   logicLoop() {
+    console.log("logic loop is running");
     (Object.entries(this.systems) as Array<[SystemKeys, System<SystemKeys>]>).forEach(([systemKey, system]) => {
       system.loop(this, systemKey)
     })

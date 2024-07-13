@@ -18,54 +18,31 @@ document.addEventListener("DOMContentLoaded", function (event) {
   if (domNode) {
     createRoot(domNode).render(<WM
       worker={worker}
-      desktopState={{
-        windows: {
-          terminal: {
-            top: 90,
-            left: 90,
-            width: 1200,
-            height: 600,
-            visible: true,
-            app: () => <UIWindow/>
-          },
-          ship: {
-            top: 600,
-            left: 500,
-            width: 800,
-            height: 500,
-            visible: true,
-            app: () => <UIWindow/>
-          }
-        },
-        stack: [
-          `terminal`,
-          `ship`,
-        ]
-      }}
+      // desktopState={}
     />);
   }
   
-  const canvas = document.getElementById('canvas-root');
+  // const canvas = document.getElementById('canvas-root');
 
-  canvas?.addEventListener("wheel", (event) => {
-    inputEvent(event);
-  })
-  canvas?.addEventListener('keydown', function (event) {
-    inputEvent(event);
-  }, false)
-  canvas?.addEventListener('mousedown', function (event) {
-    inputEvent(event);
-  });
-  canvas?.addEventListener('mouseup', function (event) {
-    inputEvent(event);
-  });
-  canvas?.addEventListener('mouseover', function (event) {
-    inputEvent(event);
-  });
-  canvas?.addEventListener('mousemove', function (event) {
-    inputEvent(event);
-  });
+  // canvas?.addEventListener("wheel", (event) => {
+  //   inputEvent(event);
+  // })
+  // canvas?.addEventListener('keydown', function (event) {
+  //   inputEvent(event);
+  // }, false)
+  // canvas?.addEventListener('mousedown', function (event) {
+  //   inputEvent(event);
+  // });
+  // canvas?.addEventListener('mouseup', function (event) {
+  //   inputEvent(event);
+  // });
+  // canvas?.addEventListener('mouseover', function (event) {
+  //   inputEvent(event);
+  // });
+  // canvas?.addEventListener('mousemove', function (event) {
+  //   inputEvent(event);
+  // });
 
-  const offscreen = (canvas as HTMLCanvasElement).transferControlToOffscreen()
-  worker.postMessage(["canvas", offscreen], [offscreen]);
+  // const offscreen = (canvas as HTMLCanvasElement).transferControlToOffscreen()
+  // worker.postMessage(["canvas", offscreen], [offscreen]);
 });

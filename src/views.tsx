@@ -160,7 +160,7 @@ export const Footer = (props: { uiState: IUiState, setuiState: SetUiState }) => 
       onBlur={({ target }) => target.focus()}
       onChange={(e) => {
         const lastChar = e.target.value[e.target.value.length - 1];
-        console.log(e.target.value[-1])
+        // console.log(e.target.value[-1])
         if (
           lastChar !== '~' &&
           lastChar !== '!' &&
