@@ -67,7 +67,8 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
       {
         terminal: [(ecs, reply) => {
           reply(["terminal-update", this.terminal.login()]);
-          reply(["login"]);
+
+          reply(["login", ""]);
         }, (ecs, canvas, events, reply) => {
           // console.log(events)
         }],

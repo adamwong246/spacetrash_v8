@@ -1083,7 +1083,7 @@ var require_react_development = __commonJS({
           }
           return dispatcher.useContext(Context);
         }
-        function useState5(initialState) {
+        function useState4(initialState) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useState(initialState);
         }
@@ -1886,7 +1886,7 @@ var require_react_development = __commonJS({
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
         exports.useRef = useRef5;
-        exports.useState = useState5;
+        exports.useState = useState4;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
         exports.version = ReactVersion;
@@ -24304,7 +24304,7 @@ var React12 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 
 // src/games/spacetrash/UI/index.tsx
-var import_react15 = __toESM(require_react(), 1);
+var import_react14 = __toESM(require_react(), 1);
 
 // src/engine/UI/WM.tsx
 var import_react = __toESM(require_react(), 1);
@@ -25585,35 +25585,10 @@ var UIWindow = (props) => {
 
 // src/games/spacetrash/UI/terminal.tsx
 var import_react13 = __toESM(require_react(), 1);
-var import_react14 = __toESM(require_react(), 1);
-var import_react_dom3 = __toESM(require_react_dom(), 1);
 var TerminalApp = (props) => {
-  const [state, setState] = (0, import_react14.useState)({
-    buffer: "",
-    history: [],
-    timestamp: 0
-  });
   (0, import_react13.useEffect)(() => {
     props.worker.postMessage(["terminal-register"], []);
   }, []);
-  props.worker.onmessage = (e) => {
-    if (e.data[0] === "terminal-update") {
-      console.log("Message received from worker", e);
-      import_react_dom3.default.flushSync(() => {
-        setState({
-          ...state,
-          history: [
-            ...state.history,
-            {
-              in: e.data[1].in,
-              out: e.data[1].out,
-              timeStamp: e.timeStamp
-            }
-          ].sort((e2) => e2.timeStamp)
-        });
-      });
-    }
-  };
   return /* @__PURE__ */ import_react13.default.createElement(
     "div",
     {
@@ -25621,9 +25596,6 @@ var TerminalApp = (props) => {
         height: "100%",
         width: "100%",
         position: "relative"
-        // display: "flex",
-        // flexDirection: "column-reverse",
-        // overflow: "auto",
       }
     },
     /* @__PURE__ */ import_react13.default.createElement(
@@ -25631,7 +25603,6 @@ var TerminalApp = (props) => {
       {
         id: "terminal",
         style: {
-          // margin: "",
           overflowX: "scroll",
           overflowY: "scroll",
           backgroundColor: "darkgreen",
@@ -25642,7 +25613,7 @@ var TerminalApp = (props) => {
           margin: "0"
         }
       },
-      state.history.map((props2) => {
+      props.state.history.map((props2) => {
         return `
 > ${props2.in}
 ${props2.out}
@@ -25654,7 +25625,7 @@ ${props2.out}
       {
         type: "text",
         name: "terminal-input",
-        value: state.buffer,
+        value: props.state.buffer,
         style: {
           position: "absolute",
           bottom: 0,
@@ -25664,32 +25635,11 @@ ${props2.out}
         },
         onKeyDown: (e) => {
           if (e.key === "Enter") {
-            if (state.buffer !== "") {
-              console.log("mark2");
-              props.worker.postMessage(["terminal-in", state.buffer]);
-              setState({
-                ...state,
-                buffer: ""
-                // history: [
-                //   ...state.history,
-                //   {
-                //     in: state.buffer,
-                //     // ...com
-                //   }
-                // ]
-                // terminalhistory: [
-                //   ...state.terminalhistory,
-                //   {
-                //     in: state.buffer,
-                //     ...com
-                //   }
-                // ],
-              });
-            }
+            props.hooks.submitBuffer();
           }
         },
         onChange: (e) => {
-          setState({ ...state, buffer: e.target.value });
+          props.hooks.changeBuffer(e.target.value);
         }
       }
     )
@@ -25697,8 +25647,13 @@ ${props2.out}
 };
 
 // src/games/spacetrash/UI/index.tsx
+var import_react_dom3 = __toESM(require_react_dom(), 1);
 var SpaceTrashDesktop = (props) => {
-  const [desktopState, setDesktopState] = (0, import_react15.useState)({
+  const [desktopState, setDesktopState] = (0, import_react14.useState)({
+    terminal: {
+      buffer: "",
+      history: []
+    },
     windows: {
       terminal: {
         top: 90,
@@ -25706,7 +25661,7 @@ var SpaceTrashDesktop = (props) => {
         width: 1200,
         height: 600,
         visible: true,
-        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25726,7 +25681,7 @@ var SpaceTrashDesktop = (props) => {
         width: 800,
         height: 500,
         visible: true,
-        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25746,7 +25701,7 @@ var SpaceTrashDesktop = (props) => {
         width: 380,
         height: 350,
         visible: true,
-        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25766,7 +25721,7 @@ var SpaceTrashDesktop = (props) => {
         width: 380,
         height: 350,
         visible: true,
-        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25788,13 +25743,58 @@ var SpaceTrashDesktop = (props) => {
       `drone`
     ]
   });
-  return /* @__PURE__ */ import_react15.default.createElement(
+  props.worker.onmessage = (e) => {
+    console.log("Message received from worker", e);
+    if (e.data[0] === "terminal-update") {
+      import_react_dom3.default.flushSync(() => {
+        setDesktopState({
+          ...desktopState,
+          terminal: {
+            ...desktopState.terminal,
+            history: [
+              ...desktopState.terminal.history,
+              {
+                in: e.data[1].in,
+                out: e.data[1].out,
+                timeStamp: e.timeStamp
+              }
+            ].sort((e2) => e2.timeStamp)
+          }
+        });
+      });
+    }
+    if (e.data[0] === "login") {
+      console.log("LOGIKN!@!@#", e);
+    }
+  };
+  const terminalHooks = {
+    changeBuffer: (v) => {
+      setDesktopState({
+        ...desktopState,
+        terminal: {
+          ...desktopState.terminal,
+          buffer: v
+        }
+      });
+    },
+    submitBuffer: () => {
+      props.worker.postMessage(["terminal-in", desktopState.terminal.buffer]);
+      setDesktopState({
+        ...desktopState,
+        terminal: {
+          ...desktopState.terminal,
+          buffer: ""
+        }
+      });
+    }
+  };
+  return /* @__PURE__ */ import_react14.default.createElement(
     WM,
     {
       worker: props.worker,
       desktopState
     },
-    desktopState.windows.terminal && /* @__PURE__ */ import_react15.default.createElement(
+    desktopState.windows.terminal && /* @__PURE__ */ import_react14.default.createElement(
       UIWindow,
       {
         key: "terminal",
@@ -25812,7 +25812,14 @@ var SpaceTrashDesktop = (props) => {
           });
         }
       },
-      /* @__PURE__ */ import_react15.default.createElement(TerminalApp, { worker: props.worker })
+      /* @__PURE__ */ import_react14.default.createElement(
+        TerminalApp,
+        {
+          worker: props.worker,
+          state: desktopState.terminal,
+          hooks: terminalHooks
+        }
+      )
     )
   );
 };

@@ -2750,7 +2750,7 @@ var require_react_development = __commonJS({
           }
           return dispatcher.useContext(Context);
         }
-        function useState5(initialState) {
+        function useState4(initialState) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useState(initialState);
         }
@@ -3553,7 +3553,7 @@ var require_react_development = __commonJS({
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
         exports.useRef = useRef5;
-        exports.useState = useState5;
+        exports.useState = useState4;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
         exports.version = ReactVersion;
@@ -25563,7 +25563,7 @@ var Spacetrash = class extends Game {
       {
         terminal: [(ecs, reply) => {
           reply(["terminal-update", this.terminal.login()]);
-          reply(["login"]);
+          reply(["login", ""]);
         }, (ecs, canvas, events, reply) => {
         }],
         manual: [(ecs, reply) => {
@@ -25593,7 +25593,7 @@ var Spacetrash = class extends Game {
 };
 
 // src/games/spacetrash/UI/index.tsx
-var import_react12 = __toESM(require_react(), 1);
+var import_react11 = __toESM(require_react(), 1);
 
 // src/engine/UI/WM.tsx
 var import_react = __toESM(require_react(), 1);
@@ -25632,10 +25632,9 @@ var import_react7 = __toESM(require_react(), 1);
 
 // src/games/spacetrash/UI/terminal.tsx
 var import_react10 = __toESM(require_react(), 1);
-var import_react11 = __toESM(require_react(), 1);
-var import_react_dom2 = __toESM(require_react_dom(), 1);
 
 // src/games/spacetrash/UI/index.tsx
+var import_react_dom2 = __toESM(require_react_dom(), 1);
 var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
   ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
