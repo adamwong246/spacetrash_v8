@@ -10,7 +10,7 @@ export const TerminalApp = (props: {worker: Worker}) => {
   
   const [state, setState] = useState<{
     buffer: string,
-    history: any,
+    history: {in: string, out: string, timeStamp: number}[],
     timestamp: any,
   }>({
     buffer: "",
@@ -37,9 +37,10 @@ export const TerminalApp = (props: {worker: Worker}) => {
             ...state.history,
             {
               in: e.data[1].in,
-              out: e.data[1].out
+              out: e.data[1].out,
+              timeStamp: e.timeStamp
             }
-          ]
+          ].sort((e) => e.timeStamp)
         })  
       });
 

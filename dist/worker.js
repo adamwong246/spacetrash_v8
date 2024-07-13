@@ -2000,11 +2000,15 @@ You are now online
     `
     };
   }
-  processCommand(command, stateUpdater) {
+  processCommand(command, stateUpdater, replier) {
     if (command === "login") {
+      replier({
+        out: `authenticating...`,
+        status: "niether"
+      });
       stateUpdater("menu");
       return {
-        out: `authenticating...`,
+        out: `all done`,
         status: "niether"
       };
     }
@@ -2112,10 +2116,10 @@ var Spacetrash = class extends Game {
     );
     this.terminal = new SpaceTrashTerminal();
   }
-  async terminalIn(input) {
+  async terminalIn(input, callback) {
     return {
       in: input,
-      out: this.terminal.processCommand(input, this.update).out
+      out: this.terminal.processCommand(input, this.update, callback).out
     };
   }
 };
@@ -2166,7 +2170,9 @@ self.onmessage = function handleMessageFromMain(msg) {
   } else {
     console.log("message from main received in worker:", msg.data);
     if (msg.data[0] === "terminal-in") {
-      sp.terminalIn(msg.data[1]).then((output) => {
+      sp.terminalIn(msg.data[1], (output) => {
+        postMessage([`terminal-update`, output]);
+      }).then((output) => {
         postMessage([`terminal-update`, output]);
       });
     }

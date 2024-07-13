@@ -100,10 +100,13 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
 
   }
 
-  async terminalIn(input: string,): Promise<{ in: string, out: string }> {
+  async terminalIn(
+    input: string,
+    callback: (x: { out: string; status: string; }) => void,
+  ): Promise<{ in: string, out: string }> {
     return {
       in: input,
-      out: this.terminal.processCommand(input, this.update).out
+      out: this.terminal.processCommand(input, this.update, callback).out
     };
   }
 

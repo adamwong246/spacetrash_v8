@@ -15,11 +15,12 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
     console.log("message from main received in worker:", msg.data);
 
     if (msg.data[0] === 'terminal-in') {
-
-      sp.terminalIn(msg.data[1]).then((output) => {
-        
+      
+      sp.terminalIn(msg.data[1], (output) => {
         postMessage([`terminal-update`, output]);
-      })
+      }).then((output) => {
+        postMessage([`terminal-update`, output]);
+      });
     }
 
     Object.keys(ESpaceTrashApps).forEach(spApp => {

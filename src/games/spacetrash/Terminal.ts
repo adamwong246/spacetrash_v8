@@ -35,18 +35,26 @@ You are now online
     `}
   }
 
-  processCommand(command: string, stateUpdater: (k: string) => void): {
+  processCommand(
+    command: string,
+    stateUpdater: (k: string) => void,
+    replier: (x: {out: string, status: string}) => void
+  ): {
     out: string,
     status: IComStatus
   } {
 
     if (command === "login") {
 
+      replier ({
+        out: `authenticating...`,
+        status: 'niether'
+      })
       
       stateUpdater("menu");
 
       return {
-        out: `authenticating...`,
+        out: `all done`,
         status: 'niether'
       }
     }
