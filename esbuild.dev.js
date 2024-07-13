@@ -17,7 +17,7 @@ esbuild.context({
 
 
   loader: {
-    '.css': 'copy',
+    '.css': 'file',
     '.html': 'copy',
     '.png': `copy`,
     '.json': `file`,

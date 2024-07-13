@@ -1,10 +1,11 @@
 import { StateSpace } from "../../engine/StateSpace";
 import { Game } from "../../engine/Game";
+import { Scene } from "../../engine/Scene";
 
 import { ISpaceTrashSystems, SpaceTrashSystems } from "./Systems";
 import { ISpaceTrashApps } from "./UI";
-import { Scene } from "../../engine/Scene";
-import { SpaceTrashTerminal } from "../../Terminal";
+import { SpaceTrashTerminal } from "./Terminal";
+
 
 export type IRays =
   'light' |

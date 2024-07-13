@@ -1,6 +1,6 @@
-import { IComStatus } from "./UiState";
-import { Game } from "./engine/Game";
-import { StateSpace } from "./engine/StateSpace";
+import { IComStatus } from "./UI/UiState";
+import { Game } from "../../engine/Game";
+import { StateSpace } from "../../engine/StateSpace";
 
 export class SpaceTrashTerminal {
 

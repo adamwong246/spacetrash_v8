@@ -1825,6 +1825,44 @@ var Game = class {
   }
 };
 
+// src/engine/Tree.ts
+var Tree = class {
+  name;
+  constructor(name) {
+    this.name = name;
+  }
+};
+
+// src/engine/Scene.ts
+var Scene = class extends Tree {
+  // entityComponents: IECSComponents;
+  appLogic;
+  events = [];
+  constructor(name, appLogic) {
+    super(name);
+    this.appLogic = appLogic;
+  }
+  boot(stateKey, ecs, bootReplier) {
+    Object.keys(this.appLogic).forEach((k) => {
+      this.appLogic[k][0](ecs, bootReplier);
+    });
+    this.events = [];
+  }
+  draw(ctx, app, bootReplier, entityComponents) {
+    this.appLogic[app][1](
+      // this.entityComponents,
+      entityComponents,
+      ctx,
+      this.events,
+      bootReplier
+    );
+    this.events = [];
+  }
+  inputEvent(inputEvent) {
+    this.events.push(inputEvent);
+  }
+};
+
 // src/engine/System.ts
 var System = class {
   frame;
@@ -1931,45 +1969,7 @@ var SpaceTrashSystems = {
   casting: new FOV()
 };
 
-// src/engine/Tree.ts
-var Tree = class {
-  name;
-  constructor(name) {
-    this.name = name;
-  }
-};
-
-// src/engine/Scene.ts
-var Scene = class extends Tree {
-  // entityComponents: IECSComponents;
-  appLogic;
-  events = [];
-  constructor(name, appLogic) {
-    super(name);
-    this.appLogic = appLogic;
-  }
-  boot(stateKey, ecs, bootReplier) {
-    Object.keys(this.appLogic).forEach((k) => {
-      this.appLogic[k][0](ecs, bootReplier);
-    });
-    this.events = [];
-  }
-  draw(ctx, app, bootReplier, entityComponents) {
-    this.appLogic[app][1](
-      // this.entityComponents,
-      entityComponents,
-      ctx,
-      this.events,
-      bootReplier
-    );
-    this.events = [];
-  }
-  inputEvent(inputEvent) {
-    this.events.push(inputEvent);
-  }
-};
-
-// src/Terminal.ts
+// src/games/spacetrash/Terminal.ts
 var SpaceTrashTerminal = class {
   // update: (to: string) => void
   constructor() {
