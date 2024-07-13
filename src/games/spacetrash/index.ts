@@ -66,8 +66,8 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
     state.set('menu', new Scene<ISpaceTrashApps>('menuscene_view_v0',
       {
         terminal: [(ecs, reply) => {
-          // debugger
           reply(["terminal-update", this.terminal.login()]);
+          reply(["login"]);
         }, (ecs, canvas, events, reply) => {
           // console.log(events)
         }],

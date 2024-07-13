@@ -1083,7 +1083,7 @@ var require_react_development = __commonJS({
           }
           return dispatcher.useContext(Context);
         }
-        function useState4(initialState) {
+        function useState5(initialState) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useState(initialState);
         }
@@ -1886,7 +1886,7 @@ var require_react_development = __commonJS({
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
         exports.useRef = useRef5;
-        exports.useState = useState4;
+        exports.useState = useState5;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
         exports.version = ReactVersion;
@@ -2382,9 +2382,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React12 = require_react();
+        var React13 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React12.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3989,7 +3989,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React12.Children.forEach(props.children, function(child) {
+                React13.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -24300,18 +24300,33 @@ var require_prop_types = __commonJS({
 });
 
 // src/index.tsx
-var React11 = __toESM(require_react(), 1);
+var React12 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 
+// src/games/spacetrash/UI/index.tsx
+var import_react15 = __toESM(require_react(), 1);
+
 // src/engine/UI/WM.tsx
-var import_react13 = __toESM(require_react(), 1);
-var import_react14 = __toESM(require_react(), 1);
+var import_react = __toESM(require_react(), 1);
+var import_react2 = __toESM(require_react(), 1);
+var ThemeContext = (0, import_react2.createContext)({
+  windows: {
+    terminal: null,
+    manual: null,
+    shipmap: null,
+    drone: null
+  },
+  stack: []
+});
+var WM = (props) => {
+  return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(ThemeContext.Provider, { value: props.desktopState }, props.children));
+};
 
 // src/engine/UI/UIWindow.tsx
-var import_react10 = __toESM(require_react(), 1);
+var import_react12 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/index.jsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react11 = __toESM(require_react(), 1);
 
 // node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -24378,11 +24393,11 @@ function removeClass(element, className) {
 }
 
 // node_modules/react-transition-group/esm/CSSTransition.js
-var import_react3 = __toESM(require_react());
+var import_react5 = __toESM(require_react());
 
 // node_modules/react-transition-group/esm/Transition.js
 var import_prop_types2 = __toESM(require_prop_types());
-var import_react2 = __toESM(require_react());
+var import_react4 = __toESM(require_react());
 var import_react_dom = __toESM(require_react_dom());
 
 // node_modules/react-transition-group/esm/config.js
@@ -24411,8 +24426,8 @@ var classNamesShape = true ? import_prop_types.default.oneOfType([import_prop_ty
 })]) : null;
 
 // node_modules/react-transition-group/esm/TransitionGroupContext.js
-var import_react = __toESM(require_react());
-var TransitionGroupContext_default = import_react.default.createContext(null);
+var import_react3 = __toESM(require_react());
+var TransitionGroupContext_default = import_react3.default.createContext(null);
 
 // node_modules/react-transition-group/esm/Transition.js
 var UNMOUNTED = "unmounted";
@@ -24632,20 +24647,20 @@ var Transition = /* @__PURE__ */ function(_React$Component) {
     delete childProps.onExited;
     delete childProps.nodeRef;
     if (typeof children === "function") {
-      return /* @__PURE__ */ import_react2.default.createElement(TransitionGroupContext_default.Provider, {
+      return /* @__PURE__ */ import_react4.default.createElement(TransitionGroupContext_default.Provider, {
         value: null
       }, children(status, childProps));
     }
-    var child = import_react2.default.Children.only(children);
+    var child = import_react4.default.Children.only(children);
     return (
       // allows for nested Transitions
-      /* @__PURE__ */ import_react2.default.createElement(TransitionGroupContext_default.Provider, {
+      /* @__PURE__ */ import_react4.default.createElement(TransitionGroupContext_default.Provider, {
         value: null
-      }, import_react2.default.cloneElement(child, childProps))
+      }, import_react4.default.cloneElement(child, childProps))
     );
   };
   return Transition2;
-}(import_react2.default.Component);
+}(import_react4.default.Component);
 Transition.contextType = TransitionGroupContext_default;
 Transition.propTypes = true ? {
   /**
@@ -24958,7 +24973,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
   };
   _proto.render = function render() {
     var _this$props = this.props, _ = _this$props.classNames, props = _objectWithoutPropertiesLoose(_this$props, ["classNames"]);
-    return /* @__PURE__ */ import_react3.default.createElement(Transition_default, _extends({}, props, {
+    return /* @__PURE__ */ import_react5.default.createElement(Transition_default, _extends({}, props, {
       onEnter: this.onEnter,
       onEntered: this.onEntered,
       onEntering: this.onEntering,
@@ -24968,7 +24983,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
     }));
   };
   return CSSTransition2;
-}(import_react3.default.Component);
+}(import_react5.default.Component);
 CSSTransition.defaultProps = {
   classNames: ""
 };
@@ -25099,14 +25114,14 @@ CSSTransition.propTypes = true ? _extends({}, Transition_default.propTypes, {
 var CSSTransition_default = CSSTransition;
 
 // src/engine/FlexModal/Portal.jsx
-var import_react4 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 var Portal_default = ({
   container,
   children
 }) => {
-  const containerRef = (0, import_react4.useRef)(container);
-  const defaultNode = (0, import_react4.useRef)();
+  const containerRef = (0, import_react6.useRef)(container);
+  const defaultNode = (0, import_react6.useRef)();
   if (!containerRef.current) {
     containerRef.current = document.body;
   }
@@ -25114,7 +25129,7 @@ var Portal_default = ({
     defaultNode.current = document.createElement("div");
     containerRef.current.appendChild(defaultNode.current);
   }
-  (0, import_react4.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     return () => {
       if (containerRef.current && defaultNode.current) {
         containerRef.current.removeChild(defaultNode.current);
@@ -25129,7 +25144,7 @@ var Portal_default = ({
 };
 
 // src/engine/FlexModal/Header.jsx
-var import_react5 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 function Header({
   title,
   draggable,
@@ -25139,7 +25154,7 @@ function Header({
   set_full,
   onClose
 }) {
-  return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flexible-modal-header" }, /* @__PURE__ */ import_react5.default.createElement("h5", null, title), draggable && /* @__PURE__ */ import_react5.default.createElement(
+  return /* @__PURE__ */ import_react7.default.createElement("div", { className: "flexible-modal-header" }, /* @__PURE__ */ import_react7.default.createElement("h5", null, title), draggable && /* @__PURE__ */ import_react7.default.createElement(
     "span",
     {
       className: "drag-bar",
@@ -25152,16 +25167,16 @@ function Header({
 }
 
 // src/engine/FlexModal/Footer.jsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react8 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Resizer.jsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react9 = __toESM(require_react(), 1);
 function Resizer({
   horizontalResizable,
   verticalResizable,
   onMouseDown
 }) {
-  return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, /* @__PURE__ */ import_react7.default.createElement(
+  return /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null, /* @__PURE__ */ import_react9.default.createElement(
     "div",
     {
       className: "flexible-modal-right-resizer",
@@ -25172,7 +25187,7 @@ function Resizer({
         });
       }
     }
-  ), /* @__PURE__ */ import_react7.default.createElement(
+  ), /* @__PURE__ */ import_react9.default.createElement(
     "div",
     {
       className: "flexible-modal-left-resizer",
@@ -25183,7 +25198,7 @@ function Resizer({
         });
       }
     }
-  )), verticalResizable && /* @__PURE__ */ import_react7.default.createElement(
+  )), verticalResizable && /* @__PURE__ */ import_react9.default.createElement(
     "div",
     {
       className: "flexible-modal-bottom-resizer",
@@ -25194,7 +25209,7 @@ function Resizer({
         });
       }
     }
-  ), (horizontalResizable || verticalResizable) && /* @__PURE__ */ import_react7.default.createElement(
+  ), (horizontalResizable || verticalResizable) && /* @__PURE__ */ import_react9.default.createElement(
     "div",
     {
       className: "flexible-modal-resizer",
@@ -25209,13 +25224,13 @@ function Resizer({
 }
 
 // src/engine/FlexModal/usePrevious.jsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react10 = __toESM(require_react(), 1);
 function usePrevious({
   value,
   shouldUpdate
 }) {
-  const prevRef = (0, import_react8.useRef)();
-  (0, import_react8.useEffect)(() => {
+  const prevRef = (0, import_react10.useRef)();
+  (0, import_react10.useEffect)(() => {
     if (typeof shouldUpdate === "function" && shouldUpdate(prevRef.current, value) || shouldUpdate) {
       prevRef.current = value;
     }
@@ -25259,19 +25274,19 @@ function FlexibleModal({
   pushToTop
 }) {
   const container = getPopupContainer();
-  const [_isVisible, set_isVisible] = (0, import_react9.useState)();
-  const [_isOpen, set_isOpen] = (0, import_react9.useState)();
-  const node_modal_ref = (0, import_react9.useRef)();
-  const [isDragging, setIsDragging] = (0, import_react9.useState)(false);
-  const [isResizing, setIsResizing] = (0, import_react9.useState)(false);
-  const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react9.useState)(false);
-  const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react9.useState)(false);
-  const [anchor, setAnchor] = (0, import_react9.useState)(false);
-  const [_full, set_full] = (0, import_react9.useState)(false);
-  const [_left, set_left] = (0, import_react9.useState)(0);
-  const [_top, set_top] = (0, import_react9.useState)(0);
-  const [width, setWidth] = (0, import_react9.useState)(initWidth);
-  const [height, setHeight] = (0, import_react9.useState)(initHeight);
+  const [_isVisible, set_isVisible] = (0, import_react11.useState)();
+  const [_isOpen, set_isOpen] = (0, import_react11.useState)();
+  const node_modal_ref = (0, import_react11.useRef)();
+  const [isDragging, setIsDragging] = (0, import_react11.useState)(false);
+  const [isResizing, setIsResizing] = (0, import_react11.useState)(false);
+  const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react11.useState)(false);
+  const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react11.useState)(false);
+  const [anchor, setAnchor] = (0, import_react11.useState)(false);
+  const [_full, set_full] = (0, import_react11.useState)(false);
+  const [_left, set_left] = (0, import_react11.useState)(0);
+  const [_top, set_top] = (0, import_react11.useState)(0);
+  const [width, setWidth] = (0, import_react11.useState)(initWidth);
+  const [height, setHeight] = (0, import_react11.useState)(initHeight);
   const prev_left = usePrevious({
     value: _left,
     shouldUpdate: !_full
@@ -25288,7 +25303,7 @@ function FlexibleModal({
     value: height,
     shouldUpdate: !_full
   });
-  const [point, setPoint] = (0, import_react9.useState)({});
+  const [point, setPoint] = (0, import_react11.useState)({});
   function initLeft() {
     let containerWidth = container === document.body ? window.innerWidth : container.offsetWidth;
     return left !== void 0 ? left : containerWidth / 2 - initWidth / 2;
@@ -25297,13 +25312,13 @@ function FlexibleModal({
     let containerHeight = container === document.body ? window.innerHeight : container.offsetHeight;
     return top !== void 0 ? top : containerHeight / 2 - initHeight / 2;
   }
-  (0, import_react9.useEffect)(() => {
+  (0, import_react11.useEffect)(() => {
     if (container) {
       set_left(initLeft());
       set_top(initTop());
     }
   }, [container]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react11.useEffect)(() => {
     if (visible) {
       set_isVisible(true);
       container.classList.add("container-hidden");
@@ -25312,7 +25327,7 @@ function FlexibleModal({
       container.classList.remove("container-hidden");
     }
   }, [visible]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react11.useEffect)(() => {
     if (_isVisible) {
       set_isOpen(true);
       if (resetRectOnOpen) {
@@ -25323,7 +25338,7 @@ function FlexibleModal({
       }
     }
   }, [_isVisible]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react11.useEffect)(() => {
     if (!_isVisible) return;
     let _left2, _top2, width2, height2;
     if (_full) {
@@ -25349,7 +25364,7 @@ function FlexibleModal({
       height: height2
     });
   }, [_full]);
-  const onMouseDown = (0, import_react9.useCallback)((e) => {
+  const onMouseDown = (0, import_react11.useCallback)((e) => {
     if (e.button !== 0) return;
     pushToTop();
     const node_modal = node_modal_ref.current;
@@ -25427,7 +25442,7 @@ function FlexibleModal({
     set_left(_left2);
     set_top(_top2);
   };
-  const onMouseMove = (0, import_react9.useCallback)((e) => {
+  const onMouseMove = (0, import_react11.useCallback)((e) => {
     if (isDragging && point) {
       _onDrag(e.pageX, e.pageY);
     } else if (isResizing) {
@@ -25436,7 +25451,7 @@ function FlexibleModal({
     e.stopPropagation();
     e.preventDefault();
   }, [isDragging, point, isResizing]);
-  const onMouseUp = (0, import_react9.useCallback)((e) => {
+  const onMouseUp = (0, import_react11.useCallback)((e) => {
     document.removeEventListener("mousemove", onMouseMove);
     setIsDragging(false);
     setIsResizing(false);
@@ -25444,7 +25459,7 @@ function FlexibleModal({
     setOnlyHorizontalResize(false);
     e.stopPropagation();
   }, [onMouseMove]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react11.useEffect)(() => {
     document.addEventListener("mouseup", onMouseUp);
     if (isDragging || isResizing) {
       document.addEventListener("mousemove", onMouseMove);
@@ -25454,12 +25469,12 @@ function FlexibleModal({
       document.removeEventListener("mousemove", onMouseMove);
     };
   }, [onMouseMove, onMouseUp]);
-  return container ? /* @__PURE__ */ import_react9.default.createElement(
+  return container ? /* @__PURE__ */ import_react11.default.createElement(
     Portal_default,
     {
       container
     },
-    _isVisible ? /* @__PURE__ */ import_react9.default.createElement(
+    _isVisible ? /* @__PURE__ */ import_react11.default.createElement(
       CSSTransition_default,
       {
         in: _isOpen,
@@ -25471,7 +25486,7 @@ function FlexibleModal({
           set_full();
         }
       },
-      /* @__PURE__ */ import_react9.default.createElement(
+      /* @__PURE__ */ import_react11.default.createElement(
         "div",
         {
           onClick: () => {
@@ -25495,7 +25510,7 @@ function FlexibleModal({
             zIndex: layer
           }
         },
-        /* @__PURE__ */ import_react9.default.createElement(
+        /* @__PURE__ */ import_react11.default.createElement(
           Header,
           {
             title,
@@ -25507,7 +25522,7 @@ function FlexibleModal({
             onClose
           }
         ),
-        /* @__PURE__ */ import_react9.default.createElement(
+        /* @__PURE__ */ import_react11.default.createElement(
           "div",
           {
             style: {
@@ -25518,7 +25533,7 @@ function FlexibleModal({
           },
           children
         ),
-        !_full && resizable && /* @__PURE__ */ import_react9.default.createElement(
+        !_full && resizable && /* @__PURE__ */ import_react11.default.createElement(
           Resizer,
           {
             horizontalResizable,
@@ -25542,7 +25557,7 @@ function FlexibleModal({
 
 // src/engine/UI/UIWindow.tsx
 var UIWindow = (props) => {
-  return /* @__PURE__ */ import_react10.default.createElement(import_react10.default.Fragment, null, /* @__PURE__ */ import_react10.default.createElement(
+  return /* @__PURE__ */ import_react12.default.createElement(import_react12.default.Fragment, null, /* @__PURE__ */ import_react12.default.createElement(
     FlexibleModal,
     {
       left: props.uiwindow.left,
@@ -25569,16 +25584,16 @@ var UIWindow = (props) => {
 };
 
 // src/games/spacetrash/UI/terminal.tsx
-var import_react11 = __toESM(require_react(), 1);
-var import_react12 = __toESM(require_react(), 1);
+var import_react13 = __toESM(require_react(), 1);
+var import_react14 = __toESM(require_react(), 1);
 var import_react_dom3 = __toESM(require_react_dom(), 1);
 var TerminalApp = (props) => {
-  const [state, setState] = (0, import_react12.useState)({
+  const [state, setState] = (0, import_react14.useState)({
     buffer: "",
     history: [],
     timestamp: 0
   });
-  (0, import_react11.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     props.worker.postMessage(["terminal-register"], []);
   }, []);
   props.worker.onmessage = (e) => {
@@ -25599,7 +25614,7 @@ var TerminalApp = (props) => {
       });
     }
   };
-  return /* @__PURE__ */ import_react11.default.createElement(
+  return /* @__PURE__ */ import_react13.default.createElement(
     "div",
     {
       style: {
@@ -25611,7 +25626,7 @@ var TerminalApp = (props) => {
         // overflow: "auto",
       }
     },
-    /* @__PURE__ */ import_react11.default.createElement(
+    /* @__PURE__ */ import_react13.default.createElement(
       "pre",
       {
         id: "terminal",
@@ -25634,7 +25649,7 @@ ${props2.out}
           `;
       })
     ),
-    /* @__PURE__ */ import_react11.default.createElement(
+    /* @__PURE__ */ import_react13.default.createElement(
       "input",
       {
         type: "text",
@@ -25681,18 +25696,9 @@ ${props2.out}
   );
 };
 
-// src/engine/UI/WM.tsx
-var ThemeContext = (0, import_react14.createContext)({
-  windows: {
-    terminal: null,
-    manual: null,
-    shipmap: null,
-    drone: null
-  },
-  stack: []
-});
-var WM = (props) => {
-  const [desktopState, setDesktopState] = (0, import_react13.useState)({
+// src/games/spacetrash/UI/index.tsx
+var SpaceTrashDesktop = (props) => {
+  const [desktopState, setDesktopState] = (0, import_react15.useState)({
     windows: {
       terminal: {
         top: 90,
@@ -25700,7 +25706,7 @@ var WM = (props) => {
         width: 1200,
         height: 600,
         visible: true,
-        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25720,7 +25726,7 @@ var WM = (props) => {
         width: 800,
         height: 500,
         visible: true,
-        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25740,7 +25746,7 @@ var WM = (props) => {
         width: 380,
         height: 350,
         visible: true,
-        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25760,7 +25766,7 @@ var WM = (props) => {
         width: 380,
         height: 350,
         visible: true,
-        app: () => /* @__PURE__ */ import_react13.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
+        app: () => /* @__PURE__ */ import_react15.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
           throw new Error("Function not implemented.");
         }, desktopState: {
           windows: void 0,
@@ -25782,26 +25788,33 @@ var WM = (props) => {
       `drone`
     ]
   });
-  return /* @__PURE__ */ import_react13.default.createElement(import_react13.default.Fragment, null, /* @__PURE__ */ import_react13.default.createElement(ThemeContext.Provider, { value: desktopState }, desktopState.windows.terminal && /* @__PURE__ */ import_react13.default.createElement(
-    UIWindow,
+  return /* @__PURE__ */ import_react15.default.createElement(
+    WM,
     {
-      key: "terminal",
-      app: "terminal",
-      uiwindow: desktopState.windows["terminal"],
-      layer: desktopState.stack.findIndex((s) => s === "terminal"),
-      desktopState,
-      pushToTop: () => {
-        setDesktopState({
-          ...desktopState,
-          stack: [
-            ...desktopState.stack.filter((x) => x !== "terminal"),
-            "terminal"
-          ]
-        });
-      }
+      worker: props.worker,
+      desktopState
     },
-    /* @__PURE__ */ import_react13.default.createElement(TerminalApp, { worker: props.worker })
-  )));
+    desktopState.windows.terminal && /* @__PURE__ */ import_react15.default.createElement(
+      UIWindow,
+      {
+        key: "terminal",
+        app: "terminal",
+        uiwindow: desktopState.windows["terminal"],
+        layer: desktopState.stack.findIndex((s) => s === "terminal"),
+        desktopState,
+        pushToTop: () => {
+          setDesktopState({
+            ...desktopState,
+            stack: [
+              ...desktopState.stack.filter((x) => x !== "terminal"),
+              "terminal"
+            ]
+          });
+        }
+      },
+      /* @__PURE__ */ import_react15.default.createElement(TerminalApp, { worker: props.worker })
+    )
+  );
 };
 
 // src/index.tsx
@@ -25809,8 +25822,8 @@ var worker = new Worker("./worker.js");
 document.addEventListener("DOMContentLoaded", function(event) {
   const domNode = document.getElementById("react-root");
   if (domNode) {
-    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React11.createElement(
-      WM,
+    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React12.createElement(
+      SpaceTrashDesktop,
       {
         worker
       }
