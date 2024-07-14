@@ -783,7 +783,7 @@ var require_react_development = __commonJS({
           }
           return children;
         }
-        function createContext2(defaultValue) {
+        function createContext(defaultValue) {
           var context = {
             $$typeof: REACT_CONTEXT_TYPE,
             // As a workaround to support multiple concurrent renderers, we categorize
@@ -1083,15 +1083,15 @@ var require_react_development = __commonJS({
           }
           return dispatcher.useContext(Context);
         }
-        function useState4(initialState) {
+        function useState3(initialState2) {
           var dispatcher = resolveDispatcher();
-          return dispatcher.useState(initialState);
+          return dispatcher.useState(initialState2);
         }
         function useReducer(reducer, initialArg, init) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useReducer(reducer, initialArg, init);
         }
-        function useRef5(initialValue) {
+        function useRef6(initialValue) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useRef(initialValue);
         }
@@ -1864,7 +1864,7 @@ var require_react_development = __commonJS({
         exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
         exports.act = act;
         exports.cloneElement = cloneElement$1;
-        exports.createContext = createContext2;
+        exports.createContext = createContext;
         exports.createElement = createElement$1;
         exports.createFactory = createFactory;
         exports.createRef = createRef;
@@ -1885,8 +1885,8 @@ var require_react_development = __commonJS({
         exports.useLayoutEffect = useLayoutEffect;
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
-        exports.useRef = useRef5;
-        exports.useState = useState4;
+        exports.useRef = useRef6;
+        exports.useState = useState3;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
         exports.version = ReactVersion;
@@ -2382,9 +2382,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React13 = require_react();
+        var React15 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React15.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3989,7 +3989,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React13.Children.forEach(props.children, function(child) {
+                React15.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -13609,20 +13609,20 @@ var require_react_dom_development = __commonJS({
         }
         function mountReducer(reducer, initialArg, init) {
           var hook = mountWorkInProgressHook();
-          var initialState;
+          var initialState2;
           if (init !== void 0) {
-            initialState = init(initialArg);
+            initialState2 = init(initialArg);
           } else {
-            initialState = initialArg;
+            initialState2 = initialArg;
           }
-          hook.memoizedState = hook.baseState = initialState;
+          hook.memoizedState = hook.baseState = initialState2;
           var queue = {
             pending: null,
             interleaved: null,
             lanes: NoLanes,
             dispatch: null,
             lastRenderedReducer: reducer,
-            lastRenderedState: initialState
+            lastRenderedState: initialState2
           };
           hook.queue = queue;
           var dispatch = queue.dispatch = dispatchReducerAction.bind(null, currentlyRenderingFiber$1, queue);
@@ -13904,28 +13904,28 @@ var require_react_dom_development = __commonJS({
             scheduleUpdateOnFiber(root2, fiber, SyncLane, NoTimestamp);
           }
         }
-        function mountState(initialState) {
+        function mountState(initialState2) {
           var hook = mountWorkInProgressHook();
-          if (typeof initialState === "function") {
-            initialState = initialState();
+          if (typeof initialState2 === "function") {
+            initialState2 = initialState2();
           }
-          hook.memoizedState = hook.baseState = initialState;
+          hook.memoizedState = hook.baseState = initialState2;
           var queue = {
             pending: null,
             interleaved: null,
             lanes: NoLanes,
             dispatch: null,
             lastRenderedReducer: basicStateReducer,
-            lastRenderedState: initialState
+            lastRenderedState: initialState2
           };
           hook.queue = queue;
           var dispatch = queue.dispatch = dispatchSetState.bind(null, currentlyRenderingFiber$1, queue);
           return [hook.memoizedState, dispatch];
         }
-        function updateState(initialState) {
+        function updateState(initialState2) {
           return updateReducer(basicStateReducer);
         }
-        function rerenderState(initialState) {
+        function rerenderState(initialState2) {
           return rerenderReducer(basicStateReducer);
         }
         function pushEffect(tag, create, destroy, deps) {
@@ -14441,13 +14441,13 @@ var require_react_dom_development = __commonJS({
               mountHookTypesDev();
               return mountRef(initialValue);
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               mountHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
               try {
-                return mountState(initialState);
+                return mountState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -14545,13 +14545,13 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return mountRef(initialValue);
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
               try {
-                return mountState(initialState);
+                return mountState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -14649,13 +14649,13 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
               try {
-                return updateState(initialState);
+                return updateState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -14753,13 +14753,13 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
               try {
-                return rerenderState(initialState);
+                return rerenderState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -14867,14 +14867,14 @@ var require_react_dom_development = __commonJS({
               mountHookTypesDev();
               return mountRef(initialValue);
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               warnInvalidHookAccess();
               mountHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
               try {
-                return mountState(initialState);
+                return mountState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -14988,14 +14988,14 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               warnInvalidHookAccess();
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
               try {
-                return updateState(initialState);
+                return updateState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -15109,14 +15109,14 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState) {
+            useState: function(initialState2) {
               currentHookNameInDev = "useState";
               warnInvalidHookAccess();
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
               try {
-                return rerenderState(initialState);
+                return rerenderState(initialState2);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -20840,7 +20840,7 @@ var require_react_dom_development = __commonJS({
             }
           }
         }
-        function flushSync(fn) {
+        function flushSync2(fn) {
           if (rootWithPendingPassiveEffects !== null && rootWithPendingPassiveEffects.tag === LegacyRoot && (executionContext & (RenderContext | CommitContext)) === NoContext) {
             flushPassiveEffects();
           }
@@ -21906,7 +21906,7 @@ var require_react_dom_development = __commonJS({
             }
             var staleFamilies = update.staleFamilies, updatedFamilies = update.updatedFamilies;
             flushPassiveEffects();
-            flushSync(function() {
+            flushSync2(function() {
               scheduleFibersWithFamiliesRecursively(root2.current, updatedFamilies, staleFamilies);
             });
           }
@@ -21917,7 +21917,7 @@ var require_react_dom_development = __commonJS({
               return;
             }
             flushPassiveEffects();
-            flushSync(function() {
+            flushSync2(function() {
               updateContainer(element, root2, null, null);
             });
           }
@@ -22706,7 +22706,7 @@ var require_react_dom_development = __commonJS({
               break;
             }
             case SuspenseComponent: {
-              flushSync(function() {
+              flushSync2(function() {
                 var root3 = enqueueConcurrentRenderForLane(fiber, SyncLane);
                 if (root3 !== null) {
                   var eventTime = requestEventTime();
@@ -23035,7 +23035,7 @@ var require_react_dom_development = __commonJS({
                 error("Attempted to synchronously unmount a root while React was already rendering. React cannot finish unmounting the root until the current render has completed, which may lead to a race condition.");
               }
             }
-            flushSync(function() {
+            flushSync2(function() {
               updateContainer(null, root2, null, null);
             });
             unmarkContainerAsRoot(container);
@@ -23210,7 +23210,7 @@ var require_react_dom_development = __commonJS({
             markContainerAsRoot(root2.current, container);
             var rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
             listenToAllSupportedEvents(rootContainerElement);
-            flushSync();
+            flushSync2();
             return root2;
           } else {
             var rootSibling;
@@ -23241,7 +23241,7 @@ var require_react_dom_development = __commonJS({
             markContainerAsRoot(_root.current, container);
             var _rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
             listenToAllSupportedEvents(_rootContainerElement);
-            flushSync(function() {
+            flushSync2(function() {
               updateContainer(initialChildren, _root, parentComponent, callback);
             });
             return _root;
@@ -23369,7 +23369,7 @@ var require_react_dom_development = __commonJS({
                 error("unmountComponentAtNode(): The node you're attempting to unmount was rendered by another copy of React.");
               }
             }
-            flushSync(function() {
+            flushSync2(function() {
               legacyRenderSubtreeIntoContainer(null, null, container, false, function() {
                 container._reactRootContainer = null;
                 unmarkContainerAsRoot(container);
@@ -23401,7 +23401,7 @@ var require_react_dom_development = __commonJS({
           }
         }
         setRestoreImplementation(restoreControlledState$3);
-        setBatchingImplementation(batchedUpdates$1, discreteUpdates, flushSync);
+        setBatchingImplementation(batchedUpdates$1, discreteUpdates, flushSync2);
         function createPortal$1(children, container) {
           var key = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : null;
           if (!isValidContainer(container)) {
@@ -23440,7 +23440,7 @@ var require_react_dom_development = __commonJS({
               error("flushSync was called from inside a lifecycle method. React cannot flush when React is already rendering. Consider moving this call to a scheduler task or micro task.");
             }
           }
-          return flushSync(fn);
+          return flushSync2(fn);
         }
         var foundDevTools = injectIntoDevTools({
           findFiberByHostInstance: getClosestInstanceFromNode,
@@ -24300,33 +24300,18 @@ var require_prop_types = __commonJS({
 });
 
 // src/index.tsx
-var React12 = __toESM(require_react(), 1);
+var React14 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 
 // src/games/spacetrash/UI/index.tsx
-var import_react14 = __toESM(require_react(), 1);
-
-// src/engine/UI/WM.tsx
-var import_react = __toESM(require_react(), 1);
-var import_react2 = __toESM(require_react(), 1);
-var ThemeContext = (0, import_react2.createContext)({
-  windows: {
-    terminal: null,
-    manual: null,
-    shipmap: null,
-    drone: null
-  },
-  stack: []
-});
-var WM = (props) => {
-  return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(ThemeContext.Provider, { value: props.desktopState }, props.children));
-};
+var import_react15 = __toESM(require_react(), 1);
+var import_react_dom3 = __toESM(require_react_dom(), 1);
 
 // src/engine/UI/UIWindow.tsx
-var import_react12 = __toESM(require_react(), 1);
+var import_react10 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/index.jsx
-var import_react11 = __toESM(require_react(), 1);
+var import_react9 = __toESM(require_react(), 1);
 
 // node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -24393,11 +24378,11 @@ function removeClass(element, className) {
 }
 
 // node_modules/react-transition-group/esm/CSSTransition.js
-var import_react5 = __toESM(require_react());
+var import_react3 = __toESM(require_react());
 
 // node_modules/react-transition-group/esm/Transition.js
 var import_prop_types2 = __toESM(require_prop_types());
-var import_react4 = __toESM(require_react());
+var import_react2 = __toESM(require_react());
 var import_react_dom = __toESM(require_react_dom());
 
 // node_modules/react-transition-group/esm/config.js
@@ -24426,8 +24411,8 @@ var classNamesShape = true ? import_prop_types.default.oneOfType([import_prop_ty
 })]) : null;
 
 // node_modules/react-transition-group/esm/TransitionGroupContext.js
-var import_react3 = __toESM(require_react());
-var TransitionGroupContext_default = import_react3.default.createContext(null);
+var import_react = __toESM(require_react());
+var TransitionGroupContext_default = import_react.default.createContext(null);
 
 // node_modules/react-transition-group/esm/Transition.js
 var UNMOUNTED = "unmounted";
@@ -24647,20 +24632,20 @@ var Transition = /* @__PURE__ */ function(_React$Component) {
     delete childProps.onExited;
     delete childProps.nodeRef;
     if (typeof children === "function") {
-      return /* @__PURE__ */ import_react4.default.createElement(TransitionGroupContext_default.Provider, {
+      return /* @__PURE__ */ import_react2.default.createElement(TransitionGroupContext_default.Provider, {
         value: null
       }, children(status, childProps));
     }
-    var child = import_react4.default.Children.only(children);
+    var child = import_react2.default.Children.only(children);
     return (
       // allows for nested Transitions
-      /* @__PURE__ */ import_react4.default.createElement(TransitionGroupContext_default.Provider, {
+      /* @__PURE__ */ import_react2.default.createElement(TransitionGroupContext_default.Provider, {
         value: null
-      }, import_react4.default.cloneElement(child, childProps))
+      }, import_react2.default.cloneElement(child, childProps))
     );
   };
   return Transition2;
-}(import_react4.default.Component);
+}(import_react2.default.Component);
 Transition.contextType = TransitionGroupContext_default;
 Transition.propTypes = true ? {
   /**
@@ -24973,7 +24958,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
   };
   _proto.render = function render() {
     var _this$props = this.props, _ = _this$props.classNames, props = _objectWithoutPropertiesLoose(_this$props, ["classNames"]);
-    return /* @__PURE__ */ import_react5.default.createElement(Transition_default, _extends({}, props, {
+    return /* @__PURE__ */ import_react3.default.createElement(Transition_default, _extends({}, props, {
       onEnter: this.onEnter,
       onEntered: this.onEntered,
       onEntering: this.onEntering,
@@ -24983,7 +24968,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
     }));
   };
   return CSSTransition2;
-}(import_react5.default.Component);
+}(import_react3.default.Component);
 CSSTransition.defaultProps = {
   classNames: ""
 };
@@ -25114,14 +25099,14 @@ CSSTransition.propTypes = true ? _extends({}, Transition_default.propTypes, {
 var CSSTransition_default = CSSTransition;
 
 // src/engine/FlexModal/Portal.jsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react4 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 var Portal_default = ({
   container,
   children
 }) => {
-  const containerRef = (0, import_react6.useRef)(container);
-  const defaultNode = (0, import_react6.useRef)();
+  const containerRef = (0, import_react4.useRef)(container);
+  const defaultNode = (0, import_react4.useRef)();
   if (!containerRef.current) {
     containerRef.current = document.body;
   }
@@ -25129,7 +25114,7 @@ var Portal_default = ({
     defaultNode.current = document.createElement("div");
     containerRef.current.appendChild(defaultNode.current);
   }
-  (0, import_react6.useEffect)(() => {
+  (0, import_react4.useEffect)(() => {
     return () => {
       if (containerRef.current && defaultNode.current) {
         containerRef.current.removeChild(defaultNode.current);
@@ -25144,7 +25129,7 @@ var Portal_default = ({
 };
 
 // src/engine/FlexModal/Header.jsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react5 = __toESM(require_react(), 1);
 function Header({
   title,
   draggable,
@@ -25154,7 +25139,7 @@ function Header({
   set_full,
   onClose
 }) {
-  return /* @__PURE__ */ import_react7.default.createElement("div", { className: "flexible-modal-header" }, /* @__PURE__ */ import_react7.default.createElement("h5", null, title), draggable && /* @__PURE__ */ import_react7.default.createElement(
+  return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flexible-modal-header" }, /* @__PURE__ */ import_react5.default.createElement("h5", null, title), draggable && /* @__PURE__ */ import_react5.default.createElement(
     "span",
     {
       className: "drag-bar",
@@ -25167,16 +25152,16 @@ function Header({
 }
 
 // src/engine/FlexModal/Footer.jsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Resizer.jsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 function Resizer({
   horizontalResizable,
   verticalResizable,
   onMouseDown
 }) {
-  return /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null, /* @__PURE__ */ import_react9.default.createElement(
+  return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, /* @__PURE__ */ import_react7.default.createElement(
     "div",
     {
       className: "flexible-modal-right-resizer",
@@ -25187,7 +25172,7 @@ function Resizer({
         });
       }
     }
-  ), /* @__PURE__ */ import_react9.default.createElement(
+  ), /* @__PURE__ */ import_react7.default.createElement(
     "div",
     {
       className: "flexible-modal-left-resizer",
@@ -25198,7 +25183,7 @@ function Resizer({
         });
       }
     }
-  )), verticalResizable && /* @__PURE__ */ import_react9.default.createElement(
+  )), verticalResizable && /* @__PURE__ */ import_react7.default.createElement(
     "div",
     {
       className: "flexible-modal-bottom-resizer",
@@ -25209,7 +25194,7 @@ function Resizer({
         });
       }
     }
-  ), (horizontalResizable || verticalResizable) && /* @__PURE__ */ import_react9.default.createElement(
+  ), (horizontalResizable || verticalResizable) && /* @__PURE__ */ import_react7.default.createElement(
     "div",
     {
       className: "flexible-modal-resizer",
@@ -25224,13 +25209,13 @@ function Resizer({
 }
 
 // src/engine/FlexModal/usePrevious.jsx
-var import_react10 = __toESM(require_react(), 1);
+var import_react8 = __toESM(require_react(), 1);
 function usePrevious({
   value,
   shouldUpdate
 }) {
-  const prevRef = (0, import_react10.useRef)();
-  (0, import_react10.useEffect)(() => {
+  const prevRef = (0, import_react8.useRef)();
+  (0, import_react8.useEffect)(() => {
     if (typeof shouldUpdate === "function" && shouldUpdate(prevRef.current, value) || shouldUpdate) {
       prevRef.current = value;
     }
@@ -25274,19 +25259,19 @@ function FlexibleModal({
   pushToTop
 }) {
   const container = getPopupContainer();
-  const [_isVisible, set_isVisible] = (0, import_react11.useState)();
-  const [_isOpen, set_isOpen] = (0, import_react11.useState)();
-  const node_modal_ref = (0, import_react11.useRef)();
-  const [isDragging, setIsDragging] = (0, import_react11.useState)(false);
-  const [isResizing, setIsResizing] = (0, import_react11.useState)(false);
-  const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react11.useState)(false);
-  const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react11.useState)(false);
-  const [anchor, setAnchor] = (0, import_react11.useState)(false);
-  const [_full, set_full] = (0, import_react11.useState)(false);
-  const [_left, set_left] = (0, import_react11.useState)(0);
-  const [_top, set_top] = (0, import_react11.useState)(0);
-  const [width, setWidth] = (0, import_react11.useState)(initWidth);
-  const [height, setHeight] = (0, import_react11.useState)(initHeight);
+  const [_isVisible, set_isVisible] = (0, import_react9.useState)();
+  const [_isOpen, set_isOpen] = (0, import_react9.useState)();
+  const node_modal_ref = (0, import_react9.useRef)();
+  const [isDragging, setIsDragging] = (0, import_react9.useState)(false);
+  const [isResizing, setIsResizing] = (0, import_react9.useState)(false);
+  const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react9.useState)(false);
+  const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react9.useState)(false);
+  const [anchor, setAnchor] = (0, import_react9.useState)(false);
+  const [_full, set_full] = (0, import_react9.useState)(false);
+  const [_left, set_left] = (0, import_react9.useState)(0);
+  const [_top, set_top] = (0, import_react9.useState)(0);
+  const [width, setWidth] = (0, import_react9.useState)(initWidth);
+  const [height, setHeight] = (0, import_react9.useState)(initHeight);
   const prev_left = usePrevious({
     value: _left,
     shouldUpdate: !_full
@@ -25303,7 +25288,7 @@ function FlexibleModal({
     value: height,
     shouldUpdate: !_full
   });
-  const [point, setPoint] = (0, import_react11.useState)({});
+  const [point, setPoint] = (0, import_react9.useState)({});
   function initLeft() {
     let containerWidth = container === document.body ? window.innerWidth : container.offsetWidth;
     return left !== void 0 ? left : containerWidth / 2 - initWidth / 2;
@@ -25312,13 +25297,13 @@ function FlexibleModal({
     let containerHeight = container === document.body ? window.innerHeight : container.offsetHeight;
     return top !== void 0 ? top : containerHeight / 2 - initHeight / 2;
   }
-  (0, import_react11.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (container) {
       set_left(initLeft());
       set_top(initTop());
     }
   }, [container]);
-  (0, import_react11.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (visible) {
       set_isVisible(true);
       container.classList.add("container-hidden");
@@ -25327,7 +25312,7 @@ function FlexibleModal({
       container.classList.remove("container-hidden");
     }
   }, [visible]);
-  (0, import_react11.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (_isVisible) {
       set_isOpen(true);
       if (resetRectOnOpen) {
@@ -25338,7 +25323,7 @@ function FlexibleModal({
       }
     }
   }, [_isVisible]);
-  (0, import_react11.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     if (!_isVisible) return;
     let _left2, _top2, width2, height2;
     if (_full) {
@@ -25364,7 +25349,7 @@ function FlexibleModal({
       height: height2
     });
   }, [_full]);
-  const onMouseDown = (0, import_react11.useCallback)((e) => {
+  const onMouseDown = (0, import_react9.useCallback)((e) => {
     if (e.button !== 0) return;
     pushToTop();
     const node_modal = node_modal_ref.current;
@@ -25442,7 +25427,7 @@ function FlexibleModal({
     set_left(_left2);
     set_top(_top2);
   };
-  const onMouseMove = (0, import_react11.useCallback)((e) => {
+  const onMouseMove = (0, import_react9.useCallback)((e) => {
     if (isDragging && point) {
       _onDrag(e.pageX, e.pageY);
     } else if (isResizing) {
@@ -25451,7 +25436,7 @@ function FlexibleModal({
     e.stopPropagation();
     e.preventDefault();
   }, [isDragging, point, isResizing]);
-  const onMouseUp = (0, import_react11.useCallback)((e) => {
+  const onMouseUp = (0, import_react9.useCallback)((e) => {
     document.removeEventListener("mousemove", onMouseMove);
     setIsDragging(false);
     setIsResizing(false);
@@ -25459,7 +25444,7 @@ function FlexibleModal({
     setOnlyHorizontalResize(false);
     e.stopPropagation();
   }, [onMouseMove]);
-  (0, import_react11.useEffect)(() => {
+  (0, import_react9.useEffect)(() => {
     document.addEventListener("mouseup", onMouseUp);
     if (isDragging || isResizing) {
       document.addEventListener("mousemove", onMouseMove);
@@ -25469,12 +25454,12 @@ function FlexibleModal({
       document.removeEventListener("mousemove", onMouseMove);
     };
   }, [onMouseMove, onMouseUp]);
-  return container ? /* @__PURE__ */ import_react11.default.createElement(
+  return container ? /* @__PURE__ */ import_react9.default.createElement(
     Portal_default,
     {
       container
     },
-    _isVisible ? /* @__PURE__ */ import_react11.default.createElement(
+    _isVisible ? /* @__PURE__ */ import_react9.default.createElement(
       CSSTransition_default,
       {
         in: _isOpen,
@@ -25486,7 +25471,7 @@ function FlexibleModal({
           set_full();
         }
       },
-      /* @__PURE__ */ import_react11.default.createElement(
+      /* @__PURE__ */ import_react9.default.createElement(
         "div",
         {
           onClick: () => {
@@ -25510,7 +25495,7 @@ function FlexibleModal({
             zIndex: layer
           }
         },
-        /* @__PURE__ */ import_react11.default.createElement(
+        /* @__PURE__ */ import_react9.default.createElement(
           Header,
           {
             title,
@@ -25522,7 +25507,7 @@ function FlexibleModal({
             onClose
           }
         ),
-        /* @__PURE__ */ import_react11.default.createElement(
+        /* @__PURE__ */ import_react9.default.createElement(
           "div",
           {
             style: {
@@ -25533,7 +25518,7 @@ function FlexibleModal({
           },
           children
         ),
-        !_full && resizable && /* @__PURE__ */ import_react11.default.createElement(
+        !_full && resizable && /* @__PURE__ */ import_react9.default.createElement(
           Resizer,
           {
             horizontalResizable,
@@ -25557,7 +25542,7 @@ function FlexibleModal({
 
 // src/engine/UI/UIWindow.tsx
 var UIWindow = (props) => {
-  return /* @__PURE__ */ import_react12.default.createElement(import_react12.default.Fragment, null, /* @__PURE__ */ import_react12.default.createElement(
+  return /* @__PURE__ */ import_react10.default.createElement(import_react10.default.Fragment, null, /* @__PURE__ */ import_react10.default.createElement(
     FlexibleModal,
     {
       left: props.uiwindow.left,
@@ -25584,12 +25569,12 @@ var UIWindow = (props) => {
 };
 
 // src/games/spacetrash/UI/terminal.tsx
-var import_react13 = __toESM(require_react(), 1);
+var import_react11 = __toESM(require_react(), 1);
 var TerminalApp = (props) => {
-  (0, import_react13.useEffect)(() => {
+  (0, import_react11.useEffect)(() => {
     props.worker.postMessage(["terminal-register"], []);
   }, []);
-  return /* @__PURE__ */ import_react13.default.createElement(
+  return /* @__PURE__ */ import_react11.default.createElement(
     "div",
     {
       style: {
@@ -25598,7 +25583,7 @@ var TerminalApp = (props) => {
         position: "relative"
       }
     },
-    /* @__PURE__ */ import_react13.default.createElement(
+    /* @__PURE__ */ import_react11.default.createElement(
       "pre",
       {
         id: "terminal",
@@ -25620,7 +25605,7 @@ ${props2.out}
           `;
       })
     ),
-    /* @__PURE__ */ import_react13.default.createElement(
+    /* @__PURE__ */ import_react11.default.createElement(
       "input",
       {
         type: "text",
@@ -25646,107 +25631,157 @@ ${props2.out}
   );
 };
 
-// src/games/spacetrash/UI/index.tsx
-var import_react_dom3 = __toESM(require_react_dom(), 1);
-var SpaceTrashDesktop = (props) => {
-  const [desktopState, setDesktopState] = (0, import_react14.useState)({
-    terminal: {
-      buffer: "",
-      history: []
-    },
-    windows: {
-      terminal: {
-        top: 90,
-        left: 90,
-        width: 1200,
-        height: 600,
-        visible: true,
-        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
-          throw new Error("Function not implemented.");
-        }, desktopState: {
-          windows: void 0,
-          stack: []
-        }, uiwindow: {
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-          visible: false,
-          app: void 0
-        }, layer: 0 })
+// src/games/spacetrash/UI/drone.tsx
+var import_react13 = __toESM(require_react(), 1);
+
+// src/engine/UI/UICanvas.tsx
+var import_react12 = __toESM(require_react(), 1);
+
+// src/engine/Event.ts
+function stringifyEvent(e) {
+  const obj = {
+    boundingClient: e.target.getBoundingClientRect()
+  };
+  for (let k in e) {
+    obj[k] = e[k];
+  }
+  return JSON.parse(JSON.stringify(obj, (k, v) => {
+    if (v instanceof Node) return "Node";
+    if (v instanceof Window) return "Window";
+    return v;
+  }, " "));
+}
+
+// src/engine/UI/UICanvas.tsx
+var UICanvas = (props) => {
+  const canvasRef = (0, import_react12.useRef)(null);
+  (0, import_react12.useEffect)(() => {
+    if (canvasRef.current) {
+      const offscreen = canvasRef.current.transferControlToOffscreen();
+      props.worker.postMessage([props.app + "-register", offscreen], [offscreen]);
+    }
+  }, [canvasRef]);
+  return /* @__PURE__ */ import_react12.default.createElement(
+    "canvas",
+    {
+      tabIndex: 1,
+      onKeyUp: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
       },
-      shipmap: {
-        top: 600,
-        left: 500,
-        width: 800,
-        height: 500,
-        visible: true,
-        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
-          throw new Error("Function not implemented.");
-        }, desktopState: {
-          windows: void 0,
-          stack: []
-        }, uiwindow: {
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-          visible: false,
-          app: void 0
-        }, layer: 0 })
+      onKeyDown: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
       },
-      manual: {
-        top: 60,
-        left: 50,
-        width: 380,
-        height: 350,
-        visible: true,
-        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
-          throw new Error("Function not implemented.");
-        }, desktopState: {
-          windows: void 0,
-          stack: []
-        }, uiwindow: {
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-          visible: false,
-          app: void 0
-        }, layer: 0 })
+      onMouseDown: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
       },
-      drone: {
-        top: 460,
-        left: 530,
-        width: 380,
-        height: 350,
-        visible: true,
-        app: () => /* @__PURE__ */ import_react14.default.createElement(UIWindow, { app: "", pushToTop: function(k) {
-          throw new Error("Function not implemented.");
-        }, desktopState: {
-          windows: void 0,
-          stack: []
-        }, uiwindow: {
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-          visible: false,
-          app: void 0
-        }, layer: 0 })
+      onMouseUp: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onMouseOver: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onMouseMove: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      ref: canvasRef,
+      width: "800",
+      height: "600"
+    }
+  );
+};
+
+// src/games/spacetrash/UI/drone.tsx
+var DroneApp = (props) => {
+  return /* @__PURE__ */ import_react13.default.createElement(
+    "div",
+    {
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
       }
     },
+    "hello drones",
+    /* @__PURE__ */ import_react13.default.createElement(UICanvas, { worker: props.worker, app: "drone" })
+  );
+};
+
+// src/games/spacetrash/UI/shipmap.tsx
+var import_react14 = __toESM(require_react(), 1);
+var ShipMapApp = (props) => {
+  return /* @__PURE__ */ import_react14.default.createElement(
+    "div",
+    {
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
+        // display: "flex",
+        // flexDirection: "column-reverse",
+        // overflow: "auto",
+      }
+    },
+    "hello ship map",
+    /* @__PURE__ */ import_react14.default.createElement(UICanvas, { worker: props.worker, app: "shipmap" })
+  );
+};
+
+// src/games/spacetrash/UI/index.tsx
+var initialState = () => {
+  return {
     stack: [
       `terminal`,
       `shipmap`,
       `manual`,
       `drone`
-    ]
-  });
+    ],
+    terminal: {
+      buffer: "login",
+      history: [{ "in": "idk", out: "asdasd", timeStamp: 0 }]
+    },
+    windows: {
+      terminal: {
+        top: 90,
+        left: 290,
+        width: 900,
+        height: 600,
+        visible: true
+      },
+      shipmap: {
+        top: 60,
+        left: 500,
+        width: 800,
+        height: 500,
+        visible: false
+      },
+      manual: {
+        top: 90,
+        left: 90,
+        width: 129,
+        height: 165,
+        visible: false
+      },
+      drone: {
+        top: 360,
+        left: 50,
+        width: 280,
+        height: 250,
+        visible: false
+      }
+    }
+  };
+};
+var SpaceTrashDesktop = (props) => {
+  const [desktopState, setDesktopState] = (0, import_react15.useState)(initialState());
+  const stateRef = (0, import_react15.useRef)();
+  stateRef.current = desktopState;
   props.worker.onmessage = (e) => {
+    if (!stateRef.current) {
+      return;
+    }
     console.log("Message received from worker", e);
     if (e.data[0] === "terminal-update") {
-      import_react_dom3.default.flushSync(() => {
+      (0, import_react_dom3.flushSync)(() => {
         setDesktopState({
           ...desktopState,
           terminal: {
@@ -25764,7 +25799,26 @@ var SpaceTrashDesktop = (props) => {
       });
     }
     if (e.data[0] === "login") {
-      console.log("LOGIKN!@!@#", e);
+      (0, import_react_dom3.flushSync)(() => {
+        setDesktopState({
+          ...desktopState,
+          windows: {
+            ...desktopState.windows,
+            shipmap: {
+              ...desktopState.windows.shipmap,
+              "visible": true
+            },
+            manual: {
+              ...desktopState.windows.manual,
+              "visible": true
+            },
+            drone: {
+              ...desktopState.windows.drone,
+              "visible": true
+            }
+          }
+        });
+      });
     }
   };
   const terminalHooks = {
@@ -25788,13 +25842,10 @@ var SpaceTrashDesktop = (props) => {
       });
     }
   };
-  return /* @__PURE__ */ import_react14.default.createElement(
-    WM,
-    {
-      worker: props.worker,
-      desktopState
-    },
-    desktopState.windows.terminal && /* @__PURE__ */ import_react14.default.createElement(
+  return /* @__PURE__ */ import_react15.default.createElement("div", null, /* @__PURE__ */ import_react15.default.createElement(
+    "div",
+    null,
+    desktopState.windows.terminal && /* @__PURE__ */ import_react15.default.createElement(
       UIWindow,
       {
         key: "terminal",
@@ -25803,16 +25854,22 @@ var SpaceTrashDesktop = (props) => {
         layer: desktopState.stack.findIndex((s) => s === "terminal"),
         desktopState,
         pushToTop: () => {
-          setDesktopState({
-            ...desktopState,
+          if (!stateRef.current) {
+            return;
+          }
+          const newState = {
+            ...stateRef.current,
+            terminal: stateRef.current.terminal,
+            windows: stateRef.current?.windows,
             stack: [
-              ...desktopState.stack.filter((x) => x !== "terminal"),
+              ...(stateRef.current || { stack: [] }).stack.filter((x) => x !== "terminal"),
               "terminal"
             ]
-          });
+          };
+          setDesktopState(newState);
         }
       },
-      /* @__PURE__ */ import_react14.default.createElement(
+      /* @__PURE__ */ import_react15.default.createElement(
         TerminalApp,
         {
           worker: props.worker,
@@ -25820,8 +25877,68 @@ var SpaceTrashDesktop = (props) => {
           hooks: terminalHooks
         }
       )
+    ),
+    stateRef.current.windows["shipmap"] && stateRef.current.windows["shipmap"].visible && /* @__PURE__ */ import_react15.default.createElement(
+      UIWindow,
+      {
+        key: "shipmap",
+        app: "shipmap",
+        uiwindow: stateRef.current.windows["shipmap"],
+        layer: stateRef.current.stack.findIndex((s) => s === "shipmap"),
+        desktopState: stateRef.current,
+        pushToTop: () => {
+          setDesktopState({
+            ...stateRef.current,
+            stack: [
+              ...(stateRef.current || { stack: [] }).stack.filter((x) => x !== "shipmap"),
+              "shipmap"
+            ]
+          });
+        }
+      },
+      /* @__PURE__ */ import_react15.default.createElement(ShipMapApp, { worker: props.worker })
+    ),
+    stateRef.current.windows["manual"] && stateRef.current.windows["manual"].visible && /* @__PURE__ */ import_react15.default.createElement(
+      UIWindow,
+      {
+        key: "manual",
+        app: "manual",
+        uiwindow: stateRef.current.windows["manual"],
+        layer: stateRef.current.stack.findIndex((s) => s === "manual"),
+        desktopState: stateRef.current,
+        pushToTop: () => {
+          setDesktopState({
+            ...desktopState,
+            stack: [
+              ...desktopState.stack.filter((x) => x !== "manual"),
+              "manual"
+            ]
+          });
+        }
+      },
+      /* @__PURE__ */ import_react15.default.createElement("pre", null, "Manual goes here")
+    ),
+    stateRef.current.windows["drone"] && stateRef.current.windows["drone"].visible && /* @__PURE__ */ import_react15.default.createElement(
+      UIWindow,
+      {
+        key: "drone",
+        app: "drone",
+        uiwindow: stateRef.current.windows["drone"],
+        layer: stateRef.current.stack.findIndex((s) => s === "drone"),
+        desktopState: stateRef.current,
+        pushToTop: () => {
+          setDesktopState({
+            ...desktopState,
+            stack: [
+              ...desktopState.stack.filter((x) => x !== "drone"),
+              "drone"
+            ]
+          });
+        }
+      },
+      /* @__PURE__ */ import_react15.default.createElement(DroneApp, { worker: props.worker })
     )
-  );
+  ));
 };
 
 // src/index.tsx
@@ -25829,7 +25946,7 @@ var worker = new Worker("./worker.js");
 document.addEventListener("DOMContentLoaded", function(event) {
   const domNode = document.getElementById("react-root");
   if (domNode) {
-    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React12.createElement(
+    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React14.createElement(
       SpaceTrashDesktop,
       {
         worker

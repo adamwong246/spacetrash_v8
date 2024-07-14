@@ -24,6 +24,9 @@ export enum ERays {
   'visible',
 }
 
+let mouseX = 0;
+let mouseY = 0;
+
 
 export class Spacetrash extends Game<ISpaceTrashSystems> {
   terminal: SpaceTrashTerminal;
@@ -66,9 +69,8 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
     state.set('menu', new Scene<ISpaceTrashApps>('menuscene_view_v0',
       {
         terminal: [(ecs, reply) => {
-          reply(["terminal-update", this.terminal.login()]);
-
           reply(["login", ""]);
+          reply(["terminal-update", this.terminal.login()]);
         }, (ecs, canvas, events, reply) => {
           // console.log(events)
         }],
@@ -80,12 +82,57 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
         drone: [(ecs, reply) => {
           // return []
         }, (ecs, canvas, events, reply) => {
-          // debugger
+          if (canvas) {
+            canvas.beginPath();
+            canvas.arc(44, 11, 10, 0, 2 * Math.PI);
+            canvas.fillStyle = "green";
+            canvas.fill();
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "grey";
+            canvas.stroke();  
+          }
         }],
         shipmap: [(ecs, reply) => {
           // return []
         }, (ecs, canvas, events, reply) => {
-          // debugger
+
+          
+          events.forEach((event) => {
+            if (event.type === "mousemove") {
+              
+              var rect = event.boundingClient;
+              var x = event.clientX - rect.left; //x position within the element.
+              var y = event.clientY - rect.top; 
+
+              mouseX = x;
+              mouseY = y;
+            }
+          })
+
+          if (canvas) {
+            canvas.beginPath();
+            canvas.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
+            canvas.fillStyle = "red";
+            canvas.fill();
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "blue";
+            canvas.stroke();  
+          }
+          
+          
+      
+          // ecs.forEach((ec) => {
+          //   const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+      
+          //   ctx.beginPath();
+          //   ctx.arc(d.x * 10, d.y * 20, 4, 0, 2 * Math.PI);
+          //   ctx.fillStyle = "black";
+          //   ctx.fill();
+          //   ctx.lineWidth = 1;
+          //   ctx.strokeStyle = "red";
+          //   ctx.stroke();
+      
+          // })
         }],
 
       }

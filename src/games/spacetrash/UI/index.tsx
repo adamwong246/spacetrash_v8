@@ -1,10 +1,14 @@
-import React, { useState } from "react";
-import { IUiDekstop, WM } from "../../../engine/UI/WM";
+import React, { useRef, useState } from "react";
+// import useState from 'react-usestateref'
+import { flushSync } from 'react-dom';
+import { IUiDekstop, IUiWindow, WM } from "../../../engine/UI/WM";
 import { UIWindow } from "../../../engine/UI/UIWindow";
-import { ITerminalHooks, TerminalApp } from "./terminal";
+import { ITerminalHooks, ITerminalState, TerminalApp } from "./terminal";
 import ReactDOM from "react-dom";
+import { DroneApp } from "./drone";
+import { ShipMapApp } from "./shipmap";
 
-export type ISpaceTrashApps = 'terminal' | 'manual' | 'shipmap' | 'drone';
+export type ISpaceTrashApps = 'terminal' | `shipmap` | `manual` | `drone`;
 
 export enum ESpaceTrashApps {
   terminal,
@@ -13,230 +17,221 @@ export enum ESpaceTrashApps {
   drone
 };
 
-export type ITerminalState = {
-  buffer: string;
-  history: { in: string, out: string, timeStamp: number }[],
-
+type IState = IUiDekstop & {
+  terminal: ITerminalState
 };
 
+const initialState: () => IState = () => {
+  return {
+    stack: [
+      `terminal`,
+      `shipmap`,
+      `manual`,
+      `drone`,
+    ],
+
+    terminal: {
+      buffer: "login",
+      history: [{ "in": "idk", out: "asdasd", timeStamp: 0 }],
+    },
+    windows: {
+      terminal: {
+        top: 90,
+        left: 290,
+        width: 900,
+        height: 600,
+        visible: true,
+      },
+      shipmap: {
+        top: 60,
+        left: 500,
+        width: 800,
+        height: 500,
+        visible: false,
+      },
+      manual: {
+        top: 90,
+        left: 90,
+        width: 129,
+        height: 165,
+        visible: false,
+      },
+      drone: {
+        top: 360,
+        left: 50,
+        width: 280,
+        height: 250,
+        visible: false,
+      },
+    }
+
+  }
+};
 
 export const SpaceTrashDesktop = (props: { worker: Worker }) => {
 
-    const [desktopState, setDesktopState] = useState<IUiDekstop & {
-      terminal: ITerminalState
-    }>({
-      terminal: {
-        buffer: "",
-        history: [],
-      },
-      windows: {
-        terminal: {
-          top: 90,
-          left: 90,
-          width: 1200,
-          height: 600,
-          visible: true,
-          app: () => <UIWindow app={""} pushToTop={function (k: string): void {
-            throw new Error("Function not implemented.");
-          }} desktopState={{
-            windows: undefined,
-            stack: []
-          }} uiwindow={{
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 0,
-            visible: false,
-            app: undefined
-          }} layer={0} />
-        },
-        shipmap: {
-          top: 600,
-          left: 500,
-          width: 800,
-          height: 500,
-          visible: true,
-          app: () => <UIWindow app={""} pushToTop={function (k: string): void {
-            throw new Error("Function not implemented.");
-          }} desktopState={{
-            windows: undefined,
-            stack: []
-          }} uiwindow={{
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 0,
-            visible: false,
-            app: undefined
-          }} layer={0} />
-        },
-        manual: {
-          top: 60,
-          left: 50,
-          width: 380,
-          height: 350,
-          visible: true,
-          app: () => <UIWindow app={""} pushToTop={function (k: string): void {
-            throw new Error("Function not implemented.");
-          }} desktopState={{
-            windows: undefined,
-            stack: []
-          }} uiwindow={{
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 0,
-            visible: false,
-            app: undefined
-          }} layer={0} />
-        },
-        drone: {
-          top: 460,
-          left: 530,
-          width: 380,
-          height: 350,
-          visible: true,
-          app: () => <UIWindow app={""} pushToTop={function (k: string): void {
-            throw new Error("Function not implemented.");
-          }} desktopState={{
-            windows: undefined,
-            stack: []
-          }} uiwindow={{
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 0,
-            visible: false,
-            app: undefined
-          }} layer={0} />
-        }
-      },
-      stack: [
-        `terminal`,
-        `shipmap`,
-        `manual`,
-        `drone`,
-      ]
+  const [desktopState, setDesktopState] = useState<IState>(initialState());
 
-    });
-
-    props.worker.onmessage = (e) => {
-      console.log("Message received from worker", e);
-
-      if (e.data[0] === 'terminal-update') {
-        ReactDOM.flushSync(() => {
-          setDesktopState({
-            ...desktopState,
-
-            terminal: {
-              ...desktopState.terminal,
-
-              history: [
-                ...desktopState.terminal.history,
-                {
-                  in: e.data[1].in,
-                  out: e.data[1].out,
-                  timeStamp: e.timeStamp
-                }
-              ].sort((e) => e.timeStamp)
-            }
-
-          })
-        });
+  const stateRef = useRef<IState>();
+  stateRef.current = desktopState;
 
 
-      }
 
-      if (e.data[0] === 'login') {
-        console.log("LOGIKN!@!@#", e);
-      }
-    };
-
-    const terminalHooks: ITerminalHooks = {
-      changeBuffer: (v: string) => {
-        setDesktopState({
-          ...desktopState,
-          terminal: {
-            ...desktopState.terminal,
-            buffer: v
-          }
-        })
-      },
-      submitBuffer: () => {
-        props.worker.postMessage(["terminal-in", desktopState.terminal.buffer])
-        setDesktopState({
-          ...desktopState,
-          terminal: {
-            ...desktopState.terminal,
-            buffer: ""
-          }
-        })
-      }
+  props.worker.onmessage = (e) => {
+    if (!stateRef.current) {
+      return;
     }
-  
 
-    return (<WM
-      worker={props.worker}
-      desktopState={desktopState}
-    >
+    console.log("Message received from worker", e);
 
-      {
-        desktopState.windows.terminal && <UIWindow
-          key={'terminal'}
-          app={'terminal'}
-          uiwindow={desktopState.windows['terminal']}
-          layer={desktopState.stack.findIndex((s) => s === 'terminal')}
-          desktopState={desktopState}
-          pushToTop={() => {
-            // debugger
-            setDesktopState({
-              ...desktopState,
-              stack: [
-                ...desktopState.stack.filter((x) => x !== 'terminal'),
-                'terminal'
-              ]
-            })
-          }} >
+    if (e.data[0] === 'terminal-update') {
 
-          <TerminalApp
-            worker={props.worker}
-            state={desktopState.terminal}
-            hooks={terminalHooks}
-          />
+      flushSync(() => {
+        setDesktopState({
+          ...desktopState,
 
-        </UIWindow>
-      }
+          terminal: {
+            ...desktopState.terminal,
 
-      {/* {
-        desktopState.windows['shipmap'] && <UIWindow
-          key={'shipmap'}
-          app={'shipmap'}
-          uiwindow={desktopState.windows['shipmap']}
-          layer={desktopState.stack.findIndex((s) => s === 'shipmap')}
-          desktopState={desktopState}
-          pushToTop={() => {
-            // debugger
-            setDesktopState({
-              ...desktopState,
-              stack: [
-                ...desktopState.stack.filter((x) => x !== 'shipmap'),
-                'shipmap'
-              ]
-            })
-          }} >
+            history: [
+              ...desktopState.terminal.history,
+              {
+                in: e.data[1].in,
+                out: e.data[1].out,
+                timeStamp: e.timeStamp
+              }
+            ].sort((e) => e.timeStamp)
+          }
+        });
+      });
 
 
-        </UIWindow>
 
-      } */}
 
-      {/* {
-        desktopState.windows['manual'] && <UIWindow
+
+    }
+
+    if (e.data[0] === 'login') {
+      flushSync(() => {
+        setDesktopState({
+          ...desktopState,
+
+          windows: {
+            ...desktopState.windows,
+            shipmap: {
+              ...desktopState.windows.shipmap,
+              "visible": true
+            },
+            manual: {
+              ...desktopState.windows.manual,
+              "visible": true
+            },
+            drone: {
+              ...desktopState.windows.drone,
+              "visible": true
+            }
+          }
+        });
+      });
+    }
+  };
+
+  const terminalHooks: ITerminalHooks = {
+    changeBuffer: (v: string) => {
+      setDesktopState({
+        ...desktopState,
+        terminal: {
+          ...desktopState.terminal,
+          buffer: v
+        }
+      })
+    },
+    submitBuffer: () => {
+      props.worker.postMessage(["terminal-in", desktopState.terminal.buffer])
+      setDesktopState({
+        ...desktopState,
+        terminal: {
+          ...desktopState.terminal,
+          buffer: ""
+        }
+      })
+    }
+  }
+
+
+  return (
+
+    <div>
+      {/* <pre>{JSON.stringify(stateRef.current, null, 2)}</pre>
+      <pre>{JSON.stringify(desktopState, null, 2)}</pre> */}
+      <div
+      >
+
+        {
+          desktopState.windows.terminal && <UIWindow
+            key={'terminal'}
+            app={'terminal'}
+            uiwindow={desktopState.windows['terminal']}
+            layer={desktopState.stack.findIndex((s) => s === 'terminal')}
+            desktopState={desktopState}
+            pushToTop={() => {
+
+              if (!stateRef.current) {
+                return;
+              }
+
+              const newState: IState = {
+                ...stateRef.current,
+                terminal: stateRef.current.terminal,
+                windows: stateRef.current?.windows,
+                stack: [
+                  ...(stateRef.current || { stack: [] }).stack.filter((x) => x !== 'terminal'),
+                  'terminal'
+                ]
+              };
+
+              setDesktopState(newState)
+            }} >
+
+            <TerminalApp
+              worker={props.worker}
+              state={desktopState.terminal}
+              hooks={terminalHooks}
+            />
+
+          </UIWindow>
+        }
+
+        {
+          stateRef.current.windows['shipmap'] && stateRef.current.windows['shipmap'].visible && <UIWindow
+            key={'shipmap'}
+            app={'shipmap'}
+            uiwindow={stateRef.current.windows['shipmap']}
+            layer={stateRef.current.stack.findIndex((s) => s === 'shipmap')}
+            desktopState={stateRef.current}
+            pushToTop={() => {
+              // debugger
+              setDesktopState({
+                ...stateRef.current,
+                stack: [
+                  ...((stateRef.current || { stack: [] }).stack.filter((x) => x !== 'shipmap')),
+                  'shipmap'
+                ]
+              } as IState)
+            }} >
+
+            <ShipMapApp worker={props.worker} />
+          </UIWindow>
+
+        }
+
+        {
+        stateRef.current.windows['manual'] && stateRef.current.windows['manual'].visible && <UIWindow
           key={'manual'}
           app={'manual'}
-          uiwindow={desktopState.windows['manual']}
-          layer={desktopState.stack.findIndex((s) => s === 'manual')}
-          desktopState={desktopState}
+          uiwindow={stateRef.current.windows['manual']}
+          layer={stateRef.current.stack.findIndex((s) => s === 'manual')}
+          desktopState={stateRef.current}
           pushToTop={() => {
             // debugger
             setDesktopState({
@@ -252,15 +247,15 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
 
         </UIWindow>
 
-      } */}
+      }
 
-      {/* {
-        desktopState.windows['drone'] && <UIWindow
+        {
+        stateRef.current.windows['drone'] && stateRef.current.windows['drone'].visible && <UIWindow
           key={'drone'}
           app={'drone'}
-          uiwindow={desktopState.windows['drone']}
-          layer={desktopState.stack.findIndex((s) => s === 'drone')}
-          desktopState={desktopState}
+          uiwindow={stateRef.current.windows['drone']}
+          layer={stateRef.current.stack.findIndex((s) => s === 'drone')}
+          desktopState={stateRef.current}
           pushToTop={() => {
 
             setDesktopState({
@@ -276,11 +271,13 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
 
         </UIWindow>
 
-      } */}
+      }
 
 
-    </WM>);
-  }
+      </div>
+    </div>
+  );
+}
 
 //   Desktop({
 //   'terminal': {

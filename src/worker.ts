@@ -5,14 +5,14 @@ const sp = new Spacetrash(postMessage).start();
 
 self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
   
-  console.log("worker onMesage");
+  // console.log("message from main received in worker:", msg.data);
 
   if (msg.data[0] === 'inputEvent') {
     if (sp) {
       sp.state.inputEvent(msg.data[1])  
     } 
   } else {
-    console.log("message from main received in worker:", msg.data);
+    
 
     if (msg.data[0] === 'terminal-in') {
       
@@ -24,9 +24,6 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
     }
 
     Object.keys(ESpaceTrashApps).forEach(spApp => {
-
-      
-
       if (msg.data[0] === `${spApp}-register`) {
         if (msg.data.length === 1) {
           sp.register(
@@ -44,7 +41,7 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
             true,
             msg.data[1].getContext("2d"),
             (data) => {
-              postMessage(`${spApp}-update`, data);
+              postMessage([`${spApp}-update`, data]);
             }
           )
         }

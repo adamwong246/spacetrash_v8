@@ -1,16 +1,16 @@
 import React from "react";
 import { useState } from "react";
-import { Terminal } from "../../../Terminal";
+
 import { UICanvas } from "../../../engine/UI/UICanvas";
 
 export const ShipMapApp = (props: {
   worker: Worker
 }) => {
 
-  const [state, setState] = useState < { buffer: string, history: any }>({
-    buffer: "",
-    history: []
-  });
+  // const [state, setState] = useState < { buffer: string, history: any }>({
+  //   buffer: "",
+  //   history: []
+  // });
 
   return (<div
   
@@ -26,7 +26,7 @@ export const ShipMapApp = (props: {
       // overflow: "auto",
     }}
   >
-
+    hello ship map
   <UICanvas worker={props.worker} app={"shipmap"} />
 
 

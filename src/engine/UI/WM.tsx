@@ -1,30 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
-// import stringifyEvent from "./Event";
 import { createContext, useContext } from 'react';
-import FlexibleModal from "../FlexModal/index";
-import { UIWindow } from "./UIWindow"
-import { UICanvas } from "./UICanvas";
-import { TerminalApp } from "../../games/spacetrash/UI/terminal";
-import { ESpaceTrashApps, ISpaceTrashApps } from "../../games/spacetrash/UI";
-import { ShipMapApp } from "../../games/spacetrash/UI/shipmap";
-import { DroneApp } from "../../games/spacetrash/UI/drone";
-import { Rnd } from "react-rnd";
-
-import withProPanel, { ProPanelContainer } from "../proPortal";
-
-// const ExampleComponent = (defaults: any) => {
-//   return (
-//       <div className="panel">
-//       <h1>Hello World!</h1>
-//       </div>
-        
-//     )
-// }
-// const WPP =  withProPanel(ExampleComponent);
-
 
 export type IUiDekstop = {
-  windows: Record<ISpaceTrashApps, IUiWindow | null>,
+  windows: Record<string, IUiWindow>,
   stack: string[];
 };
 
@@ -34,16 +12,10 @@ export type IUiWindow = {
   width: number;
   height: number;
   visible: boolean;
-  app: typeof UIWindow
 };
 
 export const ThemeContext = createContext<IUiDekstop>({
-  windows: {
-    terminal: null,
-    manual: null,
-    shipmap: null,
-    drone: null,
-  },
+  windows: {},
   stack: []
 });
 
@@ -51,9 +23,7 @@ export const WM = (props: {
   worker: Worker;
   desktopState: IUiDekstop;
   children: any;  // desktopState: IUiDekstop
-  // children: any;
-  // windowkey: string;
-  // setDesktop: (x: IUiDekstop) => void;
+
 }) => {
 
 

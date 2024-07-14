@@ -31,7 +31,8 @@ export class Scene<IApps extends string> extends Tree {
   
   // entityComponents: IECSComponents;
   appLogic: IAppLogic<IApps>;
-  events: any[] = [];
+  
+  events: Record<IApps, any[]>;
 
   constructor(
     name: string,
@@ -41,6 +42,7 @@ export class Scene<IApps extends string> extends Tree {
     super(name);
     // this.entityComponents = entityComponents;
     this.appLogic = appLogic;
+    this.events = {} as any;
   }
 
   boot(
@@ -53,10 +55,12 @@ export class Scene<IApps extends string> extends Tree {
 
     // this.appLogic[stateKey][0](ecs, bootReplier);
     Object.keys(this.appLogic).forEach((k) => {
-      // debugger
+      console.log("k", k)
+      this.events[k] = [];
       this.appLogic[k][0](ecs, bootReplier);
+      
     })
-    this.events = [];
+    
   }
 
   draw(
@@ -65,19 +69,24 @@ export class Scene<IApps extends string> extends Tree {
     bootReplier: (x: any) => void,
     entityComponents: IECSComponents,
   ) {
-    
+    // console.log(this.events)
     this.appLogic[app][1](
       // this.entityComponents,
       entityComponents,
       ctx,
-      this.events,
+      this.events? this.events[app] : [],
       bootReplier
     );
-    this.events = [];
+    if (this.events && this.events[app]) {this.events[app] = []};
   }
 
-  inputEvent(inputEvent: Event) {
-    this.events.push(inputEvent);
+  inputEvent(
+    inputEvent: Event
+  ) {
+    Object.keys(this.events).forEach((k) => {
+      this.events[k].push(inputEvent);
+    })
+    
   }
 
 }

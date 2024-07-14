@@ -2450,7 +2450,7 @@ var require_react_development = __commonJS({
           }
           return children;
         }
-        function createContext2(defaultValue) {
+        function createContext(defaultValue) {
           var context = {
             $$typeof: REACT_CONTEXT_TYPE,
             // As a workaround to support multiple concurrent renderers, we categorize
@@ -2750,7 +2750,7 @@ var require_react_development = __commonJS({
           }
           return dispatcher.useContext(Context);
         }
-        function useState4(initialState) {
+        function useState3(initialState) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useState(initialState);
         }
@@ -2758,7 +2758,7 @@ var require_react_development = __commonJS({
           var dispatcher = resolveDispatcher();
           return dispatcher.useReducer(reducer, initialArg, init);
         }
-        function useRef5(initialValue) {
+        function useRef6(initialValue) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useRef(initialValue);
         }
@@ -3531,7 +3531,7 @@ var require_react_development = __commonJS({
         exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
         exports.act = act;
         exports.cloneElement = cloneElement$1;
-        exports.createContext = createContext2;
+        exports.createContext = createContext;
         exports.createElement = createElement$1;
         exports.createFactory = createFactory;
         exports.createRef = createRef;
@@ -3552,8 +3552,8 @@ var require_react_development = __commonJS({
         exports.useLayoutEffect = useLayoutEffect;
         exports.useMemo = useMemo;
         exports.useReducer = useReducer;
-        exports.useRef = useRef5;
-        exports.useState = useState4;
+        exports.useRef = useRef6;
+        exports.useState = useState3;
         exports.useSyncExternalStore = useSyncExternalStore;
         exports.useTransition = useTransition;
         exports.version = ReactVersion;
@@ -4049,9 +4049,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React9 = require_react();
+        var React11 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React9.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -5656,7 +5656,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React9.Children.forEach(props.children, function(child) {
+                React11.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -22507,7 +22507,7 @@ var require_react_dom_development = __commonJS({
             }
           }
         }
-        function flushSync(fn) {
+        function flushSync2(fn) {
           if (rootWithPendingPassiveEffects !== null && rootWithPendingPassiveEffects.tag === LegacyRoot && (executionContext & (RenderContext | CommitContext)) === NoContext) {
             flushPassiveEffects();
           }
@@ -23573,7 +23573,7 @@ var require_react_dom_development = __commonJS({
             }
             var staleFamilies = update.staleFamilies, updatedFamilies = update.updatedFamilies;
             flushPassiveEffects();
-            flushSync(function() {
+            flushSync2(function() {
               scheduleFibersWithFamiliesRecursively(root2.current, updatedFamilies, staleFamilies);
             });
           }
@@ -23584,7 +23584,7 @@ var require_react_dom_development = __commonJS({
               return;
             }
             flushPassiveEffects();
-            flushSync(function() {
+            flushSync2(function() {
               updateContainer(element, root2, null, null);
             });
           }
@@ -24373,7 +24373,7 @@ var require_react_dom_development = __commonJS({
               break;
             }
             case SuspenseComponent: {
-              flushSync(function() {
+              flushSync2(function() {
                 var root3 = enqueueConcurrentRenderForLane(fiber, SyncLane);
                 if (root3 !== null) {
                   var eventTime = requestEventTime();
@@ -24702,7 +24702,7 @@ var require_react_dom_development = __commonJS({
                 error("Attempted to synchronously unmount a root while React was already rendering. React cannot finish unmounting the root until the current render has completed, which may lead to a race condition.");
               }
             }
-            flushSync(function() {
+            flushSync2(function() {
               updateContainer(null, root2, null, null);
             });
             unmarkContainerAsRoot(container);
@@ -24877,7 +24877,7 @@ var require_react_dom_development = __commonJS({
             markContainerAsRoot(root2.current, container);
             var rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
             listenToAllSupportedEvents(rootContainerElement);
-            flushSync();
+            flushSync2();
             return root2;
           } else {
             var rootSibling;
@@ -24908,7 +24908,7 @@ var require_react_dom_development = __commonJS({
             markContainerAsRoot(_root.current, container);
             var _rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
             listenToAllSupportedEvents(_rootContainerElement);
-            flushSync(function() {
+            flushSync2(function() {
               updateContainer(initialChildren, _root, parentComponent, callback);
             });
             return _root;
@@ -25036,7 +25036,7 @@ var require_react_dom_development = __commonJS({
                 error("unmountComponentAtNode(): The node you're attempting to unmount was rendered by another copy of React.");
               }
             }
-            flushSync(function() {
+            flushSync2(function() {
               legacyRenderSubtreeIntoContainer(null, null, container, false, function() {
                 container._reactRootContainer = null;
                 unmarkContainerAsRoot(container);
@@ -25068,7 +25068,7 @@ var require_react_dom_development = __commonJS({
           }
         }
         setRestoreImplementation(restoreControlledState$3);
-        setBatchingImplementation(batchedUpdates$1, discreteUpdates, flushSync);
+        setBatchingImplementation(batchedUpdates$1, discreteUpdates, flushSync2);
         function createPortal$1(children, container) {
           var key = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : null;
           if (!isValidContainer(container)) {
@@ -25107,7 +25107,7 @@ var require_react_dom_development = __commonJS({
               error("flushSync was called from inside a lifecycle method. React cannot flush when React is already rendering. Consider moving this call to a scheduler task or micro task.");
             }
           }
-          return flushSync(fn);
+          return flushSync2(fn);
         }
         var foundDevTools = injectIntoDevTools({
           findFiberByHostInstance: getClosestInstanceFromNode,
@@ -25275,7 +25275,6 @@ var Game = class {
     requestAnimationFrame(() => this.canvasContexts[key].run && this.animationLoop(key));
   }
   draw(key) {
-    console.log("Game.draw", this.state.currrent);
     const s = this.state.get(this.state.currrent);
     const ctx = this.canvasContexts[key].context;
     const clbk = this.canvasContexts[key].callback;
@@ -25304,29 +25303,36 @@ var Tree = class {
 var Scene = class extends Tree {
   // entityComponents: IECSComponents;
   appLogic;
-  events = [];
+  events;
   constructor(name, appLogic) {
     super(name);
     this.appLogic = appLogic;
+    this.events = {};
   }
   boot(stateKey, ecs, bootReplier) {
     Object.keys(this.appLogic).forEach((k) => {
+      console.log("k", k);
+      this.events[k] = [];
       this.appLogic[k][0](ecs, bootReplier);
     });
-    this.events = [];
   }
   draw(ctx, app, bootReplier, entityComponents) {
     this.appLogic[app][1](
       // this.entityComponents,
       entityComponents,
       ctx,
-      this.events,
+      this.events ? this.events[app] : [],
       bootReplier
     );
-    this.events = [];
+    if (this.events && this.events[app]) {
+      this.events[app] = [];
+    }
+    ;
   }
   inputEvent(inputEvent) {
-    this.events.push(inputEvent);
+    Object.keys(this.events).forEach((k) => {
+      this.events[k].push(inputEvent);
+    });
   }
 };
 
@@ -25533,6 +25539,8 @@ Launch date:    May, 2690
 };
 
 // src/games/spacetrash/index.ts
+var mouseX = 0;
+var mouseY = 0;
 var Spacetrash = class extends Game {
   terminal;
   constructor(workerPostMessage) {
@@ -25562,8 +25570,8 @@ var Spacetrash = class extends Game {
       "menuscene_view_v0",
       {
         terminal: [(ecs, reply) => {
-          reply(["terminal-update", this.terminal.login()]);
           reply(["login", ""]);
+          reply(["terminal-update", this.terminal.login()]);
         }, (ecs, canvas, events, reply) => {
         }],
         manual: [(ecs, reply) => {
@@ -25571,9 +25579,36 @@ var Spacetrash = class extends Game {
         }],
         drone: [(ecs, reply) => {
         }, (ecs, canvas, events, reply) => {
+          if (canvas) {
+            canvas.beginPath();
+            canvas.arc(44, 11, 10, 0, 2 * Math.PI);
+            canvas.fillStyle = "green";
+            canvas.fill();
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "grey";
+            canvas.stroke();
+          }
         }],
         shipmap: [(ecs, reply) => {
         }, (ecs, canvas, events, reply) => {
+          events.forEach((event) => {
+            if (event.type === "mousemove") {
+              var rect = event.boundingClient;
+              var x = event.clientX - rect.left;
+              var y = event.clientY - rect.top;
+              mouseX = x;
+              mouseY = y;
+            }
+          });
+          if (canvas) {
+            canvas.beginPath();
+            canvas.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
+            canvas.fillStyle = "red";
+            canvas.fill();
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "blue";
+            canvas.stroke();
+          }
         }]
       }
     ));
@@ -25593,48 +25628,44 @@ var Spacetrash = class extends Game {
 };
 
 // src/games/spacetrash/UI/index.tsx
-var import_react11 = __toESM(require_react(), 1);
-
-// src/engine/UI/WM.tsx
-var import_react = __toESM(require_react(), 1);
-var import_react2 = __toESM(require_react(), 1);
-var ThemeContext = (0, import_react2.createContext)({
-  windows: {
-    terminal: null,
-    manual: null,
-    shipmap: null,
-    drone: null
-  },
-  stack: []
-});
+var import_react12 = __toESM(require_react(), 1);
+var import_react_dom2 = __toESM(require_react_dom(), 1);
 
 // src/engine/UI/UIWindow.tsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/index.jsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Portal.jsx
-var import_react3 = __toESM(require_react(), 1);
+var import_react = __toESM(require_react(), 1);
 var import_react_dom = __toESM(require_react_dom(), 1);
 
 // src/engine/FlexModal/Header.jsx
-var import_react4 = __toESM(require_react(), 1);
+var import_react2 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Footer.jsx
-var import_react5 = __toESM(require_react(), 1);
+var import_react3 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Resizer.jsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react4 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/usePrevious.jsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react5 = __toESM(require_react(), 1);
 
 // src/games/spacetrash/UI/terminal.tsx
+var import_react8 = __toESM(require_react(), 1);
+
+// src/games/spacetrash/UI/drone.tsx
 var import_react10 = __toESM(require_react(), 1);
 
+// src/engine/UI/UICanvas.tsx
+var import_react9 = __toESM(require_react(), 1);
+
+// src/games/spacetrash/UI/shipmap.tsx
+var import_react11 = __toESM(require_react(), 1);
+
 // src/games/spacetrash/UI/index.tsx
-var import_react_dom2 = __toESM(require_react_dom(), 1);
 var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
   ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
@@ -25646,13 +25677,11 @@ var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
 // src/worker.ts
 var sp = new Spacetrash(postMessage).start();
 self.onmessage = function handleMessageFromMain(msg) {
-  console.log("worker onMesage");
   if (msg.data[0] === "inputEvent") {
     if (sp) {
       sp.state.inputEvent(msg.data[1]);
     }
   } else {
-    console.log("message from main received in worker:", msg.data);
     if (msg.data[0] === "terminal-in") {
       sp.terminalIn(msg.data[1], (output) => {
         postMessage([`terminal-update`, output]);
@@ -25677,7 +25706,7 @@ self.onmessage = function handleMessageFromMain(msg) {
             true,
             msg.data[1].getContext("2d"),
             (data) => {
-              postMessage(`${spApp}-update`, data);
+              postMessage([`${spApp}-update`, data]);
             }
           );
         }

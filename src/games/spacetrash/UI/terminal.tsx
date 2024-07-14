@@ -1,16 +1,23 @@
 import React, { useEffect } from "react";
-import { ITerminalState } from ".";
 
 export type ITerminalHooks = {
   changeBuffer: (value: string) => any,
   submitBuffer: () => any,
 }
 
-export const TerminalApp = (props: { worker: Worker, state: ITerminalState, hooks: ITerminalHooks }) => {
+export type ITerminalState = {
+  buffer: string;
+  history: { in: string, out: string, timeStamp: number }[],
+};
+
+export const TerminalApp = (props: {
+  worker: Worker,
+  state: ITerminalState,
+  hooks: ITerminalHooks
+}) => {
 
   useEffect(() => {
     props.worker.postMessage(["terminal-register"], []);
-
   }, []);
 
   return (<div

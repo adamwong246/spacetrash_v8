@@ -29,9 +29,11 @@ export const UICanvas = (props: {
       props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
     }}
     onMouseOver={(e) => {
+      // debugger
       props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
     }}
     onMouseMove={(e) => {
+      // debugger
       props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
     }}
     ref={canvasRef}

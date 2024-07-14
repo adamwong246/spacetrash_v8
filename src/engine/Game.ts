@@ -71,7 +71,7 @@ export class Game<SystemKeys extends string> {
   }
 
   draw(key: string) {
-    console.log("Game.draw", this.state.currrent)
+    // console.log("Game.draw", this.state.currrent)
     const s = this.state.get(this.state.currrent);
 
     const ctx = this.canvasContexts[key].context;
