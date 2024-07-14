@@ -20,45 +20,45 @@ export class Physical extends System<ISpaceTrashSystems> {
     entitiesComponents.forEach((ec) => {
       const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
 
-      for (let y = 0; y < entitiesComponents.length-1; y++) {
-        // console.log("y", y);
-        for (let x = 1; x < y + 2; x++) {
-          // console.log("y", "x", y, x);
+      // for (let y = 0; y < entitiesComponents.length-1; y++) {
+      //   // console.log("y", y);
+      //   for (let x = 1; x < y + 2; x++) {
+      //     // console.log("y", "x", y, x);
 
-          // const andx = ((y / entitiesComponents.length) + x) - 1;
-          // const bndx = ((x / entitiesComponents.length) + y) - 1;
-          // console.log("andx", "bndx", andx, bndx);
+      //     // const andx = ((y / entitiesComponents.length) + x) - 1;
+      //     // const bndx = ((x / entitiesComponents.length) + y) - 1;
+      //     // console.log("andx", "bndx", andx, bndx);
 
-          const a = entitiesComponents[y];
-          const b = entitiesComponents[x];
-          const ad = a.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-          const bd = b.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-          const d = (Math.pow(ad.x - bd.x, 2) + Math.pow(ad.y - bd.y, 2));
+      //     // const a = entitiesComponents[y];
+      //     // const b = entitiesComponents[x];
+      //     // const ad = a.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+      //     // const bd = b.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+      //     // const d = (Math.pow(ad.x - bd.x, 2) + Math.pow(ad.y - bd.y, 2));
 
-          // console.log("a", a);
+      //     // console.log("a", a);
 
-          if (d < 1 && d !== 0) {
-            // console.log("collide", d)
+      //     // if (d < 1 && d !== 0) {
+      //     //   // console.log("collide", d)
             
             
-            ad.x = ad.x - ad.dx*3;
-            ad.y = ad.y - ad.dy*3;
+      //     //   ad.x = ad.x - ad.dx*3;
+      //     //   ad.y = ad.y - ad.dy*3;
 
-            bd.x = bd.x - bd.dx*3;
-            bd.y = bd.y - bd.dy*3;
+      //     //   bd.x = bd.x - bd.dx*3;
+      //     //   bd.y = bd.y - bd.dy*3;
 
-            const ddx = (ad.dx + bd.dx)/2;
-            const ddy = (ad.dy + bd.dy)/2;
+      //     //   const ddx = (ad.dx + bd.dx)/2;
+      //     //   const ddy = (ad.dy + bd.dy)/2;
                         
-            ad.dx = ddx;
-            ad.dy = ddy;
+      //     //   ad.dx = ddx;
+      //     //   ad.dy = ddy;
 
-            bd.dx = ddx;
-            bd.dy = ddy;
-            // debugger
-          }
-        }
-      }
+      //     //   bd.dx = ddx;
+      //     //   bd.dy = ddy;
+      //     //   // debugger
+      //     // }
+      //   }
+      // }
       
 
       if (d.x < 0) {

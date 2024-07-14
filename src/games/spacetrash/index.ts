@@ -5,6 +5,13 @@ import { Scene } from "../../engine/Scene";
 import { ISpaceTrashSystems, SpaceTrashSystems } from "./Systems";
 import { ISpaceTrashApps } from "./UI";
 import { SpaceTrashTerminal } from "./Terminal";
+import { Surface } from "../../engine/Surface";
+import { SpaceTrashSurface } from "./surface";
+import { PhysicsActorComponent } from "./Components/physics";
+import { DroneApp } from "./UI/drone";
+import { SpaceTrashDrone } from "./Entities";
+import { ECS_Basic } from "../../engine/ECS/basic";
+import { SpaceTrashECS } from "./EC";
 
 
 export type IRays =
@@ -24,13 +31,18 @@ export enum ERays {
   'visible',
 }
 
-let mouseX = 0;
-let mouseY = 0;
+let droneMouseX = 0;
+let droneMouseY = 0;
+let shipMapMouseX = 0;
+let shipMapMouseY = 0;
 
 
 export class Spacetrash extends Game<ISpaceTrashSystems> {
   terminal: SpaceTrashTerminal;
   constructor(workerPostMessage: (message: any, options?: WindowPostMessageOptions | undefined) => void) {
+
+    // const surface = new SpaceTrashSurface('my-first-surface');
+    // console.log(surface.store);
 
     const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
 
@@ -40,10 +52,9 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
     state.set('boot', new Scene<ISpaceTrashApps>('bootscene_view_v0',
       {
         terminal: [(ecs, reply) => {
-          console.log("-")
-          // console.log(terminal.boot())
-
           reply(this.terminal.boot());
+
+
         }, (ecs, canvas, events, reply) => {
           // console.log(events)
         }],
@@ -63,6 +74,9 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
           // debugger
         }],
 
+      },
+      async (ecs) => {
+        return
       }
     ));
 
@@ -82,58 +96,84 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
         drone: [(ecs, reply) => {
           // return []
         }, (ecs, canvas, events, reply) => {
+
+          events.forEach((event) => {
+            if (event.type === "mousemove") {
+
+              var rect = event.boundingClient;
+              var x = event.clientX - rect.left; //x position within the element.
+              var y = event.clientY - rect.top;
+
+              droneMouseX = x;
+              droneMouseY = y;
+            }
+          })
+
           if (canvas) {
             canvas.beginPath();
-            canvas.arc(44, 11, 10, 0, 2 * Math.PI);
+            canvas.arc(droneMouseX, droneMouseY, 10, 0, 2 * Math.PI);
             canvas.fillStyle = "green";
             canvas.fill();
             canvas.lineWidth = 1;
             canvas.strokeStyle = "grey";
-            canvas.stroke();  
+            canvas.stroke();
           }
         }],
         shipmap: [(ecs, reply) => {
           // return []
         }, (ecs, canvas, events, reply) => {
 
-          
+
           events.forEach((event) => {
             if (event.type === "mousemove") {
-              
+
               var rect = event.boundingClient;
               var x = event.clientX - rect.left; //x position within the element.
-              var y = event.clientY - rect.top; 
+              var y = event.clientY - rect.top;
 
-              mouseX = x;
-              mouseY = y;
+              shipMapMouseX = x;
+              shipMapMouseY = y;
             }
           })
 
           if (canvas) {
+            ecs.forEach((ec) => {
+              const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+              canvas.beginPath();
+              canvas.arc(d.x * 10, d.y * 10, 4, 0, 2 * Math.PI);
+              canvas.fillStyle = "blue";
+              canvas.fill();
+              canvas.lineWidth = 1;
+              canvas.strokeStyle = "red";
+              canvas.stroke();
+            })
+
             canvas.beginPath();
-            canvas.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
-            canvas.fillStyle = "red";
+            canvas.arc(shipMapMouseX, shipMapMouseY, 10, 0, 2 * Math.PI);
+            canvas.fillStyle = "transparent";
             canvas.fill();
             canvas.lineWidth = 1;
-            canvas.strokeStyle = "blue";
-            canvas.stroke();  
+            canvas.strokeStyle = "white";
+            canvas.stroke();
           }
-          
-          
-      
-          // ecs.forEach((ec) => {
-          //   const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-      
-          //   ctx.beginPath();
-          //   ctx.arc(d.x * 10, d.y * 20, 4, 0, 2 * Math.PI);
-          //   ctx.fillStyle = "black";
-          //   ctx.fill();
-          //   ctx.lineWidth = 1;
-          //   ctx.strokeStyle = "red";
-          //   ctx.stroke();
-      
-          // })
         }],
+      },
+      (ecs) => {
+        return new Promise((res, rej) => {
+          // const d = new SpaceTrashDrone(1, 2, 3, 4, 5)
+          ecs.setEntitiesComponent([...new Array(2000)].map((n) => {
+            return new SpaceTrashDrone(
+              // 400, 300,
+              Math.random() * 800,
+              Math.random() * 600,
+              3,
+              (Math.random() - 0.5) / 10,
+              (Math.random() - 0.5) / 10)
+          }))
+          res();
+          // ecs.entityComponents = [new SpaceTrashDrone(1, 2, 3, 0.04, 0.05)]
+          // return
+        })
 
       }
     ));
@@ -144,6 +184,7 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
       workerPostMessage
     );
 
+    this.ecs = new SpaceTrashECS(SpaceTrashSystems);
     this.terminal = new SpaceTrashTerminal();
 
   }
@@ -154,7 +195,11 @@ export class Spacetrash extends Game<ISpaceTrashSystems> {
   ): Promise<{ in: string, out: string }> {
     return {
       in: input,
-      out: this.terminal.processCommand(input, this.update, callback).out
+      out: this.terminal.processCommand(
+        input,
+        this.changeScene,
+        callback
+      ).out
     };
   }
 

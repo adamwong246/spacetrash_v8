@@ -25752,21 +25752,21 @@ var initialState = () => {
         left: 500,
         width: 800,
         height: 500,
-        visible: false
+        visible: true
       },
       manual: {
         top: 90,
         left: 90,
         width: 129,
         height: 165,
-        visible: false
+        visible: true
       },
       drone: {
         top: 360,
         left: 50,
         width: 280,
         height: 250,
-        visible: false
+        visible: true
       }
     }
   };

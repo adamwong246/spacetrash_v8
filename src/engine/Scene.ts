@@ -1,5 +1,6 @@
 
-import { ECS, EntityComponent } from "./ECS";
+import { ECS } from "./ECS";
+import { EntityComponent } from "./EntityComponent";
 import { Tree } from "./Tree";
 
 type IECSComponents = EntityComponent[];
@@ -21,46 +22,34 @@ type ILogic = [IBoot, IUpdate];
 
 type IAppLogic<IApps extends string> = Record<IApps, ILogic>
 
-// type PartialRecord<K extends keyof any, T> = {
-//   [P in K]?: T;
-// };
-
-
-
 export class Scene<IApps extends string> extends Tree {
-  
-  // entityComponents: IECSComponents;
   appLogic: IAppLogic<IApps>;
-  
   events: Record<IApps, any[]>;
+  sceneBoot: (ecs: ECS<any>) => Promise<void>;
 
   constructor(
     name: string,
-    // entityComponents: IECSComponents,
     appLogic: IAppLogic<IApps>,
+    sceneBoot: (ecs: ECS<any>) => Promise<void>,
   ) {
     super(name);
-    // this.entityComponents = entityComponents;
     this.appLogic = appLogic;
     this.events = {} as any;
+    this.sceneBoot = sceneBoot || (async (ecs) => { });
   }
 
-  boot(
+  async boot(
     stateKey: string,
     ecs: ECS<any>,
     bootReplier: IReply
-    // b: IBoot,
     
   ) {
-
-    // this.appLogic[stateKey][0](ecs, bootReplier);
+    await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
-      console.log("k", k)
+      // console.log("k", k)
       this.events[k] = [];
-      this.appLogic[k][0](ecs, bootReplier);
-      
+      this.appLogic[k][0](ecs, bootReplier); 
     })
-    
   }
 
   draw(
@@ -69,9 +58,7 @@ export class Scene<IApps extends string> extends Tree {
     bootReplier: (x: any) => void,
     entityComponents: IECSComponents,
   ) {
-    // console.log(this.events)
     this.appLogic[app][1](
-      // this.entityComponents,
       entityComponents,
       ctx,
       this.events? this.events[app] : [],
@@ -81,12 +68,9 @@ export class Scene<IApps extends string> extends Tree {
   }
 
   inputEvent(
-    inputEvent: Event
+    inputEvent: Event,
+    appKey: string,
   ) {
-    Object.keys(this.events).forEach((k) => {
-      this.events[k].push(inputEvent);
-    })
-    
+    this.events[appKey].push(inputEvent);
   }
-
 }

@@ -17,7 +17,7 @@ esbuild.context({
 
   outdir: "./dist",
 
-
+  external: ["crypto"],
   loader: {
     '.css': 'file',
     '.html': 'copy',

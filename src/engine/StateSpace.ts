@@ -25,12 +25,7 @@ export class StateSpace extends DirectedGraph {
   getCurrent(): Scene<any> {
     return this.graph.getNodeAttribute(this.currrent, 'Scene');
   }
-
-  // jump(key): void{
-  //   this.currrent = key;
-  //   console.log("jumped to", this.currrent)
-  // }
-
+  
   get(key): Scene<any> {
     return this.graph.getNodeAttribute(key, 'Scene');
   }
@@ -39,8 +34,12 @@ export class StateSpace extends DirectedGraph {
     this.graph.setNodeAttribute(key, 'Scene', scene);
   }
 
-  inputEvent(inputEvent: Event): void {
-    (this.graph.getNodeAttribute(this.currrent, 'Scene') as Scene<any>).inputEvent(inputEvent);
+  inputEvent(
+    inputEvent: Event,
+    appKey: string,
+  ): void {
+    (this.graph.getNodeAttribute(this.currrent, 'Scene') as Scene<any>)
+      .inputEvent(inputEvent, appKey);
   }
 
 }

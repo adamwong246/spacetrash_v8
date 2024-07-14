@@ -20,22 +20,14 @@ export class Game<SystemKeys extends string> {
   ) {
     this.state = state;
     this.postMessage = postMessage;
-    this.ecs = new ECS(systems);
     this.canvasContexts = {};
-
-    this.update = this.update.bind(this)
+    this.changeScene = this.changeScene.bind(this)
   }
 
-  update(to: string) {
-    // debugger
+  changeScene(to: string) {
     this.state.setCurrent(to);
     const newScene = this.state.getCurrent();
-    // const clbk = this.canvasContexts[this.state.currrent].callback;
     newScene.boot(to, this.ecs, this.postMessage);
-    // const newScene = this.state.current()
-    // this.ecs.flash(scene);
-    
-    
   }
 
   register(
@@ -85,7 +77,7 @@ export class Game<SystemKeys extends string> {
       ctx,
       key,
       clbk || (() => { }),
-      this.ecs.entityComponents,
+      this.ecs.getEntitiesComponent(),
     );
     
     // if (ctx) {

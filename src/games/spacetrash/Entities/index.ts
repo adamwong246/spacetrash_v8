@@ -1,10 +1,13 @@
-import { EntityComponent } from "../../../engine/ECS";
+
 import { Entity } from "../../../engine/Entity";
+import { EntityComponent } from "../../../engine/EntityComponent";
+
 import { InCastingComponent, AttackableComponent, ThermalComponent, CameraComponent } from "../Components/casting/in";
 import { OutCastingComponent, MeleeComponent, GunComponent, LitComponent } from "../Components/casting/out";
 import { UnmovingComponent, SpawningComponent, PanningComponent, WheeledComponent } from "../Components/conveyance";
 import { PhysicsComponent, PhysicsSetComponent, PhysicsActorComponent } from "../Components/physics";
 import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, PowerStoringComponent } from "../Components/power";
+
 
 export class SpaceTrashEntityComponent extends EntityComponent {
   constructor(
@@ -108,7 +111,7 @@ export class SecurityTurret extends SpaceTrashEntityComponent {
   }
 }
 
-export class Drone extends SpaceTrashEntityComponent {
+export class SpaceTrashDrone extends SpaceTrashEntityComponent {
 
   constructor(
     x: number = 0,
