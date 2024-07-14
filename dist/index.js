@@ -25716,12 +25716,8 @@ var ShipMapApp = (props) => {
         height: "100%",
         width: "100%",
         position: "relative"
-        // display: "flex",
-        // flexDirection: "column-reverse",
-        // overflow: "auto",
       }
     },
-    "hello ship map",
     /* @__PURE__ */ import_react14.default.createElement(UICanvas, { worker: props.worker, app: "shipmap" })
   );
 };

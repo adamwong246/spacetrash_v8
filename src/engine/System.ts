@@ -18,7 +18,7 @@ export abstract class System<SystemKeys extends string> {
   abstract doPostLogic(entitiesComponent: EntityComponent[]): void
 
   loop(ecs: ECS<SystemKeys>, system: SystemKeys) {
-    setInterval((d, s) => this.logicLoop(d, s), 0.3, ecs, system);
+    setInterval((d, s) => this.logicLoop(d, s), 10, ecs, system);
   }
 
   async logicLoop(ecs: ECS<SystemKeys>, system: SystemKeys) {

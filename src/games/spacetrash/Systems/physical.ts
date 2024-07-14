@@ -1,24 +1,169 @@
-import { IMoves, System } from "../../../engine/System";
+import { System } from "../../../engine/System";
 
-import { ISpaceTrashSystems } from ".";
-import { EntityComponent } from "../../../engine/ECS";
-import { PhysicsActorComponent } from "../Components/physics";
+import { PhysicsActorComponent, PhysicsSetComponent } from "../Components/physics";
+import { SpaceTrashEntityComponent } from "../EntityComponent";
+
+import { ISpaceTrashSystems, TileSize } from ".";
 
 export class Physical extends System<ISpaceTrashSystems> {
-  constructor() {
+  mapSize: number;
+  constructor(mapSize: number) {
     super()
+    this.mapSize = mapSize;
   }
-  doPreLogic(entitiesComponents: EntityComponent[]): void {
+  doPreLogic(entitiesComponents: SpaceTrashEntityComponent[]): void {
     entitiesComponents.forEach((ec) => {
       const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-      d.x = d.x + d.dx;
-      d.y = d.y + d.dy;
+      if (d) {
+        d.x = d.x + d.dx;
+        d.y = d.y + d.dy;
+      }
     })
   }
 
-  doPostLogic(entitiesComponents: EntityComponent[]) {
-    entitiesComponents.forEach((ec) => {
-      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+  doPostLogic(entitiesComponents: SpaceTrashEntityComponent[]) {
+    const setPieces = entitiesComponents.filter((ec) => {
+      return ec.components.find((c) => c.constructor.name === "PhysicsSetComponent")
+    });
+
+    const actors = entitiesComponents.filter((ec) => {
+      return ec.components.find((c) => c.constructor.name === "PhysicsActorComponent")
+    });
+
+    actors.forEach((actorEc) => {
+      if (actorEc) {
+
+        const c = actorEc.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+
+        setPieces.filter((ec) => {
+          return ec.components.find((c) => c.constructor.name === "PhysicsSetComponent" && (c as PhysicsSetComponent).solid)
+        }).forEach((solidSetPiece) => {
+
+          const sc = solidSetPiece.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent
+
+          const halftile = TileSize / 2;
+          if (
+            Math.round(c.x) === sc.x && Math.round(c.y) === sc.y
+          ) {
+
+            c.x = c.x - 50*c.dx;
+            c.y = c.y - 50*c.dy;            
+            
+            if (c.dx >= 0) {
+              if (c.dy >= 0) {
+
+                if (
+                  sc.x === Math.round(c.x) && sc.y === Math.round(c.y)
+                ) {
+                  c.dx = c.dx * -1; 
+                  c.dy = c.dy * -1; 
+                } else if (
+                  sc.x === Math.round(c.x) + 1 && sc.y === Math.round(c.y)
+                ) {
+                  c.dy = c.dy * -1; 
+                }else if (
+                  sc.x === Math.round(c.x) && sc.y === Math.round(c.y) + 1
+                ) {
+                  c.dx = c.dx * -1; 
+                  
+                }
+                               
+                console.log("mark1");
+              } else {
+                // c.dy = c.dy * -1;
+                // console.log("mark2");
+              } 
+            } else {
+              if (c.dy >= 0) {
+                // c.dx = c.dx * -1;
+                // console.log("mark3");
+              } else {
+                // c.dy = c.dy * -1;
+                // console.log("mark4");
+              }
+
+              
+            }
+            
+
+            // if (c.dx > 0) {
+            //   if (Math.abs(c.dx) >= Math.abs(c.dy)) {
+            //     c.dx = c.dx * -1
+            //     c.x = c.x + c.dx
+            //   } else {
+            //     c.dy = c.dy * -1
+            //     c.y = c.y + c.dy
+            //   }
+            // } else {
+            //   if (Math.abs(c.dx) >= Math.abs(c.dy)) {
+              
+            //   } else {
+                
+            //   }
+            // }
+            // c.dx = 0;
+            // c.dy = 0;
+            // debugger
+            // if (Math.abs(c.dx) >= Math.abs(c.dy)) {
+            //   console.log("mark1")
+            //   c.dx = c.dx * -1
+            //   c.x = c.x + c.dx
+            // } else {
+            //   console.log("mark2")
+            //   c.dy = c.dy * -1
+            //   c.y = c.y + c.dy
+            // }
+          }
+        });
+
+        
+
+      // if (c.x < 0) {
+      //   c.x = this.mapSize + c.dx * 2;
+      // }
+      // if (c.x > this.mapSize) {
+      //   c.x = c.dx*2;
+      // }
+      // if (c.y < 0) {
+      //   c.y = this.mapSize + c.dy*2;
+      // }
+      // if (c.y > this.mapSize) {
+      //   c.y = c.dy*2;
+      // }        
+    }
+    });
+
+
+
+    // entitiesComponents.forEach((ec) => {
+    //   const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;      
+
+    //   entitiesComponents.forEach((ec) => {
+    //   });
+
+    //   if (d) {
+    //     if (d.x < 0) {
+    //       d.x = 40 + d.dx * 2;
+    //       // debugger
+    //       // d.dx = d.dx * -1
+    //     }
+    //     if (d.x > 40) {
+    //       d.x = d.dx*2;
+    //       // d.dx = d.dx * -1
+    //     }
+    //     if (d.y < 0) {
+    //       d.y = 30 + d.dy*2;
+    //       // d.dy = d.dy * -1
+    //     }
+    //     if (d.y > 30) {
+    //       d.y = d.dy*2;
+    //       // d.dy = d.dy * -1
+    //     }        
+    //   }
+
+    // })
+  }
+}
 
       // for (let y = 0; y < entitiesComponents.length-1; y++) {
       //   // console.log("y", y);
@@ -59,25 +204,3 @@ export class Physical extends System<ISpaceTrashSystems> {
       //     // }
       //   }
       // }
-      
-
-      if (d.x < 0) {
-        d.x = 40 + d.dx * 2;
-        // debugger
-        // d.dx = d.dx * -1
-      }
-      if (d.x > 40) {
-        d.x = d.dx*2;
-        // d.dx = d.dx * -1
-      }
-      if (d.y < 0) {
-        d.y = 30 + d.dy*2;
-        // d.dy = d.dy * -1
-      }
-      if (d.y > 30) {
-        d.y = d.dy*2;
-        // d.dy = d.dy * -1
-      }
-    })
-  }
-}

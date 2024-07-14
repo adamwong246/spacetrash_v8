@@ -1,24 +1,10 @@
-
 import { Entity } from "../../../engine/Entity";
-import { EntityComponent } from "../../../engine/EntityComponent";
-
-import { InCastingComponent, AttackableComponent, ThermalComponent, CameraComponent } from "../Components/casting/in";
+import { InCastingComponent, AttackableComponent, ThermalComponent, CameraComponent, LitableComponent } from "../Components/casting/in";
 import { OutCastingComponent, MeleeComponent, GunComponent, LitComponent } from "../Components/casting/out";
 import { UnmovingComponent, SpawningComponent, PanningComponent, WheeledComponent } from "../Components/conveyance";
 import { PhysicsComponent, PhysicsSetComponent, PhysicsActorComponent } from "../Components/physics";
 import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, PowerStoringComponent } from "../Components/power";
-
-
-export class SpaceTrashEntityComponent extends EntityComponent {
-  constructor(
-    entity: Entity,
-    physics: PhysicsComponent,
-    casts: (InCastingComponent | OutCastingComponent)[],
-    ...components: (PoweredComponent)[]
-  ) {
-    super(entity, [physics, ...casts, ...components]);
-  }
-}
+import { SpaceTrashEntityComponent } from "../EntityComponent";
 
 export class SpaceTrashEntity extends Entity {
 
@@ -27,86 +13,21 @@ export class SpaceTrashEntity extends Entity {
   }
 }
 
-export class Door extends SpaceTrashEntityComponent {
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
-    super(
-      new SpaceTrashEntity(),
-      new PhysicsSetComponent(x, y, `south`),
-      [
-        new AttackableComponent(),
-      ],
-      new UnmovingComponent(),
-      new PowerConsumingComponent(),
-    );
-  }
-}
-
 export class Slime extends SpaceTrashEntityComponent {
   constructor(
+    spe: SpaceTrashEntity,
     x: number = 0,
     y: number = 0,
     r: number = 0,
     dx: number = 0,
     dy: number = 0,
   ) {
-    super(
-      new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new SpawningComponent(), dx, dy),
-      [
-        new ThermalComponent(),
-        new MeleeComponent(1),
-      ],
 
-    );
-  }
-}
-
-export class BridgeConsole extends SpaceTrashEntityComponent {
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
     super(
-      new SpaceTrashEntity(),
-      new PhysicsSetComponent(x, y, 'south'),
-      [
-        new AttackableComponent(),
-        new GunComponent(),
-      ],
-      new PowerConsumingComponent(),
-      // new HackComponent(),
-    );
-  }
-}
-
-export class ReactorConsole extends SpaceTrashEntityComponent {
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
-    super(
-      new SpaceTrashEntity(),
-      new PhysicsSetComponent(x, y, 'south'),
-      [
-        new AttackableComponent(),
-      ],
-      new PowerProducingComponent(),
-      // new HackComponent(),
-    );
-  }
-}
-
-export class SecurityTurret extends SpaceTrashEntityComponent {
-  constructor(
-    x: number = 0,
-    y: number = 0,
-    r: number = 0,
-    dx: number = 0,
-    dy: number = 0,
-  ) {
-    super(
-      new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new PanningComponent(), dx, dy),
-      [
-        new AttackableComponent(),
-        new GunComponent(),
-      ],
-      new PowerConsumingComponent(),
-      // new HackComponent(),
+      spe,
+      [new PhysicsActorComponent(spe, x, y, r, new SpawningComponent(spe), dx, dy),
+      new ThermalComponent(spe),
+      new MeleeComponent(spe, 1)],
     );
   }
 }
@@ -120,15 +41,70 @@ export class SpaceTrashDrone extends SpaceTrashEntityComponent {
     dx: number = 0,
     dy: number = 0,
   ) {
+    const spe = new SpaceTrashEntity();
     super(
-      new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new WheeledComponent(), dx, dy),
-      [
-        new LitComponent(),
-        new CameraComponent(),
-        new AttackableComponent(),
-      ],
-      new PowerStoringComponent(),
+      spe,
+      [new PhysicsActorComponent(spe, x, y, r, new WheeledComponent(spe), dx, dy),
+      new LitComponent(spe),
+      new CameraComponent(spe),
+      new AttackableComponent(spe),
+      new PowerStoringComponent(spe),
+      new LitableComponent(spe)],
     );
   }
 }
+
+
+
+// export class BridgeConsole extends SpaceTrashEntityComponent {
+//   constructor(
+//     spe: SpaceTrashEntity,
+//     x: number = 0,
+//     y: number = 0,
+//     r: number = 0
+//   ) {
+//     super(
+//       new SpaceTrashEntity(),
+//       new PhysicsSetComponent(x, y, 'south'),
+//       new AttackableComponent(),
+//       new GunComponent(),
+//       new PowerConsumingComponent(),
+//     );
+//   }
+// }
+
+// export class ReactorConsole extends SpaceTrashEntityComponent {
+//   constructor(
+//     spe: SpaceTrashEntity,
+//     x: number = 0,
+//     y: number = 0,
+//     r: number = 0
+//   ) {
+//     super(
+//       new SpaceTrashEntity(),
+//       new PhysicsSetComponent(x, y, 'south'),
+//       new AttackableComponent(),
+//       new PowerProducingComponent(),
+//     );
+//   }
+// }
+
+// export class SecurityTurret extends SpaceTrashEntityComponent {
+//   constructor(
+//     spe: SpaceTrashEntity,
+//     x: number = 0,
+//     y: number = 0,
+//     r: number = 0,
+//     dx: number = 0,
+//     dy: number = 0,
+//   ) {
+//     super(
+//       new SpaceTrashEntity(),
+//       new PhysicsActorComponent(x, y, r, new PanningComponent(), dx, dy),
+//       new AttackableComponent(),
+//       new GunComponent(),
+//       new PowerConsumingComponent(),
+
+//     );
+//   }
+// }

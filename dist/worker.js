@@ -25310,9 +25310,10 @@ var System = class {
     this.frame[0] = 0;
   }
   loop(ecs, system) {
-    setInterval((d, s) => this.logicLoop(d, s), 0.3, ecs, system);
+    setInterval((d, s) => this.logicLoop(d, s), 100, ecs, system);
   }
   async logicLoop(ecs, system) {
+    console.log("System.logicLoop", system);
     this.frame[0] = this.frame[0] + 1;
     const entitiesComponent = ecs.getEntitiesComponent(this);
     await this.doPreLogic(entitiesComponent);
@@ -25325,12 +25326,31 @@ var FOV = class extends System {
   constructor() {
     super();
   }
-  doPreLogic() {
-    return {};
+  doPreLogic(entitiesComponents) {
+    const outcasters = [];
+    const incasters = [];
+    entitiesComponents.forEach((ec) => {
+      const physicsComponent = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
+      const outcaster = ec.components.find((c) => c.constructor.name === "LitComponent");
+      const incaster = ec.components.find((c) => c.constructor.name === "LitableComponent");
+      if (physicsComponent && outcaster) {
+        outcasters.push({ physicsComponent, caster: outcaster });
+      }
+      if (physicsComponent && incaster) {
+        incasters.push({ physicsComponent, caster: incaster });
+      }
+    });
+    outcasters.forEach((oc) => {
+      incasters.forEach((ic) => {
+        if (Math.abs(oc.physicsComponent.x - ic.physicsComponent.x) + Math.abs(oc.physicsComponent.y - ic.physicsComponent.y) > 10) {
+          ic.caster.albedo = 10;
+        } else {
+          ic.caster.albedo = 10;
+        }
+      });
+    });
   }
-  doLogic(prelogic) {
-  }
-  doPostLogic(logic) {
+  doPostLogic(entitiesComponents) {
   }
 };
 
@@ -25356,24 +25376,28 @@ var Physical = class extends System {
   doPreLogic(entitiesComponents) {
     entitiesComponents.forEach((ec) => {
       const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-      d.x = d.x + d.dx;
-      d.y = d.y + d.dy;
+      if (d) {
+        d.x = d.x + d.dx;
+        d.y = d.y + d.dy;
+      }
     });
   }
   doPostLogic(entitiesComponents) {
     entitiesComponents.forEach((ec) => {
       const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-      if (d.x < 0) {
-        d.x = 40 + d.dx * 2;
-      }
-      if (d.x > 40) {
-        d.x = d.dx * 2;
-      }
-      if (d.y < 0) {
-        d.y = 30 + d.dy * 2;
-      }
-      if (d.y > 30) {
-        d.y = d.dy * 2;
+      if (d) {
+        if (d.x < 0) {
+          d.x = 40 + d.dx * 2;
+        }
+        if (d.x > 40) {
+          d.x = d.dx * 2;
+        }
+        if (d.y < 0) {
+          d.y = 30 + d.dy * 2;
+        }
+        if (d.y > 30) {
+          d.y = d.dy * 2;
+        }
       }
     });
   }
@@ -25482,8 +25506,18 @@ Launch date:    May, 2690
   }
 };
 
-// src/engine/Entity.ts
-var Entity = class {
+// src/engine/ECS/index.ts
+var ECS = class {
+  systems;
+  constructor(systems) {
+    this.systems = systems;
+  }
+  logicLoop() {
+    console.log("logic loop is running");
+    Object.entries(this.systems).forEach(([systemKey, system]) => {
+      system.loop(this, systemKey);
+    });
+  }
 };
 
 // src/engine/EntityComponent.ts
@@ -25494,15 +25528,81 @@ var EntityComponent = class {
     this.entity = entity;
     this.components = components;
   }
+  applyComponent(c) {
+    this.components.push(c);
+  }
 };
+
+// src/games/spacetrash/EntityComponent.ts
+var SpaceTrashEntityComponent = class extends EntityComponent {
+  // constructor(
+  //   entity: Entity,
+  //   // physics: PhysicsComponent,
+  //   // casts?: (InCastingComponent | OutCastingComponent)[],
+  //   ...components: (SpaceTrashComponent)[]
+  // ) {
+  //   const c: Component<any, any>[] = [];
+  //   c.push(physics);
+  //   super(entity, [physics, ...components]);
+  // }
+};
+
+// src/games/spacetrash/EC.ts
+var SpaceTrashECS = class extends ECS {
+  entities;
+  components;
+  constructor(systems) {
+    super(systems);
+    this.entities = /* @__PURE__ */ new Set();
+    this.components = {};
+  }
+  setEntitiesComponent(ecss) {
+    ecss.forEach((ec) => {
+      this.entities.add(ec.entity.uuid);
+      ec.components.forEach((c) => {
+        const componentUid = c.uuid;
+        this.components[componentUid] = {
+          ...c,
+          entity: ec.entity.uuid,
+          constructor: {
+            name: c.constructor.name
+          }
+        };
+      });
+    });
+  }
+  getEntitiesComponent(system) {
+    const toReturn = {};
+    Object.keys(this.components).forEach((cKey) => {
+      const c = this.components[cKey];
+      const e = c.entity;
+      if (toReturn[e]) {
+        toReturn[e].applyComponent(c);
+      } else {
+        toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
+      }
+    });
+    return Object.values(toReturn);
+  }
+};
+
+// src/engine/lib.ts
+function uuidv4() {
+  return "10000000-1000-4000-8000-100000000000".replace(
+    /[018]/g,
+    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  );
+}
 
 // src/engine/Component.ts
 var Component = class {
+  uuid;
   entity;
   systems;
-  constructor(systems, entity) {
+  constructor(entity, systems) {
     this.systems = systems;
     this.entity = entity;
+    this.uuid = uuidv4();
   }
 };
 
@@ -25512,8 +25612,8 @@ var OutCastingComponent = class extends Component {
   ray;
   intensity;
   dropoff;
-  constructor() {
-    super([SpaceTrashSystems.casting]);
+  constructor(spe) {
+    super(spe, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
   }
   payload() {
     return {
@@ -25531,6 +25631,11 @@ var OutCastingComponent = class extends Component {
 var LitComponent = class extends OutCastingComponent {
   dropoff = (x) => 1 / (x ^ 2);
   ray;
+  albedo;
+  constructor(spe) {
+    super(spe);
+    this.albedo = 0;
+  }
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -25542,8 +25647,8 @@ var LitComponent = class extends OutCastingComponent {
 var PhysicsComponent = class extends Component {
   x;
   y;
-  constructor(x = 0, y = 0) {
-    super([SpaceTrashSystems.physical]);
+  constructor(spe, x = 0, y = 0) {
+    super(spe, [SpaceTrashSystems.physical]);
     this.x = x;
     this.y = y;
   }
@@ -25557,10 +25662,24 @@ var PhysicsActorComponent = class extends PhysicsComponent {
   dx;
   dy;
   r;
-  constructor(x = 0, y = 0, r = 0, conveyance, dx, dy) {
+  constructor(spe, x = 0, y = 0, r = 0, conveyance, dx, dy) {
     super(x, y);
     this.dx = dx;
     this.dy = dy;
+    this.r = r;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+var PhysicsSetComponent = class extends PhysicsComponent {
+  // x: number;
+  // y: number;
+  r;
+  constructor(spe, x = 0, y = 0, r) {
+    super(spe, x, y);
     this.r = r;
   }
   getMove() {
@@ -25579,8 +25698,8 @@ var InCastingComponent = class extends SpaceTrashComponent {
   fov;
   threshold;
   ray;
-  constructor() {
-    super([SpaceTrashSystems.casting]);
+  constructor(e) {
+    super(e, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
   }
   payload() {
     return {
@@ -25610,11 +25729,24 @@ var CameraComponent = class extends InCastingComponent {
   setMove(move) {
   }
 };
+var LitableComponent = class extends InCastingComponent {
+  ray;
+  albedo;
+  constructor(e) {
+    super(e);
+    this.albedo = 0;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
 
 // src/games/spacetrash/Components/conveyance.ts
 var ConveyanceComponent = class extends Component {
-  constructor() {
-    super([SpaceTrashSystems.physical]);
+  constructor(e) {
+    super(e, [SpaceTrashSystems.physical]);
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -25631,15 +25763,50 @@ var WheeledComponent = class extends ConveyanceComponent {
   setMove(move) {
   }
 };
+var UnmovingComponent = class extends ConveyanceComponent {
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+
+// src/games/spacetrash/Components/opacity.ts
+var OpacityComponent = class extends SpaceTrashComponent {
+  opacity;
+  constructor(e, opacity) {
+    super(
+      e,
+      [SpaceTrashSystems.physical]
+      // [SpaceTrashSystems.power]
+    );
+    this.opacity = opacity;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
 
 // src/games/spacetrash/Components/power.ts
 var PoweredComponent = class extends Component {
-  constructor() {
+  constructor(spe) {
     super(
+      spe,
       []
       // [SpaceTrashSystems.power]
     );
   }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+var PowerConsumingComponent = class extends PoweredComponent {
+  amps;
+  damage;
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -25658,12 +25825,15 @@ var PowerStoringComponent = class extends PoweredComponent {
   }
 };
 
-// src/games/spacetrash/Entities/index.ts
-var SpaceTrashEntityComponent = class extends EntityComponent {
-  constructor(entity, physics, casts, ...components) {
-    super(entity, [physics, ...casts, ...components]);
+// src/engine/Entity.ts
+var Entity = class {
+  uuid;
+  constructor() {
+    this.uuid = uuidv4();
   }
 };
+
+// src/games/spacetrash/Entities/index.ts
 var SpaceTrashEntity = class extends Entity {
   constructor() {
     super();
@@ -25671,75 +25841,64 @@ var SpaceTrashEntity = class extends Entity {
 };
 var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
   constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0) {
+    const spe = new SpaceTrashEntity();
     super(
-      new SpaceTrashEntity(),
-      new PhysicsActorComponent(x, y, r, new WheeledComponent(), dx, dy),
+      spe,
       [
-        new LitComponent(),
-        new CameraComponent(),
-        new AttackableComponent()
-      ],
-      new PowerStoringComponent()
+        new PhysicsActorComponent(spe, x, y, r, new WheeledComponent(spe), dx, dy),
+        new LitComponent(spe),
+        new CameraComponent(spe),
+        new AttackableComponent(spe),
+        new PowerStoringComponent(spe),
+        new LitableComponent(spe)
+      ]
     );
   }
 };
 
-// src/engine/ECS/index.ts
-var ECS = class {
-  systems;
-  constructor(systems) {
-    this.systems = systems;
-  }
-  logicLoop() {
-    console.log("logic loop is running");
-    Object.entries(this.systems).forEach(([systemKey, system]) => {
-      system.loop(this, systemKey);
-    });
+// src/games/spacetrash/Entities/setpieces/index.ts
+var FloorTile = class extends SpaceTrashEntityComponent {
+  constructor(x = 0, y = 0, r = 0) {
+    const spe = new SpaceTrashEntity();
+    super(
+      spe,
+      [
+        new PhysicsSetComponent(spe, x, y, `south`),
+        new UnmovingComponent(spe),
+        new OpacityComponent(spe, 1),
+        new LitableComponent(spe)
+      ]
+    );
   }
 };
-
-// src/games/spacetrash/EC.ts
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(
-    /[018]/g,
-    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
-  );
-}
-var SpaceTrashECS = class extends ECS {
-  entities;
-  components;
-  constructor(systems) {
-    super(systems);
-    this.entities = /* @__PURE__ */ new Set();
-    this.components = {};
+var WallTile = class extends SpaceTrashEntityComponent {
+  constructor(x = 0, y = 0, r = 0) {
+    const spe = new SpaceTrashEntity();
+    super(
+      spe,
+      [
+        new PhysicsSetComponent(spe, x, y, `south`),
+        new UnmovingComponent(spe),
+        new OpacityComponent(spe, 0),
+        new LitableComponent(spe)
+      ]
+    );
   }
-  setEntitiesComponent(ecss) {
-    ecss.forEach((ec) => {
-      const entityUuid = uuidv4();
-      this.entities.add(entityUuid);
-      ec.components.forEach((c) => {
-        const componentUid = uuidv4();
-        this.components[componentUid] = {
-          ...c,
-          entity: entityUuid,
-          constructor: {
-            name: c.constructor.name
-          }
-        };
-      });
-    });
-  }
-  getEntitiesComponent(system) {
-    const es = {};
-    Object.keys(this.components).forEach((cKey) => {
-      const c = this.components[cKey];
-      if (es[c.entity]) {
-        es[c.entity].components.push(c);
-      } else {
-        es[c.entity] = new EntityComponent(new Entity(), [c]);
-      }
-    });
-    return Object.values(es);
+};
+var DoorTile = class extends SpaceTrashEntityComponent {
+  constructor(x = 0, y = 0, r = 0) {
+    const spe = new SpaceTrashEntity();
+    super(
+      spe,
+      [
+        new PhysicsSetComponent(spe, x, y, `south`),
+        new AttackableComponent(spe),
+        new UnmovingComponent(spe),
+        new PowerConsumingComponent(spe),
+        new OpacityComponent(spe, 0),
+        new LitableComponent(spe)
+      ]
+    );
   }
 };
 
@@ -25748,6 +25907,8 @@ var droneMouseX = 0;
 var droneMouseY = 0;
 var shipMapMouseX = 0;
 var shipMapMouseY = 0;
+var tSize = 10;
+var mapSize = 32;
 var Spacetrash = class extends Game {
   terminal;
   constructor(workerPostMessage) {
@@ -25799,7 +25960,7 @@ var Spacetrash = class extends Game {
           });
           if (canvas) {
             canvas.beginPath();
-            canvas.arc(droneMouseX, droneMouseY, 10, 0, 2 * Math.PI);
+            canvas.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
             canvas.fillStyle = "green";
             canvas.fill();
             canvas.lineWidth = 1;
@@ -25820,17 +25981,56 @@ var Spacetrash = class extends Game {
           });
           if (canvas) {
             ecs.forEach((ec) => {
-              const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-              canvas.beginPath();
-              canvas.arc(d.x * 10, d.y * 10, 4, 0, 2 * Math.PI);
-              canvas.fillStyle = "blue";
-              canvas.fill();
-              canvas.lineWidth = 1;
-              canvas.strokeStyle = "red";
-              canvas.stroke();
+              const drone = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+              if (drone) {
+                canvas.beginPath();
+                let startAngle = 0;
+                let endAngle = Math.PI + Math.PI * 1 / 2;
+                let counterclockwise = 2 % 2 === 1;
+                canvas.arc(
+                  drone.x * tSize,
+                  drone.y * tSize,
+                  tSize / 3,
+                  startAngle,
+                  endAngle,
+                  counterclockwise
+                );
+                canvas.fillStyle = "blue";
+                canvas.fill();
+                canvas.lineWidth = 1;
+                canvas.strokeStyle = "red";
+                canvas.stroke();
+              }
+              const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
+              if (setpiece) {
+                console.log("setpiece", setpiece);
+                canvas.beginPath();
+                canvas.rect(setpiece.x * tSize, setpiece.y * tSize, tSize, tSize);
+                const opacityComp = ec.components.find((c) => c.constructor.name === "OpacityComponent");
+                if (opacityComp && opacityComp.opacity === 0) {
+                  canvas.fillStyle = "black";
+                  canvas.fill();
+                }
+                if (opacityComp && opacityComp.opacity === 1) {
+                  canvas.fillStyle = "white";
+                  canvas.fill();
+                }
+                if (opacityComp && opacityComp.opacity === 2) {
+                  canvas.fillStyle = "red";
+                  canvas.fill();
+                }
+                const littable = ec.components.find((c) => c.constructor.name === "LitableComponent");
+                if (littable && littable.albedo === 0) {
+                  canvas.strokeStyle = "grey";
+                  canvas.stroke();
+                } else {
+                  canvas.strokeStyle = "yellow";
+                  canvas.stroke();
+                }
+              }
             });
             canvas.beginPath();
-            canvas.arc(shipMapMouseX, shipMapMouseY, 10, 0, 2 * Math.PI);
+            canvas.arc(shipMapMouseX, shipMapMouseY, tSize / 2, 0, 2 * Math.PI);
             canvas.fillStyle = "transparent";
             canvas.fill();
             canvas.lineWidth = 1;
@@ -25840,17 +26040,36 @@ var Spacetrash = class extends Game {
         }]
       },
       (ecs) => {
+        const e = [];
         return new Promise((res, rej) => {
-          ecs.setEntitiesComponent([...new Array(2e3)].map((n) => {
-            return new SpaceTrashDrone(
-              // 400, 300,
-              Math.random() * 800,
-              Math.random() * 600,
-              3,
-              (Math.random() - 0.5) / 10,
-              (Math.random() - 0.5) / 10
-            );
-          }));
+          for (let y = 0; y < mapSize; y++) {
+            for (let x = 0; x < mapSize; x++) {
+              e.push(new FloorTile(x, y, 1));
+            }
+            e.push(new WallTile(0, y, 1));
+            e.push(new WallTile(y, 0, 1));
+            e.push(new WallTile(mapSize, y, 1));
+            e.push(new WallTile(y, mapSize, 1));
+          }
+          e.push(new DoorTile(5, 5, 1));
+          e.push(new DoorTile(mapSize, mapSize, 1));
+          ecs.setEntitiesComponent(
+            [
+              ...e,
+              ...[
+                ...new Array(50)
+              ].map((n) => {
+                return new SpaceTrashDrone(
+                  Math.random() * 80,
+                  Math.random() * 60,
+                  3,
+                  (Math.random() - 0.5) / 10,
+                  (Math.random() - 0.5) / 10
+                );
+              })
+              // new DoorTile(4, 4, 1),
+            ]
+          );
           res();
         });
       }

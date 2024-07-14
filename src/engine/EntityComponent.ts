@@ -9,4 +9,8 @@ export class EntityComponent {
     this.entity = entity;
     this.components = components;
   }
+
+  applyComponent (c: Component<any, any>) {
+    this.components.push(c)
+  }
 }

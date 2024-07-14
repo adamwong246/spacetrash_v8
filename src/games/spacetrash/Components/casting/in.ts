@@ -9,8 +9,8 @@ export abstract class InCastingComponent extends SpaceTrashComponent {
   threshold: number;
   ray: ERays
 
-  constructor() {
-    super([SpaceTrashSystems.casting]);
+  constructor(e) {
+    super(e, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
   }
 
   payload() {
@@ -93,6 +93,26 @@ export class MovementComponent extends InCastingComponent {
   fov = 270;
   threshold = 1;
   ray: ERays.movement;
+
+  getMove(): unknown {
+    throw new Error("Method not implemented.");
+  }
+
+  setMove(move: unknown) {
+    // this.x = move.x;
+    // this.y = move.y;
+    // this.r = move.r;
+  }
+}
+
+export class LitableComponent extends InCastingComponent {
+  ray: ERays.visible
+  albedo: number;
+
+  constructor(e) {
+    super(e);
+    this.albedo = 0;
+  }
 
   getMove(): unknown {
     throw new Error("Method not implemented.");

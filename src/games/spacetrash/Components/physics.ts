@@ -5,13 +5,15 @@ import { SpaceTrashSystems } from "../Systems";
 
 import { ISpaceTrashComponents } from ".";
 import { ConveyanceComponent } from "./conveyance";
+import { SpaceTrashEntity } from "../Entities";
 
 export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> {
   x: number;
   y: number;
   
-  constructor(x: number = 0, y: number = 0) {
-    super([SpaceTrashSystems.physical]);
+  
+  constructor(spe: SpaceTrashEntity, x: number = 0, y: number = 0) {
+    super(spe, [SpaceTrashSystems.physical]);
     this.x = x;
     this.y = y;
     // debugger
@@ -34,6 +36,7 @@ export class PhysicsActorComponent extends PhysicsComponent {
   r: number;
   
   constructor(
+    spe: SpaceTrashEntity,
     x: number = 0,
     y: number = 0,
     r: number = 0,
@@ -41,7 +44,7 @@ export class PhysicsActorComponent extends PhysicsComponent {
     dx: number,
     dy: number,
   ) {
-    super(x, y);
+    super(spe, x, y);
     this.dx = dx;
     this.dy = dy;
     this.r = r;
@@ -59,14 +62,21 @@ export class PhysicsActorComponent extends PhysicsComponent {
 }
 
 type IDirs = `north` | `south` | `east` | `west`;
+
 export class PhysicsSetComponent extends PhysicsComponent {
-  // x: number;
-  // y: number;
   r: IDirs;
+  solid: boolean;
   
-  constructor(x: number = 0, y: number = 0, r: IDirs) {
-    super(x, y);
+  constructor(
+    spe: SpaceTrashEntity,
+    x: number = 0,
+    y: number = 0,
+    r: IDirs,
+    solid: boolean,
+  ) {
+    super(spe, x, y);
     this.r = r;
+    this.solid = solid;
   }
 
   getMove(): unknown {

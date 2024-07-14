@@ -1,18 +1,20 @@
+import { Entity } from "./Entity";
 import { System } from "./System";
+import { uuidv4 } from "./lib";
 
 export default abstract class Component<IMove, IComponents> {
-  entity: string;
+  uuid: string;
+  entity: Entity;
   systems: System<any>[];
   
   constructor(
+    entity: Entity,
     systems: System<any>[],
-    entity: string,
+    
   ) {
     this.systems = systems;
     this.entity = entity;
+    this.uuid = uuidv4();
   }
-
-  abstract getMove(): IMove
-  abstract setMove(move: IMove)
 
 }

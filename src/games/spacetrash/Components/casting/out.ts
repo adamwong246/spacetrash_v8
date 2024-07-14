@@ -5,6 +5,7 @@ import { ERays, IRays } from "../..";
 import { SpaceTrashSystems } from "../../Systems";
 
 import { ISpaceTrashComponents, SpaceTrashComponents } from "..";
+import { SpaceTrashEntity } from "../../Entities";
 
 export abstract class OutCastingComponent extends Component<unknown, ISpaceTrashComponents> {
   fov: number;
@@ -12,8 +13,8 @@ export abstract class OutCastingComponent extends Component<unknown, ISpaceTrash
   intensity: number;
   dropoff: (x: number) => number;
 
-  constructor() {
-    super([SpaceTrashSystems.casting]);
+  constructor(spe: SpaceTrashEntity) {
+    super(spe, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
   }
 
   payload() {
@@ -53,8 +54,11 @@ export class MeleeComponent extends AttackingComponent {
   fov = 1;
   dropoff = (x) => x < 2 ? 10 : 0;
   
-  constructor(intensity: number) {
-    super();
+  constructor(
+    spe: SpaceTrashEntity,
+    intensity: number
+  ) {
+    super(spe);
     this.intensity = intensity;
   }
 
@@ -87,6 +91,12 @@ export class GunComponent extends OutCastingComponent {
 export class LitComponent extends OutCastingComponent {
   dropoff = (x) => 1 / (x ^ 2);
   ray: ERays.light
+  albedo: number;
+
+  constructor(spe: SpaceTrashEntity) {
+    super(spe);
+    this.albedo = 0;
+  }
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
