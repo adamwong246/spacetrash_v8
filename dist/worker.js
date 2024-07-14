@@ -25310,10 +25310,9 @@ var System = class {
     this.frame[0] = 0;
   }
   loop(ecs, system) {
-    setInterval((d, s) => this.logicLoop(d, s), 100, ecs, system);
+    setInterval((d, s) => this.logicLoop(d, s), 10, ecs, system);
   }
   async logicLoop(ecs, system) {
-    console.log("System.logicLoop", system);
     this.frame[0] = this.frame[0] + 1;
     const entitiesComponent = ecs.getEntitiesComponent(this);
     await this.doPreLogic(entitiesComponent);
@@ -25370,8 +25369,10 @@ var GUIable = class extends System {
 
 // src/games/spacetrash/Systems/physical.ts
 var Physical = class extends System {
-  constructor() {
+  mapSize;
+  constructor(mapSize) {
     super();
+    this.mapSize = mapSize;
   }
   doPreLogic(entitiesComponents) {
     entitiesComponents.forEach((ec) => {
@@ -25383,30 +25384,54 @@ var Physical = class extends System {
     });
   }
   doPostLogic(entitiesComponents) {
-    entitiesComponents.forEach((ec) => {
-      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-      if (d) {
-        if (d.x < 0) {
-          d.x = 40 + d.dx * 2;
-        }
-        if (d.x > 40) {
-          d.x = d.dx * 2;
-        }
-        if (d.y < 0) {
-          d.y = 30 + d.dy * 2;
-        }
-        if (d.y > 30) {
-          d.y = d.dy * 2;
-        }
+    const setPieces = entitiesComponents.filter((ec) => {
+      return ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
+    });
+    const actors = entitiesComponents.filter((ec) => {
+      return ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+    });
+    actors.forEach((actorEc) => {
+      if (actorEc) {
+        const c = actorEc.components.find((c2) => c2.constructor.name === "PhysicsActorComponent");
+        setPieces.filter((ec) => {
+          return ec.components.find((c2) => c2.constructor.name === "PhysicsSetComponent" && c2.solid);
+        }).forEach((solidSetPiece) => {
+          const sc = solidSetPiece.components.find((c2) => c2.constructor.name === "PhysicsSetComponent");
+          const halftile = TileSize / 2;
+          if (Math.round(c.x) === sc.x && Math.round(c.y) === sc.y) {
+            c.x = c.x - 50 * c.dx;
+            c.y = c.y - 50 * c.dy;
+            if (c.dx >= 0) {
+              if (c.dy >= 0) {
+                if (sc.x === Math.round(c.x) && sc.y === Math.round(c.y)) {
+                  c.dx = c.dx * -1;
+                  c.dy = c.dy * -1;
+                } else if (sc.x === Math.round(c.x) + 1 && sc.y === Math.round(c.y)) {
+                  c.dy = c.dy * -1;
+                } else if (sc.x === Math.round(c.x) && sc.y === Math.round(c.y) + 1) {
+                  c.dx = c.dx * -1;
+                }
+                console.log("mark1");
+              } else {
+              }
+            } else {
+              if (c.dy >= 0) {
+              } else {
+              }
+            }
+          }
+        });
       }
     });
   }
 };
 
 // src/games/spacetrash/Systems/index.ts
+var MapSize = 32;
+var TileSize = 10;
 var SpaceTrashSystems = {
   gui: new GUIable(),
-  physical: new Physical(),
+  physical: new Physical(MapSize),
   casting: new FOV()
 };
 
@@ -25535,6 +25560,10 @@ var EntityComponent = class {
 
 // src/games/spacetrash/EntityComponent.ts
 var SpaceTrashEntityComponent = class extends EntityComponent {
+  x;
+  dx;
+  y;
+  dy;
   // constructor(
   //   entity: Entity,
   //   // physics: PhysicsComponent,
@@ -25663,7 +25692,7 @@ var PhysicsActorComponent = class extends PhysicsComponent {
   dy;
   r;
   constructor(spe, x = 0, y = 0, r = 0, conveyance, dx, dy) {
-    super(x, y);
+    super(spe, x, y);
     this.dx = dx;
     this.dy = dy;
     this.r = r;
@@ -25675,12 +25704,12 @@ var PhysicsActorComponent = class extends PhysicsComponent {
   }
 };
 var PhysicsSetComponent = class extends PhysicsComponent {
-  // x: number;
-  // y: number;
   r;
-  constructor(spe, x = 0, y = 0, r) {
+  solid;
+  constructor(spe, x = 0, y = 0, r, solid) {
     super(spe, x, y);
     this.r = r;
+    this.solid = solid;
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -25863,7 +25892,7 @@ var FloorTile = class extends SpaceTrashEntityComponent {
     super(
       spe,
       [
-        new PhysicsSetComponent(spe, x, y, `south`),
+        new PhysicsSetComponent(spe, x, y, `south`, false),
         new UnmovingComponent(spe),
         new OpacityComponent(spe, 1),
         new LitableComponent(spe)
@@ -25877,7 +25906,7 @@ var WallTile = class extends SpaceTrashEntityComponent {
     super(
       spe,
       [
-        new PhysicsSetComponent(spe, x, y, `south`),
+        new PhysicsSetComponent(spe, x, y, `south`, true),
         new UnmovingComponent(spe),
         new OpacityComponent(spe, 0),
         new LitableComponent(spe)
@@ -25891,7 +25920,7 @@ var DoorTile = class extends SpaceTrashEntityComponent {
     super(
       spe,
       [
-        new PhysicsSetComponent(spe, x, y, `south`),
+        new PhysicsSetComponent(spe, x, y, `south`, true),
         new AttackableComponent(spe),
         new UnmovingComponent(spe),
         new PowerConsumingComponent(spe),
@@ -25907,8 +25936,7 @@ var droneMouseX = 0;
 var droneMouseY = 0;
 var shipMapMouseX = 0;
 var shipMapMouseY = 0;
-var tSize = 10;
-var mapSize = 32;
+var tSize = 30;
 var Spacetrash = class extends Game {
   terminal;
   constructor(workerPostMessage) {
@@ -25987,6 +26015,14 @@ var Spacetrash = class extends Game {
                 let startAngle = 0;
                 let endAngle = Math.PI + Math.PI * 1 / 2;
                 let counterclockwise = 2 % 2 === 1;
+                canvas.rect(
+                  Math.round(drone.x) * tSize - tSize / 2,
+                  Math.round(drone.y) * tSize - tSize / 2,
+                  tSize,
+                  tSize
+                );
+                canvas.stroke();
+                canvas.beginPath();
                 canvas.arc(
                   drone.x * tSize,
                   drone.y * tSize,
@@ -26003,9 +26039,20 @@ var Spacetrash = class extends Game {
               }
               const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
               if (setpiece) {
-                console.log("setpiece", setpiece);
                 canvas.beginPath();
-                canvas.rect(setpiece.x * tSize, setpiece.y * tSize, tSize, tSize);
+                canvas.arc(
+                  setpiece.x * tSize,
+                  setpiece.y * tSize,
+                  tSize / 2,
+                  0,
+                  2 * Math.PI
+                );
+                canvas.rect(
+                  setpiece.x * tSize - tSize / 2,
+                  setpiece.y * tSize - tSize / 2,
+                  tSize,
+                  tSize
+                );
                 const opacityComp = ec.components.find((c) => c.constructor.name === "OpacityComponent");
                 if (opacityComp && opacityComp.opacity === 0) {
                   canvas.fillStyle = "black";
@@ -26042,29 +26089,32 @@ var Spacetrash = class extends Game {
       (ecs) => {
         const e = [];
         return new Promise((res, rej) => {
-          for (let y = 0; y < mapSize; y++) {
-            for (let x = 0; x < mapSize; x++) {
+          const roomsSize = 16;
+          for (let y = 0; y < roomsSize; y++) {
+            for (let x = 0; x < roomsSize; x++) {
               e.push(new FloorTile(x, y, 1));
             }
             e.push(new WallTile(0, y, 1));
             e.push(new WallTile(y, 0, 1));
-            e.push(new WallTile(mapSize, y, 1));
-            e.push(new WallTile(y, mapSize, 1));
+            e.push(new WallTile(roomsSize, y, 1));
+            e.push(new WallTile(y, roomsSize, 1));
           }
           e.push(new DoorTile(5, 5, 1));
-          e.push(new DoorTile(mapSize, mapSize, 1));
+          e.push(new DoorTile(roomsSize, roomsSize, 1));
           ecs.setEntitiesComponent(
             [
               ...e,
               ...[
-                ...new Array(50)
+                ...new Array(10)
               ].map((n) => {
                 return new SpaceTrashDrone(
-                  Math.random() * 80,
-                  Math.random() * 60,
-                  3,
-                  (Math.random() - 0.5) / 10,
-                  (Math.random() - 0.5) / 10
+                  10,
+                  10,
+                  // Math.random() * mapSize,
+                  // Math.random() * mapSize,
+                  5,
+                  (Math.random() - 0.5) / 40,
+                  (Math.random() - 0.5) / 40
                 );
               })
               // new DoorTile(4, 4, 1),

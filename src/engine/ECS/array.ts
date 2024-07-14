@@ -46,10 +46,10 @@ export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
 
     Object.keys(this.components).forEach((cKey) => {
       const c = this.components[cKey];
-      if (es[c.entity]) {
-        es[c.entity].components.push(c);
+      if (es[c.entity.uuid]) {
+        es[c.entity.uuid].components.push(c);
       } else {
-        es[c.entity] = new EntityComponent(new Entity(), [c]);
+        es[c.entity.uuid] = new EntityComponent(new Entity(), [c]);
       }
     })
     return Object.values(es);

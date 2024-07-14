@@ -1,6 +1,7 @@
-import { ECS } from ".";
 import { EntityComponent } from "../EntityComponent";
 import { System } from "../System";
+
+import { ECS } from ".";
 
 export class ECS_Basic<SystemKeys extends string> extends ECS<any> {
   entityComponents: EntityComponent[];
