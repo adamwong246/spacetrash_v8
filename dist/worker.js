@@ -25158,6 +25158,53 @@ var require_graphology_umd_min = __commonJS({
   }
 });
 
+// src/UI/index.tsx
+var import_react12 = __toESM(require_react(), 1);
+var import_react_dom2 = __toESM(require_react_dom(), 1);
+
+// src/UI/terminal.tsx
+var import_react = __toESM(require_react(), 1);
+
+// src/UI/drone.tsx
+var import_react3 = __toESM(require_react(), 1);
+
+// src/engine/UI/UICanvas.tsx
+var import_react2 = __toESM(require_react(), 1);
+
+// src/UI/shipmap.tsx
+var import_react4 = __toESM(require_react(), 1);
+
+// src/engine/UI/UIWindow.tsx
+var import_react11 = __toESM(require_react(), 1);
+
+// src/engine/FlexModal/index.jsx
+var import_react10 = __toESM(require_react(), 1);
+
+// src/engine/FlexModal/Portal.jsx
+var import_react5 = __toESM(require_react(), 1);
+var import_react_dom = __toESM(require_react_dom(), 1);
+
+// src/engine/FlexModal/Header.jsx
+var import_react6 = __toESM(require_react(), 1);
+
+// src/engine/FlexModal/Footer.jsx
+var import_react7 = __toESM(require_react(), 1);
+
+// src/engine/FlexModal/Resizer.jsx
+var import_react8 = __toESM(require_react(), 1);
+
+// src/engine/FlexModal/usePrevious.jsx
+var import_react9 = __toESM(require_react(), 1);
+
+// src/UI/index.tsx
+var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
+  ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
+  ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
+  ESpaceTrashApps2[ESpaceTrashApps2["shipmap"] = 2] = "shipmap";
+  ESpaceTrashApps2[ESpaceTrashApps2["drone"] = 3] = "drone";
+  return ESpaceTrashApps2;
+})(ESpaceTrashApps || {});
+
 // src/engine/EntityComponent.ts
 var EntityComponent = class {
   entity;
@@ -25788,53 +25835,6 @@ Launch date:    May, 2690
   }
 };
 
-// src/UI/index.tsx
-var import_react12 = __toESM(require_react(), 1);
-var import_react_dom2 = __toESM(require_react_dom(), 1);
-
-// src/UI/terminal.tsx
-var import_react = __toESM(require_react(), 1);
-
-// src/UI/drone.tsx
-var import_react3 = __toESM(require_react(), 1);
-
-// src/engine/UI/UICanvas.tsx
-var import_react2 = __toESM(require_react(), 1);
-
-// src/UI/shipmap.tsx
-var import_react4 = __toESM(require_react(), 1);
-
-// src/engine/UI/UIWindow.tsx
-var import_react11 = __toESM(require_react(), 1);
-
-// src/engine/FlexModal/index.jsx
-var import_react10 = __toESM(require_react(), 1);
-
-// src/engine/FlexModal/Portal.jsx
-var import_react5 = __toESM(require_react(), 1);
-var import_react_dom = __toESM(require_react_dom(), 1);
-
-// src/engine/FlexModal/Header.jsx
-var import_react6 = __toESM(require_react(), 1);
-
-// src/engine/FlexModal/Footer.jsx
-var import_react7 = __toESM(require_react(), 1);
-
-// src/engine/FlexModal/Resizer.jsx
-var import_react8 = __toESM(require_react(), 1);
-
-// src/engine/FlexModal/usePrevious.jsx
-var import_react9 = __toESM(require_react(), 1);
-
-// src/UI/index.tsx
-var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
-  ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
-  ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
-  ESpaceTrashApps2[ESpaceTrashApps2["shipmap"] = 2] = "shipmap";
-  ESpaceTrashApps2[ESpaceTrashApps2["drone"] = 3] = "drone";
-  return ESpaceTrashApps2;
-})(ESpaceTrashApps || {});
-
 // src/engine/Game.ts
 var Game = class {
   postMessage;
@@ -25978,7 +25978,7 @@ var StateSpace = class extends DirectedGraph {
   }
 };
 
-// src/worker.ts
+// src/spacetrash.ts
 var droneMouseX = 0;
 var droneMouseY = 0;
 var shipMapMouseX = 0;
@@ -26190,6 +26190,9 @@ var Spacetrash = class extends Game {
     };
   }
 };
+
+// src/worker.ts
+var engine = new Worker("./engine.js");
 var sp = new Spacetrash(postMessage).start();
 self.onmessage = function handleMessageFromMain(msg) {
   if (msg.data[0] === "inputEvent") {
