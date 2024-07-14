@@ -8,11 +8,14 @@ esbuild.context({
   entryPoints: [
     './src/index.tsx',
     './src/index.html',
-    './src/worker.ts',
     './src/index.scss',
+
+    './src/worker.ts',
+    './src/engine.ts',
+    
     // './node_modules/react-drag-resize-dock-modal/dist/index.css'
-    './src/experiments/gamespace/index.html',
-    './src/experiments/gamespace/index.tsx',
+    // './src/experiments/gamespace/index.html',
+    // './src/experiments/gamespace/index.tsx',
   ],
 
   outdir: "./dist",

@@ -24303,15 +24303,169 @@ var require_prop_types = __commonJS({
 var React14 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 
-// src/games/spacetrash/UI/index.tsx
+// src/UI/index.tsx
 var import_react15 = __toESM(require_react(), 1);
 var import_react_dom3 = __toESM(require_react_dom(), 1);
 
+// src/UI/terminal.tsx
+var import_react = __toESM(require_react(), 1);
+var TerminalApp = (props) => {
+  (0, import_react.useEffect)(() => {
+    props.worker.postMessage(["terminal-register"], []);
+  }, []);
+  return /* @__PURE__ */ import_react.default.createElement(
+    "div",
+    {
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
+      }
+    },
+    /* @__PURE__ */ import_react.default.createElement(
+      "pre",
+      {
+        id: "terminal",
+        style: {
+          overflowX: "scroll",
+          overflowY: "scroll",
+          backgroundColor: "darkgreen",
+          color: "lightgreen",
+          position: "absolute",
+          height: "100%",
+          width: "100%",
+          margin: "0"
+        }
+      },
+      props.state.history.map((props2) => {
+        return `
+> ${props2.in}
+${props2.out}
+          `;
+      })
+    ),
+    /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        type: "text",
+        name: "terminal-input",
+        value: props.state.buffer,
+        style: {
+          position: "absolute",
+          bottom: 0,
+          backgroundColor: "darkgreen",
+          color: "lightgreen",
+          width: "100%"
+        },
+        onKeyDown: (e) => {
+          if (e.key === "Enter") {
+            props.hooks.submitBuffer();
+          }
+        },
+        onChange: (e) => {
+          props.hooks.changeBuffer(e.target.value);
+        }
+      }
+    )
+  );
+};
+
+// src/UI/drone.tsx
+var import_react3 = __toESM(require_react(), 1);
+
+// src/engine/UI/UICanvas.tsx
+var import_react2 = __toESM(require_react(), 1);
+
+// src/engine/Event.ts
+function stringifyEvent(e) {
+  const obj = {
+    boundingClient: e.target.getBoundingClientRect()
+  };
+  for (let k in e) {
+    obj[k] = e[k];
+  }
+  return JSON.parse(JSON.stringify(obj, (k, v) => {
+    if (v instanceof Node) return "Node";
+    if (v instanceof Window) return "Window";
+    return v;
+  }, " "));
+}
+
+// src/engine/UI/UICanvas.tsx
+var UICanvas = (props) => {
+  const canvasRef = (0, import_react2.useRef)(null);
+  (0, import_react2.useEffect)(() => {
+    if (canvasRef.current) {
+      const offscreen = canvasRef.current.transferControlToOffscreen();
+      props.worker.postMessage([props.app + "-register", offscreen], [offscreen]);
+    }
+  }, [canvasRef]);
+  return /* @__PURE__ */ import_react2.default.createElement(
+    "canvas",
+    {
+      tabIndex: 1,
+      onKeyUp: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onKeyDown: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onMouseDown: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onMouseUp: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onMouseOver: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      onMouseMove: (e) => {
+        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+      },
+      ref: canvasRef,
+      width: "800",
+      height: "600"
+    }
+  );
+};
+
+// src/UI/drone.tsx
+var DroneApp = (props) => {
+  return /* @__PURE__ */ import_react3.default.createElement(
+    "div",
+    {
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
+      }
+    },
+    "hello drones",
+    /* @__PURE__ */ import_react3.default.createElement(UICanvas, { worker: props.worker, app: "drone" })
+  );
+};
+
+// src/UI/shipmap.tsx
+var import_react4 = __toESM(require_react(), 1);
+var ShipMapApp = (props) => {
+  return /* @__PURE__ */ import_react4.default.createElement(
+    "div",
+    {
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
+      }
+    },
+    /* @__PURE__ */ import_react4.default.createElement(UICanvas, { worker: props.worker, app: "shipmap" })
+  );
+};
+
 // src/engine/UI/UIWindow.tsx
-var import_react10 = __toESM(require_react(), 1);
+var import_react14 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/index.jsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react13 = __toESM(require_react(), 1);
 
 // node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -24378,11 +24532,11 @@ function removeClass(element, className) {
 }
 
 // node_modules/react-transition-group/esm/CSSTransition.js
-var import_react3 = __toESM(require_react());
+var import_react7 = __toESM(require_react());
 
 // node_modules/react-transition-group/esm/Transition.js
 var import_prop_types2 = __toESM(require_prop_types());
-var import_react2 = __toESM(require_react());
+var import_react6 = __toESM(require_react());
 var import_react_dom = __toESM(require_react_dom());
 
 // node_modules/react-transition-group/esm/config.js
@@ -24411,8 +24565,8 @@ var classNamesShape = true ? import_prop_types.default.oneOfType([import_prop_ty
 })]) : null;
 
 // node_modules/react-transition-group/esm/TransitionGroupContext.js
-var import_react = __toESM(require_react());
-var TransitionGroupContext_default = import_react.default.createContext(null);
+var import_react5 = __toESM(require_react());
+var TransitionGroupContext_default = import_react5.default.createContext(null);
 
 // node_modules/react-transition-group/esm/Transition.js
 var UNMOUNTED = "unmounted";
@@ -24632,20 +24786,20 @@ var Transition = /* @__PURE__ */ function(_React$Component) {
     delete childProps.onExited;
     delete childProps.nodeRef;
     if (typeof children === "function") {
-      return /* @__PURE__ */ import_react2.default.createElement(TransitionGroupContext_default.Provider, {
+      return /* @__PURE__ */ import_react6.default.createElement(TransitionGroupContext_default.Provider, {
         value: null
       }, children(status, childProps));
     }
-    var child = import_react2.default.Children.only(children);
+    var child = import_react6.default.Children.only(children);
     return (
       // allows for nested Transitions
-      /* @__PURE__ */ import_react2.default.createElement(TransitionGroupContext_default.Provider, {
+      /* @__PURE__ */ import_react6.default.createElement(TransitionGroupContext_default.Provider, {
         value: null
-      }, import_react2.default.cloneElement(child, childProps))
+      }, import_react6.default.cloneElement(child, childProps))
     );
   };
   return Transition2;
-}(import_react2.default.Component);
+}(import_react6.default.Component);
 Transition.contextType = TransitionGroupContext_default;
 Transition.propTypes = true ? {
   /**
@@ -24958,7 +25112,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
   };
   _proto.render = function render() {
     var _this$props = this.props, _ = _this$props.classNames, props = _objectWithoutPropertiesLoose(_this$props, ["classNames"]);
-    return /* @__PURE__ */ import_react3.default.createElement(Transition_default, _extends({}, props, {
+    return /* @__PURE__ */ import_react7.default.createElement(Transition_default, _extends({}, props, {
       onEnter: this.onEnter,
       onEntered: this.onEntered,
       onEntering: this.onEntering,
@@ -24968,7 +25122,7 @@ var CSSTransition = /* @__PURE__ */ function(_React$Component) {
     }));
   };
   return CSSTransition2;
-}(import_react3.default.Component);
+}(import_react7.default.Component);
 CSSTransition.defaultProps = {
   classNames: ""
 };
@@ -25099,14 +25253,14 @@ CSSTransition.propTypes = true ? _extends({}, Transition_default.propTypes, {
 var CSSTransition_default = CSSTransition;
 
 // src/engine/FlexModal/Portal.jsx
-var import_react4 = __toESM(require_react(), 1);
+var import_react8 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 var Portal_default = ({
   container,
   children
 }) => {
-  const containerRef = (0, import_react4.useRef)(container);
-  const defaultNode = (0, import_react4.useRef)();
+  const containerRef = (0, import_react8.useRef)(container);
+  const defaultNode = (0, import_react8.useRef)();
   if (!containerRef.current) {
     containerRef.current = document.body;
   }
@@ -25114,7 +25268,7 @@ var Portal_default = ({
     defaultNode.current = document.createElement("div");
     containerRef.current.appendChild(defaultNode.current);
   }
-  (0, import_react4.useEffect)(() => {
+  (0, import_react8.useEffect)(() => {
     return () => {
       if (containerRef.current && defaultNode.current) {
         containerRef.current.removeChild(defaultNode.current);
@@ -25129,7 +25283,7 @@ var Portal_default = ({
 };
 
 // src/engine/FlexModal/Header.jsx
-var import_react5 = __toESM(require_react(), 1);
+var import_react9 = __toESM(require_react(), 1);
 function Header({
   title,
   draggable,
@@ -25139,7 +25293,7 @@ function Header({
   set_full,
   onClose
 }) {
-  return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flexible-modal-header" }, /* @__PURE__ */ import_react5.default.createElement("h5", null, title), draggable && /* @__PURE__ */ import_react5.default.createElement(
+  return /* @__PURE__ */ import_react9.default.createElement("div", { className: "flexible-modal-header" }, /* @__PURE__ */ import_react9.default.createElement("h5", null, title), draggable && /* @__PURE__ */ import_react9.default.createElement(
     "span",
     {
       className: "drag-bar",
@@ -25152,16 +25306,16 @@ function Header({
 }
 
 // src/engine/FlexModal/Footer.jsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react10 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Resizer.jsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react11 = __toESM(require_react(), 1);
 function Resizer({
   horizontalResizable,
   verticalResizable,
   onMouseDown
 }) {
-  return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, /* @__PURE__ */ import_react7.default.createElement(
+  return /* @__PURE__ */ import_react11.default.createElement(import_react11.default.Fragment, null, horizontalResizable && /* @__PURE__ */ import_react11.default.createElement(import_react11.default.Fragment, null, /* @__PURE__ */ import_react11.default.createElement(
     "div",
     {
       className: "flexible-modal-right-resizer",
@@ -25172,7 +25326,7 @@ function Resizer({
         });
       }
     }
-  ), /* @__PURE__ */ import_react7.default.createElement(
+  ), /* @__PURE__ */ import_react11.default.createElement(
     "div",
     {
       className: "flexible-modal-left-resizer",
@@ -25183,7 +25337,7 @@ function Resizer({
         });
       }
     }
-  )), verticalResizable && /* @__PURE__ */ import_react7.default.createElement(
+  )), verticalResizable && /* @__PURE__ */ import_react11.default.createElement(
     "div",
     {
       className: "flexible-modal-bottom-resizer",
@@ -25194,7 +25348,7 @@ function Resizer({
         });
       }
     }
-  ), (horizontalResizable || verticalResizable) && /* @__PURE__ */ import_react7.default.createElement(
+  ), (horizontalResizable || verticalResizable) && /* @__PURE__ */ import_react11.default.createElement(
     "div",
     {
       className: "flexible-modal-resizer",
@@ -25209,13 +25363,13 @@ function Resizer({
 }
 
 // src/engine/FlexModal/usePrevious.jsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react12 = __toESM(require_react(), 1);
 function usePrevious({
   value,
   shouldUpdate
 }) {
-  const prevRef = (0, import_react8.useRef)();
-  (0, import_react8.useEffect)(() => {
+  const prevRef = (0, import_react12.useRef)();
+  (0, import_react12.useEffect)(() => {
     if (typeof shouldUpdate === "function" && shouldUpdate(prevRef.current, value) || shouldUpdate) {
       prevRef.current = value;
     }
@@ -25259,19 +25413,19 @@ function FlexibleModal({
   pushToTop
 }) {
   const container = getPopupContainer();
-  const [_isVisible, set_isVisible] = (0, import_react9.useState)();
-  const [_isOpen, set_isOpen] = (0, import_react9.useState)();
-  const node_modal_ref = (0, import_react9.useRef)();
-  const [isDragging, setIsDragging] = (0, import_react9.useState)(false);
-  const [isResizing, setIsResizing] = (0, import_react9.useState)(false);
-  const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react9.useState)(false);
-  const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react9.useState)(false);
-  const [anchor, setAnchor] = (0, import_react9.useState)(false);
-  const [_full, set_full] = (0, import_react9.useState)(false);
-  const [_left, set_left] = (0, import_react9.useState)(0);
-  const [_top, set_top] = (0, import_react9.useState)(0);
-  const [width, setWidth] = (0, import_react9.useState)(initWidth);
-  const [height, setHeight] = (0, import_react9.useState)(initHeight);
+  const [_isVisible, set_isVisible] = (0, import_react13.useState)();
+  const [_isOpen, set_isOpen] = (0, import_react13.useState)();
+  const node_modal_ref = (0, import_react13.useRef)();
+  const [isDragging, setIsDragging] = (0, import_react13.useState)(false);
+  const [isResizing, setIsResizing] = (0, import_react13.useState)(false);
+  const [onlyVerticalResize, setOnlyVerticalResize] = (0, import_react13.useState)(false);
+  const [onlyHorizontalResize, setOnlyHorizontalResize] = (0, import_react13.useState)(false);
+  const [anchor, setAnchor] = (0, import_react13.useState)(false);
+  const [_full, set_full] = (0, import_react13.useState)(false);
+  const [_left, set_left] = (0, import_react13.useState)(0);
+  const [_top, set_top] = (0, import_react13.useState)(0);
+  const [width, setWidth] = (0, import_react13.useState)(initWidth);
+  const [height, setHeight] = (0, import_react13.useState)(initHeight);
   const prev_left = usePrevious({
     value: _left,
     shouldUpdate: !_full
@@ -25288,7 +25442,7 @@ function FlexibleModal({
     value: height,
     shouldUpdate: !_full
   });
-  const [point, setPoint] = (0, import_react9.useState)({});
+  const [point, setPoint] = (0, import_react13.useState)({});
   function initLeft() {
     let containerWidth = container === document.body ? window.innerWidth : container.offsetWidth;
     return left !== void 0 ? left : containerWidth / 2 - initWidth / 2;
@@ -25297,13 +25451,13 @@ function FlexibleModal({
     let containerHeight = container === document.body ? window.innerHeight : container.offsetHeight;
     return top !== void 0 ? top : containerHeight / 2 - initHeight / 2;
   }
-  (0, import_react9.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     if (container) {
       set_left(initLeft());
       set_top(initTop());
     }
   }, [container]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     if (visible) {
       set_isVisible(true);
       container.classList.add("container-hidden");
@@ -25312,7 +25466,7 @@ function FlexibleModal({
       container.classList.remove("container-hidden");
     }
   }, [visible]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     if (_isVisible) {
       set_isOpen(true);
       if (resetRectOnOpen) {
@@ -25323,7 +25477,7 @@ function FlexibleModal({
       }
     }
   }, [_isVisible]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     if (!_isVisible) return;
     let _left2, _top2, width2, height2;
     if (_full) {
@@ -25349,7 +25503,7 @@ function FlexibleModal({
       height: height2
     });
   }, [_full]);
-  const onMouseDown = (0, import_react9.useCallback)((e) => {
+  const onMouseDown = (0, import_react13.useCallback)((e) => {
     if (e.button !== 0) return;
     pushToTop();
     const node_modal = node_modal_ref.current;
@@ -25427,7 +25581,7 @@ function FlexibleModal({
     set_left(_left2);
     set_top(_top2);
   };
-  const onMouseMove = (0, import_react9.useCallback)((e) => {
+  const onMouseMove = (0, import_react13.useCallback)((e) => {
     if (isDragging && point) {
       _onDrag(e.pageX, e.pageY);
     } else if (isResizing) {
@@ -25436,7 +25590,7 @@ function FlexibleModal({
     e.stopPropagation();
     e.preventDefault();
   }, [isDragging, point, isResizing]);
-  const onMouseUp = (0, import_react9.useCallback)((e) => {
+  const onMouseUp = (0, import_react13.useCallback)((e) => {
     document.removeEventListener("mousemove", onMouseMove);
     setIsDragging(false);
     setIsResizing(false);
@@ -25444,7 +25598,7 @@ function FlexibleModal({
     setOnlyHorizontalResize(false);
     e.stopPropagation();
   }, [onMouseMove]);
-  (0, import_react9.useEffect)(() => {
+  (0, import_react13.useEffect)(() => {
     document.addEventListener("mouseup", onMouseUp);
     if (isDragging || isResizing) {
       document.addEventListener("mousemove", onMouseMove);
@@ -25454,12 +25608,12 @@ function FlexibleModal({
       document.removeEventListener("mousemove", onMouseMove);
     };
   }, [onMouseMove, onMouseUp]);
-  return container ? /* @__PURE__ */ import_react9.default.createElement(
+  return container ? /* @__PURE__ */ import_react13.default.createElement(
     Portal_default,
     {
       container
     },
-    _isVisible ? /* @__PURE__ */ import_react9.default.createElement(
+    _isVisible ? /* @__PURE__ */ import_react13.default.createElement(
       CSSTransition_default,
       {
         in: _isOpen,
@@ -25471,7 +25625,7 @@ function FlexibleModal({
           set_full();
         }
       },
-      /* @__PURE__ */ import_react9.default.createElement(
+      /* @__PURE__ */ import_react13.default.createElement(
         "div",
         {
           onClick: () => {
@@ -25495,7 +25649,7 @@ function FlexibleModal({
             zIndex: layer
           }
         },
-        /* @__PURE__ */ import_react9.default.createElement(
+        /* @__PURE__ */ import_react13.default.createElement(
           Header,
           {
             title,
@@ -25507,7 +25661,7 @@ function FlexibleModal({
             onClose
           }
         ),
-        /* @__PURE__ */ import_react9.default.createElement(
+        /* @__PURE__ */ import_react13.default.createElement(
           "div",
           {
             style: {
@@ -25518,7 +25672,7 @@ function FlexibleModal({
           },
           children
         ),
-        !_full && resizable && /* @__PURE__ */ import_react9.default.createElement(
+        !_full && resizable && /* @__PURE__ */ import_react13.default.createElement(
           Resizer,
           {
             horizontalResizable,
@@ -25542,7 +25696,7 @@ function FlexibleModal({
 
 // src/engine/UI/UIWindow.tsx
 var UIWindow = (props) => {
-  return /* @__PURE__ */ import_react10.default.createElement(import_react10.default.Fragment, null, /* @__PURE__ */ import_react10.default.createElement(
+  return /* @__PURE__ */ import_react14.default.createElement(import_react14.default.Fragment, null, /* @__PURE__ */ import_react14.default.createElement(
     FlexibleModal,
     {
       left: props.uiwindow.left,
@@ -25568,161 +25722,7 @@ var UIWindow = (props) => {
   ));
 };
 
-// src/games/spacetrash/UI/terminal.tsx
-var import_react11 = __toESM(require_react(), 1);
-var TerminalApp = (props) => {
-  (0, import_react11.useEffect)(() => {
-    props.worker.postMessage(["terminal-register"], []);
-  }, []);
-  return /* @__PURE__ */ import_react11.default.createElement(
-    "div",
-    {
-      style: {
-        height: "100%",
-        width: "100%",
-        position: "relative"
-      }
-    },
-    /* @__PURE__ */ import_react11.default.createElement(
-      "pre",
-      {
-        id: "terminal",
-        style: {
-          overflowX: "scroll",
-          overflowY: "scroll",
-          backgroundColor: "darkgreen",
-          color: "lightgreen",
-          position: "absolute",
-          height: "100%",
-          width: "100%",
-          margin: "0"
-        }
-      },
-      props.state.history.map((props2) => {
-        return `
-> ${props2.in}
-${props2.out}
-          `;
-      })
-    ),
-    /* @__PURE__ */ import_react11.default.createElement(
-      "input",
-      {
-        type: "text",
-        name: "terminal-input",
-        value: props.state.buffer,
-        style: {
-          position: "absolute",
-          bottom: 0,
-          backgroundColor: "darkgreen",
-          color: "lightgreen",
-          width: "100%"
-        },
-        onKeyDown: (e) => {
-          if (e.key === "Enter") {
-            props.hooks.submitBuffer();
-          }
-        },
-        onChange: (e) => {
-          props.hooks.changeBuffer(e.target.value);
-        }
-      }
-    )
-  );
-};
-
-// src/games/spacetrash/UI/drone.tsx
-var import_react13 = __toESM(require_react(), 1);
-
-// src/engine/UI/UICanvas.tsx
-var import_react12 = __toESM(require_react(), 1);
-
-// src/engine/Event.ts
-function stringifyEvent(e) {
-  const obj = {
-    boundingClient: e.target.getBoundingClientRect()
-  };
-  for (let k in e) {
-    obj[k] = e[k];
-  }
-  return JSON.parse(JSON.stringify(obj, (k, v) => {
-    if (v instanceof Node) return "Node";
-    if (v instanceof Window) return "Window";
-    return v;
-  }, " "));
-}
-
-// src/engine/UI/UICanvas.tsx
-var UICanvas = (props) => {
-  const canvasRef = (0, import_react12.useRef)(null);
-  (0, import_react12.useEffect)(() => {
-    if (canvasRef.current) {
-      const offscreen = canvasRef.current.transferControlToOffscreen();
-      props.worker.postMessage([props.app + "-register", offscreen], [offscreen]);
-    }
-  }, [canvasRef]);
-  return /* @__PURE__ */ import_react12.default.createElement(
-    "canvas",
-    {
-      tabIndex: 1,
-      onKeyUp: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-      },
-      onKeyDown: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-      },
-      onMouseDown: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-      },
-      onMouseUp: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-      },
-      onMouseOver: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-      },
-      onMouseMove: (e) => {
-        props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-      },
-      ref: canvasRef,
-      width: "800",
-      height: "600"
-    }
-  );
-};
-
-// src/games/spacetrash/UI/drone.tsx
-var DroneApp = (props) => {
-  return /* @__PURE__ */ import_react13.default.createElement(
-    "div",
-    {
-      style: {
-        height: "100%",
-        width: "100%",
-        position: "relative"
-      }
-    },
-    "hello drones",
-    /* @__PURE__ */ import_react13.default.createElement(UICanvas, { worker: props.worker, app: "drone" })
-  );
-};
-
-// src/games/spacetrash/UI/shipmap.tsx
-var import_react14 = __toESM(require_react(), 1);
-var ShipMapApp = (props) => {
-  return /* @__PURE__ */ import_react14.default.createElement(
-    "div",
-    {
-      style: {
-        height: "100%",
-        width: "100%",
-        position: "relative"
-      }
-    },
-    /* @__PURE__ */ import_react14.default.createElement(UICanvas, { worker: props.worker, app: "shipmap" })
-  );
-};
-
-// src/games/spacetrash/UI/index.tsx
+// src/UI/index.tsx
 var initialState = () => {
   return {
     stack: [
