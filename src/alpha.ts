@@ -1,7 +1,9 @@
-import { ESpaceTrashApps, ISpaceTrashApps } from "./UI";
+import { ESpaceTrashApps } from "./UI";
 import Spacetrash from "./spacetrash";
 
-const engine = new Worker("./engine.js");
+const beta = new Worker("./beta.js");
+
+console.log("hello alpha");
 
 const sp = new Spacetrash(postMessage).start();
 
@@ -12,6 +14,8 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
   if (msg.data[0] === 'inputEvent') {
     if (sp) {
       sp.state.inputEvent(msg.data[1], msg.data[2])  
+
+      // beta.postMessage(msg.data)
     } 
   } else {
     
@@ -41,7 +45,7 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
           sp.register(
             spApp,
             true,
-            msg.data[1].getContext("2d"),
+            msg.data[1].getContext("2d", { alpha: false }),
             (data) => {
               postMessage([`${spApp}-update`, data]);
             }

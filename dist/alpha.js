@@ -25259,6 +25259,9 @@ var SpaceTrashECS = class extends ECS {
     this.entities = /* @__PURE__ */ new Set();
     this.components = {};
   }
+  getComponents(system) {
+    return Object.values(this.components);
+  }
   setEntitiesComponent(ecss) {
     ecss.forEach((ec) => {
       this.entities.add(ec.entity.uuid);
@@ -25275,17 +25278,35 @@ var SpaceTrashECS = class extends ECS {
     });
   }
   getEntitiesComponent(system) {
-    const toReturn = {};
-    Object.keys(this.components).forEach((cKey) => {
-      const c = this.components[cKey];
-      const e = c.entity;
-      if (toReturn[e]) {
-        toReturn[e].applyComponent(c);
-      } else {
-        toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
-      }
-    });
-    return Object.values(toReturn);
+    if (system) {
+      const toReturn = {};
+      Object.keys(this.components).forEach((cKey) => {
+        const c = this.components[cKey];
+        const e = c.entity;
+        if (c.systems.find((s) => {
+          return system === s;
+        })) {
+          if (toReturn[e]) {
+            toReturn[e].applyComponent(c);
+          } else {
+            toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
+          }
+        }
+      });
+      return Object.values(toReturn);
+    } else {
+      const toReturn = {};
+      Object.keys(this.components).forEach((cKey) => {
+        const c = this.components[cKey];
+        const e = c.entity;
+        if (toReturn[e]) {
+          toReturn[e].applyComponent(c);
+        } else {
+          toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
+        }
+      });
+      return Object.values(toReturn);
+    }
   }
 };
 
@@ -25318,13 +25339,13 @@ var System = class {
     this.frame[0] = 0;
   }
   loop(ecs, system) {
-    setInterval((d, s) => this.logicLoop(d, s), 10, ecs, system);
+    setInterval((d, s) => this.logicLoop(d, s), 30, ecs, system);
   }
   async logicLoop(ecs, system) {
     this.frame[0] = this.frame[0] + 1;
-    const entitiesComponent = ecs.getEntitiesComponent(this);
-    await this.doPreLogic(entitiesComponent);
-    await this.doPostLogic(entitiesComponent);
+    const components = ecs.getComponents(system);
+    await this.doPreLogic(components);
+    await this.doPostLogic(components);
   }
 };
 
@@ -25333,31 +25354,11 @@ var FOV = class extends System {
   constructor() {
     super();
   }
-  doPreLogic(entitiesComponents) {
+  doPreLogic(components) {
     const outcasters = [];
     const incasters = [];
-    entitiesComponents.forEach((ec) => {
-      const physicsComponent = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
-      const outcaster = ec.components.find((c) => c.constructor.name === "LitComponent");
-      const incaster = ec.components.find((c) => c.constructor.name === "LitableComponent");
-      if (physicsComponent && outcaster) {
-        outcasters.push({ physicsComponent, caster: outcaster });
-      }
-      if (physicsComponent && incaster) {
-        incasters.push({ physicsComponent, caster: incaster });
-      }
-    });
-    outcasters.forEach((oc) => {
-      incasters.forEach((ic) => {
-        if (Math.abs(oc.physicsComponent.x - ic.physicsComponent.x) + Math.abs(oc.physicsComponent.y - ic.physicsComponent.y) > 10) {
-          ic.caster.albedo = 10;
-        } else {
-          ic.caster.albedo = 10;
-        }
-      });
-    });
   }
-  doPostLogic(entitiesComponents) {
+  doPostLogic(components) {
   }
 };
 
@@ -25376,59 +25377,46 @@ var GUIable = class extends System {
 };
 
 // src/Systems/physical.ts
+function make(c, arg1) {
+  if (c.constructor.name === arg1) {
+    return c;
+  }
+  return null;
+}
+function makes(cs, arg1) {
+  return cs.filter((c) => {
+    return c.constructor.name === arg1;
+  });
+}
 var Physical = class extends System {
   mapSize;
   constructor(mapSize) {
     super();
     this.mapSize = mapSize;
   }
-  doPreLogic(entitiesComponents) {
-    entitiesComponents.forEach((ec) => {
-      const d = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
+  doPreLogic(components) {
+    components.forEach((c) => {
+      const d = make(c, "PhysicsActorComponent");
       if (d) {
         d.x = d.x + d.dx;
         d.y = d.y + d.dy;
       }
     });
   }
-  doPostLogic(entitiesComponents) {
-    const setPieces = entitiesComponents.filter((ec) => {
-      return ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
-    });
-    const actors = entitiesComponents.filter((ec) => {
-      return ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-    });
-    actors.forEach((actorEc) => {
-      if (actorEc) {
-        const c = actorEc.components.find((c2) => c2.constructor.name === "PhysicsActorComponent");
-        setPieces.filter((ec) => {
-          return ec.components.find((c2) => c2.constructor.name === "PhysicsSetComponent" && c2.solid);
-        }).forEach((solidSetPiece) => {
-          const sc = solidSetPiece.components.find((c2) => c2.constructor.name === "PhysicsSetComponent");
-          const halftile = TileSize / 2;
-          if (Math.round(c.x) === sc.x && Math.round(c.y) === sc.y) {
-            c.x = c.x - 50 * c.dx;
-            c.y = c.y - 50 * c.dy;
-            if (c.dx >= 0) {
-              if (c.dy >= 0) {
-                if (sc.x === Math.round(c.x) && sc.y === Math.round(c.y)) {
-                  c.dx = c.dx * -1;
-                  c.dy = c.dy * -1;
-                } else if (sc.x === Math.round(c.x) + 1 && sc.y === Math.round(c.y)) {
-                  c.dy = c.dy * -1;
-                } else if (sc.x === Math.round(c.x) && sc.y === Math.round(c.y) + 1) {
-                  c.dx = c.dx * -1;
-                }
-                console.log("mark1");
-              } else {
-              }
-            } else {
-              if (c.dy >= 0) {
-              } else {
-              }
-            }
-          }
-        });
+  doPostLogic(components) {
+    const actors = makes(components, "PhysicsActorComponent");
+    actors.forEach((c) => {
+      if (c.x < 0) {
+        c.x = this.mapSize + c.dx * 2;
+      }
+      if (c.x > this.mapSize) {
+        c.x = c.dx * 2;
+      }
+      if (c.y < 0) {
+        c.y = this.mapSize + c.dy * 2;
+      }
+      if (c.y > this.mapSize) {
+        c.y = c.dy * 2;
       }
     });
   }
@@ -25436,7 +25424,6 @@ var Physical = class extends System {
 
 // src/Systems/index.ts
 var MapSize = 32;
-var TileSize = 10;
 var SpaceTrashSystems = {
   gui: new GUIable(),
   physical: new Physical(MapSize),
@@ -25871,9 +25858,21 @@ var Game = class {
     });
     return this;
   }
-  animationLoop(key) {
-    this.draw(key);
-    requestAnimationFrame(() => this.canvasContexts[key].run && this.animationLoop(key));
+  // https://gist.github.com/elundmark/38d3596a883521cb24f5
+  async animationLoop(key) {
+    var fps = 30;
+    let then = performance.now();
+    const interval = 1e3 / fps;
+    let delta = 0;
+    while (true) {
+      let now = await new Promise(requestAnimationFrame);
+      if (now - then < interval - delta) {
+        continue;
+      }
+      delta = Math.min(interval, delta + now - then - interval);
+      then = now;
+      this.draw(key);
+    }
   }
   draw(key) {
     const s = this.state.get(this.state.currrent);
@@ -26152,7 +26151,7 @@ var Spacetrash = class extends Game {
             [
               ...e,
               ...[
-                ...new Array(1e3)
+                ...new Array(5)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,
@@ -26160,8 +26159,8 @@ var Spacetrash = class extends Game {
                   // Math.random() * mapSize,
                   // Math.random() * mapSize,
                   5,
-                  (Math.random() - 0.5) / 40,
-                  (Math.random() - 0.5) / 40
+                  (Math.random() - 0.5) / 4,
+                  (Math.random() - 0.5) / 4
                 );
               })
               // new DoorTile(4, 4, 1),
@@ -26191,8 +26190,9 @@ var Spacetrash = class extends Game {
   }
 };
 
-// src/worker.ts
-var engine = new Worker("./engine.js");
+// src/alpha.ts
+var beta = new Worker("./beta.js");
+console.log("hello alpha");
 var sp = new Spacetrash(postMessage).start();
 self.onmessage = function handleMessageFromMain(msg) {
   if (msg.data[0] === "inputEvent") {
@@ -26222,7 +26222,7 @@ self.onmessage = function handleMessageFromMain(msg) {
           sp.register(
             spApp,
             true,
-            msg.data[1].getContext("2d"),
+            msg.data[1].getContext("2d", { alpha: false }),
             (data) => {
               postMessage([`${spApp}-update`, data]);
             }

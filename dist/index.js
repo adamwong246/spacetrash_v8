@@ -25938,7 +25938,7 @@ var SpaceTrashDesktop = (props) => {
 };
 
 // src/index.tsx
-var worker = new Worker("./worker.js");
+var worker = new Worker("./alpha.js");
 document.addEventListener("DOMContentLoaded", function(event) {
   const domNode = document.getElementById("react-root");
   if (domNode) {

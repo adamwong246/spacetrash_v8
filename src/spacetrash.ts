@@ -237,15 +237,15 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
               ...e,
               ...[
-                ...new Array(1000)
+                ...new Array(5)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,
                   // Math.random() * mapSize,
                   // Math.random() * mapSize,
                   5,
-                  (Math.random() - 0.5) / 40,
-                  (Math.random() - 0.5) / 40)
+                  (Math.random() - 0.5) / 4,
+                  (Math.random() - 0.5) / 4)
               }),
               // new DoorTile(4, 4, 1),
             ]

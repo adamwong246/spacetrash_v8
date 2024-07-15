@@ -1,11 +1,13 @@
 
 
+import { SpaceTrashComponent } from "./Components";
 import { SpaceTrashEntityComponent } from "./EntityComponent";
 import Component from "./engine/Component";
 import { ECS } from "./engine/ECS";
 import { System } from "./engine/System";
 
 export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
+  
   entities: Set<string>;
   components: Record<string, Component<any, any>>;
 
@@ -13,6 +15,10 @@ export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
     super(systems);
     this.entities = new Set();
     this.components = {};
+  }
+
+  getComponents(system?: any): SpaceTrashComponent[] {
+    return Object.values(this.components)
   }
 
   setEntitiesComponent(ecss: SpaceTrashEntityComponent[]): void {
@@ -36,56 +42,44 @@ export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
 
   getEntitiesComponent(system: System<SystemKeys>): SpaceTrashEntityComponent[] {
 
-    // if (system) {
+    if (system) {
 
-    //   const es: Record<string, SpaceTrashEntityComponent> = {}
+      const toReturn: Record<string, SpaceTrashEntityComponent> = {}
 
-    //   Object.keys(this.components).forEach((cKey) => {
-    //     const c = this.components[cKey];
-    //     if (c.systems.find((s) => s === system)) {
-    //       if (es[c.entity.uuid]) {
-    //         es[c.entity.uuid].components.push(c);
-    //       } else {
-    //         es[c.entity.uuid] = new SpaceTrashEntityComponent(c.entity, [c]);
-    //         es[c.entity.uuid].applyComponent(c);
-    //       }
-    //     }
+      Object.keys(this.components).forEach((cKey) => {
+        const c = this.components[cKey];
+        const e = c.entity as unknown as string;
+        if (c.systems.find((s) => {
+          return system === s;
+        })) {
+          if (toReturn[e]) {
+            toReturn[e].applyComponent(c);
+          } else {
+            toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
+          }
+        }
 
-    //   })
-    //   return Object.values(es);
+      })
+      return Object.values(toReturn);
 
-    // } else {
+    } else {
+      const toReturn: Record<string, SpaceTrashEntityComponent> = {}
 
-    //   const es: Record<string, SpaceTrashEntityComponent> = {}
+      Object.keys(this.components).forEach((cKey) => {
+        const c = this.components[cKey];
+        const e = c.entity as unknown as string;
 
-    //   Object.keys(this.components).forEach((cKey) => {
-    //     const c = this.components[cKey];
-    //     if (es[c.entity.uuid]) {
-    //       es[c.entity.uuid].components.push(c);
-    //     } else {
-    //       es[c.entity.uuid] = new SpaceTrashEntityComponent(c.entity, [c]);
-    //       es[c.entity.uuid].applyComponent(c);
-    //     }
-    //   })
-    //   return Object.values(es);
+        if (toReturn[e]) {
+          toReturn[e].applyComponent(c);
+        } else {
+          toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
 
-    const toReturn: Record<string, SpaceTrashEntityComponent> = {}
+        }
+      })
+      return Object.values(toReturn);
+    }
 
-    // console.log(this.components);
-    // console.log(this.entities);
 
-    Object.keys(this.components).forEach((cKey) => {
-      const c = this.components[cKey];
-      const e = c.entity as unknown as string;
-
-      if (toReturn[e]) {
-        toReturn[e].applyComponent(c);
-      } else {
-        toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
-        
-      }
-    })
-    return Object.values(toReturn);
 
   }
 }

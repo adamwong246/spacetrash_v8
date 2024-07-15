@@ -10,12 +10,8 @@ esbuild.context({
     './src/index.html',
     './src/index.scss',
 
-    './src/worker.ts',
-    './src/engine.ts',
-    
-    // './node_modules/react-drag-resize-dock-modal/dist/index.css'
-    // './src/experiments/gamespace/index.html',
-    // './src/experiments/gamespace/index.tsx',
+    './src/alpha.ts',
+    './src/beta.ts',
   ],
 
   outdir: "./dist",

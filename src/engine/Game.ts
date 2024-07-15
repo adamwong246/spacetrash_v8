@@ -57,9 +57,21 @@ export class Game<SystemKeys extends string> {
     return this;
   }
 
-  animationLoop(key: string) {
-    this.draw(key);
-    requestAnimationFrame(() => this.canvasContexts[key].run && this.animationLoop(key));
+  // https://gist.github.com/elundmark/38d3596a883521cb24f5
+  async animationLoop(key: string) {
+    var fps = 30;
+    let then = performance.now();
+    const interval = 1000 / fps;
+    let delta = 0;
+    while (true) {
+        let now = await new Promise(requestAnimationFrame);
+        if (now - then < interval - delta) {
+            continue;
+        }
+        delta = Math.min(interval, delta + now - then - interval);
+        then = now;
+      this.draw(key);
+    }
   }
 
   draw(key: string) {

@@ -14,11 +14,11 @@ export abstract class System<SystemKeys extends string> {
     this.frame[0] = 0;
   }
 
-  abstract doPreLogic(entitiesComponent: EntityComponent[]): void
-  abstract doPostLogic(entitiesComponent: EntityComponent[]): void
+  abstract doPreLogic(components: Component<unknown, unknown>[]): void
+  abstract doPostLogic(components: Component<unknown, unknown>[]): void
 
   loop(ecs: ECS<SystemKeys>, system: SystemKeys) {
-    setInterval((d, s) => this.logicLoop(d, s), 10, ecs, system);
+    setInterval((d, s) => this.logicLoop(d, s), 30, ecs, system);
   }
 
   async logicLoop(ecs: ECS<SystemKeys>, system: SystemKeys) {
@@ -26,9 +26,9 @@ export abstract class System<SystemKeys extends string> {
     
     this.frame[0] = this.frame[0] + 1;
     
-    const entitiesComponent = ecs.getEntitiesComponent(this);
-    await this.doPreLogic(entitiesComponent);
-    await this.doPostLogic(entitiesComponent);
+    const components = ecs.getComponents(system);
+    await this.doPreLogic(components);
+    await this.doPostLogic(components);
   }
 
 }

@@ -1,7 +1,9 @@
 import { System } from '../System';
 import { EntityComponent } from '../EntityComponent';
+import Component from '../Component';
 
 export abstract class ECS<SystemKeys extends string> {
+  
   systems: Record<SystemKeys, System<SystemKeys>>;
 
   constructor(systems: Record<SystemKeys, System<SystemKeys>>) {
@@ -10,6 +12,8 @@ export abstract class ECS<SystemKeys extends string> {
 
   abstract getEntitiesComponent(system?: System<SystemKeys>): EntityComponent[] 
   abstract setEntitiesComponent(ecss: EntityComponent[] ): void
+
+  abstract getComponents(system?: SystemKeys): Component<any, any>[]
 
   logicLoop() {
     console.log("logic loop is running");
