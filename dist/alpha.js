@@ -25357,29 +25357,41 @@ var FOV = class extends System {
   doPreLogic(components) {
   }
   doPostLogic(components) {
-    const castingComponents = {};
-    const physicsSetComponents = components.filter((c) => c.constructor.name === "PhysicsSetComponent");
-    const physicsActorComponents = components.filter((c) => c.constructor.name === "PhysicsActorComponent");
-    const litables = components.filter((c) => c.constructor.name === "LitableComponent");
-    const lits = components.filter((c) => c.constructor.name === "LitComponent");
-    litables.forEach((litable) => {
-      litable.albedo = 0;
-    });
-    litables.forEach((litable) => {
-      physicsSetComponents.forEach((setPiece) => {
-        if (litable.entity === setPiece.entity) {
-          lits.forEach((lit) => {
-            physicsActorComponents.forEach((actor) => {
-              if (lit.entity === actor.entity) {
-                if (Math.round(actor.x) === setPiece.x && Math.round(actor.y) === setPiece.y) {
-                  litable.albedo = 2;
-                }
-              }
-            });
-          });
+    let entities = {};
+    let lights = [[]];
+    let actors = [[]];
+    let litables = [];
+    let lits = [];
+    for (const c of components) {
+      if (c.constructor.name === "PhysicsSetComponent") {
+        const y = Math.round(c.y);
+        if (!lights[y]) {
+          lights[y] = [];
         }
-      });
-    });
+        lights[y][c.x] = c.entity;
+      }
+      if (c.constructor.name === "PhysicsActorComponent") {
+        const y = Math.round(c.y);
+        if (!actors[y]) {
+          actors[y] = [];
+        }
+        actors[y][Math.round(c.x)] = c.entity;
+      }
+      if (c.constructor.name === "LitableComponent") {
+        litables[c.entity] = c;
+      }
+      if (c.constructor.name === "LitComponent") {
+      }
+    }
+    for (let [yndx, lightsY] of lights.entries()) {
+      debugger;
+      for (let [xndx, lightsX] of lightsY.entries()) {
+        if (actors[yndx] && actors[yndx][xndx]) {
+          console.log("albedo", litables[actors[yndx][xndx]]);
+          litables[actors[yndx][xndx]].albedo = Math.random();
+        }
+      }
+    }
   }
 };
 
@@ -25711,7 +25723,7 @@ var FloorTile = class extends SpaceTrashEntityComponent {
         new PhysicsSetComponent(spe, x, y, `south`, false),
         new UnmovingComponent(spe),
         new OpacityComponent(spe, 1),
-        new LitableComponent(spe, 1)
+        new LitableComponent(spe)
       ]
     );
   }
@@ -25725,7 +25737,7 @@ var WallTile = class extends SpaceTrashEntityComponent {
         new PhysicsSetComponent(spe, x, y, `south`, true),
         new UnmovingComponent(spe),
         new OpacityComponent(spe, 0),
-        new LitableComponent(spe, 2)
+        new LitableComponent(spe)
       ]
     );
   }
@@ -25741,7 +25753,7 @@ var DoorTile = class extends SpaceTrashEntityComponent {
         new UnmovingComponent(spe),
         new PowerConsumingComponent(spe),
         new OpacityComponent(spe, 0),
-        new LitableComponent(spe, 3)
+        new LitableComponent(spe)
       ]
     );
   }
@@ -26100,13 +26112,14 @@ var Spacetrash = class extends Game {
               const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
               if (setpiece) {
                 const littable = ec.components.find((c) => c.constructor.name === "LitableComponent");
+                console.log("littable.albedo", littable.albedo);
                 if (!littable.albedo || littable.albedo <= 0) {
                   canvas.strokeStyle = "grey";
                   canvas.fillStyle = "grey";
                   canvas.beginPath();
                   canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
                   canvas.stroke();
-                } else if (littable.albedo < 0.5) {
+                } else if (littable.albedo <= 0.5) {
                   canvas.strokeStyle = "green";
                   canvas.fillStyle = "green";
                   canvas.beginPath();
@@ -26152,7 +26165,7 @@ var Spacetrash = class extends Game {
             [
               ...e,
               ...[
-                ...new Array(100)
+                ...new Array(1e3)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,

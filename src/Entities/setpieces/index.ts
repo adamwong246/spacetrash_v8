@@ -16,7 +16,7 @@ export class FloorTile extends SpaceTrashEntityComponent {
       [new PhysicsSetComponent(spe, x, y, `south`, false),
       new UnmovingComponent(spe),
       new OpacityComponent(spe, 1),
-      new LitableComponent(spe, 1)],
+      new LitableComponent(spe)],
     );
   }
 }
@@ -30,7 +30,7 @@ export class WallTile extends SpaceTrashEntityComponent {
       [new PhysicsSetComponent(spe, x, y, `south`, true),
       new UnmovingComponent(spe),
       new OpacityComponent(spe, 0),
-      new LitableComponent(spe, 2)],
+      new LitableComponent(spe)],
     );
   }
 }
@@ -45,7 +45,7 @@ export class DoorTile extends SpaceTrashEntityComponent {
       new UnmovingComponent(spe),
       new PowerConsumingComponent(spe),
       new OpacityComponent(spe, 0),
-      new LitableComponent(spe, 3)],
+      new LitableComponent(spe)],
     );
   }
 }

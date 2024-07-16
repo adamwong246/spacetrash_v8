@@ -188,7 +188,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                 
 
 
-                // console.log("littable.albedo", littable.albedo)
+                console.log("littable.albedo", littable.albedo)
                 if (!littable.albedo || littable.albedo <= 0 ) {
                   canvas.strokeStyle = "grey"
                   canvas.fillStyle = "grey"
@@ -196,7 +196,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                   // console.log("setpiece", setpiece)
                   canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
                   canvas.stroke();
-                } else if (littable.albedo < 0.5) {
+                } else if (littable.albedo <= 0.5) {
                   canvas.strokeStyle = "green"
                   canvas.fillStyle = "green"
                   canvas.beginPath();
@@ -261,7 +261,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
               ...e,
               ...[
-                ...new Array(100)
+                ...new Array(1000)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,

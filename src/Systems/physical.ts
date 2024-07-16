@@ -1,7 +1,6 @@
 import { System } from "../engine/System";
 
 import { PhysicsActorComponent, PhysicsSetComponent } from "../Components/physics";
-import { SpaceTrashEntityComponent } from "../EntityComponent";
 
 import { ISpaceTrashSystems, TileSize } from ".";
 import { SpaceTrashComponent } from "../Components";
@@ -17,10 +16,6 @@ function makes<T>(cs: SpaceTrashComponent[], arg1: string): T[] {
   return cs.filter((c) => {
     return c.constructor.name === arg1
   }) as T[];
-  // if (c.constructor.name === arg1) {
-  //   return c as T;
-  // }
-  // return null;
 }
 
 export class Physical extends System<ISpaceTrashSystems> {
