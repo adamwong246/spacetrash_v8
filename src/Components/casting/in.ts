@@ -111,9 +111,9 @@ export class LitableComponent extends InCastingComponent {
   ray: ERays.visible
   albedo: number;
 
-  constructor(e) {
+  constructor(e, albedo = -1) {
     super(e);
-    this.albedo = 0;
+    this.albedo = albedo;
   }
 
   getMove(): unknown {

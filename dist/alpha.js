@@ -25355,10 +25355,31 @@ var FOV = class extends System {
     super();
   }
   doPreLogic(components) {
-    const outcasters = [];
-    const incasters = [];
   }
   doPostLogic(components) {
+    const castingComponents = {};
+    const physicsSetComponents = components.filter((c) => c.constructor.name === "PhysicsSetComponent");
+    const physicsActorComponents = components.filter((c) => c.constructor.name === "PhysicsActorComponent");
+    const litables = components.filter((c) => c.constructor.name === "LitableComponent");
+    const lits = components.filter((c) => c.constructor.name === "LitComponent");
+    litables.forEach((litable) => {
+      litable.albedo = 0;
+    });
+    litables.forEach((litable) => {
+      physicsSetComponents.forEach((setPiece) => {
+        if (litable.entity === setPiece.entity) {
+          lits.forEach((lit) => {
+            physicsActorComponents.forEach((actor) => {
+              if (lit.entity === actor.entity) {
+                if (Math.round(actor.x) === setPiece.x && Math.round(actor.y) === setPiece.y) {
+                  litable.albedo = 2;
+                }
+              }
+            });
+          });
+        }
+      });
+    });
   }
 };
 
@@ -25556,9 +25577,9 @@ var CameraComponent = class extends InCastingComponent {
 var LitableComponent = class extends InCastingComponent {
   ray;
   albedo;
-  constructor(e) {
+  constructor(e, albedo = -1) {
     super(e);
-    this.albedo = 0;
+    this.albedo = albedo;
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -25646,7 +25667,7 @@ var SpaceTrashEntity = class extends Entity {
   }
 };
 var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0) {
+  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, albedo = 0) {
     const spe = new SpaceTrashEntity();
     super(
       spe,
@@ -25656,7 +25677,7 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
         new CameraComponent(spe),
         new AttackableComponent(spe),
         new PowerStoringComponent(spe),
-        new LitableComponent(spe)
+        new LitableComponent(spe, albedo)
       ]
     );
   }
@@ -25690,7 +25711,7 @@ var FloorTile = class extends SpaceTrashEntityComponent {
         new PhysicsSetComponent(spe, x, y, `south`, false),
         new UnmovingComponent(spe),
         new OpacityComponent(spe, 1),
-        new LitableComponent(spe)
+        new LitableComponent(spe, 1)
       ]
     );
   }
@@ -25704,7 +25725,7 @@ var WallTile = class extends SpaceTrashEntityComponent {
         new PhysicsSetComponent(spe, x, y, `south`, true),
         new UnmovingComponent(spe),
         new OpacityComponent(spe, 0),
-        new LitableComponent(spe)
+        new LitableComponent(spe, 2)
       ]
     );
   }
@@ -25720,7 +25741,7 @@ var DoorTile = class extends SpaceTrashEntityComponent {
         new UnmovingComponent(spe),
         new PowerConsumingComponent(spe),
         new OpacityComponent(spe, 0),
-        new LitableComponent(spe)
+        new LitableComponent(spe, 3)
       ]
     );
   }
@@ -26061,13 +26082,6 @@ var Spacetrash = class extends Game {
                 let startAngle = 0;
                 let endAngle = Math.PI + Math.PI * 1 / 2;
                 let counterclockwise = 2 % 2 === 1;
-                canvas.rect(
-                  Math.round(drone.x) * tSize - tSize / 2,
-                  Math.round(drone.y) * tSize - tSize / 2,
-                  tSize,
-                  tSize
-                );
-                canvas.stroke();
                 canvas.beginPath();
                 canvas.arc(
                   drone.x * tSize,
@@ -26085,39 +26099,24 @@ var Spacetrash = class extends Game {
               }
               const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
               if (setpiece) {
-                canvas.beginPath();
-                canvas.arc(
-                  setpiece.x * tSize,
-                  setpiece.y * tSize,
-                  tSize / 2,
-                  0,
-                  2 * Math.PI
-                );
-                canvas.rect(
-                  setpiece.x * tSize - tSize / 2,
-                  setpiece.y * tSize - tSize / 2,
-                  tSize,
-                  tSize
-                );
-                const opacityComp = ec.components.find((c) => c.constructor.name === "OpacityComponent");
-                if (opacityComp && opacityComp.opacity === 0) {
-                  canvas.fillStyle = "black";
-                  canvas.fill();
-                }
-                if (opacityComp && opacityComp.opacity === 1) {
-                  canvas.fillStyle = "white";
-                  canvas.fill();
-                }
-                if (opacityComp && opacityComp.opacity === 2) {
-                  canvas.fillStyle = "red";
-                  canvas.fill();
-                }
                 const littable = ec.components.find((c) => c.constructor.name === "LitableComponent");
-                if (littable && littable.albedo === 0) {
+                if (!littable.albedo || littable.albedo <= 0) {
                   canvas.strokeStyle = "grey";
+                  canvas.fillStyle = "grey";
+                  canvas.beginPath();
+                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
+                  canvas.stroke();
+                } else if (littable.albedo < 0.5) {
+                  canvas.strokeStyle = "green";
+                  canvas.fillStyle = "green";
+                  canvas.beginPath();
+                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
                   canvas.stroke();
                 } else {
                   canvas.strokeStyle = "yellow";
+                  canvas.fillStyle = "yellow";
+                  canvas.beginPath();
+                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
                   canvas.stroke();
                 }
               }
@@ -26145,13 +26144,15 @@ var Spacetrash = class extends Game {
             e.push(new WallTile(roomsSize, y, 1));
             e.push(new WallTile(y, roomsSize, 1));
           }
-          e.push(new DoorTile(5, 5, 1));
-          e.push(new DoorTile(roomsSize, roomsSize, 1));
+          e.push(new WallTile(4, 4, 1));
+          e.push(new WallTile(5, 5, 1));
+          e.push(new DoorTile(6, 6, 1));
+          e.push(new DoorTile(16, 16, 1));
           ecs.setEntitiesComponent(
             [
               ...e,
               ...[
-                ...new Array(5)
+                ...new Array(100)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,

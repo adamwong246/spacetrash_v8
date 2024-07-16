@@ -13,40 +13,85 @@ export class FOV extends System<ISpaceTrashSystems> {
   constructor() {
     super()
   }
-  
+
   doPreLogic(components: SpaceTrashComponent[]): void {
-    const outcasters: { physicsComponent: PhysicsComponent, caster: LitComponent }[] = [];
-    const incasters: { physicsComponent: PhysicsComponent, caster: LitableComponent }[] = [];
-
-    // entitiesComponents.forEach((ec) => {
-    //   const physicsComponent = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent;
-    //   const outcaster = ec.components.find((c) => c.constructor.name === "LitComponent") as LitComponent;
-    //   const incaster = ec.components.find((c) => c.constructor.name === "LitableComponent") as LitableComponent;
-    //   if (physicsComponent && outcaster) {
-    //     outcasters.push({ physicsComponent, caster: outcaster });
-    //   }
-    //   if (physicsComponent && incaster) {
-    //     incasters.push({ physicsComponent, caster: incaster });
-    //   }
-    // })
-
-    // debugger;
-
-    // outcasters.forEach((oc) => {
-    //   incasters.forEach((ic) => {
-    //     if (
-    //       (
-    //         Math.abs(oc.physicsComponent.x - ic.physicsComponent.x) +
-    //         Math.abs(oc.physicsComponent.y - ic.physicsComponent.y)) > 10) {
-    //       ic.caster.albedo = 10;
-    //     } else {
-    //       ic.caster.albedo = 10;
-    //     }
-    //   })
-    // })
+    
 
   }
+
   doPostLogic(components: SpaceTrashComponent[]) {
-    // console.log("Casting loop")
+    const castingComponents: Record<string, {
+      physicsComponent: PhysicsComponent,
+      lits: LitComponent[],
+      littables: LitableComponent[]
+    }> = {}
+    const physicsSetComponents = components.filter((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent[];
+    const physicsActorComponents = components.filter((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent[];
+    const litables = components.filter((c) => c.constructor.name === "LitableComponent") as LitableComponent[];
+    const lits = components.filter((c) => c.constructor.name === "LitComponent") as LitComponent[];
+
+    litables.forEach(litable => { 
+      litable.albedo = 0;
+    })
+
+    litables.forEach(litable => {
+      physicsSetComponents.forEach(setPiece => {
+        if ((litable.entity as unknown as string) === (setPiece.entity as unknown as string)) {
+          
+          lits.forEach(lit => {
+            physicsActorComponents.forEach(actor => { 
+              if ((lit.entity as unknown as string) === (actor.entity as unknown as string)) { 
+
+
+                if ((Math.round(actor.x) === setPiece.x) && (Math.round(actor.y) === setPiece.y)) { 
+                  litable.albedo = 2;
+                }
+
+              }
+            });
+
+          })
+        }
+      })
+    })
+
+    // physicsComponents.forEach(pc => {
+    //   castingComponents[pc.entity as unknown as string] = {
+    //     physicsComponent: pc,
+    //     lits: [],
+    //     littables: []
+    //   }
+    // });
+    
+    // litables.forEach(l => {
+    //   castingComponents[l.entity as unknown as string] = {
+    //     ...castingComponents[l.entity as unknown as string],
+    //     lits: (castingComponents[l.entity as unknown as string] || {lits: []}).lits,
+    //     littables: [
+    //       ...(castingComponents[l.entity as unknown as string] || {littables: []}).littables,
+    //       l
+    //     ]
+    //   }
+    // });
+
+    // lits.forEach(l => {
+    //   castingComponents[l.entity as unknown as string] = {
+    //     ...castingComponents[l.entity as unknown as string],
+    //     littables: castingComponents[l.entity as unknown as string].littables,
+    //     lits: [
+    //       ...castingComponents[l.entity as unknown as string].lits,
+    //       l
+    //     ]
+    //   }
+    // });
+
+    // Object.values(castingComponents).forEach((cc) => {
+    //   cc.littables.forEach((l) => {
+    //     l.albedo = Math.random();
+    //   })
+    //   // console.log("ic", ic);
+      
+    // });
+
   }
 }

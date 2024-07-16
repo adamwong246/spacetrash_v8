@@ -41,6 +41,7 @@ export class SpaceTrashDrone extends SpaceTrashEntityComponent {
     r: number = 0,
     dx: number = 0,
     dy: number = 0,
+    albedo: number = 0,
   ) {
     const spe = new SpaceTrashEntity();
     super(
@@ -50,7 +51,7 @@ export class SpaceTrashDrone extends SpaceTrashEntityComponent {
       new CameraComponent(spe),
       new AttackableComponent(spe),
       new PowerStoringComponent(spe),
-      new LitableComponent(spe)],
+      new LitableComponent(spe, albedo)],
     );
   }
 }
