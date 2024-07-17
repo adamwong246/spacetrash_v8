@@ -25990,7 +25990,7 @@ var StateSpace = class extends DirectedGraph {
   }
 };
 
-// src/engine/ECS/index.ts
+// src/engine/ECS.ts
 var ECS = class {
   systems;
   constructor(systems) {
@@ -26212,9 +26212,7 @@ var Spacetrash = class extends Game {
   }
 };
 
-// src/alpha.ts
-var beta = new Worker("./beta.js");
-console.log("hello alpha");
+// src/worker.ts
 var sp = new Spacetrash(postMessage);
 self.onmessage = function handleMessageFromMain(msg) {
   if (msg.data[0] === "inputEvent") {

@@ -10,8 +10,8 @@ esbuild.context({
     './src/index.html',
     './src/index.scss',
 
-    './src/alpha.ts',
-    './src/beta.ts',
+    './src/worker.ts',
+
   ],
 
   outdir: "./dist",

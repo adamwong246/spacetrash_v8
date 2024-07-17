@@ -1,10 +1,6 @@
 import { ESpaceTrashApps } from "./UI";
 import Spacetrash from "./spacetrash";
 
-const beta = new Worker("./beta.js");
-
-console.log("hello alpha");
-
 const sp = new Spacetrash(postMessage)
 
 self.onmessage = function handleMessageFromMain(msg: MessageEvent) {

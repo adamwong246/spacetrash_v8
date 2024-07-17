@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import { SpaceTrashDesktop } from './UI';
 
-const worker = new Worker("./alpha.js");
+const worker = new Worker("./worker.js");
 
 document.addEventListener("DOMContentLoaded", function (event) {
   const domNode = document.getElementById('react-root');
