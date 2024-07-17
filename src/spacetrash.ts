@@ -1,17 +1,15 @@
-import { LitableComponent } from "./Components/casting/in";
-import { OpacityComponent } from "./Components/opacity";
-import { PhysicsActorComponent, PhysicsSetComponent } from "./Components/physics";
-import { SpaceTrashECS } from "./EC";
+
+import { PhysicsActorComponent } from "./Components/physics";
 import { SpaceTrashDrone } from "./Entities";
 import { FloorTile, WallTile, DoorTile } from "./Entities/setpieces";
-import { SpaceTrashEntityComponent } from "./EntityComponent";
 import { ISpaceTrashSystems, SpaceTrashSystems } from "./Systems";
-import { SpaceTrashTerminal } from "./Terminal";
+import { SpaceTrashTerminal } from "./lib/Terminal";
 import { ISpaceTrashApps } from "./UI";
 import { Game } from "./engine/Game";
 import { Scene } from "./engine/Scene";
 import { StateSpace } from "./engine/StateSpace";
-
+import { SpaceTrashECS } from "./lib/EC";
+import { SpaceTrashEntityComponent } from "./lib/EntityComponent";
 
 let droneMouseX = 0;
 let droneMouseY = 0;

@@ -1,4 +1,4 @@
-import { IComStatus } from "./UI/UiState";
+import { IComStatus } from "../UI/UiState";
 
 
 export class SpaceTrashTerminal {

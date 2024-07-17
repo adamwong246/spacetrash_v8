@@ -1,4 +1,4 @@
-import { EntityComponent } from "./engine/EntityComponent";
+import { EntityComponent } from "../engine/EntityComponent";
 
 export class SpaceTrashEntityComponent extends EntityComponent {
   x: number;

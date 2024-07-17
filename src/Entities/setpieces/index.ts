@@ -1,10 +1,9 @@
-
+import { SpaceTrashEntityComponent } from "../../lib/EntityComponent";
 import { AttackableComponent, LitableComponent } from "../../Components/casting/in";
 import { UnmovingComponent } from "../../Components/conveyance";
 import { OpacityComponent } from "../../Components/opacity";
 import { PhysicsSetComponent } from "../../Components/physics";
 import { PowerConsumingComponent } from "../../Components/power";
-import { SpaceTrashEntityComponent } from "../../EntityComponent";
 
 import { SpaceTrashEntity } from "..";
 

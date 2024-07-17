@@ -4,8 +4,9 @@ import { OutCastingComponent, MeleeComponent, GunComponent, LitComponent } from 
 import { UnmovingComponent, SpawningComponent, PanningComponent, WheeledComponent } from "../Components/conveyance";
 import { PhysicsComponent, PhysicsSetComponent, PhysicsActorComponent } from "../Components/physics";
 import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, PowerStoringComponent } from "../Components/power";
-import { SpaceTrashEntityComponent } from "../EntityComponent";
+
 import { Entity } from "../engine/Entity";
+import { SpaceTrashEntityComponent } from "../lib/EntityComponent";
 
 export class SpaceTrashEntity extends Entity {
 

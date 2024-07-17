@@ -25205,57 +25205,6 @@ var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   return ESpaceTrashApps2;
 })(ESpaceTrashApps || {});
 
-// src/engine/ECS/index.ts
-var ECS = class {
-  systems;
-  constructor(systems) {
-    this.systems = systems;
-  }
-  tick(delta) {
-    Object.entries(this.systems).forEach(([systemKey, system]) => {
-      system.tick(delta, this.getComponents());
-    });
-  }
-};
-
-// src/engine/lib.ts
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(
-    /[018]/g,
-    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
-  );
-}
-
-// src/EC.ts
-var SpaceTrashECS = class extends ECS {
-  entities;
-  components;
-  constructor(systems) {
-    super(systems);
-    this.entities = /* @__PURE__ */ new Set();
-    this.components = {};
-  }
-  getComponents(system) {
-    return this.components;
-  }
-  setEntitiesComponent(ecss) {
-    ecss.forEach((ec) => {
-      const entityUuid = uuidv4();
-      this.entities.add(entityUuid);
-      ec.components.forEach((c) => {
-        const componentUid = uuidv4();
-        this.components[componentUid] = {
-          ...c,
-          entity: entityUuid,
-          constructor: {
-            name: c.constructor.name
-          }
-        };
-      });
-    });
-  }
-};
-
 // src/engine/Component.ts
 var Component = class {
   // uuid: string;
@@ -25675,6 +25624,13 @@ var PowerStoringComponent = class extends PoweredComponent {
   }
 };
 
+// src/engine/Entity.ts
+var Entity = class {
+  // uuid: string;
+  constructor() {
+  }
+};
+
 // src/engine/EntityComponent.ts
 var EntityComponent = class {
   entity;
@@ -25688,7 +25644,7 @@ var EntityComponent = class {
   }
 };
 
-// src/EntityComponent.ts
+// src/lib/EntityComponent.ts
 var SpaceTrashEntityComponent = class extends EntityComponent {
   x;
   dx;
@@ -25704,13 +25660,6 @@ var SpaceTrashEntityComponent = class extends EntityComponent {
   //   c.push(physics);
   //   super(entity, [physics, ...components]);
   // }
-};
-
-// src/engine/Entity.ts
-var Entity = class {
-  // uuid: string;
-  constructor() {
-  }
 };
 
 // src/Entities/index.ts
@@ -25800,7 +25749,7 @@ var DoorTile = class extends SpaceTrashEntityComponent {
   }
 };
 
-// src/Terminal.ts
+// src/lib/Terminal.ts
 var SpaceTrashTerminal = class {
   // update: (to: string) => void
   constructor() {
@@ -26038,6 +25987,57 @@ var StateSpace = class extends DirectedGraph {
   }
   inputEvent(inputEvent, appKey) {
     this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey);
+  }
+};
+
+// src/engine/ECS/index.ts
+var ECS = class {
+  systems;
+  constructor(systems) {
+    this.systems = systems;
+  }
+  tick(delta) {
+    Object.entries(this.systems).forEach(([systemKey, system]) => {
+      system.tick(delta, this.getComponents());
+    });
+  }
+};
+
+// src/engine/lib.ts
+function uuidv4() {
+  return "10000000-1000-4000-8000-100000000000".replace(
+    /[018]/g,
+    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  );
+}
+
+// src/lib/EC.ts
+var SpaceTrashECS = class extends ECS {
+  entities;
+  components;
+  constructor(systems) {
+    super(systems);
+    this.entities = /* @__PURE__ */ new Set();
+    this.components = {};
+  }
+  getComponents(system) {
+    return this.components;
+  }
+  setEntitiesComponent(ecss) {
+    ecss.forEach((ec) => {
+      const entityUuid = uuidv4();
+      this.entities.add(entityUuid);
+      ec.components.forEach((c) => {
+        const componentUid = uuidv4();
+        this.components[componentUid] = {
+          ...c,
+          entity: entityUuid,
+          constructor: {
+            name: c.constructor.name
+          }
+        };
+      });
+    });
   }
 };
 

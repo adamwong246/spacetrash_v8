@@ -1,10 +1,9 @@
-
+import Component from "../engine/Component";
+import { ECS } from "../engine/ECS";
+import { System } from "../engine/System";
+import { uuidv4 } from "../engine/lib";
 
 import { SpaceTrashEntityComponent } from "./EntityComponent";
-import Component from "./engine/Component";
-import { ECS } from "./engine/ECS";
-import { System } from "./engine/System";
-import { uuidv4 } from "./engine/lib";
 
 export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
   

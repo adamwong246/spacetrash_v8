@@ -1,4 +1,4 @@
-import { Surface } from "./engine/Surface";
+import { Surface } from "../engine/Surface";
 
 let getRandomBytes = (
   (typeof self !== 'undefined' && (self.crypto ))
