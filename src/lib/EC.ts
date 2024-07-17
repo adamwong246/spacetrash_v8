@@ -6,13 +6,10 @@ import { uuidv4 } from "../engine/lib";
 import { SpaceTrashEntityComponent } from "./EntityComponent";
 
 export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
-  
-  entities: Set<string>;
   components: Record<string, Component<any, any>>;
 
   constructor(systems: Record<SystemKeys, System<SystemKeys>>) {
     super(systems);
-    this.entities = new Set();
     this.components = {};
   }
   
@@ -23,10 +20,8 @@ export class SpaceTrashECS<SystemKeys extends string> extends ECS<any> {
   setEntitiesComponent(ecss: SpaceTrashEntityComponent[]): void {
     ecss.forEach((ec) => {
       const entityUuid = uuidv4();
-      this.entities.add(entityUuid);
 
       ec.components.forEach((c) => {
-        // const componentUid = c.uuid;
         const componentUid = uuidv4();
         this.components[componentUid] = {
           ...c,

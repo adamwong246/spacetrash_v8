@@ -26013,11 +26013,10 @@ function uuidv4() {
 
 // src/lib/EC.ts
 var SpaceTrashECS = class extends ECS {
-  entities;
+  // entities: Set<string>;
   components;
   constructor(systems) {
     super(systems);
-    this.entities = /* @__PURE__ */ new Set();
     this.components = {};
   }
   getComponents(system) {
@@ -26026,7 +26025,6 @@ var SpaceTrashECS = class extends ECS {
   setEntitiesComponent(ecss) {
     ecss.forEach((ec) => {
       const entityUuid = uuidv4();
-      this.entities.add(entityUuid);
       ec.components.forEach((c) => {
         const componentUid = uuidv4();
         this.components[componentUid] = {
