@@ -1,8 +1,12 @@
 import { System } from "../engine/System";
 
 import { ISpaceTrashSystems } from ".";
+import Component from "../engine/Component";
 
 export class Hackable extends System<ISpaceTrashSystems> {
+  tick(delta: number, components: Component<unknown, unknown>[]): Component<unknown, unknown>[] {
+    return components;
+  }
   constructor() {
     super()
   }

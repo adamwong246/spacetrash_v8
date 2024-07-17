@@ -4,6 +4,7 @@ import { PhysicsActorComponent, PhysicsSetComponent } from "../Components/physic
 
 import { ISpaceTrashSystems, TileSize } from ".";
 import { SpaceTrashComponent } from "../Components";
+import Component from "../engine/Component";
 
 function make<T>(c: SpaceTrashComponent, arg1: string): T | null {
   if (c.constructor.name === arg1) {
@@ -24,104 +25,34 @@ export class Physical extends System<ISpaceTrashSystems> {
     super()
     this.mapSize = mapSize;
   }
-  doPreLogic(components: SpaceTrashComponent[]): void {
-    components.forEach((c) => {
+
+  tick(delta, components: Record<string, Component<any, any>>) {
+    Object.keys(components).forEach((cKey) => {
+      const c = components[cKey];
       const d = make<PhysicsActorComponent>(c, "PhysicsActorComponent");
       if (d) {
         d.x = d.x + d.dx;
         d.y = d.y + d.dy;
+
+        if (d.x < 0) {
+          d.x = this.mapSize + d.dx * 2;
+        }
+        if (d.x > this.mapSize) {
+          d.x = d.dx*2;
+        }
+        if (d.y < 0) {
+          d.y = this.mapSize + d.dy*2;
+        }
+        if (d.y > this.mapSize) {
+          d.y = d.dy*2;
+        }
+
       }
     })
+
+    return components;
   }
-
-  doPostLogic(components: SpaceTrashComponent[]) {
-    // const setPieces = makes<PhysicsSetComponent>(components, "PhysicsSetComponent");
-    
-
-    const actors = makes<PhysicsActorComponent>(components, "PhysicsActorComponent");
-
-    actors.forEach((c) => {
-      if (c.x < 0) {
-        c.x = this.mapSize + c.dx * 2;
-      }
-      if (c.x > this.mapSize) {
-        c.x = c.dx*2;
-      }
-      if (c.y < 0) {
-        c.y = this.mapSize + c.dy*2;
-      }
-      if (c.y > this.mapSize) {
-        c.y = c.dy*2;
-        }
-    });
-    
-    // const actors = entitiesComponents.filter((ec) => {
-    //   return ec.components.find((c) => c.constructor.name === "PhysicsActorComponent")
-    // });
-
-    // actors.forEach((actorEc) => {
-    //   if (actorEc) {
-
-    //     const c = actorEc.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-
-    //     setPieces.filter((ec) => {
-    //       return ec.components.find((c) => c.constructor.name === "PhysicsSetComponent" && (c as PhysicsSetComponent).solid)
-    //     }).forEach((solidSetPiece) => {
-
-    //       const sc = solidSetPiece.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent
-
-    //       const halftile = TileSize / 2;
-    //       // if (
-    //       //   Math.round(c.x) === sc.x && Math.round(c.y) === sc.y
-    //       // ) {
-
-    //       //   c.x = c.x - 50*c.dx;
-    //       //   c.y = c.y - 50*c.dy;            
-            
-    //       //   if (c.dx >= 0) {
-    //       //     if (c.dy >= 0) {
-
-    //       //       if (
-    //       //         sc.x === Math.round(c.x) && sc.y === Math.round(c.y)
-    //       //       ) {
-    //       //         c.dx = c.dx * -1; 
-    //       //         c.dy = c.dy * -1; 
-    //       //       } else if (
-    //       //         sc.x === Math.round(c.x) + 1 && sc.y === Math.round(c.y)
-    //       //       ) {
-    //       //         c.dy = c.dy * -1; 
-    //       //       }else if (
-    //       //         sc.x === Math.round(c.x) && sc.y === Math.round(c.y) + 1
-    //       //       ) {
-    //       //         c.dx = c.dx * -1; 
-                  
-    //       //       }
-                               
-    //       //       console.log("mark1");
-    //       //     } else {
-    //       //       // c.dy = c.dy * -1;
-    //       //       // console.log("mark2");
-    //       //     } 
-    //       //   } else {
-    //       //     if (c.dy >= 0) {
-    //       //       // c.dx = c.dx * -1;
-    //       //       // console.log("mark3");
-    //       //     } else {
-    //       //       // c.dy = c.dy * -1;
-    //       //       // console.log("mark4");
-    //       //     }
- 
-    //       //   }
-    //       // }
-    //     });
- 
-
-                  
-        
-    // }
-    // });
-
-  }
+  
 }
 
 //   entitiesComponents.filter((ec) => {
@@ -167,4 +98,82 @@ export class Physical extends System<ISpaceTrashSystems> {
       //     //   // debugger
       //     // }
       //   }
-      // }
+// }
+      
+// doPostLogic(components: SpaceTrashComponent[]) {
+//   // const setPieces = makes<PhysicsSetComponent>(components, "PhysicsSetComponent");
+  
+
+//   const actors = makes<PhysicsActorComponent>(components, "PhysicsActorComponent");
+
+//   actors.forEach((c) => {
+    
+//   });
+  
+//   // const actors = entitiesComponents.filter((ec) => {
+//   //   return ec.components.find((c) => c.constructor.name === "PhysicsActorComponent")
+//   // });
+
+//   // actors.forEach((actorEc) => {
+//   //   if (actorEc) {
+
+//   //     const c = actorEc.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+
+//   //     setPieces.filter((ec) => {
+//   //       return ec.components.find((c) => c.constructor.name === "PhysicsSetComponent" && (c as PhysicsSetComponent).solid)
+//   //     }).forEach((solidSetPiece) => {
+
+//   //       const sc = solidSetPiece.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent
+
+//   //       const halftile = TileSize / 2;
+//   //       // if (
+//   //       //   Math.round(c.x) === sc.x && Math.round(c.y) === sc.y
+//   //       // ) {
+
+//   //       //   c.x = c.x - 50*c.dx;
+//   //       //   c.y = c.y - 50*c.dy;            
+          
+//   //       //   if (c.dx >= 0) {
+//   //       //     if (c.dy >= 0) {
+
+//   //       //       if (
+//   //       //         sc.x === Math.round(c.x) && sc.y === Math.round(c.y)
+//   //       //       ) {
+//   //       //         c.dx = c.dx * -1; 
+//   //       //         c.dy = c.dy * -1; 
+//   //       //       } else if (
+//   //       //         sc.x === Math.round(c.x) + 1 && sc.y === Math.round(c.y)
+//   //       //       ) {
+//   //       //         c.dy = c.dy * -1; 
+//   //       //       }else if (
+//   //       //         sc.x === Math.round(c.x) && sc.y === Math.round(c.y) + 1
+//   //       //       ) {
+//   //       //         c.dx = c.dx * -1; 
+                
+//   //       //       }
+                             
+//   //       //       console.log("mark1");
+//   //       //     } else {
+//   //       //       // c.dy = c.dy * -1;
+//   //       //       // console.log("mark2");
+//   //       //     } 
+//   //       //   } else {
+//   //       //     if (c.dy >= 0) {
+//   //       //       // c.dx = c.dx * -1;
+//   //       //       // console.log("mark3");
+//   //       //     } else {
+//   //       //       // c.dy = c.dy * -1;
+//   //       //       // console.log("mark4");
+//   //       //     }
+
+//   //       //   }
+//   //       // }
+//   //     });
+
+
+                
+      
+//   // }
+//   // });
+
+// }

@@ -37,8 +37,8 @@ export class Game<SystemKeys extends string> {
     callback?: (data: any) => void,
   ) {
     this.canvasContexts[key] = { run, context, callback };
-    this.animationLoop(key);
-    console.log("animation loop running", key)
+    // this.animationLoop(key);
+    
 
     const s = this.state.get(this.state.currrent);
     const clbk = this.canvasContexts[key].callback;
@@ -46,19 +46,15 @@ export class Game<SystemKeys extends string> {
     
   }
 
-  start() {
-    this.ecs.logicLoop();
-    Object.keys(this.canvasContexts).forEach(((k) => {
-      const { run, context } = this.canvasContexts[k];
-      if (run) {
-        this.animationLoop(k);
-      }
-    }))
-    return this;
-  }
-
-  // https://gist.github.com/elundmark/38d3596a883521cb24f5
-  async animationLoop(key: string) {
+  async start() {
+    // this.ecs.logicLoop();
+    // Object.keys(this.canvasContexts).forEach(((k) => {
+    //   const { run, context } = this.canvasContexts[k];
+    //   if (run) {
+    //     this.animationLoop(k);
+    //   }
+    // }))
+    // return this;
     var fps = 30;
     let then = performance.now();
     const interval = 1000 / fps;
@@ -69,10 +65,37 @@ export class Game<SystemKeys extends string> {
             continue;
         }
         delta = Math.min(interval, delta + now - then - interval);
-        then = now;
-      this.draw(key);
+      then = now;
+      
+
+      for (const canvaskey in (this.canvasContexts)) {
+        this.draw(canvaskey);  
+      }
+
+      this.ecs.tick(delta)
+      
+
+
     }
   }
+
+  // https://gist.github.com/elundmark/38d3596a883521cb24f5
+  // async animationLoop(key: string) {
+  //   console.log("animation loop running", key)
+  //   var fps = 30;
+  //   let then = performance.now();
+  //   const interval = 1000 / fps;
+  //   let delta = 0;
+  //   while (true) {
+  //       let now = await new Promise(requestAnimationFrame);
+  //       if (now - then < interval - delta) {
+  //           continue;
+  //       }
+  //       delta = Math.min(interval, delta + now - then - interval);
+  //       then = now;
+  //     this.draw(key);
+  //   }
+  // }
 
   draw(key: string) {
     // console.log("Game.draw", this.state.currrent)
@@ -89,7 +112,7 @@ export class Game<SystemKeys extends string> {
       ctx,
       key,
       clbk || (() => { }),
-      this.ecs.getEntitiesComponent(),
+      this.ecs.getComponents(),
     );
     
     // if (ctx) {

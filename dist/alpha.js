@@ -25205,108 +25205,16 @@ var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   return ESpaceTrashApps2;
 })(ESpaceTrashApps || {});
 
-// src/engine/EntityComponent.ts
-var EntityComponent = class {
-  entity;
-  components;
-  constructor(entity, components) {
-    this.entity = entity;
-    this.components = components;
-  }
-  applyComponent(c) {
-    this.components.push(c);
-  }
-};
-
-// src/EntityComponent.ts
-var SpaceTrashEntityComponent = class extends EntityComponent {
-  x;
-  dx;
-  y;
-  dy;
-  // constructor(
-  //   entity: Entity,
-  //   // physics: PhysicsComponent,
-  //   // casts?: (InCastingComponent | OutCastingComponent)[],
-  //   ...components: (SpaceTrashComponent)[]
-  // ) {
-  //   const c: Component<any, any>[] = [];
-  //   c.push(physics);
-  //   super(entity, [physics, ...components]);
-  // }
-};
-
 // src/engine/ECS/index.ts
 var ECS = class {
   systems;
   constructor(systems) {
     this.systems = systems;
   }
-  logicLoop() {
-    console.log("logic loop is running");
+  tick(delta) {
     Object.entries(this.systems).forEach(([systemKey, system]) => {
-      system.loop(this, systemKey);
+      system.tick(delta, this.getComponents());
     });
-  }
-};
-
-// src/EC.ts
-var SpaceTrashECS = class extends ECS {
-  entities;
-  components;
-  constructor(systems) {
-    super(systems);
-    this.entities = /* @__PURE__ */ new Set();
-    this.components = {};
-  }
-  getComponents(system) {
-    return Object.values(this.components);
-  }
-  setEntitiesComponent(ecss) {
-    ecss.forEach((ec) => {
-      this.entities.add(ec.entity.uuid);
-      ec.components.forEach((c) => {
-        const componentUid = c.uuid;
-        this.components[componentUid] = {
-          ...c,
-          entity: ec.entity.uuid,
-          constructor: {
-            name: c.constructor.name
-          }
-        };
-      });
-    });
-  }
-  getEntitiesComponent(system) {
-    if (system) {
-      const toReturn = {};
-      Object.keys(this.components).forEach((cKey) => {
-        const c = this.components[cKey];
-        const e = c.entity;
-        if (c.systems.find((s) => {
-          return system === s;
-        })) {
-          if (toReturn[e]) {
-            toReturn[e].applyComponent(c);
-          } else {
-            toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
-          }
-        }
-      });
-      return Object.values(toReturn);
-    } else {
-      const toReturn = {};
-      Object.keys(this.components).forEach((cKey) => {
-        const c = this.components[cKey];
-        const e = c.entity;
-        if (toReturn[e]) {
-          toReturn[e].applyComponent(c);
-        } else {
-          toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
-        }
-      });
-      return Object.values(toReturn);
-    }
   }
 };
 
@@ -25318,35 +25226,80 @@ function uuidv4() {
   );
 }
 
+// src/EC.ts
+var SpaceTrashECS = class extends ECS {
+  entities;
+  components;
+  constructor(systems) {
+    super(systems);
+    this.entities = /* @__PURE__ */ new Set();
+    this.components = {};
+  }
+  getComponents(system) {
+    return this.components;
+  }
+  setEntitiesComponent(ecss) {
+    ecss.forEach((ec) => {
+      const entityUuid = uuidv4();
+      this.entities.add(entityUuid);
+      ec.components.forEach((c) => {
+        const componentUid = uuidv4();
+        this.components[componentUid] = {
+          ...c,
+          entity: entityUuid,
+          constructor: {
+            name: c.constructor.name
+          }
+        };
+      });
+    });
+  }
+  // getEntitiesComponent(system: System<SystemKeys>): SpaceTrashEntityComponent[] {
+  //   if (system) {
+  //     const toReturn: Record<string, SpaceTrashEntityComponent> = {}
+  //     Object.keys(this.components).forEach((cKey) => {
+  //       const c = this.components[cKey];
+  //       const e = c.entity as unknown as string;
+  //       if (c.systems.find((s) => {
+  //         return system === s;
+  //       })) {
+  //         if (toReturn[e]) {
+  //           toReturn[e].applyComponent(c);
+  //         } else {
+  //           toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
+  //         }
+  //       }
+  //     })
+  //     return Object.values(toReturn);
+  //   } else {
+  //     const toReturn: Record<string, SpaceTrashEntityComponent> = {}
+  //     Object.keys(this.components).forEach((cKey) => {
+  //       const c = this.components[cKey];
+  //       const e = c.entity as unknown as string;
+  //       if (toReturn[e]) {
+  //         toReturn[e].applyComponent(c);
+  //       } else {
+  //         toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
+  //       }
+  //     })
+  //     return Object.values(toReturn);
+  //   }
+  // }
+};
+
 // src/engine/Component.ts
 var Component = class {
-  uuid;
-  entity;
-  systems;
-  constructor(entity, systems) {
-    this.systems = systems;
-    this.entity = entity;
-    this.uuid = uuidv4();
+  // uuid: string;
+  entityUid;
+  systemsUids;
+  constructor(entityUid, systemsUids) {
+    this.entityUid = entityUid;
+    this.systemsUids = systemsUids;
   }
 };
 
 // src/engine/System.ts
 var System = class {
-  frame;
-  components = [];
-  constructor() {
-    this.frame = new Uint32Array(1);
-    this.frame[0] = 0;
-  }
-  loop(ecs, system) {
-    setInterval((d, s) => this.logicLoop(d, s), 30, ecs, system);
-  }
-  async logicLoop(ecs, system) {
-    this.frame[0] = this.frame[0] + 1;
-    const components = ecs.getComponents(system);
-    await this.doPreLogic(components);
-    await this.doPostLogic(components);
-  }
 };
 
 // src/Systems/fov.ts
@@ -25354,49 +25307,146 @@ var FOV = class extends System {
   constructor() {
     super();
   }
-  doPreLogic(components) {
+  tick(delta, components) {
+    return components;
   }
-  doPostLogic(components) {
-    let entities = {};
-    let lights = [[]];
-    let actors = [[]];
-    let litables = [];
-    let lits = [];
-    for (const c of components) {
-      if (c.constructor.name === "PhysicsSetComponent") {
-        const y = Math.round(c.y);
-        if (!lights[y]) {
-          lights[y] = [];
-        }
-        lights[y][c.x] = c.entity;
-      }
-      if (c.constructor.name === "PhysicsActorComponent") {
-        const y = Math.round(c.y);
-        if (!actors[y]) {
-          actors[y] = [];
-        }
-        actors[y][Math.round(c.x)] = c.entity;
-      }
-      if (c.constructor.name === "LitableComponent") {
-        litables[c.entity] = c;
-      }
-      if (c.constructor.name === "LitComponent") {
-      }
-    }
-    for (let [yndx, lightsY] of lights.entries()) {
-      debugger;
-      for (let [xndx, lightsX] of lightsY.entries()) {
-        if (actors[yndx] && actors[yndx][xndx]) {
-          console.log("albedo", litables[actors[yndx][xndx]]);
-          litables[actors[yndx][xndx]].albedo = Math.random();
-        }
-      }
-    }
-  }
+  // doPreLogic(components: SpaceTrashComponent[]): void {
+  // }
+  // doPostLogic(components: SpaceTrashComponent[]) {
+  //   let entities: Record<string, {
+  //     physicsComponent: PhysicsComponent,
+  //     lits: LitComponent[],
+  //     littables: LitableComponent[]
+  //   }> = {};
+  //   let lights: string[][] = [[]];
+  //   let actors: string[][] = [[]];
+  //   // let liters: string[];
+  //   let litables: LitableComponent[] = [];
+  //   let lits: string[] = [];
+  //   // components.forEach((c) => {
+  //   for (const c of components) {
+  //     if (c.constructor.name === "PhysicsSetComponent") {
+  //       // entities[c.entity as unknown as string].physicsComponent = c as PhysicsSetComponent;
+  //       const y = Math.round((c as PhysicsSetComponent).y);
+  //       if (!lights[y]) {
+  //         lights[y] = []
+  //       }
+  //       lights[y][(c as PhysicsSetComponent).x] = c.entity as unknown as string;
+  //     }
+  //     if (c.constructor.name === "PhysicsActorComponent") {
+  //       // entities[c.entity as unknown as string].physicsComponent = c as PhysicsActorComponent;
+  //       const y = Math.round((c as PhysicsActorComponent).y);
+  //       if (!actors[y]) {
+  //         actors[y] = []
+  //       }
+  //       actors[
+  //         y
+  //       ][
+  //         Math.round((c as PhysicsActorComponent).x)
+  //       ] = c.entity as unknown as string;
+  //     }
+  //     if (c.constructor.name === "LitableComponent") {
+  //       // (c as LitableComponent).albedo = 0;
+  //       // entities[c.entity as unknown as string].littables.push(c as LitableComponent);
+  //       // liters.push(c.entity as unknown as string)
+  //       litables[c.entity as unknown as string] = c;
+  //       // litables[c.entity as unknown as string].albedo = Math.random();
+  //     }
+  //     if (c.constructor.name === "LitComponent") {
+  //       // entities[c.entity as unknown as string].lits.push(c as LitComponent);
+  //       // litables.push(c as LitComponent)
+  //       // lits.push(c.entity as unknown as string)
+  //       // (c as LitComponent).albedo = Math.random();
+  //       // lits[c.entity as unknown as string] = c;
+  //     }
+  //   }
+  //   // debugger
+  //   for (let [yndx, lightsY] of lights.entries()) {
+  //     // debugger
+  //     for (let [xndx, lightsX] of lightsY.entries()) {
+  //       if (actors[yndx] && actors[yndx][xndx]) {
+  //         console.log("albedo", litables[actors[yndx][xndx]])
+  //         litables[actors[yndx][xndx]].albedo = Math.random()
+  //       }
+  //     }
+  //   }
+  //   // lights.forEach((lightsY, yndx) => {
+  //   //   lightsY.forEach((lightsX, xndx, ) => {
+  //   //     if (actors[yndx] && actors[yndx][xndx]) {
+  //   //       console.log("albedo", litables[actors[yndx][xndx]])
+  //   //       litables[actors[yndx][xndx]].albedo = Math.random()
+  //   //     }
+  //   //   })
+  //   // })
+  //   // Object.keys(entities).forEach(eId => {
+  //   //   const e = entities[eId];
+  //   //   if (e.physicsComponent.constructor.name === "PhysicsSetComponent") {
+  //   //     // entities[c.entity as unknown as string].physicsComponent = c as PhysicsSetComponent;
+  //   //   }
+  //   // })
+  //   // const physicsSetComponents = components.filter((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent[];
+  //   // const physicsActorComponents = components.filter((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent[];
+  //   // const litables = components.filter((c) => c.constructor.name === "LitableComponent") as LitableComponent[];
+  //   // const lits = components.filter((c) => c.constructor.name === "LitComponent") as LitComponent[];
+  //   // litables.forEach(litable => { 
+  //   //   litable.albedo = 0;
+  //   // })
+  //   // litables.forEach(litable => {
+  //   //   physicsSetComponents.forEach(setPiece => {
+  //   //     if ((litable.entity as unknown as string) === (setPiece.entity as unknown as string)) {
+  //   //       lits.forEach(lit => {
+  //   //         physicsActorComponents.forEach(actor => { 
+  //   //           if ((lit.entity as unknown as string) === (actor.entity as unknown as string)) { 
+  //   //             if ((Math.round(actor.x) === setPiece.x) && (Math.round(actor.y) === setPiece.y)) { 
+  //   //               litable.albedo = 2;
+  //   //             }
+  //   //           }
+  //   //         });
+  //   //       })
+  //   //     }
+  //   //   })
+  //   // })
+  //   // physicsComponents.forEach(pc => {
+  //   //   castingComponents[pc.entity as unknown as string] = {
+  //   //     physicsComponent: pc,
+  //   //     lits: [],
+  //   //     littables: []
+  //   //   }
+  //   // });
+  //   // litables.forEach(l => {
+  //   //   castingComponents[l.entity as unknown as string] = {
+  //   //     ...castingComponents[l.entity as unknown as string],
+  //   //     lits: (castingComponents[l.entity as unknown as string] || {lits: []}).lits,
+  //   //     littables: [
+  //   //       ...(castingComponents[l.entity as unknown as string] || {littables: []}).littables,
+  //   //       l
+  //   //     ]
+  //   //   }
+  //   // });
+  //   // lits.forEach(l => {
+  //   //   castingComponents[l.entity as unknown as string] = {
+  //   //     ...castingComponents[l.entity as unknown as string],
+  //   //     littables: castingComponents[l.entity as unknown as string].littables,
+  //   //     lits: [
+  //   //       ...castingComponents[l.entity as unknown as string].lits,
+  //   //       l
+  //   //     ]
+  //   //   }
+  //   // });
+  //   // Object.values(castingComponents).forEach((cc) => {
+  //   //   cc.littables.forEach((l) => {
+  //   //     l.albedo = Math.random();
+  //   //   })
+  //   //   // console.log("ic", ic);
+  //   // });
+  // }
 };
 
 // src/Systems/guiable.ts
 var GUIable = class extends System {
+  tick(delta, components) {
+    return components;
+  }
   constructor() {
     super();
   }
@@ -25416,42 +25466,34 @@ function make(c, arg1) {
   }
   return null;
 }
-function makes(cs, arg1) {
-  return cs.filter((c) => {
-    return c.constructor.name === arg1;
-  });
-}
 var Physical = class extends System {
   mapSize;
   constructor(mapSize) {
     super();
     this.mapSize = mapSize;
   }
-  doPreLogic(components) {
-    components.forEach((c) => {
+  tick(delta, components) {
+    Object.keys(components).forEach((cKey) => {
+      const c = components[cKey];
       const d = make(c, "PhysicsActorComponent");
       if (d) {
         d.x = d.x + d.dx;
         d.y = d.y + d.dy;
+        if (d.x < 0) {
+          d.x = this.mapSize + d.dx * 2;
+        }
+        if (d.x > this.mapSize) {
+          d.x = d.dx * 2;
+        }
+        if (d.y < 0) {
+          d.y = this.mapSize + d.dy * 2;
+        }
+        if (d.y > this.mapSize) {
+          d.y = d.dy * 2;
+        }
       }
     });
-  }
-  doPostLogic(components) {
-    const actors = makes(components, "PhysicsActorComponent");
-    actors.forEach((c) => {
-      if (c.x < 0) {
-        c.x = this.mapSize + c.dx * 2;
-      }
-      if (c.x > this.mapSize) {
-        c.x = c.dx * 2;
-      }
-      if (c.y < 0) {
-        c.y = this.mapSize + c.dy * 2;
-      }
-      if (c.y > this.mapSize) {
-        c.y = c.dy * 2;
-      }
-    });
+    return components;
   }
 };
 
@@ -25664,11 +25706,41 @@ var PowerStoringComponent = class extends PoweredComponent {
   }
 };
 
+// src/engine/EntityComponent.ts
+var EntityComponent = class {
+  entity;
+  components;
+  constructor(entity, components) {
+    this.entity = entity;
+    this.components = components;
+  }
+  applyComponent(c) {
+    this.components.push(c);
+  }
+};
+
+// src/EntityComponent.ts
+var SpaceTrashEntityComponent = class extends EntityComponent {
+  x;
+  dx;
+  y;
+  dy;
+  // constructor(
+  //   entity: Entity,
+  //   // physics: PhysicsComponent,
+  //   // casts?: (InCastingComponent | OutCastingComponent)[],
+  //   ...components: (SpaceTrashComponent)[]
+  // ) {
+  //   const c: Component<any, any>[] = [];
+  //   c.push(physics);
+  //   super(entity, [physics, ...components]);
+  // }
+};
+
 // src/engine/Entity.ts
 var Entity = class {
-  uuid;
+  // uuid: string;
   constructor() {
-    this.uuid = uuidv4();
   }
 };
 
@@ -25874,25 +25946,12 @@ var Game = class {
   }
   register(key, run, context, callback) {
     this.canvasContexts[key] = { run, context, callback };
-    this.animationLoop(key);
-    console.log("animation loop running", key);
     const s = this.state.get(this.state.currrent);
     const clbk = this.canvasContexts[key].callback;
     s.boot(key, this.ecs, clbk || (() => {
     }));
   }
-  start() {
-    this.ecs.logicLoop();
-    Object.keys(this.canvasContexts).forEach((k) => {
-      const { run, context } = this.canvasContexts[k];
-      if (run) {
-        this.animationLoop(k);
-      }
-    });
-    return this;
-  }
-  // https://gist.github.com/elundmark/38d3596a883521cb24f5
-  async animationLoop(key) {
+  async start() {
     var fps = 30;
     let then = performance.now();
     const interval = 1e3 / fps;
@@ -25904,9 +25963,29 @@ var Game = class {
       }
       delta = Math.min(interval, delta + now - then - interval);
       then = now;
-      this.draw(key);
+      for (const canvaskey in this.canvasContexts) {
+        this.draw(canvaskey);
+      }
+      this.ecs.tick(delta);
     }
   }
+  // https://gist.github.com/elundmark/38d3596a883521cb24f5
+  // async animationLoop(key: string) {
+  //   console.log("animation loop running", key)
+  //   var fps = 30;
+  //   let then = performance.now();
+  //   const interval = 1000 / fps;
+  //   let delta = 0;
+  //   while (true) {
+  //       let now = await new Promise(requestAnimationFrame);
+  //       if (now - then < interval - delta) {
+  //           continue;
+  //       }
+  //       delta = Math.min(interval, delta + now - then - interval);
+  //       then = now;
+  //     this.draw(key);
+  //   }
+  // }
   draw(key) {
     const s = this.state.get(this.state.currrent);
     const ctx = this.canvasContexts[key].context;
@@ -25919,7 +25998,7 @@ var Game = class {
       key,
       clbk || (() => {
       }),
-      this.ecs.getEntitiesComponent()
+      this.ecs.getComponents()
     );
   }
 };
@@ -25951,9 +26030,9 @@ var Scene = class extends Tree {
       this.appLogic[k][0](ecs, bootReplier);
     });
   }
-  draw(ctx, app, bootReplier, entityComponents) {
+  draw(ctx, app, bootReplier, components) {
     this.appLogic[app][1](
-      entityComponents,
+      components,
       ctx,
       this.events ? this.events[app] : [],
       bootReplier
@@ -26087,9 +26166,10 @@ var Spacetrash = class extends Game {
             }
           });
           if (canvas) {
-            ecs.forEach((ec) => {
-              const drone = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent");
-              if (drone) {
+            Object.keys(ecs).forEach((ecKey) => {
+              const ec = ecs[ecKey];
+              if (ec.constructor.name === "PhysicsActorComponent") {
+                const drone = ec;
                 canvas.beginPath();
                 let startAngle = 0;
                 let endAngle = Math.PI + Math.PI * 1 / 2;
@@ -26108,30 +26188,6 @@ var Spacetrash = class extends Game {
                 canvas.lineWidth = 1;
                 canvas.strokeStyle = "red";
                 canvas.stroke();
-              }
-              const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent");
-              if (setpiece) {
-                const littable = ec.components.find((c) => c.constructor.name === "LitableComponent");
-                console.log("littable.albedo", littable.albedo);
-                if (!littable.albedo || littable.albedo <= 0) {
-                  canvas.strokeStyle = "grey";
-                  canvas.fillStyle = "grey";
-                  canvas.beginPath();
-                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-                  canvas.stroke();
-                } else if (littable.albedo <= 0.5) {
-                  canvas.strokeStyle = "green";
-                  canvas.fillStyle = "green";
-                  canvas.beginPath();
-                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-                  canvas.stroke();
-                } else {
-                  canvas.strokeStyle = "yellow";
-                  canvas.fillStyle = "yellow";
-                  canvas.beginPath();
-                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-                  canvas.stroke();
-                }
               }
             });
             canvas.beginPath();
@@ -26165,7 +26221,7 @@ var Spacetrash = class extends Game {
             [
               ...e,
               ...[
-                ...new Array(1e3)
+                ...new Array(15e3)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,
@@ -26207,7 +26263,7 @@ var Spacetrash = class extends Game {
 // src/alpha.ts
 var beta = new Worker("./beta.js");
 console.log("hello alpha");
-var sp = new Spacetrash(postMessage).start();
+var sp = new Spacetrash(postMessage);
 self.onmessage = function handleMessageFromMain(msg) {
   if (msg.data[0] === "inputEvent") {
     if (sp) {
@@ -26246,6 +26302,7 @@ self.onmessage = function handleMessageFromMain(msg) {
     });
   }
 };
+sp.start();
 /*! Bundled license information:
 
 react/cjs/react.development.js:

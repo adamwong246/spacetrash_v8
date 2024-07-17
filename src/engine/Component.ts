@@ -3,18 +3,18 @@ import { System } from "./System";
 import { uuidv4 } from "./lib";
 
 export default abstract class Component<IMove, IComponents> {
-  uuid: string;
-  entity: Entity;
-  systems: System<any>[];
+  // uuid: string;
+  entityUid: string;
+  systemsUids: string[];
   
   constructor(
-    entity: Entity,
-    systems: System<any>[],
+    entityUid: string,
+    systemsUids: string[],
     
   ) {
-    this.systems = systems;
-    this.entity = entity;
-    this.uuid = uuidv4();
+    this.entityUid = entityUid;
+    this.systemsUids = systemsUids;
+    // this.uuid = uuidv4();
   }
 
 }

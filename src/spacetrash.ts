@@ -116,9 +116,12 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           })
 
           if (canvas) {
-            ecs.forEach((ec) => {
-              const drone = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-              if (drone) {
+            Object.keys(ecs).forEach((ecKey) => {
+              const ec = ecs[ecKey];
+              if (ec.constructor.name === "PhysicsActorComponent") {
+
+                const drone = ec as PhysicsActorComponent;
+
                 canvas.beginPath();
 
                 let startAngle = 0; // Starting point on circle
@@ -148,76 +151,107 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                 canvas.strokeStyle = "red";
                 canvas.stroke();
               }
-              // console.log(ec)
-              // console.log(ec.components.map((c) => c.constructor.name));
-              const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent;
-              if (setpiece) {
-                // console.log("setpiece", setpiece)
-                // canvas.beginPath();
+              // const drone = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
+              // if (drone) {
+              //   canvas.beginPath();
 
-                // canvas.arc(
-                //   setpiece.x * tSize,
-                //   setpiece.y * tSize,
-                //   tSize / 2,
-                //   0,
-                //   2 * Math.PI
-                // );
-                // canvas.rect(
-                //   (setpiece.x * tSize) - tSize / 2,
-                //   (setpiece.y * tSize) - tSize / 2,
-                //   tSize,
-                //   tSize
-                // );
+              //   let startAngle = 0; // Starting point on circle
+              //   let endAngle = Math.PI + (Math.PI * 1) / 2; // End point on circle
+              //   let counterclockwise = 2 % 2 === 1; // Draw counterclockwise
 
-                // const opacityComp = ec.components.find((c) => c.constructor.name === "OpacityComponent") as OpacityComponent;
-                // if (opacityComp && opacityComp.opacity === 0) {
-                //   canvas.fillStyle = "black";
-                //   canvas.fill();
-                // }
-                // if (opacityComp && opacityComp.opacity === 1) {
-                //   canvas.fillStyle = "white";
-                //   canvas.fill();
-                // }
-                // if (opacityComp && opacityComp.opacity === 2) {
-                //   canvas.fillStyle = "red";
-                //   canvas.fill();
-                // }
+              //   // canvas.rect(
+              //   //   (Math.round(drone.x) * tSize) - tSize / 2,
+              //   //   (Math.round(drone.y) * tSize) - tSize / 2,
+              //   //   tSize,
+              //   //   tSize
+              //   // );
+              //   // canvas.stroke();
+              //   canvas.beginPath();
 
-                const littable = ec.components.find((c) => c.constructor.name === "LitableComponent") as LitableComponent;
+              //   canvas.arc(
+              //     drone.x * tSize,
+              //     drone.y * tSize,
+              //     tSize / 3,
+              //     startAngle,
+              //     endAngle,
+              //     counterclockwise
+              //   );
+              //   canvas.fillStyle = "blue";
+              //   canvas.fill();
+              //   canvas.lineWidth = 1;
+              //   canvas.strokeStyle = "red";
+              //   canvas.stroke();
+              // }
+              // // console.log(ec)
+              // // console.log(ec.components.map((c) => c.constructor.name));
+              // const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent;
+              // if (setpiece) {
+              //   // console.log("setpiece", setpiece)
+              //   // canvas.beginPath();
+
+              //   // canvas.arc(
+              //   //   setpiece.x * tSize,
+              //   //   setpiece.y * tSize,
+              //   //   tSize / 2,
+              //   //   0,
+              //   //   2 * Math.PI
+              //   // );
+              //   // canvas.rect(
+              //   //   (setpiece.x * tSize) - tSize / 2,
+              //   //   (setpiece.y * tSize) - tSize / 2,
+              //   //   tSize,
+              //   //   tSize
+              //   // );
+
+              //   // const opacityComp = ec.components.find((c) => c.constructor.name === "OpacityComponent") as OpacityComponent;
+              //   // if (opacityComp && opacityComp.opacity === 0) {
+              //   //   canvas.fillStyle = "black";
+              //   //   canvas.fill();
+              //   // }
+              //   // if (opacityComp && opacityComp.opacity === 1) {
+              //   //   canvas.fillStyle = "white";
+              //   //   canvas.fill();
+              //   // }
+              //   // if (opacityComp && opacityComp.opacity === 2) {
+              //   //   canvas.fillStyle = "red";
+              //   //   canvas.fill();
+              //   // }
+
+              //   const littable = ec.components.find((c) => c.constructor.name === "LitableComponent") as LitableComponent;
 
                 
 
 
-                console.log("littable.albedo", littable.albedo)
-                if (!littable.albedo || littable.albedo <= 0 ) {
-                  canvas.strokeStyle = "grey"
-                  canvas.fillStyle = "grey"
-                  canvas.beginPath();
-                  // console.log("setpiece", setpiece)
-                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-                  canvas.stroke();
-                } else if (littable.albedo <= 0.5) {
-                  canvas.strokeStyle = "green"
-                  canvas.fillStyle = "green"
-                  canvas.beginPath();
-                  // console.log("setpiece", setpiece)
-                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-                  canvas.stroke();
-                }else {
-                  canvas.strokeStyle = "yellow"
-                  canvas.fillStyle = "yellow"
-                  canvas.beginPath();
-                  // console.log("setpiece", setpiece)
-                  canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-                  canvas.stroke();
-                  // console.log("littable", littable.albedo);
-                  // canvas.stroke();
-                }
+              //   console.log("littable.albedo", littable.albedo)
+              //   if (!littable.albedo || littable.albedo <= 0 ) {
+              //     canvas.strokeStyle = "grey"
+              //     canvas.fillStyle = "grey"
+              //     canvas.beginPath();
+              //     // console.log("setpiece", setpiece)
+              //     canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
+              //     canvas.stroke();
+              //   } else if (littable.albedo <= 0.5) {
+              //     canvas.strokeStyle = "green"
+              //     canvas.fillStyle = "green"
+              //     canvas.beginPath();
+              //     // console.log("setpiece", setpiece)
+              //     canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
+              //     canvas.stroke();
+              //   }else {
+              //     canvas.strokeStyle = "yellow"
+              //     canvas.fillStyle = "yellow"
+              //     canvas.beginPath();
+              //     // console.log("setpiece", setpiece)
+              //     canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
+              //     canvas.stroke();
+              //     // console.log("littable", littable.albedo);
+              //     // canvas.stroke();
+              //   }
 
                 
 
 
-              }
+              // }
 
             })
 
@@ -261,7 +295,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
               ...e,
               ...[
-                ...new Array(1000)
+                ...new Array(15000)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,

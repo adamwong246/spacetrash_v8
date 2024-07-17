@@ -1,9 +1,10 @@
 
+import Component from "./Component";
 import { ECS } from "./ECS";
 import { EntityComponent } from "./EntityComponent";
 import { Tree } from "./Tree";
 
-type IECSComponents = EntityComponent[];
+type IECSComponents = Record<string, Component<any, any>>;
 type IReply = (x: any) => void;
 
 type IBoot = (
@@ -56,10 +57,10 @@ export class Scene<IApps extends string> extends Tree {
     ctx: CanvasRenderingContext2D | undefined,
     app: IApps,
     bootReplier: (x: any) => void,
-    entityComponents: IECSComponents,
+    components: Record<string, Component<any, any>>,
   ) {
     this.appLogic[app][1](
-      entityComponents,
+      components,
       ctx,
       this.events? this.events[app] : [],
       bootReplier

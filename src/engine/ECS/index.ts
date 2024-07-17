@@ -10,15 +10,12 @@ export abstract class ECS<SystemKeys extends string> {
     this.systems = systems;    
   }
 
-  abstract getEntitiesComponent(system?: System<SystemKeys>): EntityComponent[] 
   abstract setEntitiesComponent(ecss: EntityComponent[] ): void
+  abstract getComponents(system?: SystemKeys): Record<string, Component<any, any>>
 
-  abstract getComponents(system?: SystemKeys): Component<any, any>[]
-
-  logicLoop() {
-    console.log("logic loop is running");
+  tick(delta: number ) {
     (Object.entries(this.systems) as Array<[SystemKeys, System<SystemKeys>]>).forEach(([systemKey, system]) => {
-      system.loop(this, systemKey)
+      system.tick(delta, this.getComponents());
     })
   }
 }

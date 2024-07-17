@@ -1,9 +1,9 @@
 import { uuidv4 } from "./lib";
 
 export class Entity {
-  uuid: string;
+  // uuid: string;
 
   constructor() {
-    this.uuid = uuidv4();
+    // this.uuid = uuidv4();
   }
 }

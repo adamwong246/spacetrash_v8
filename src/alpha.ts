@@ -5,7 +5,7 @@ const beta = new Worker("./beta.js");
 
 console.log("hello alpha");
 
-const sp = new Spacetrash(postMessage).start();
+const sp = new Spacetrash(postMessage)
 
 self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
   
@@ -57,3 +57,5 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
   }
 
 };
+
+sp.start();
