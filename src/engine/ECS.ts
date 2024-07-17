@@ -1,6 +1,6 @@
-import { System } from '../System';
-import { EntityComponent } from '../EntityComponent';
-import Component from '../Component';
+import { System } from './System';
+import { EntityComponent } from './EntityComponent';
+import Component from './Component';
 
 export abstract class ECS<SystemKeys extends string> {
   
