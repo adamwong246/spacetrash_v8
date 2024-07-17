@@ -25254,37 +25254,6 @@ var SpaceTrashECS = class extends ECS {
       });
     });
   }
-  // getEntitiesComponent(system: System<SystemKeys>): SpaceTrashEntityComponent[] {
-  //   if (system) {
-  //     const toReturn: Record<string, SpaceTrashEntityComponent> = {}
-  //     Object.keys(this.components).forEach((cKey) => {
-  //       const c = this.components[cKey];
-  //       const e = c.entity as unknown as string;
-  //       if (c.systems.find((s) => {
-  //         return system === s;
-  //       })) {
-  //         if (toReturn[e]) {
-  //           toReturn[e].applyComponent(c);
-  //         } else {
-  //           toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
-  //         }
-  //       }
-  //     })
-  //     return Object.values(toReturn);
-  //   } else {
-  //     const toReturn: Record<string, SpaceTrashEntityComponent> = {}
-  //     Object.keys(this.components).forEach((cKey) => {
-  //       const c = this.components[cKey];
-  //       const e = c.entity as unknown as string;
-  //       if (toReturn[e]) {
-  //         toReturn[e].applyComponent(c);
-  //       } else {
-  //         toReturn[e] = new SpaceTrashEntityComponent(c.entity, [c]);
-  //       }
-  //     })
-  //     return Object.values(toReturn);
-  //   }
-  // }
 };
 
 // src/engine/Component.ts
@@ -25969,23 +25938,6 @@ var Game = class {
       this.ecs.tick(delta);
     }
   }
-  // https://gist.github.com/elundmark/38d3596a883521cb24f5
-  // async animationLoop(key: string) {
-  //   console.log("animation loop running", key)
-  //   var fps = 30;
-  //   let then = performance.now();
-  //   const interval = 1000 / fps;
-  //   let delta = 0;
-  //   while (true) {
-  //       let now = await new Promise(requestAnimationFrame);
-  //       if (now - then < interval - delta) {
-  //           continue;
-  //       }
-  //       delta = Math.min(interval, delta + now - then - interval);
-  //       then = now;
-  //     this.draw(key);
-  //   }
-  // }
   draw(key) {
     const s = this.state.get(this.state.currrent);
     const ctx = this.canvasContexts[key].context;

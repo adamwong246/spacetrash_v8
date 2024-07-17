@@ -12,6 +12,7 @@ import { Game } from "./engine/Game";
 import { Scene } from "./engine/Scene";
 import { StateSpace } from "./engine/StateSpace";
 
+
 let droneMouseX = 0;
 let droneMouseY = 0;
 let shipMapMouseX = 0;
@@ -21,10 +22,10 @@ const tSize = 30;
 
 export default class Spacetrash extends Game<ISpaceTrashSystems> {
   terminal: SpaceTrashTerminal;
-  constructor(workerPostMessage: (message: any, options?: WindowPostMessageOptions | undefined) => void) {
-
-    // const surface = new SpaceTrashSurface('my-first-surface');
-    // console.log(surface.store);
+  constructor(
+    workerPostMessage: (
+      message: any, options?: WindowPostMessageOptions | undefined
+    ) => void) {
 
     const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
 

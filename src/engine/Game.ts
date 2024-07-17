@@ -47,14 +47,6 @@ export class Game<SystemKeys extends string> {
   }
 
   async start() {
-    // this.ecs.logicLoop();
-    // Object.keys(this.canvasContexts).forEach(((k) => {
-    //   const { run, context } = this.canvasContexts[k];
-    //   if (run) {
-    //     this.animationLoop(k);
-    //   }
-    // }))
-    // return this;
     var fps = 30;
     let then = performance.now();
     const interval = 1000 / fps;
@@ -73,32 +65,11 @@ export class Game<SystemKeys extends string> {
       }
 
       this.ecs.tick(delta)
-      
-
-
+    
     }
   }
 
-  // https://gist.github.com/elundmark/38d3596a883521cb24f5
-  // async animationLoop(key: string) {
-  //   console.log("animation loop running", key)
-  //   var fps = 30;
-  //   let then = performance.now();
-  //   const interval = 1000 / fps;
-  //   let delta = 0;
-  //   while (true) {
-  //       let now = await new Promise(requestAnimationFrame);
-  //       if (now - then < interval - delta) {
-  //           continue;
-  //       }
-  //       delta = Math.min(interval, delta + now - then - interval);
-  //       then = now;
-  //     this.draw(key);
-  //   }
-  // }
-
   draw(key: string) {
-    // console.log("Game.draw", this.state.currrent)
     const s = this.state.get(this.state.currrent);
 
     const ctx = this.canvasContexts[key].context;
@@ -114,17 +85,6 @@ export class Game<SystemKeys extends string> {
       clbk || (() => { }),
       this.ecs.getComponents(),
     );
-    
-    // if (ctx) {
-    //   console.log("mark1",key)
-    //   ctx.clearRect(0, 0, 800, 600);
-      
-    // }
-    // if (clbk) {
-    //   // ctx.clearRect(0, 0, 800, 600);
-    //   // s.draw(ctx, key);  
-    // }
-    
     
   }
 
