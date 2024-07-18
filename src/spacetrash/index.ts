@@ -19,7 +19,7 @@ let shipMapMouseY = 0;
 const tSize = 30;
 
 export default class Spacetrash extends Game<ISpaceTrashSystems> {
-  
+
   terminal: SpaceTrashTerminal;
   constructor(
     workerPostMessage: (
@@ -85,16 +85,16 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             canvas.strokeStyle = "grey";
             canvas.stroke();
           }
-          }, (ecs, event: any) => {
-            if (event.type === "mousemove") {
+        }, (ecs, event: any) => {
+          if (event.type === "mousemove") {
 
-              var rect = event.boundingClient;
-              var x = event.clientX - rect.left; //x position within the element.
-              var y = event.clientY - rect.top;
+            var rect = event.boundingClient;
+            var x = event.clientX - rect.left; //x position within the element.
+            var y = event.clientY - rect.top;
 
-              droneMouseX = x;
-              droneMouseY = y;
-            }
+            droneMouseX = x;
+            droneMouseY = y;
+          }
         }],
         shipmap: [(ecs, reply) => {
           // return []
@@ -102,6 +102,20 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           if (canvas) {
             Object.keys(ecs).forEach((ecKey) => {
               const ec = ecs[ecKey];
+
+              if (ec.constructor.name === "PhysicsSetComponent") {
+                const setpiece = ec as PhysicsActorComponent;
+
+                canvas.beginPath();
+                canvas.rect(
+                  (setpiece.x * tSize) - tSize / 2,
+                  (setpiece.y * tSize) - tSize / 2,
+                  tSize,
+                  tSize
+                );
+                canvas.stroke();
+
+              }
               if (ec.constructor.name === "PhysicsActorComponent") {
 
                 const drone = ec as PhysicsActorComponent;
@@ -145,16 +159,16 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             canvas.strokeStyle = "white";
             canvas.stroke();
           }
-          }, (ecs, event: any) => {
-            if (event.type === "mousemove") {
+        }, (ecs, event: any) => {
+          if (event.type === "mousemove") {
 
-              var rect = event.boundingClient;
-              var x = event.clientX - rect.left; //x position within the element.
-              var y = event.clientY - rect.top;
+            var rect = event.boundingClient;
+            var x = event.clientX - rect.left; //x position within the element.
+            var y = event.clientY - rect.top;
 
-              shipMapMouseX = x;
-              shipMapMouseY = y;
-            }
+            shipMapMouseX = x;
+            shipMapMouseY = y;
+          }
         }],
       },
       (ecs) => {

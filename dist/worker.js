@@ -26104,6 +26104,17 @@ var Spacetrash = class extends Game {
           if (canvas) {
             Object.keys(ecs).forEach((ecKey) => {
               const ec = ecs[ecKey];
+              if (ec.constructor.name === "PhysicsSetComponent") {
+                const setpiece = ec;
+                canvas.beginPath();
+                canvas.rect(
+                  setpiece.x * tSize - tSize / 2,
+                  setpiece.y * tSize - tSize / 2,
+                  tSize,
+                  tSize
+                );
+                canvas.stroke();
+              }
               if (ec.constructor.name === "PhysicsActorComponent") {
                 const drone = ec;
                 canvas.beginPath();
