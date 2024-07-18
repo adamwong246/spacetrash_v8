@@ -1,13 +1,12 @@
 import React, { useRef, useState } from "react";
-// import useState from 'react-usestateref'
 import { flushSync } from 'react-dom';
 
-import { ITerminalHooks, ITerminalState, TerminalApp } from "./terminal";
-import ReactDOM from "react-dom";
+import { UIWindow } from "../../engine/UI/UIWindow";
+import { IUiDekstop } from "../../engine/UI/WM";
+
 import { DroneApp } from "./drone";
 import { ShipMapApp } from "./shipmap";
-import { UIWindow } from "../engine/UI/UIWindow";
-import { IUiDekstop } from "../engine/UI/WM";
+import { ITerminalHooks, ITerminalState, TerminalApp } from "./terminal";
 
 export type ISpaceTrashApps = 'terminal' | `shipmap` | `manual` | `drone`;
 

@@ -25158,45 +25158,45 @@ var require_graphology_umd_min = __commonJS({
   }
 });
 
-// src/UI/index.tsx
+// src/spacetrash/UI/index.tsx
 var import_react12 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 
-// src/UI/terminal.tsx
-var import_react = __toESM(require_react(), 1);
-
-// src/UI/drone.tsx
-var import_react3 = __toESM(require_react(), 1);
-
-// src/engine/UI/UICanvas.tsx
-var import_react2 = __toESM(require_react(), 1);
-
-// src/UI/shipmap.tsx
-var import_react4 = __toESM(require_react(), 1);
-
 // src/engine/UI/UIWindow.tsx
-var import_react11 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/index.jsx
-var import_react10 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Portal.jsx
-var import_react5 = __toESM(require_react(), 1);
+var import_react = __toESM(require_react(), 1);
 var import_react_dom = __toESM(require_react_dom(), 1);
 
 // src/engine/FlexModal/Header.jsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react2 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Footer.jsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react3 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/Resizer.jsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react4 = __toESM(require_react(), 1);
 
 // src/engine/FlexModal/usePrevious.jsx
+var import_react5 = __toESM(require_react(), 1);
+
+// src/spacetrash/UI/drone.tsx
 var import_react9 = __toESM(require_react(), 1);
 
-// src/UI/index.tsx
+// src/engine/UI/UICanvas.tsx
+var import_react8 = __toESM(require_react(), 1);
+
+// src/spacetrash/UI/shipmap.tsx
+var import_react10 = __toESM(require_react(), 1);
+
+// src/spacetrash/UI/terminal.tsx
+var import_react11 = __toESM(require_react(), 1);
+
+// src/spacetrash/UI/index.tsx
 var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
   ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
@@ -25205,28 +25205,17 @@ var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   return ESpaceTrashApps2;
 })(ESpaceTrashApps || {});
 
-// src/engine/Component.ts
-var Component = class {
-  // uuid: string;
-  entityUid;
-  systemsUids;
-  constructor(entityUid, systemsUids) {
-    this.entityUid = entityUid;
-    this.systemsUids = systemsUids;
-  }
-};
-
 // src/engine/System.ts
 var System = class {
 };
 
-// src/Systems/fov.ts
+// src/spacetrash/Systems/fov.ts
 var FOV = class extends System {
+  tick(delta, components) {
+    return {};
+  }
   constructor() {
     super();
-  }
-  tick(delta, components) {
-    return components;
   }
   // doPreLogic(components: SpaceTrashComponent[]): void {
   // }
@@ -25360,11 +25349,14 @@ var FOV = class extends System {
   // }
 };
 
-// src/Systems/guiable.ts
+// src/spacetrash/Systems/guiable.ts
 var GUIable = class extends System {
   tick(delta, components) {
-    return components;
+    return {};
   }
+  // tick(delta: number, components: Component<unknown, unknown>[]): Component<unknown, unknown>[] {
+  //   return components;
+  // }
   constructor() {
     super();
   }
@@ -25377,7 +25369,7 @@ var GUIable = class extends System {
   }
 };
 
-// src/Systems/physical.ts
+// src/spacetrash/Systems/physical.ts
 function make(c, arg1) {
   if (c.constructor.name === arg1) {
     return c;
@@ -25415,7 +25407,7 @@ var Physical = class extends System {
   }
 };
 
-// src/Systems/index.ts
+// src/spacetrash/Systems/index.ts
 var MapSize = 32;
 var SpaceTrashSystems = {
   gui: new GUIable(),
@@ -25423,7 +25415,18 @@ var SpaceTrashSystems = {
   casting: new FOV()
 };
 
-// src/Components/casting/out.ts
+// src/engine/Component.ts
+var Component = class {
+  // uuid: string;
+  entityUid;
+  systemsUids;
+  constructor(entityUid, systemsUids) {
+    this.entityUid = entityUid;
+    this.systemsUids = systemsUids;
+  }
+};
+
+// src/spacetrash/Components/casting/out.ts
 var OutCastingComponent = class extends Component {
   fov;
   ray;
@@ -25460,7 +25463,7 @@ var LitComponent = class extends OutCastingComponent {
   }
 };
 
-// src/Components/physics.ts
+// src/spacetrash/Components/physics.ts
 var PhysicsComponent = class extends Component {
   x;
   y;
@@ -25506,11 +25509,11 @@ var PhysicsSetComponent = class extends PhysicsComponent {
   }
 };
 
-// src/Components/index.ts
+// src/spacetrash/Components/index.ts
 var SpaceTrashComponent = class extends Component {
 };
 
-// src/Components/casting/in.ts
+// src/spacetrash/Components/casting/in.ts
 var InCastingComponent = class extends SpaceTrashComponent {
   fov;
   threshold;
@@ -25560,7 +25563,7 @@ var LitableComponent = class extends InCastingComponent {
   }
 };
 
-// src/Components/conveyance.ts
+// src/spacetrash/Components/conveyance.ts
 var ConveyanceComponent = class extends Component {
   constructor(e) {
     super(e, [SpaceTrashSystems.physical]);
@@ -25588,7 +25591,7 @@ var UnmovingComponent = class extends ConveyanceComponent {
   }
 };
 
-// src/Components/power.ts
+// src/spacetrash/Components/power.ts
 var PoweredComponent = class extends Component {
   constructor(spe) {
     super(
@@ -25644,25 +25647,15 @@ var EntityComponent = class {
   }
 };
 
-// src/lib/EntityComponent.ts
+// src/spacetrash/lib/EntityComponent.ts
 var SpaceTrashEntityComponent = class extends EntityComponent {
   x;
   dx;
   y;
   dy;
-  // constructor(
-  //   entity: Entity,
-  //   // physics: PhysicsComponent,
-  //   // casts?: (InCastingComponent | OutCastingComponent)[],
-  //   ...components: (SpaceTrashComponent)[]
-  // ) {
-  //   const c: Component<any, any>[] = [];
-  //   c.push(physics);
-  //   super(entity, [physics, ...components]);
-  // }
 };
 
-// src/Entities/index.ts
+// src/spacetrash/Entities/index.ts
 var SpaceTrashEntity = class extends Entity {
   constructor() {
     super();
@@ -25685,7 +25678,7 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
   }
 };
 
-// src/Components/opacity.ts
+// src/spacetrash/Components/opacity.ts
 var OpacityComponent = class extends SpaceTrashComponent {
   opacity;
   constructor(e, opacity) {
@@ -25703,7 +25696,7 @@ var OpacityComponent = class extends SpaceTrashComponent {
   }
 };
 
-// src/Entities/setpieces/index.ts
+// src/spacetrash/Entities/setpieces/index.ts
 var FloorTile = class extends SpaceTrashEntityComponent {
   constructor(x = 0, y = 0, r = 0) {
     const spe = new SpaceTrashEntity();
@@ -25749,7 +25742,7 @@ var DoorTile = class extends SpaceTrashEntityComponent {
   }
 };
 
-// src/lib/Terminal.ts
+// src/spacetrash/lib/Terminal.ts
 var SpaceTrashTerminal = class {
   // update: (to: string) => void
   constructor() {
@@ -25945,7 +25938,7 @@ var Scene = class extends Tree {
     );
   }
   inputEvent(inputEvent, app, ecs) {
-    this.appLogic[app][2](
+    this.appLogic[app][2] && this.appLogic[app][2](
       ecs,
       inputEvent
     );
@@ -26015,7 +26008,7 @@ function uuidv4() {
   );
 }
 
-// src/lib/EC.ts
+// src/spacetrash/lib/EC.ts
 var SpaceTrashECS = class extends ECS {
   components;
   constructor(systems) {
@@ -26042,7 +26035,7 @@ var SpaceTrashECS = class extends ECS {
   }
 };
 
-// src/spacetrash.ts
+// src/spacetrash/index.ts
 var droneMouseX = 0;
 var droneMouseY = 0;
 var shipMapMouseX = 0;

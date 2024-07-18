@@ -1,5 +1,5 @@
-import { ESpaceTrashApps } from "./UI";
-import Spacetrash from "./spacetrash";
+import { ESpaceTrashApps } from "./spacetrash/UI";
+import Spacetrash from "./spacetrash/index";
 
 const sp = new Spacetrash(postMessage)
 

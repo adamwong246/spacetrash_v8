@@ -1,10 +1,9 @@
-import { SpaceTrashComponent } from "..";
-
-
-
 import { SpaceTrashSystems } from "../../Systems";
 import { ERays } from "../../lib";
 
+import { ISpaceTrashComponents } from "..";
+
+import { SpaceTrashComponent } from "..";
 
 export abstract class InCastingComponent extends SpaceTrashComponent {
   fov: number;

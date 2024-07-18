@@ -1,6 +1,6 @@
 
 
-import Component from "../engine/Component";
+import Component from "../../engine/Component";
 import { AttackableComponent } from "./casting/in";
 import { MeleeComponent } from "./casting/out";
 import { PhysicsActorComponent, PhysicsSetComponent } from "./physics";

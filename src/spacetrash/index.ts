@@ -5,9 +5,9 @@ import { FloorTile, WallTile, DoorTile } from "./Entities/setpieces";
 import { ISpaceTrashSystems, SpaceTrashSystems } from "./Systems";
 import { SpaceTrashTerminal } from "./lib/Terminal";
 import { ISpaceTrashApps } from "./UI";
-import { Game } from "./engine/Game";
-import { Scene } from "./engine/Scene";
-import { StateSpace } from "./engine/StateSpace";
+import { Game } from "../engine/Game";
+import { Scene } from "../engine/Scene";
+import { StateSpace } from "../engine/StateSpace";
 import { SpaceTrashECS } from "./lib/EC";
 import { SpaceTrashEntityComponent } from "./lib/EntityComponent";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { UICanvas } from "../engine/UI/UICanvas";
+import { UICanvas } from "../../engine/UI/UICanvas";
 
 export const DroneApp = (props: {
   worker: Worker

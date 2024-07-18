@@ -1,21 +1,16 @@
+import Component from "../../engine/Component"
+import { System } from "../../engine/System"
 
-
-import { LitComponent, OutCastingComponent } from "../Components/casting/out";
-import { PhysicsActorComponent, PhysicsComponent, PhysicsSetComponent } from "../Components/physics";
-import { LitableComponent } from "../Components/casting/in";
-import { SpaceTrashEntityComponent } from "../EntityComponent";
-
-import { ISpaceTrashSystems } from ".";
-import { System } from "../engine/System";
-import { SpaceTrashComponent } from "../Components";
-import Component from "../engine/Component";
-
+import { ISpaceTrashSystems } from "."
 
 // let actors: Record<string, {
 //   physicsComponent: PhysicsActorComponent,
 //   lits: LitComponent[],
 //   littables: LitableComponent[]
 // }> = {};
+
+
+
 
 // const castingComponents: Record<string, {
 //   physicsComponent: PhysicsComponent,
@@ -24,14 +19,14 @@ import Component from "../engine/Component";
 // }> = {}
 
 export class FOV extends System<ISpaceTrashSystems> {
+  tick(delta: number, components: Record<string, Component<any, any>>): Record<string, Component<any, any>> {
+    return {};
+  }
   
   constructor() {
     super()
   }
 
-  tick(delta: number, components: Component<unknown, unknown>[]): Component<unknown, unknown>[] {
-    return components
-  }
   
 
   // doPreLogic(components: SpaceTrashComponent[]): void {

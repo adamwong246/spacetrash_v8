@@ -1,10 +1,10 @@
-import { System } from "../engine/System";
+import { System } from "../../engine/System";
+import Component from "../../engine/Component";
 
 import { PhysicsActorComponent, PhysicsSetComponent } from "../Components/physics";
+import { SpaceTrashComponent } from "../Components";
 
 import { ISpaceTrashSystems, TileSize } from ".";
-import { SpaceTrashComponent } from "../Components";
-import Component from "../engine/Component";
 
 function make<T>(c: SpaceTrashComponent, arg1: string): T | null {
   if (c.constructor.name === arg1) {

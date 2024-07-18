@@ -1,13 +1,10 @@
+import Component from "../../../engine/Component";
 
-  
-
-import { SpaceTrashSystems } from "../../Systems";
-
-import { ISpaceTrashComponents, SpaceTrashComponents } from "..";
 import { SpaceTrashEntity } from "../../Entities";
-import Component from "../../engine/Component";
+import { SpaceTrashSystems } from "../../Systems";
 import { ERays } from "../../lib";
 
+import { ISpaceTrashComponents } from "..";
 
 export abstract class OutCastingComponent extends Component<unknown, ISpaceTrashComponents> {
   fov: number;

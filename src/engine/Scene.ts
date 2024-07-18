@@ -79,7 +79,7 @@ export class Scene<IApps extends string> extends Tree {
     ecs: ECS<any>,
   ) {
     // this.events[appKey].push(inputEvent);
-    this.appLogic[app][2](
+    this.appLogic[app][2] && this.appLogic[app][2](
       ecs,
       inputEvent
     );

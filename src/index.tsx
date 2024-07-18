@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client';
 
-import { SpaceTrashDesktop } from './UI';
+import { SpaceTrashDesktop } from './spacetrash/UI';
 
 const worker = new Worker("./worker.js");
 

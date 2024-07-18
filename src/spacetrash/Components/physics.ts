@@ -1,10 +1,10 @@
-import Component from "../engine/Component";
+import Component from "../../engine/Component";
+import { SpaceTrashSystems } from "../../spacetrash/Systems";
+import { SpaceTrashEntity } from "../../spacetrash/Entities";
 
-import { SpaceTrashSystems } from "../Systems";
+import { ConveyanceComponent } from "./conveyance";
 
 import { ISpaceTrashComponents } from ".";
-import { ConveyanceComponent } from "./conveyance";
-import { SpaceTrashEntity } from "../Entities";
 
 export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> {
   x: number;

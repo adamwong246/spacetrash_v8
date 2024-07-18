@@ -5,8 +5,9 @@ import { UnmovingComponent, SpawningComponent, PanningComponent, WheeledComponen
 import { PhysicsComponent, PhysicsSetComponent, PhysicsActorComponent } from "../Components/physics";
 import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, PowerStoringComponent } from "../Components/power";
 
-import { Entity } from "../engine/Entity";
+import { Entity } from "../../engine/Entity";
 import { SpaceTrashEntityComponent } from "../lib/EntityComponent";
+
 
 export class SpaceTrashEntity extends Entity {
 

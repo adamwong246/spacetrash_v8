@@ -1,7 +1,8 @@
-import Component from "../engine/Component";
+import Component from "../../engine/Component";
+
+import { SpaceTrashEntity } from "../Entities";
 
 import { ISpaceTrashComponents } from ".";
-import { SpaceTrashEntity } from "../Entities";
 
 export abstract class PoweredComponent extends Component<unknown, ISpaceTrashComponents> {
   constructor(spe: SpaceTrashEntity) {

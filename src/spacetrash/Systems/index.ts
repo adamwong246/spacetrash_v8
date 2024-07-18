@@ -1,4 +1,4 @@
-import { System } from "../engine/System";
+import { System } from "../../engine/System";
 
 import { FOV } from "./fov";
 import { GUIable } from "./guiable";
