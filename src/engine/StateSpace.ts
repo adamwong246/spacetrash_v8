@@ -37,9 +37,10 @@ export class StateSpace extends DirectedGraph {
   inputEvent(
     inputEvent: Event,
     appKey: string,
+    ecs, ECS,
   ): void {
     (this.graph.getNodeAttribute(this.currrent, 'Scene') as Scene<any>)
-      .inputEvent(inputEvent, appKey);
+      .inputEvent(inputEvent, appKey, ecs);
   }
 
 }

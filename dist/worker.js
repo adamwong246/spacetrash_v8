@@ -25902,6 +25902,13 @@ var Game = class {
       this.ecs.getComponents()
     );
   }
+  inputEvent(event, appKey) {
+    this.state.getCurrent().inputEvent(
+      event,
+      appKey,
+      this.ecs
+    );
+  }
 };
 
 // src/engine/Tree.ts
@@ -25915,19 +25922,17 @@ var Tree = class {
 // src/engine/Scene.ts
 var Scene = class extends Tree {
   appLogic;
-  events;
+  // events: Record<IApps, any[]>;
   sceneBoot;
   constructor(name, appLogic, sceneBoot) {
     super(name);
     this.appLogic = appLogic;
-    this.events = {};
     this.sceneBoot = sceneBoot || (async (ecs) => {
     });
   }
   async boot(stateKey, ecs, bootReplier) {
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
-      this.events[k] = [];
       this.appLogic[k][0](ecs, bootReplier);
     });
   }
@@ -25935,16 +25940,15 @@ var Scene = class extends Tree {
     this.appLogic[app][1](
       components,
       ctx,
-      this.events ? this.events[app] : [],
+      // this.events? this.events[app] : [],
       bootReplier
     );
-    if (this.events && this.events[app]) {
-      this.events[app] = [];
-    }
-    ;
   }
-  inputEvent(inputEvent, appKey) {
-    this.events[appKey].push(inputEvent);
+  inputEvent(inputEvent, app, ecs) {
+    this.appLogic[app][2](
+      ecs,
+      inputEvent
+    );
   }
 };
 
@@ -25985,8 +25989,8 @@ var StateSpace = class extends DirectedGraph {
   set(key, scene) {
     this.graph.setNodeAttribute(key, "Scene", scene);
   }
-  inputEvent(inputEvent, appKey) {
-    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey);
+  inputEvent(inputEvent, appKey, ecs, ECS2) {
+    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey, ecs);
   }
 };
 
@@ -26013,7 +26017,6 @@ function uuidv4() {
 
 // src/lib/EC.ts
 var SpaceTrashECS = class extends ECS {
-  // entities: Set<string>;
   components;
   constructor(systems) {
     super(systems);
@@ -26056,16 +26059,16 @@ var Spacetrash = class extends Game {
       {
         terminal: [(ecs, reply) => {
           reply(this.terminal.boot());
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
         }],
         manual: [(ecs, reply) => {
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
         }],
         drone: [(ecs, reply) => {
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
         }],
         shipmap: [(ecs, reply) => {
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
         }]
       },
       async (ecs) => {
@@ -26078,22 +26081,13 @@ var Spacetrash = class extends Game {
         terminal: [(ecs, reply) => {
           reply(["login", ""]);
           reply(["terminal-update", this.terminal.login()]);
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
         }],
         manual: [(ecs, reply) => {
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
         }],
         drone: [(ecs, reply) => {
-        }, (ecs, canvas, events, reply) => {
-          events.forEach((event) => {
-            if (event.type === "mousemove") {
-              var rect = event.boundingClient;
-              var x = event.clientX - rect.left;
-              var y = event.clientY - rect.top;
-              droneMouseX = x;
-              droneMouseY = y;
-            }
-          });
+        }, (ecs, canvas, reply) => {
           if (canvas) {
             canvas.beginPath();
             canvas.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
@@ -26103,18 +26097,17 @@ var Spacetrash = class extends Game {
             canvas.strokeStyle = "grey";
             canvas.stroke();
           }
+        }, (ecs, event) => {
+          if (event.type === "mousemove") {
+            var rect = event.boundingClient;
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+            droneMouseX = x;
+            droneMouseY = y;
+          }
         }],
         shipmap: [(ecs, reply) => {
-        }, (ecs, canvas, events, reply) => {
-          events.forEach((event) => {
-            if (event.type === "mousemove") {
-              var rect = event.boundingClient;
-              var x = event.clientX - rect.left;
-              var y = event.clientY - rect.top;
-              shipMapMouseX = x;
-              shipMapMouseY = y;
-            }
-          });
+        }, (ecs, canvas, reply) => {
           if (canvas) {
             Object.keys(ecs).forEach((ecKey) => {
               const ec = ecs[ecKey];
@@ -26148,6 +26141,14 @@ var Spacetrash = class extends Game {
             canvas.strokeStyle = "white";
             canvas.stroke();
           }
+        }, (ecs, event) => {
+          if (event.type === "mousemove") {
+            var rect = event.boundingClient;
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+            shipMapMouseX = x;
+            shipMapMouseY = y;
+          }
         }]
       },
       (ecs) => {
@@ -26171,7 +26172,7 @@ var Spacetrash = class extends Game {
             [
               ...e,
               ...[
-                ...new Array(15e3)
+                ...new Array(150)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,
@@ -26215,7 +26216,7 @@ var sp = new Spacetrash(postMessage);
 self.onmessage = function handleMessageFromMain(msg) {
   if (msg.data[0] === "inputEvent") {
     if (sp) {
-      sp.state.inputEvent(msg.data[1], msg.data[2]);
+      sp.inputEvent(msg.data[1], msg.data[2]);
     }
   } else {
     if (msg.data[0] === "terminal-in") {

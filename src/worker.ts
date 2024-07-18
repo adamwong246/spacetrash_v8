@@ -9,9 +9,7 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
 
   if (msg.data[0] === 'inputEvent') {
     if (sp) {
-      sp.state.inputEvent(msg.data[1], msg.data[2])  
-
-      // beta.postMessage(msg.data)
+      sp.inputEvent(msg.data[1], msg.data[2])
     } 
   } else {
     

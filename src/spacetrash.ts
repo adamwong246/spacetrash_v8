@@ -19,6 +19,7 @@ let shipMapMouseY = 0;
 const tSize = 30;
 
 export default class Spacetrash extends Game<ISpaceTrashSystems> {
+  
   terminal: SpaceTrashTerminal;
   constructor(
     workerPostMessage: (
@@ -34,22 +35,22 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
       {
         terminal: [(ecs, reply) => {
           reply(this.terminal.boot());
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
           // console.log(events)
         }],
         manual: [(ecs, reply) => {
           // return []
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
           // debugger
         }],
         drone: [(ecs, reply) => {
           // return []
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
           // debugger
         }],
         shipmap: [(ecs, reply) => {
           // return []
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
           // debugger
         }],
       },
@@ -63,29 +64,17 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
         terminal: [(ecs, reply) => {
           reply(["login", ""]);
           reply(["terminal-update", this.terminal.login()]);
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
           // console.log(events)
         }],
         manual: [(ecs, reply) => {
           // return []
-        }, (ecs, canvas, events, reply) => {
+        }, (ecs, canvas, reply) => {
           // debugger
         }],
         drone: [(ecs, reply) => {
           // return []
-        }, (ecs, canvas, events, reply) => {
-
-          events.forEach((event) => {
-            if (event.type === "mousemove") {
-
-              var rect = event.boundingClient;
-              var x = event.clientX - rect.left; //x position within the element.
-              var y = event.clientY - rect.top;
-
-              droneMouseX = x;
-              droneMouseY = y;
-            }
-          })
+        }, (ecs, canvas, reply) => {
 
           if (canvas) {
             canvas.beginPath();
@@ -96,24 +85,20 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             canvas.strokeStyle = "grey";
             canvas.stroke();
           }
-        }],
-        shipmap: [(ecs, reply) => {
-          // return []
-        }, (ecs, canvas, events, reply) => {
-
-
-          events.forEach((event) => {
+          }, (ecs, event: any) => {
             if (event.type === "mousemove") {
 
               var rect = event.boundingClient;
               var x = event.clientX - rect.left; //x position within the element.
               var y = event.clientY - rect.top;
 
-              shipMapMouseX = x;
-              shipMapMouseY = y;
+              droneMouseX = x;
+              droneMouseY = y;
             }
-          })
-
+        }],
+        shipmap: [(ecs, reply) => {
+          // return []
+        }, (ecs, canvas, reply) => {
           if (canvas) {
             Object.keys(ecs).forEach((ecKey) => {
               const ec = ecs[ecKey];
@@ -150,108 +135,6 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                 canvas.strokeStyle = "red";
                 canvas.stroke();
               }
-              // const drone = ec.components.find((c) => c.constructor.name === "PhysicsActorComponent") as PhysicsActorComponent;
-              // if (drone) {
-              //   canvas.beginPath();
-
-              //   let startAngle = 0; // Starting point on circle
-              //   let endAngle = Math.PI + (Math.PI * 1) / 2; // End point on circle
-              //   let counterclockwise = 2 % 2 === 1; // Draw counterclockwise
-
-              //   // canvas.rect(
-              //   //   (Math.round(drone.x) * tSize) - tSize / 2,
-              //   //   (Math.round(drone.y) * tSize) - tSize / 2,
-              //   //   tSize,
-              //   //   tSize
-              //   // );
-              //   // canvas.stroke();
-              //   canvas.beginPath();
-
-              //   canvas.arc(
-              //     drone.x * tSize,
-              //     drone.y * tSize,
-              //     tSize / 3,
-              //     startAngle,
-              //     endAngle,
-              //     counterclockwise
-              //   );
-              //   canvas.fillStyle = "blue";
-              //   canvas.fill();
-              //   canvas.lineWidth = 1;
-              //   canvas.strokeStyle = "red";
-              //   canvas.stroke();
-              // }
-              // // console.log(ec)
-              // // console.log(ec.components.map((c) => c.constructor.name));
-              // const setpiece = ec.components.find((c) => c.constructor.name === "PhysicsSetComponent") as PhysicsSetComponent;
-              // if (setpiece) {
-              //   // console.log("setpiece", setpiece)
-              //   // canvas.beginPath();
-
-              //   // canvas.arc(
-              //   //   setpiece.x * tSize,
-              //   //   setpiece.y * tSize,
-              //   //   tSize / 2,
-              //   //   0,
-              //   //   2 * Math.PI
-              //   // );
-              //   // canvas.rect(
-              //   //   (setpiece.x * tSize) - tSize / 2,
-              //   //   (setpiece.y * tSize) - tSize / 2,
-              //   //   tSize,
-              //   //   tSize
-              //   // );
-
-              //   // const opacityComp = ec.components.find((c) => c.constructor.name === "OpacityComponent") as OpacityComponent;
-              //   // if (opacityComp && opacityComp.opacity === 0) {
-              //   //   canvas.fillStyle = "black";
-              //   //   canvas.fill();
-              //   // }
-              //   // if (opacityComp && opacityComp.opacity === 1) {
-              //   //   canvas.fillStyle = "white";
-              //   //   canvas.fill();
-              //   // }
-              //   // if (opacityComp && opacityComp.opacity === 2) {
-              //   //   canvas.fillStyle = "red";
-              //   //   canvas.fill();
-              //   // }
-
-              //   const littable = ec.components.find((c) => c.constructor.name === "LitableComponent") as LitableComponent;
-
-                
-
-
-              //   console.log("littable.albedo", littable.albedo)
-              //   if (!littable.albedo || littable.albedo <= 0 ) {
-              //     canvas.strokeStyle = "grey"
-              //     canvas.fillStyle = "grey"
-              //     canvas.beginPath();
-              //     // console.log("setpiece", setpiece)
-              //     canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-              //     canvas.stroke();
-              //   } else if (littable.albedo <= 0.5) {
-              //     canvas.strokeStyle = "green"
-              //     canvas.fillStyle = "green"
-              //     canvas.beginPath();
-              //     // console.log("setpiece", setpiece)
-              //     canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-              //     canvas.stroke();
-              //   }else {
-              //     canvas.strokeStyle = "yellow"
-              //     canvas.fillStyle = "yellow"
-              //     canvas.beginPath();
-              //     // console.log("setpiece", setpiece)
-              //     canvas.arc(setpiece.x * tSize, setpiece.y * tSize, tSize / 4, 0, 2 * Math.PI);
-              //     canvas.stroke();
-              //     // console.log("littable", littable.albedo);
-              //     // canvas.stroke();
-              //   }
-
-                
-
-
-              // }
-
             })
 
             canvas.beginPath();
@@ -262,6 +145,16 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             canvas.strokeStyle = "white";
             canvas.stroke();
           }
+          }, (ecs, event: any) => {
+            if (event.type === "mousemove") {
+
+              var rect = event.boundingClient;
+              var x = event.clientX - rect.left; //x position within the element.
+              var y = event.clientY - rect.top;
+
+              shipMapMouseX = x;
+              shipMapMouseY = y;
+            }
         }],
       },
       (ecs) => {
@@ -294,7 +187,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
               ...e,
               ...[
-                ...new Array(15000)
+                ...new Array(150)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,
@@ -335,5 +228,4 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
       ).out
     };
   }
-
 }

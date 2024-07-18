@@ -38,12 +38,12 @@ export class Game<SystemKeys extends string> {
   ) {
     this.canvasContexts[key] = { run, context, callback };
     // this.animationLoop(key);
-    
+
 
     const s = this.state.get(this.state.currrent);
     const clbk = this.canvasContexts[key].callback;
-    s.boot(key, this.ecs, clbk || (()=>{}));
-    
+    s.boot(key, this.ecs, clbk || (() => { }));
+
   }
 
   async start() {
@@ -52,20 +52,20 @@ export class Game<SystemKeys extends string> {
     const interval = 1000 / fps;
     let delta = 0;
     while (true) {
-        let now = await new Promise(requestAnimationFrame);
-        if (now - then < interval - delta) {
-            continue;
-        }
-        delta = Math.min(interval, delta + now - then - interval);
+      let now = await new Promise(requestAnimationFrame);
+      if (now - then < interval - delta) {
+        continue;
+      }
+      delta = Math.min(interval, delta + now - then - interval);
       then = now;
-      
+
 
       for (const canvaskey in (this.canvasContexts)) {
-        this.draw(canvaskey);  
+        this.draw(canvaskey);
       }
 
       this.ecs.tick(delta)
-    
+
     }
   }
 
@@ -85,7 +85,13 @@ export class Game<SystemKeys extends string> {
       clbk || (() => { }),
       this.ecs.getComponents(),
     );
-    
+
+  }
+
+  inputEvent(event: Event, appKey: string) {
+    this.state.getCurrent().inputEvent(
+      event, appKey, this.ecs,
+    )
   }
 
 }
