@@ -1,7 +1,7 @@
 import { SpaceTrashEntityComponent } from "../../lib/EntityComponent";
 import { AttackableComponent, LitableComponent } from "../../Components/casting/in";
 import { UnmovingComponent } from "../../Components/conveyance";
-import { OpacityComponent } from "../../Components/opacity";
+import { SolidityComponent } from "../../Components/solidity";
 import { PhysicsSetComponent } from "../../Components/physics";
 import { PowerConsumingComponent } from "../../Components/power";
 
@@ -14,7 +14,7 @@ export class FloorTile extends SpaceTrashEntityComponent {
       spe,
       [new PhysicsSetComponent(spe, x, y, `south`, false),
       new UnmovingComponent(spe),
-      new OpacityComponent(spe, 1),
+      new SolidityComponent(spe, 1),
       new LitableComponent(spe)],
     );
   }
@@ -28,7 +28,7 @@ export class WallTile extends SpaceTrashEntityComponent {
       spe,
       [new PhysicsSetComponent(spe, x, y, `south`, true),
       new UnmovingComponent(spe),
-      new OpacityComponent(spe, 0),
+      new SolidityComponent(spe, 0),
       new LitableComponent(spe)],
     );
   }
@@ -43,7 +43,7 @@ export class DoorTile extends SpaceTrashEntityComponent {
       new AttackableComponent(spe),
       new UnmovingComponent(spe),
       new PowerConsumingComponent(spe),
-      new OpacityComponent(spe, 0),
+      new SolidityComponent(spe, 0),
       new LitableComponent(spe)],
     );
   }

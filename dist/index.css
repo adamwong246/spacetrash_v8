@@ -1,6 +1,6 @@
 /* src/index.scss */
 .dragging {
-  opacity: 0.5;
+  solidity: 0.5;
 }
 .flexible-modal {
   z-index: 1;
@@ -10,10 +10,10 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  opacity: 0;
+  solidity: 0;
 }
 .flexible-modal.full {
-  opacity: 1;
+  solidity: 1;
   transition: 300ms;
 }
 .flexible-modal-header {
@@ -112,16 +112,16 @@
   background-color: #d2d1d1;
 }
 .fade-scale-enter {
-  opacity: 0;
+  solidity: 0;
   transform: scale(0.6);
 }
 .fade-scale-enter-active {
-  opacity: 1;
+  solidity: 1;
   transform: none;
   transition: 300ms;
 }
 .fade-scale-enter-done {
-  opacity: 1;
+  solidity: 1;
   background-color: paleturquoise;
   border: 2px solid black;
 }
@@ -130,12 +130,12 @@
   height: 3rem;
 }
 .fade-scale-exit {
-  opacity: 1;
+  solidity: 1;
 }
 .fade-scale-exit-active {
-  opacity: 0;
+  solidity: 0;
   transform: scale(0.6);
-  transition: opacity 300ms, transform 300ms;
+  transition: solidity 300ms, transform 300ms;
 }
 .fade-scale-exit-done {
   display: none;

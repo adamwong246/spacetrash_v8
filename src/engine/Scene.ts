@@ -15,7 +15,7 @@ type IBoot = (
 type IUpdate = (
   ecs: IECSComponents,
   reply: IReply
-) => ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext) => void)[]
+) => ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext, opts?) => void)[]
 
 type IEvents = (
   ecs: ECS<any>,

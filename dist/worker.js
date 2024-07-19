@@ -25779,16 +25779,16 @@ var UnmovingComponent = class extends ConveyanceComponent {
   }
 };
 
-// src/spacetrash/Components/opacity.ts
-var OpacityComponent = class extends SpaceTrashComponent {
-  opacity;
-  constructor(e, opacity) {
+// src/spacetrash/Components/solidity.ts
+var SolidityComponent = class extends SpaceTrashComponent {
+  solidity;
+  constructor(e, solidity) {
     super(
       e,
       [SpaceTrashSystems.physical]
       // [SpaceTrashSystems.power]
     );
-    this.opacity = opacity;
+    this.solidity = solidity;
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -25872,7 +25872,7 @@ var FloorTile = class extends SpaceTrashEntityComponent {
       [
         new PhysicsSetComponent(spe, x, y, `south`, false),
         new UnmovingComponent(spe),
-        new OpacityComponent(spe, 1),
+        new SolidityComponent(spe, 1),
         new LitableComponent(spe)
       ]
     );
@@ -25886,7 +25886,7 @@ var WallTile = class extends SpaceTrashEntityComponent {
       [
         new PhysicsSetComponent(spe, x, y, `south`, true),
         new UnmovingComponent(spe),
-        new OpacityComponent(spe, 0),
+        new SolidityComponent(spe, 0),
         new LitableComponent(spe)
       ]
     );
@@ -25902,7 +25902,7 @@ var DoorTile = class extends SpaceTrashEntityComponent {
         new AttackableComponent(spe),
         new UnmovingComponent(spe),
         new PowerConsumingComponent(spe),
-        new OpacityComponent(spe, 0),
+        new SolidityComponent(spe, 0),
         new LitableComponent(spe)
       ]
     );
@@ -26142,52 +26142,79 @@ var Spacetrash = class extends Game {
         }, "webgl"],
         shipmap: [(ecs, reply) => {
         }, (ecs, reply) => {
-          const toReturn = [];
           const thingsToDraw = {};
           Object.keys(ecs).forEach((ecKey) => {
             const ec = ecs[ecKey];
             if (!thingsToDraw[ec.entity]) {
               thingsToDraw[ec.entity] = {
-                draw: void 0
-              };
-            }
-            if (ec.constructor.name === "PhysicsSetComponent") {
-              const setpiece = ec;
-              thingsToDraw[ec.entity].draw = (canvas) => {
-                if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
-                  const canvas2d = canvas;
-                  canvas2d.beginPath();
-                  canvas2d.rect(
-                    setpiece.x * tSize - tSize / 2,
-                    setpiece.y * tSize - tSize / 2,
-                    tSize,
-                    tSize
-                  );
-                  canvas2d.stroke();
+                draw: void 0,
+                opts: {
+                  fill: ""
                 }
               };
             }
-            if (ec.constructor.name === "PhysicsActorComponent") {
-              const actor = ec;
-              thingsToDraw[ec.entity].draw = (canvas) => {
-                if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
-                  const canvas2d = canvas;
-                  canvas2d.beginPath();
-                  canvas2d.arc(
-                    actor.x * tSize,
-                    actor.y * tSize,
-                    tSize / 3,
-                    0,
-                    2 * Math.PI
-                  );
-                  canvas2d.stroke();
+            if (thingsToDraw[ec.entity] && thingsToDraw[ec.entity].opts) {
+              if (ec.constructor.name === "PhysicsSetComponent") {
+                const setpiece = ec;
+                thingsToDraw[ec.entity].draw = (canvas, opts) => {
+                  if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                    const canvas2d = canvas;
+                    canvas2d.beginPath();
+                    canvas2d.rect(
+                      setpiece.x * tSize - tSize / 2,
+                      setpiece.y * tSize - tSize / 2,
+                      tSize,
+                      tSize
+                    );
+                    canvas2d.stroke();
+                    if (opts?.fill) {
+                      canvas2d.fillStyle = opts.fill;
+                      canvas2d.fill();
+                    }
+                  }
+                };
+              }
+              if (ec.constructor.name === "PhysicsActorComponent") {
+                const actor = ec;
+                thingsToDraw[ec.entity].draw = (canvas) => {
+                  if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                    const canvas2d = canvas;
+                    canvas2d.beginPath();
+                    canvas2d.arc(
+                      actor.x * tSize,
+                      actor.y * tSize,
+                      tSize / 3,
+                      0,
+                      2 * Math.PI
+                    );
+                    canvas2d.stroke();
+                  }
+                };
+              }
+              if (ec.constructor.name === "SolidityComponent") {
+                if (ec.solidity === 0) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "white"
+                    }
+                  };
+                } else {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "lightgrey"
+                    }
+                  };
                 }
-              };
+              }
             }
           });
           return [
             ...Object.keys(thingsToDraw).map((k) => {
-              return thingsToDraw[k].draw || ((c) => null);
+              return (c) => thingsToDraw[k].draw(c, thingsToDraw[k].opts) || ((c2) => null);
             }),
             (canvas) => {
               if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {

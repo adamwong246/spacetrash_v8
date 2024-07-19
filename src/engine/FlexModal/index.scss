@@ -10,10 +10,10 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  opacity: 0;
+  solidity: 0;
 
   &.full {
-    opacity: 1;
+    solidity: 1;
     transition: 300ms;
   }
 
@@ -130,16 +130,16 @@
 }
 
 .fade-scale-enter {
-  opacity: 0;
+  solidity: 0;
   transform: scale(0.6);
 }
 .fade-scale-enter-active {
-  opacity: 1;
+  solidity: 1;
   transform: none;
   transition: 300ms;
 }
 .fade-scale-enter-done {
-  opacity: 1;
+  solidity: 1;
   background-color: paleturquoise;
   border: 2px solid black;
 }
@@ -150,12 +150,12 @@
   // width: 100%
 }
 .fade-scale-exit {
-  opacity: 1;
+  solidity: 1;
 }
 .fade-scale-exit-active {
-  opacity: 0;
+  solidity: 0;
   transform: scale(0.6);
-  transition: opacity 300ms, transform 300ms;
+  transition: solidity 300ms, transform 300ms;
 }
 .fade-scale-exit-done {
   display: none;
@@ -164,11 +164,11 @@
 ///////////////
 
 // .fade-enter {
-//   opacity: 0;
+//   solidity: 0;
 //   display: block;
 // }
 // .fade-enter-active {
-//   opacity: 1;
+//   solidity: 1;
 //   transition: 300ms;
 // }
 // .fade-enter-done {
@@ -177,10 +177,10 @@
 
 // .fade-exit {
 //   display: block;
-//   opacity: 1;
+//   solidity: 1;
 // }
 // .fade-exit-active {
-//   opacity: 0;
+//   solidity: 0;
 //   transition: 300ms;
 // }
 // .fade-exit-done {

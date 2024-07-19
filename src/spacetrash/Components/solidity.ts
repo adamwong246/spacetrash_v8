@@ -2,16 +2,16 @@ import { ISpaceTrashComponents, SpaceTrashComponent } from ".";
 
 import { SpaceTrashSystems } from "../Systems";
 
-export class OpacityComponent extends SpaceTrashComponent {  
-  opacity: number;
+export class SolidityComponent extends SpaceTrashComponent {  
+  solidity: number;
 
-  constructor(e, opacity: number) {
+  constructor(e, solidity: number) {
     super(
       e,
       [SpaceTrashSystems.physical]
       // [SpaceTrashSystems.power]
     );
-    this.opacity = opacity
+    this.solidity = solidity
   }
 
   getMove(): unknown {

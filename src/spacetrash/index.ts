@@ -138,70 +138,104 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           // return []
         }, (ecs, reply) => {
 
-          const toReturn = [];
+          // const toReturn = [];
 
-          const thingsToDraw: Record<string, Partial<{
-            draw: (c: OffscreenCanvasRenderingContext2D | WebGLRenderingContext) => void;
-          }>> = {};
+          const thingsToDraw: Record<string, any> = {};
 
           Object.keys(ecs).forEach((ecKey) => {
             const ec: any = ecs[ecKey];
 
             if (!thingsToDraw[ec.entity]) {
               thingsToDraw[ec.entity] = {
-                draw: undefined
+                draw: undefined,
+                opts: {
+                  fill: "",
+                }
               };
             }
 
-            if (ec.constructor.name === "PhysicsSetComponent") {
-              const setpiece = ec as PhysicsSetComponent;
+            if (thingsToDraw[ec.entity] && thingsToDraw[ec.entity].opts) {
+              if (ec.constructor.name === "PhysicsSetComponent") {
+                const setpiece = ec as PhysicsSetComponent;
 
-              thingsToDraw[ec.entity].draw = (canvas) => {
+                thingsToDraw[ec.entity].draw = (canvas, opts: {
+                  fill: string
+                }) => {
 
-                if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
-                  const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
-                  canvas2d.beginPath();
-                  canvas2d.rect(
-                    (setpiece.x * tSize) - tSize / 2,
-                    (setpiece.y * tSize) - tSize / 2,
-                    tSize,
-                    tSize
-                  );
-                  canvas2d.stroke();
+                  if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                    const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+                    canvas2d.beginPath();
+                    canvas2d.rect(
+                      (setpiece.x * tSize) - tSize / 2,
+                      (setpiece.y * tSize) - tSize / 2,
+                      tSize,
+                      tSize
+                    );
+                    canvas2d.stroke();
+
+                    if (opts?.fill) {
+                      canvas2d.fillStyle = opts.fill;
+                      canvas2d.fill();
+                    }
+                  }
+
+
                 }
+              }
+
+              if (ec.constructor.name === "PhysicsActorComponent") {
+                const actor = ec as PhysicsActorComponent;
+                thingsToDraw[ec.entity].draw = (canvas) => {
+
+                  if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                    const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+                    canvas2d.beginPath();
+                    canvas2d.arc(
+                      actor.x * tSize,
+                      actor.y * tSize,
+                      tSize / 3,
+                      0,
+                      2 * Math.PI,
+                    )
+                    canvas2d.stroke();
+                  }
 
 
+                }
+              }
+
+              if (ec.constructor.name === "SolidityComponent") {
+                if (ec.solidity === 0) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "white"
+                    }
+                  };
+                } else {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "lightgrey"
+                    }
+                  };
+                }
               }
             }
 
-            if (ec.constructor.name === "PhysicsActorComponent") {
-              const actor = ec as PhysicsActorComponent;
-              thingsToDraw[ec.entity].draw = (canvas) => {
-
-                if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
-                  const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
-                  canvas2d.beginPath();
-                  canvas2d.arc(
-                    actor.x * tSize,
-                    actor.y * tSize,
-                    tSize / 3,
-                    0,
-                    2 * Math.PI,
-                  )
-                  canvas2d.stroke();
-                }
 
 
-              }
-            }
 
 
           });
 
+
           return [
             ...(
               Object.keys(thingsToDraw).map((k) => {
-                return thingsToDraw[k].draw || ((c) => null)
+                return (c) => thingsToDraw[k].draw(c, thingsToDraw[k].opts) || ((c) => null)
               })
             ),
             (canvas) => {

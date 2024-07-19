@@ -88,7 +88,12 @@ export class Game<SystemKeys extends string> {
     const clbk = this.canvasContexts[key].callback;
 
     if (ctx) {
-      const drawOps: ((ctx: OffscreenCanvasRenderingContext2D | WebGLRenderingContext) => void)[] = s.draw(
+      const drawOps: (
+        (
+          ctx: OffscreenCanvasRenderingContext2D | WebGLRenderingContext,
+          // opts: any,
+
+        ) => void)[] = s.draw(
         key,
         clbk || (() => { }),
         this.ecs.getComponents(),
