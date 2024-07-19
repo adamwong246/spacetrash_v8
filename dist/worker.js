@@ -25205,6 +25205,177 @@ var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   return ESpaceTrashApps2;
 })(ESpaceTrashApps || {});
 
+// src/engine/Game.ts
+var Game = class {
+  postMessage;
+  state;
+  canvasContexts;
+  ecs;
+  constructor(state, systems, postMessage2) {
+    this.state = state;
+    this.postMessage = postMessage2;
+    this.canvasContexts = {};
+    this.changeScene = this.changeScene.bind(this);
+  }
+  changeScene(to) {
+    this.state.setCurrent(to);
+    const newScene = this.state.getCurrent();
+    newScene.boot(to, this.ecs, this.postMessage);
+  }
+  register(key, run, context, callback) {
+    this.canvasContexts[key] = { run, context, callback };
+    const s = this.state.get(this.state.currrent);
+    const clbk = this.canvasContexts[key].callback;
+    s.boot(key, this.ecs, clbk || (() => {
+    }));
+  }
+  async start() {
+    var fps = 60;
+    let then = performance.now();
+    const interval = 1e3 / fps;
+    let delta = 0;
+    while (true) {
+      let now = await new Promise(requestAnimationFrame);
+      if (now - then < interval - delta) {
+        continue;
+      }
+      delta = Math.min(interval, delta + now - then - interval);
+      then = now;
+      for (const canvaskey in this.canvasContexts) {
+        this.draw(canvaskey);
+      }
+      this.ecs.tick(delta);
+    }
+  }
+  draw(key) {
+    const s = this.state.get(this.state.currrent);
+    const ctx = this.canvasContexts[key].context;
+    const clbk = this.canvasContexts[key].callback;
+    if (ctx) {
+      const drawOps = s.draw(
+        key,
+        clbk || (() => {
+        }),
+        this.ecs.getComponents()
+      );
+      ctx.clearRect(0, 0, 800, 600);
+      drawOps.forEach((d) => {
+        d(ctx);
+      });
+    }
+  }
+  inputEvent(event, appKey) {
+    this.state.getCurrent().inputEvent(
+      event,
+      appKey,
+      this.ecs
+    );
+  }
+};
+
+// src/engine/Tree.ts
+var Tree = class {
+  name;
+  constructor(name) {
+    this.name = name;
+  }
+};
+
+// src/engine/Scene.ts
+var Scene = class extends Tree {
+  appLogic;
+  // events: Record<IApps, any[]>;
+  sceneBoot;
+  constructor(name, appLogic, sceneBoot) {
+    super(name);
+    this.appLogic = appLogic;
+    this.sceneBoot = sceneBoot || (async (ecs) => {
+    });
+  }
+  async boot(stateKey, ecs, bootReplier) {
+    await this.sceneBoot(ecs);
+    Object.keys(this.appLogic).forEach((k) => {
+      this.appLogic[k][0](ecs, bootReplier);
+    });
+  }
+  draw(app, bootReplier, components) {
+    return this.appLogic[app][1](
+      components,
+      // this.events? this.events[app] : [],
+      bootReplier
+    );
+  }
+  inputEvent(inputEvent, app, ecs) {
+    this.appLogic[app][2] && this.appLogic[app][2](
+      ecs,
+      inputEvent
+    );
+  }
+};
+
+// src/engine/DirectedGraph.ts
+var import_graphology = __toESM(require_graphology_umd_min(), 1);
+var DirectedGraph = class {
+  name;
+  graph;
+  constructor(name) {
+    this.name = name;
+    this.graph = new import_graphology.DirectedGraph();
+  }
+  connect(to, from, relation) {
+    this.graph.mergeEdge(to, from, { type: relation });
+  }
+};
+
+// src/engine/StateSpace.ts
+var StateSpace = class extends DirectedGraph {
+  start;
+  end;
+  currrent;
+  constructor(name, start, end) {
+    super(name);
+    this.start = start;
+    this.end = end;
+    this.currrent = start;
+  }
+  setCurrent(key) {
+    return this.currrent = key;
+  }
+  getCurrent() {
+    return this.graph.getNodeAttribute(this.currrent, "Scene");
+  }
+  get(key) {
+    return this.graph.getNodeAttribute(key, "Scene");
+  }
+  set(key, scene) {
+    this.graph.setNodeAttribute(key, "Scene", scene);
+  }
+  inputEvent(inputEvent, appKey, ecs, ECS2) {
+    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey, ecs);
+  }
+};
+
+// src/engine/EntityComponent.ts
+var EntityComponent = class {
+  entity;
+  components;
+  constructor(entity, components) {
+    this.entity = entity;
+    this.components = components;
+  }
+  applyComponent(c) {
+    this.components.push(c);
+  }
+};
+
+// src/spacetrash/lib/EntityComponent.ts
+var SpaceTrashEntityComponent = class extends EntityComponent {
+  x;
+  dx;
+  y;
+  dy;
+};
+
 // src/engine/System.ts
 var System = class {
 };
@@ -25591,6 +25762,24 @@ var UnmovingComponent = class extends ConveyanceComponent {
   }
 };
 
+// src/spacetrash/Components/opacity.ts
+var OpacityComponent = class extends SpaceTrashComponent {
+  opacity;
+  constructor(e, opacity) {
+    super(
+      e,
+      [SpaceTrashSystems.physical]
+      // [SpaceTrashSystems.power]
+    );
+    this.opacity = opacity;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+
 // src/spacetrash/Components/power.ts
 var PoweredComponent = class extends Component {
   constructor(spe) {
@@ -25634,27 +25823,6 @@ var Entity = class {
   }
 };
 
-// src/engine/EntityComponent.ts
-var EntityComponent = class {
-  entity;
-  components;
-  constructor(entity, components) {
-    this.entity = entity;
-    this.components = components;
-  }
-  applyComponent(c) {
-    this.components.push(c);
-  }
-};
-
-// src/spacetrash/lib/EntityComponent.ts
-var SpaceTrashEntityComponent = class extends EntityComponent {
-  x;
-  dx;
-  y;
-  dy;
-};
-
 // src/spacetrash/Entities/index.ts
 var SpaceTrashEntity = class extends Entity {
   constructor() {
@@ -25675,24 +25843,6 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
         new LitableComponent(spe, albedo)
       ]
     );
-  }
-};
-
-// src/spacetrash/Components/opacity.ts
-var OpacityComponent = class extends SpaceTrashComponent {
-  opacity;
-  constructor(e, opacity) {
-    super(
-      e,
-      [SpaceTrashSystems.physical]
-      // [SpaceTrashSystems.power]
-    );
-    this.opacity = opacity;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
   }
 };
 
@@ -25838,155 +25988,6 @@ Launch date:    May, 2690
   }
 };
 
-// src/engine/Game.ts
-var Game = class {
-  postMessage;
-  state;
-  canvasContexts;
-  ecs;
-  constructor(state, systems, postMessage2) {
-    this.state = state;
-    this.postMessage = postMessage2;
-    this.canvasContexts = {};
-    this.changeScene = this.changeScene.bind(this);
-  }
-  changeScene(to) {
-    this.state.setCurrent(to);
-    const newScene = this.state.getCurrent();
-    newScene.boot(to, this.ecs, this.postMessage);
-  }
-  register(key, run, context, callback) {
-    this.canvasContexts[key] = { run, context, callback };
-    const s = this.state.get(this.state.currrent);
-    const clbk = this.canvasContexts[key].callback;
-    s.boot(key, this.ecs, clbk || (() => {
-    }));
-  }
-  async start() {
-    var fps = 30;
-    let then = performance.now();
-    const interval = 1e3 / fps;
-    let delta = 0;
-    while (true) {
-      let now = await new Promise(requestAnimationFrame);
-      if (now - then < interval - delta) {
-        continue;
-      }
-      delta = Math.min(interval, delta + now - then - interval);
-      then = now;
-      for (const canvaskey in this.canvasContexts) {
-        this.draw(canvaskey);
-      }
-      this.ecs.tick(delta);
-    }
-  }
-  draw(key) {
-    const s = this.state.get(this.state.currrent);
-    const ctx = this.canvasContexts[key].context;
-    const clbk = this.canvasContexts[key].callback;
-    if (ctx) {
-      ctx.clearRect(0, 0, 800, 600);
-    }
-    s.draw(
-      ctx,
-      key,
-      clbk || (() => {
-      }),
-      this.ecs.getComponents()
-    );
-  }
-  inputEvent(event, appKey) {
-    this.state.getCurrent().inputEvent(
-      event,
-      appKey,
-      this.ecs
-    );
-  }
-};
-
-// src/engine/Tree.ts
-var Tree = class {
-  name;
-  constructor(name) {
-    this.name = name;
-  }
-};
-
-// src/engine/Scene.ts
-var Scene = class extends Tree {
-  appLogic;
-  // events: Record<IApps, any[]>;
-  sceneBoot;
-  constructor(name, appLogic, sceneBoot) {
-    super(name);
-    this.appLogic = appLogic;
-    this.sceneBoot = sceneBoot || (async (ecs) => {
-    });
-  }
-  async boot(stateKey, ecs, bootReplier) {
-    await this.sceneBoot(ecs);
-    Object.keys(this.appLogic).forEach((k) => {
-      this.appLogic[k][0](ecs, bootReplier);
-    });
-  }
-  draw(ctx, app, bootReplier, components) {
-    this.appLogic[app][1](
-      components,
-      ctx,
-      // this.events? this.events[app] : [],
-      bootReplier
-    );
-  }
-  inputEvent(inputEvent, app, ecs) {
-    this.appLogic[app][2] && this.appLogic[app][2](
-      ecs,
-      inputEvent
-    );
-  }
-};
-
-// src/engine/DirectedGraph.ts
-var import_graphology = __toESM(require_graphology_umd_min(), 1);
-var DirectedGraph = class {
-  name;
-  graph;
-  constructor(name) {
-    this.name = name;
-    this.graph = new import_graphology.DirectedGraph();
-  }
-  connect(to, from, relation) {
-    this.graph.mergeEdge(to, from, { type: relation });
-  }
-};
-
-// src/engine/StateSpace.ts
-var StateSpace = class extends DirectedGraph {
-  start;
-  end;
-  currrent;
-  constructor(name, start, end) {
-    super(name);
-    this.start = start;
-    this.end = end;
-    this.currrent = start;
-  }
-  setCurrent(key) {
-    return this.currrent = key;
-  }
-  getCurrent() {
-    return this.graph.getNodeAttribute(this.currrent, "Scene");
-  }
-  get(key) {
-    return this.graph.getNodeAttribute(key, "Scene");
-  }
-  set(key, scene) {
-    this.graph.setNodeAttribute(key, "Scene", scene);
-  }
-  inputEvent(inputEvent, appKey, ecs, ECS2) {
-    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey, ecs);
-  }
-};
-
 // src/engine/ECS.ts
 var ECS = class {
   systems;
@@ -26052,16 +26053,20 @@ var Spacetrash = class extends Game {
       {
         terminal: [(ecs, reply) => {
           reply(this.terminal.boot());
-        }, (ecs, canvas, reply) => {
+        }, (ecs, reply) => {
+          return [];
         }],
         manual: [(ecs, reply) => {
-        }, (ecs, canvas, reply) => {
+        }, (ecs, reply) => {
+          return [];
         }],
         drone: [(ecs, reply) => {
-        }, (ecs, canvas, reply) => {
+        }, (ecs, reply) => {
+          return [];
         }],
         shipmap: [(ecs, reply) => {
-        }, (ecs, canvas, reply) => {
+        }, (ecs, reply) => {
+          return [];
         }]
       },
       async (ecs) => {
@@ -26074,22 +26079,26 @@ var Spacetrash = class extends Game {
         terminal: [(ecs, reply) => {
           reply(["login", ""]);
           reply(["terminal-update", this.terminal.login()]);
-        }, (ecs, canvas, reply) => {
+        }, (ecs, reply) => {
+          return [];
         }],
         manual: [(ecs, reply) => {
-        }, (ecs, canvas, reply) => {
+        }, (ecs, reply) => {
+          return [];
         }],
         drone: [(ecs, reply) => {
-        }, (ecs, canvas, reply) => {
-          if (canvas) {
-            canvas.beginPath();
-            canvas.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
-            canvas.fillStyle = "green";
-            canvas.fill();
-            canvas.lineWidth = 1;
-            canvas.strokeStyle = "grey";
-            canvas.stroke();
-          }
+        }, (ecs, reply) => {
+          return [
+            (canvas) => {
+              canvas.beginPath();
+              canvas.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
+              canvas.fillStyle = "green";
+              canvas.fill();
+              canvas.lineWidth = 1;
+              canvas.strokeStyle = "grey";
+              canvas.stroke();
+            }
+          ];
         }, (ecs, event) => {
           if (event.type === "mousemove") {
             var rect = event.boundingClient;
@@ -26100,12 +26109,19 @@ var Spacetrash = class extends Game {
           }
         }],
         shipmap: [(ecs, reply) => {
-        }, (ecs, canvas, reply) => {
-          if (canvas) {
-            Object.keys(ecs).forEach((ecKey) => {
-              const ec = ecs[ecKey];
-              if (ec.constructor.name === "PhysicsSetComponent") {
-                const setpiece = ec;
+        }, (ecs, reply) => {
+          const toReturn = [];
+          const thingsToDraw = {};
+          Object.keys(ecs).forEach((ecKey) => {
+            const ec = ecs[ecKey];
+            if (!thingsToDraw[ec.entity]) {
+              thingsToDraw[ec.entity] = {
+                draw: void 0
+              };
+            }
+            if (ec.constructor.name === "PhysicsSetComponent") {
+              const setpiece = ec;
+              thingsToDraw[ec.entity].draw = (canvas) => {
                 canvas.beginPath();
                 canvas.rect(
                   setpiece.x * tSize - tSize / 2,
@@ -26114,37 +26130,35 @@ var Spacetrash = class extends Game {
                   tSize
                 );
                 canvas.stroke();
-              }
-              if (ec.constructor.name === "PhysicsActorComponent") {
-                const drone = ec;
-                canvas.beginPath();
-                let startAngle = 0;
-                let endAngle = Math.PI + Math.PI * 1 / 2;
-                let counterclockwise = 2 % 2 === 1;
+              };
+            }
+            if (ec.constructor.name === "PhysicsActorComponent") {
+              const actor = ec;
+              thingsToDraw[ec.entity].draw = (canvas) => {
                 canvas.beginPath();
                 canvas.arc(
-                  drone.x * tSize,
-                  drone.y * tSize,
+                  actor.x * tSize,
+                  actor.y * tSize,
                   tSize / 3,
-                  startAngle,
-                  endAngle,
-                  counterclockwise
+                  0,
+                  2 * Math.PI
                 );
-                canvas.fillStyle = "blue";
-                canvas.fill();
-                canvas.lineWidth = 1;
-                canvas.strokeStyle = "red";
                 canvas.stroke();
-              }
-            });
-            canvas.beginPath();
-            canvas.arc(shipMapMouseX, shipMapMouseY, tSize / 2, 0, 2 * Math.PI);
-            canvas.fillStyle = "transparent";
-            canvas.fill();
-            canvas.lineWidth = 1;
-            canvas.strokeStyle = "white";
-            canvas.stroke();
-          }
+              };
+            }
+          });
+          return [
+            ...Object.keys(thingsToDraw).map((k) => {
+              return thingsToDraw[k].draw || ((c) => null);
+            }),
+            (canvas) => {
+              canvas.beginPath();
+              canvas.arc(shipMapMouseX, shipMapMouseY, tSize / 3, 0, 2 * Math.PI);
+              canvas.lineWidth = 1;
+              canvas.strokeStyle = "grey";
+              canvas.stroke();
+            }
+          ];
         }, (ecs, event) => {
           if (event.type === "mousemove") {
             var rect = event.boundingClient;

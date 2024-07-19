@@ -12,7 +12,7 @@ export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> 
   
   
   constructor(spe: SpaceTrashEntity, x: number = 0, y: number = 0) {
-    super(spe, [SpaceTrashSystems.physical]);
+    super(spe , [SpaceTrashSystems.physical]);
     this.x = x;
     this.y = y;
     // debugger

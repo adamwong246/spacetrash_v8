@@ -14,10 +14,8 @@ type IBoot = (
 
 type IUpdate = (
   ecs: IECSComponents,
-  ctx: CanvasRenderingContext2D | undefined,
-  // events: any[],
   reply: IReply
-) => void
+) => ((ctx: CanvasRenderingContext2D) => void)[]
 
 type IEvents = (
   ecs: ECS<any>,
@@ -59,14 +57,12 @@ export class Scene<IApps extends string> extends Tree {
   }
 
   draw(
-    ctx: CanvasRenderingContext2D | undefined,
     app: IApps,
     bootReplier: (x: any) => void,
     components: Record<string, Component<any, any>>,
-  ) {
-    this.appLogic[app][1](
+  ): ((ctx: CanvasRenderingContext2D) => void)[] {
+    return this.appLogic[app][1](
       components,
-      ctx,
       // this.events? this.events[app] : [],
       bootReplier
     );

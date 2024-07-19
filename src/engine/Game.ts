@@ -47,7 +47,7 @@ export class Game<SystemKeys extends string> {
   }
 
   async start() {
-    var fps = 30;
+    var fps = 60;
     let then = performance.now();
     const interval = 1000 / fps;
     let delta = 0;
@@ -76,15 +76,24 @@ export class Game<SystemKeys extends string> {
     const clbk = this.canvasContexts[key].callback;
 
     if (ctx) {
+      const drawOps: ((ctx: CanvasRenderingContext2D) => void)[] = s.draw(
+        key,
+        clbk || (() => { }),
+        this.ecs.getComponents(),
+      );
+
       ctx.clearRect(0, 0, 800, 600);
+
+      
+  
+      drawOps.forEach((d) => {
+        // debugger
+        d(ctx);
+      })
+
     }
 
-    s.draw(
-      ctx,
-      key,
-      clbk || (() => { }),
-      this.ecs.getComponents(),
-    );
+    
 
   }
 
