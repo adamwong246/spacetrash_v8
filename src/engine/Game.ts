@@ -7,8 +7,9 @@ export class Game<SystemKeys extends string> {
   state: StateSpace;
   canvasContexts: Record<string, {
     run: boolean,
-    context?: CanvasRenderingContext2D,
+    canvas?: OffscreenCanvas,
     callback?: (a: any) => void,
+    // canvasContext: "2d" | "webgl"
 
   }>;
   ecs: ECS<SystemKeys>
@@ -33,10 +34,11 @@ export class Game<SystemKeys extends string> {
   register(
     key: string,
     run: boolean,
-    context?: CanvasRenderingContext2D,
+    // context?: CanvasRenderingContext2D,
+    canvas?: OffscreenCanvas,
     callback?: (data: any) => void,
   ) {
-    this.canvasContexts[key] = { run, context, callback };
+    this.canvasContexts[key] = { run, canvas, callback };
     // this.animationLoop(key);
 
 
@@ -72,11 +74,11 @@ export class Game<SystemKeys extends string> {
   draw(key: string) {
     const s = this.state.get(this.state.currrent);
 
-    const ctx = this.canvasContexts[key].context;
+    const ctx = this.canvasContexts[key].canvas?.getContext("2d") as OffscreenCanvasRenderingContext2D;
     const clbk = this.canvasContexts[key].callback;
 
     if (ctx) {
-      const drawOps: ((ctx: CanvasRenderingContext2D) => void)[] = s.draw(
+      const drawOps: ((ctx: OffscreenCanvasRenderingContext2D) => void)[] = s.draw(
         key,
         clbk || (() => { }),
         this.ecs.getComponents(),

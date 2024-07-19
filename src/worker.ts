@@ -39,7 +39,8 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
           sp.register(
             spApp,
             true,
-            msg.data[1].getContext("2d", { alpha: false }),
+            // msg.data[1].getContext("2d", { alpha: false }),
+            msg.data[1],
             (data) => {
               postMessage([`${spApp}-update`, data]);
             }

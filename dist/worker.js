@@ -25222,8 +25222,8 @@ var Game = class {
     const newScene = this.state.getCurrent();
     newScene.boot(to, this.ecs, this.postMessage);
   }
-  register(key, run, context, callback) {
-    this.canvasContexts[key] = { run, context, callback };
+  register(key, run, canvas, callback) {
+    this.canvasContexts[key] = { run, canvas, callback };
     const s = this.state.get(this.state.currrent);
     const clbk = this.canvasContexts[key].callback;
     s.boot(key, this.ecs, clbk || (() => {
@@ -25249,7 +25249,7 @@ var Game = class {
   }
   draw(key) {
     const s = this.state.get(this.state.currrent);
-    const ctx = this.canvasContexts[key].context;
+    const ctx = this.canvasContexts[key].canvas?.getContext("2d");
     const clbk = this.canvasContexts[key].callback;
     if (ctx) {
       const drawOps = s.draw(
@@ -25284,7 +25284,6 @@ var Tree = class {
 // src/engine/Scene.ts
 var Scene = class extends Tree {
   appLogic;
-  // events: Record<IApps, any[]>;
   sceneBoot;
   constructor(name, appLogic, sceneBoot) {
     super(name);
@@ -25301,7 +25300,6 @@ var Scene = class extends Tree {
   draw(app, bootReplier, components) {
     return this.appLogic[app][1](
       components,
-      // this.events? this.events[app] : [],
       bootReplier
     );
   }
@@ -26259,7 +26257,8 @@ self.onmessage = function handleMessageFromMain(msg) {
           sp.register(
             spApp,
             true,
-            msg.data[1].getContext("2d", { alpha: false }),
+            // msg.data[1].getContext("2d", { alpha: false }),
+            msg.data[1],
             (data) => {
               postMessage([`${spApp}-update`, data]);
             }

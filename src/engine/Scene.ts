@@ -15,7 +15,7 @@ type IBoot = (
 type IUpdate = (
   ecs: IECSComponents,
   reply: IReply
-) => ((ctx: CanvasRenderingContext2D) => void)[]
+) => ((ctx: OffscreenCanvasRenderingContext2D) => void)[]
 
 type IEvents = (
   ecs: ECS<any>,
@@ -28,7 +28,6 @@ type IAppLogic<IApps extends string> = Record<IApps, ILogic>
 
 export class Scene<IApps extends string> extends Tree {
   appLogic: IAppLogic<IApps>;
-  // events: Record<IApps, any[]>;
   sceneBoot: (ecs: ECS<any>) => Promise<void>;
 
   constructor(
@@ -38,7 +37,6 @@ export class Scene<IApps extends string> extends Tree {
   ) {
     super(name);
     this.appLogic = appLogic;
-    // this.events = {} as Record<string, any>; // map events to apps
     this.sceneBoot = sceneBoot || (async (ecs) => { });
   }
 
@@ -50,8 +48,6 @@ export class Scene<IApps extends string> extends Tree {
   ) {
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
-      // console.log("k", k)
-      // this.events[k] = [];
       this.appLogic[k][0](ecs, bootReplier); 
     })
   }
@@ -60,13 +56,11 @@ export class Scene<IApps extends string> extends Tree {
     app: IApps,
     bootReplier: (x: any) => void,
     components: Record<string, Component<any, any>>,
-  ): ((ctx: CanvasRenderingContext2D) => void)[] {
+  ): ((ctx: OffscreenCanvasRenderingContext2D) => void)[] {
     return this.appLogic[app][1](
       components,
-      // this.events? this.events[app] : [],
       bootReplier
     );
-    // if (this.events && this.events[app]) {this.events[app] = []};
   }
 
   inputEvent(
@@ -74,7 +68,6 @@ export class Scene<IApps extends string> extends Tree {
     app: string,
     ecs: ECS<any>,
   ) {
-    // this.events[appKey].push(inputEvent);
     this.appLogic[app][2] && this.appLogic[app][2](
       ecs,
       inputEvent

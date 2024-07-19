@@ -105,7 +105,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           const toReturn = [];
 
           const thingsToDraw: Record<string, Partial<{
-            draw: (c: CanvasRenderingContext2D) => void;
+            draw: (c: OffscreenCanvasRenderingContext2D) => void;
           }>> = {};
 
           Object.keys(ecs).forEach((ecKey) => {
