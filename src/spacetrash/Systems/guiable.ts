@@ -5,11 +5,9 @@ import { ISpaceTrashSystems } from ".";
 
 export class GUIable extends System<ISpaceTrashSystems> {
   tick(delta: number, components: Record<string, Component<any, any>>): Record<string, Component<any, any>> {
-    return {};
+    return components;
   }
-  // tick(delta: number, components: Component<unknown, unknown>[]): Component<unknown, unknown>[] {
-  //   return components;
-  // }
+
   constructor() {
     super()
   }

@@ -39,7 +39,7 @@ export class Game<SystemKeys extends string> {
     canvas?: OffscreenCanvas,
     callback?: (data: any) => void,
   ) {
-    console.log(key, this.state.getCurrent().appLogic[key]);
+    // console.log(key, this.state.getCurrent().appLogic[key]);
     this.canvasContexts[key] = {
       run,
       canvas,

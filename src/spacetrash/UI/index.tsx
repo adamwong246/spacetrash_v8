@@ -232,6 +232,7 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
           layer={stateRef.current.stack.findIndex((s) => s === 'manual')}
           desktopState={stateRef.current}
           pushToTop={() => {
+
             setDesktopState({
               ...desktopState,
               stack: [

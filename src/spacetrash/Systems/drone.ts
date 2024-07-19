@@ -5,8 +5,9 @@ import { ISpaceTrashSystems } from ".";
 
 export class Upgradeable extends System<ISpaceTrashSystems> {
   tick(delta: number, components: Record<string, Component<any, any>>): Record<string, Component<any, any>> {
-    throw new Error("Method not implemented.");
+    return components;
   }
+
   
   constructor() {
     super()

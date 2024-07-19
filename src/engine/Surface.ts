@@ -5,7 +5,7 @@ export abstract class Surface {
 
   constructor(key: string) {
     this.key = key;
-    console.log("creating surface", key);
+    // console.log("creating surface", key);
     this.store = new Uint16Array(65535);
   }
 

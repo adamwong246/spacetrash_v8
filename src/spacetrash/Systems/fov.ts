@@ -1,7 +1,12 @@
 import Component from "../../engine/Component"
 import { System } from "../../engine/System"
 
-import { ISpaceTrashSystems } from "."
+import { ISpaceTrashSystems, SpaceTrashSystems } from "."
+import { make } from "../../engine/lib";
+import { PhysicsSetComponent } from "../Components/physics";
+import { LitComponent } from "../Components/casting/out";
+import { LitableComponent } from "../Components/casting/in";
+import { SpaceTrashEntity } from "../Entities";
 
 // let actors: Record<string, {
 //   physicsComponent: PhysicsActorComponent,
@@ -10,17 +15,81 @@ import { ISpaceTrashSystems } from "."
 // }> = {};
 
 
-
-
 // const castingComponents: Record<string, {
 //   physicsComponent: PhysicsComponent,
 //   lits: LitComponent[],
 //   littables: LitableComponent[]
 // }> = {}
 
+const lits: Record<string, {
+
+  x: number,
+  y: number,
+  outcast: number,
+  incast: number,
+  // solid: boolean;
+  // r: any;
+}> = {};
+
+const litables: Record<string, {
+
+  x: number,
+  y: number,
+  albedo: number;
+  // outcast: number,
+  // incast: number,
+  // solid: boolean;
+  // r: any;
+}> = {};
+
 export class FOV extends System<ISpaceTrashSystems> {
-  tick(delta: number, components: Record<string, Component<any, any>>): Record<string, Component<any, any>> {
-    return {};
+  tick(
+    delta: number,
+    components: Record<string, Component<any, any>>): Record<string, Component<any, any>>
+  {
+    Object.keys(components).forEach((cKey) => {
+      const c = components[cKey];
+
+      const lit = make<LitComponent>(c, "LitComponent") as any
+      // lit.albedo = 22;
+      if (lit) { 
+        lits[cKey] = lit
+      }
+
+      const littable = make<LitableComponent>(c, "LitableComponent") as any;
+      
+
+      if (littable) { 
+        litables[cKey] = littable
+      }
+    })
+
+    // console.log(lits)
+    Object.keys(lits).forEach((literId: string) => {
+      const seen = SpaceTrashSystems.physical.getFov((components[literId] as any).entity);
+      
+      seen.forEach((seenSpace: string) => {
+        
+        litables[seenSpace] = {
+          ...litables[seenSpace],
+          albedo: 22
+        }; //.albedo = 2;
+      })
+    });
+
+    for (const cKey of Object.keys(litables)) {
+      if (components[cKey] && litables[cKey].albedo) {
+        
+        (components[cKey] as LitableComponent).albedo = litables[cKey].albedo;  
+        if (litables[cKey].albedo !== -1) {
+          // debugger
+        }
+        // console.log("mark3" , litables[l].albedo)
+      }
+    }
+
+    // debugger
+    return components;
   }
   
   constructor() {

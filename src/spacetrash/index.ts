@@ -1,6 +1,7 @@
 import { Game } from "../engine/Game";
 import { Scene } from "../engine/Scene";
 import { StateSpace } from "../engine/StateSpace";
+import { ECS } from "../engine/ECS";
 
 import { PhysicsActorComponent, PhysicsSetComponent } from "./Components/physics";
 import { FloorTile, WallTile, DoorTile } from "./Entities/setpieces";
@@ -10,7 +11,7 @@ import { SpaceTrashTerminal } from "./lib/Terminal";
 import { SpaceTrashDrone } from "./Entities";
 import { ISpaceTrashSystems, SpaceTrashSystems } from "./Systems";
 import { ISpaceTrashApps } from "./UI";
-import { SpaceTrashECS } from "./lib/EC";
+
 
 let droneMouseX = 0;
 let droneMouseY = 0;
@@ -141,7 +142,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           // const toReturn = [];
 
           const thingsToDraw: Record<string, any> = {};
-
+          // debugger
           Object.keys(ecs).forEach((ecKey) => {
             const ec: any = ecs[ecKey];
 
@@ -159,7 +160,8 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                 const setpiece = ec as PhysicsSetComponent;
 
                 thingsToDraw[ec.entity].draw = (canvas, opts: {
-                  fill: string
+                  fill: string,
+                  stroke: string,
                 }) => {
 
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
@@ -176,6 +178,10 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                     if (opts?.fill) {
                       canvas2d.fillStyle = opts.fill;
                       canvas2d.fill();
+                    }
+                    if (opts?.stroke) {
+                      canvas2d.strokeStyle = opts.stroke;
+                      canvas2d.stroke();
                     }
                   }
 
@@ -223,6 +229,37 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                   };
                 }
               }
+
+              // console.log(ec.constructor.name);
+              if (ec.constructor.name === "LitableComponent") {
+                // console.log("marl2", ec.albedo)
+                if (ec.albedo === -1) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      stroke: "grey"
+                    }
+                  };
+                } else if (ec.albedo === 0) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      stroke: "red"
+                    }
+                  };
+                } else {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      stroke: "yellow"
+                    }
+                  };
+                }
+              }
+
             }
 
 
@@ -342,10 +379,10 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
           }
 
-          e.push(new WallTile(4, 4, 1))
-          e.push(new WallTile(5, 5, 1))
-          e.push(new DoorTile(6, 6, 1))
-          e.push(new DoorTile(16, 16, 1))
+          // e.push(new WallTile(4, 4, 1))
+          // e.push(new WallTile(5, 5, 1))
+          // e.push(new DoorTile(6, 6, 1))
+          // e.push(new DoorTile(16, 16, 1))
 
           ecs.setEntitiesComponent(
             [
@@ -353,7 +390,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
               ...e,
               ...[
-                ...new Array(150)
+                ...new Array(3)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,
@@ -376,7 +413,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
       SpaceTrashSystems,
       workerPostMessage
     );
-    this.ecs = new SpaceTrashECS(SpaceTrashSystems);
+    this.ecs = new ECS(SpaceTrashSystems);
     this.terminal = new SpaceTrashTerminal();
   }
 

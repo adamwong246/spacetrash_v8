@@ -6,9 +6,9 @@ import { ISpaceTrashComponents } from "..";
 import { SpaceTrashComponent } from "..";
 
 export abstract class InCastingComponent extends SpaceTrashComponent {
-  fov: number;
-  threshold: number;
-  ray: ERays
+  // fov: number;
+  // threshold: number;
+  // ray: ERays
 
   constructor(e) {
     super(e, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
@@ -16,18 +16,18 @@ export abstract class InCastingComponent extends SpaceTrashComponent {
 
   payload() {
     return {
-      fov: this.fov,
-      threshold: this.threshold,
-      ray: this.ray,
+      // fov: this.fov,
+      // threshold: this.threshold,
+      // ray: this.ray,
     }
   }
 
 }
 
 export class AttackableComponent extends InCastingComponent {
-  fov = 1;
-  threshold = 0;
-  ray = ERays.attack;
+  // fov = 1;
+  // threshold = 0;
+  // ray = ERays.attack;
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
@@ -42,9 +42,9 @@ export class AttackableComponent extends InCastingComponent {
 
 
 export class MicrophoneComponent extends InCastingComponent {
-  fov = 1;
-  threshold = 10;
-  ray = ERays.sound;
+  // fov = 1;
+  // threshold = 10;
+  // ray = ERays.sound;
   
   getMove(): unknown {
     throw new Error("Method not implemented.");
@@ -59,9 +59,9 @@ export class MicrophoneComponent extends InCastingComponent {
 
 
 export class CameraComponent extends InCastingComponent {
-  fov: number;
-  threshold = 10;
-  ray: ERays.visible
+  // fov: number;
+  // threshold = 10;
+  // ray: ERays.visible
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
@@ -75,9 +75,9 @@ export class CameraComponent extends InCastingComponent {
 }
 
 export class ThermalComponent extends InCastingComponent {
-  fov = 1;
-  threshold = 0;
-  ray: ERays.thermal
+  // fov = 1;
+  // threshold = 0;
+  // ray: ERays.thermal
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
@@ -91,9 +91,9 @@ export class ThermalComponent extends InCastingComponent {
 }
 
 export class MovementComponent extends InCastingComponent {
-  fov = 270;
-  threshold = 1;
-  ray: ERays.movement;
+  // fov = 270;
+  // threshold = 1;
+  // ray: ERays.movement;
 
   getMove(): unknown {
     throw new Error("Method not implemented.");
@@ -107,7 +107,7 @@ export class MovementComponent extends InCastingComponent {
 }
 
 export class LitableComponent extends InCastingComponent {
-  ray: ERays.visible
+  // ray: ERays.visible
   albedo: number;
 
   constructor(e, albedo = -1) {

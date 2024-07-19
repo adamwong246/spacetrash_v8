@@ -59,7 +59,7 @@ export class PhysicsActorComponent extends PhysicsComponent {
   }
 }
 
-type IDirs = `north` | `south` | `east` | `west`;
+export type IDirs = `north` | `south` | `east` | `west`;
 
 export class PhysicsSetComponent extends PhysicsComponent {
   r: IDirs;

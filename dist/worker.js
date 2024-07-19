@@ -25223,7 +25223,6 @@ var Game = class {
     newScene.boot(to, this.ecs, this.postMessage);
   }
   register(key, run, canvas, callback) {
-    console.log(key, this.state.getCurrent().appLogic[key]);
     this.canvasContexts[key] = {
       run,
       canvas,
@@ -25372,6 +25371,66 @@ var StateSpace = class extends DirectedGraph {
   }
 };
 
+// src/engine/lib.ts
+function uuidv4() {
+  return "10000000-1000-4000-8000-100000000000".replace(
+    /[018]/g,
+    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  );
+}
+function make(c, arg1) {
+  if (c.constructor.name === arg1) {
+    return c;
+  }
+  return null;
+}
+
+// src/engine/ECS.ts
+var ECS = class {
+  systems;
+  components;
+  constructor(systems) {
+    this.systems = systems;
+    this.components = {};
+  }
+  setComponents(arg0) {
+    this.components = arg0;
+  }
+  getComponents(system) {
+    console.log("this.getComponents", this.components);
+    return this.components;
+  }
+  setEntitiesComponent(ecss) {
+    ecss.forEach((ec) => {
+      const entityUuid = uuidv4();
+      ec.components.forEach((c) => {
+        const componentUid = uuidv4();
+        this.components[componentUid] = {
+          ...c,
+          entity: entityUuid,
+          constructor: {
+            name: c.constructor.name
+          }
+        };
+      });
+    });
+  }
+  tick(delta) {
+    const x = Object.entries(this.systems).map(([systemKey, system]) => {
+      return (comps) => {
+        return new Promise((res, rej) => {
+          res(system.tick(delta, comps));
+        });
+      };
+    }).reduce(async (previousValue, currentValue, z) => {
+      const x2 = await currentValue(previousValue);
+      return x2;
+    }, this.getComponents()).then((x2) => {
+      this.setComponents(x2);
+    });
+  }
+};
+
 // src/engine/EntityComponent.ts
 var EntityComponent = class {
   entity;
@@ -25398,9 +25457,38 @@ var System = class {
 };
 
 // src/spacetrash/Systems/fov.ts
+var lits = {};
+var litables = {};
 var FOV = class extends System {
   tick(delta, components) {
-    return {};
+    Object.keys(components).forEach((cKey) => {
+      const c = components[cKey];
+      const lit = make(c, "LitComponent");
+      if (lit) {
+        lits[cKey] = lit;
+      }
+      const littable = make(c, "LitableComponent");
+      if (littable) {
+        litables[cKey] = littable;
+      }
+    });
+    Object.keys(lits).forEach((literId) => {
+      const seen = SpaceTrashSystems.physical.getFov(components[literId].entity);
+      seen.forEach((seenSpace) => {
+        litables[seenSpace] = {
+          ...litables[seenSpace],
+          albedo: 22
+        };
+      });
+    });
+    for (const cKey of Object.keys(litables)) {
+      if (components[cKey] && litables[cKey].albedo) {
+        components[cKey].albedo = litables[cKey].albedo;
+        if (litables[cKey].albedo !== -1) {
+        }
+      }
+    }
+    return components;
   }
   constructor() {
     super();
@@ -25537,59 +25625,69 @@ var FOV = class extends System {
   // }
 };
 
-// src/spacetrash/Systems/guiable.ts
-var GUIable = class extends System {
-  tick(delta, components) {
-    return {};
-  }
-  // tick(delta: number, components: Component<unknown, unknown>[]): Component<unknown, unknown>[] {
-  //   return components;
-  // }
-  constructor() {
-    super();
-  }
-  doPreLogic(entitiesComponent) {
-    return {};
-  }
-  doLogic(prelogic) {
-  }
-  doPostLogic(logic) {
-  }
-};
-
 // src/spacetrash/Systems/physical.ts
-function make(c, arg1) {
-  if (c.constructor.name === arg1) {
-    return c;
-  }
-  return null;
-}
+var entities = {};
+var spaces = [[]];
 var Physical = class extends System {
   mapSize;
   constructor(mapSize) {
     super();
     this.mapSize = mapSize;
   }
+  getFov(literId) {
+    const e = entities[literId];
+    if (!spaces[e.y]) {
+      spaces[e.y] = [];
+    }
+    return [
+      spaces[e.y][e.x] && spaces[e.y][e.x][0]
+      // ...Object.keys(entities).filter((s) => {
+      //   const z = entities[s];
+      //   return Math.round(z.x) === Math.round(e.x) && Math.round(z.y) === Math.round(e.y);
+      // })
+    ];
+  }
   tick(delta, components) {
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
-      const d = make(c, "PhysicsActorComponent");
-      if (d) {
-        d.x = d.x + d.dx;
-        d.y = d.y + d.dy;
-        if (d.x < 0) {
-          d.x = this.mapSize + d.dx * 2;
+      const s = make(c, "PhysicsSetComponent");
+      if (s) {
+        entities[s.entity] = {
+          ...entities[s.entity],
+          ...s
+        };
+        if (!spaces[s.y]) {
+          spaces[s.y] = [];
         }
-        if (d.x > this.mapSize) {
-          d.x = d.dx * 2;
+        if (!spaces[s.y][s.x]) {
+          spaces[s.y][s.x] = ["", []];
         }
-        if (d.y < 0) {
-          d.y = this.mapSize + d.dy * 2;
-        }
-        if (d.y > this.mapSize) {
-          d.y = d.dy * 2;
-        }
+        spaces[s.y][s.x][0] = cKey;
+        return false;
       }
+      const a = make(c, "PhysicsActorComponent");
+      if (a) {
+        entities[a.entity] = {
+          ...entities[a.entity],
+          ...a
+        };
+        a.x = a.x + a.dx;
+        a.y = a.y + a.dy;
+        if (a.x < 0) {
+          a.x = this.mapSize + a.dx * 2;
+        }
+        if (a.x > this.mapSize) {
+          a.x = a.dx * 2;
+        }
+        if (a.y < 0) {
+          a.y = this.mapSize + a.dy * 2;
+        }
+        if (a.y > this.mapSize) {
+          a.y = a.dy * 2;
+        }
+        return false;
+      }
+      return true;
     });
     return components;
   }
@@ -25598,7 +25696,7 @@ var Physical = class extends System {
 // src/spacetrash/Systems/index.ts
 var MapSize = 32;
 var SpaceTrashSystems = {
-  gui: new GUIable(),
+  // gui: new GUIable(),
   physical: new Physical(MapSize),
   casting: new FOV()
 };
@@ -25616,18 +25714,18 @@ var Component = class {
 
 // src/spacetrash/Components/casting/out.ts
 var OutCastingComponent = class extends Component {
-  fov;
-  ray;
-  intensity;
+  // fov: number;
+  // ray: ERays;
+  // intensity: number;
   dropoff;
   constructor(spe) {
     super(spe, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
   }
   payload() {
     return {
-      fov: this.fov,
-      threshold: this.intensity,
-      ray: this.ray
+      // fov: this.fov,
+      // threshold: this.intensity,
+      // ray: this.ray,
     };
   }
   getMove() {
@@ -25637,12 +25735,12 @@ var OutCastingComponent = class extends Component {
   }
 };
 var LitComponent = class extends OutCastingComponent {
-  dropoff = (x) => 1 / (x ^ 2);
-  ray;
-  albedo;
+  // dropoff = (x) => 1 / (x ^ 2);
+  // ray: ERays.light
+  // albedo: number;
   constructor(spe) {
     super(spe);
-    this.albedo = 0;
+    this.albedo = -1;
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -25703,24 +25801,24 @@ var SpaceTrashComponent = class extends Component {
 
 // src/spacetrash/Components/casting/in.ts
 var InCastingComponent = class extends SpaceTrashComponent {
-  fov;
-  threshold;
-  ray;
+  // fov: number;
+  // threshold: number;
+  // ray: ERays
   constructor(e) {
     super(e, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
   }
   payload() {
     return {
-      fov: this.fov,
-      threshold: this.threshold,
-      ray: this.ray
+      // fov: this.fov,
+      // threshold: this.threshold,
+      // ray: this.ray,
     };
   }
 };
 var AttackableComponent = class extends InCastingComponent {
-  fov = 1;
-  threshold = 0;
-  ray = 2 /* attack */;
+  // fov = 1;
+  // threshold = 0;
+  // ray = ERays.attack;
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -25728,9 +25826,9 @@ var AttackableComponent = class extends InCastingComponent {
   }
 };
 var CameraComponent = class extends InCastingComponent {
-  fov;
-  threshold = 10;
-  ray;
+  // fov: number;
+  // threshold = 10;
+  // ray: ERays.visible
   getMove() {
     throw new Error("Method not implemented.");
   }
@@ -25738,7 +25836,7 @@ var CameraComponent = class extends InCastingComponent {
   }
 };
 var LitableComponent = class extends InCastingComponent {
-  ray;
+  // ray: ERays.visible
   albedo;
   constructor(e, albedo = -1) {
     super(e);
@@ -25812,15 +25910,6 @@ var PoweredComponent = class extends Component {
   setMove(move) {
   }
 };
-var PowerConsumingComponent = class extends PoweredComponent {
-  amps;
-  damage;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
 var PowerStoringComponent = class extends PoweredComponent {
   voltsCurrent;
   voltsMax;
@@ -25886,22 +25975,6 @@ var WallTile = class extends SpaceTrashEntityComponent {
       [
         new PhysicsSetComponent(spe, x, y, `south`, true),
         new UnmovingComponent(spe),
-        new SolidityComponent(spe, 0),
-        new LitableComponent(spe)
-      ]
-    );
-  }
-};
-var DoorTile = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0) {
-    const spe = new SpaceTrashEntity();
-    super(
-      spe,
-      [
-        new PhysicsSetComponent(spe, x, y, `south`, true),
-        new AttackableComponent(spe),
-        new UnmovingComponent(spe),
-        new PowerConsumingComponent(spe),
         new SolidityComponent(spe, 0),
         new LitableComponent(spe)
       ]
@@ -26002,54 +26075,6 @@ Launch date:    May, 2690
       return { out: `ERROR: NOT FOUND`, status: `fail` };
     }
     return { out: `Command not found. Try "help"`, status: `fail` };
-  }
-};
-
-// src/engine/ECS.ts
-var ECS = class {
-  systems;
-  constructor(systems) {
-    this.systems = systems;
-  }
-  tick(delta) {
-    Object.entries(this.systems).forEach(([systemKey, system]) => {
-      system.tick(delta, this.getComponents());
-    });
-  }
-};
-
-// src/engine/lib.ts
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(
-    /[018]/g,
-    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
-  );
-}
-
-// src/spacetrash/lib/EC.ts
-var SpaceTrashECS = class extends ECS {
-  components;
-  constructor(systems) {
-    super(systems);
-    this.components = {};
-  }
-  getComponents(system) {
-    return this.components;
-  }
-  setEntitiesComponent(ecss) {
-    ecss.forEach((ec) => {
-      const entityUuid = uuidv4();
-      ec.components.forEach((c) => {
-        const componentUid = uuidv4();
-        this.components[componentUid] = {
-          ...c,
-          entity: entityUuid,
-          constructor: {
-            name: c.constructor.name
-          }
-        };
-      });
-    });
   }
 };
 
@@ -26171,6 +26196,10 @@ var Spacetrash = class extends Game {
                       canvas2d.fillStyle = opts.fill;
                       canvas2d.fill();
                     }
+                    if (opts?.stroke) {
+                      canvas2d.strokeStyle = opts.stroke;
+                      canvas2d.stroke();
+                    }
                   }
                 };
               }
@@ -26206,6 +26235,33 @@ var Spacetrash = class extends Game {
                     opts: {
                       ...thingsToDraw[ec.entity].opts,
                       fill: "lightgrey"
+                    }
+                  };
+                }
+              }
+              if (ec.constructor.name === "LitableComponent") {
+                if (ec.albedo === -1) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      stroke: "grey"
+                    }
+                  };
+                } else if (ec.albedo === 0) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      stroke: "red"
+                    }
+                  };
+                } else {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      stroke: "yellow"
                     }
                   };
                 }
@@ -26250,15 +26306,11 @@ var Spacetrash = class extends Game {
             e.push(new WallTile(roomsSize, y, 1));
             e.push(new WallTile(y, roomsSize, 1));
           }
-          e.push(new WallTile(4, 4, 1));
-          e.push(new WallTile(5, 5, 1));
-          e.push(new DoorTile(6, 6, 1));
-          e.push(new DoorTile(16, 16, 1));
           ecs.setEntitiesComponent(
             [
               ...e,
               ...[
-                ...new Array(150)
+                ...new Array(3)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,
@@ -26282,7 +26334,7 @@ var Spacetrash = class extends Game {
       SpaceTrashSystems,
       workerPostMessage
     );
-    this.ecs = new SpaceTrashECS(SpaceTrashSystems);
+    this.ecs = new ECS(SpaceTrashSystems);
     this.terminal = new SpaceTrashTerminal();
   }
   async terminalIn(input, callback) {

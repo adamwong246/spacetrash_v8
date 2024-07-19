@@ -7,9 +7,9 @@ import { ERays } from "../../lib";
 import { ISpaceTrashComponents } from "..";
 
 export abstract class OutCastingComponent extends Component<unknown, ISpaceTrashComponents> {
-  fov: number;
-  ray: ERays;
-  intensity: number;
+  // fov: number;
+  // ray: ERays;
+  // intensity: number;
   dropoff: (x: number) => number;
 
   constructor(spe: SpaceTrashEntity) {
@@ -18,9 +18,9 @@ export abstract class OutCastingComponent extends Component<unknown, ISpaceTrash
 
   payload() {
     return {
-      fov: this.fov,
-      threshold: this.intensity,
-      ray: this.ray,
+      // fov: this.fov,
+      // threshold: this.intensity,
+      // ray: this.ray,
     }
   }
 
@@ -50,15 +50,15 @@ export abstract class AttackingComponent extends OutCastingComponent {
 }
 
 export class MeleeComponent extends AttackingComponent {
-  fov = 1;
-  dropoff = (x) => x < 2 ? 10 : 0;
+  // fov = 1;
+  // dropoff = (x) => x < 2 ? 10 : 0;
   
   constructor(
     spe: SpaceTrashEntity,
     intensity: number
   ) {
     super(spe);
-    this.intensity = intensity;
+    // this.intensity = intensity;
   }
 
   getMove(): unknown {
@@ -88,13 +88,13 @@ export class GunComponent extends OutCastingComponent {
 }
 
 export class LitComponent extends OutCastingComponent {
-  dropoff = (x) => 1 / (x ^ 2);
-  ray: ERays.light
-  albedo: number;
+  // dropoff = (x) => 1 / (x ^ 2);
+  // ray: ERays.light
+  // albedo: number;
 
   constructor(spe: SpaceTrashEntity) {
     super(spe);
-    this.albedo = 0;
+    this.albedo = -1;
   }
 
   getMove(): unknown {

@@ -1,23 +1,28 @@
 import { System } from "../../engine/System";
 import Component from "../../engine/Component";
 
-import { PhysicsActorComponent, PhysicsSetComponent } from "../Components/physics";
+import { IDirs, PhysicsActorComponent, PhysicsSetComponent } from "../Components/physics";
 import { SpaceTrashComponent } from "../Components";
 
 import { ISpaceTrashSystems, TileSize } from ".";
+import { LitableComponent } from "../Components/casting/in";
+import { LitComponent } from "../Components/casting/out";
+import { make } from "../../engine/lib";
 
-function make<T>(c: SpaceTrashComponent, arg1: string): T | null {
-  if (c.constructor.name === arg1) {
-    return c as T;
-  }
-  return null;
-}
+// const set: object[][] = [[]];
 
-function makes<T>(cs: SpaceTrashComponent[], arg1: string): T[] {
-  return cs.filter((c) => {
-    return c.constructor.name === arg1
-  }) as T[];
-}
+const entities: Record<string, {
+  type: 'set' | 'actor'
+  x: number,
+  y: number,
+  outcast: number,
+  incast: number,
+  solid: boolean;
+  r: any;
+}> = {};
+
+// 2x2 of [setPiece, actors[]]
+const spaces: [string, string[]][][] = [[]];
 
 export class Physical extends System<ISpaceTrashSystems> {
   mapSize: number;
@@ -26,30 +31,88 @@ export class Physical extends System<ISpaceTrashSystems> {
     this.mapSize = mapSize;
   }
 
+  getFov(literId: string): string[] {
+    
+    const e = entities[literId];
+
+    if (!spaces[e.y]) {
+      spaces[e.y] = [];
+    }
+    // if (!spaces[e.y][e.x]) {
+    //   spaces[e.y][e.x] = [];
+    // }
+
+    // debugger
+    return [
+      spaces[e.y][e.x] && spaces[e.y][e.x][0],
+      // ...Object.keys(entities).filter((s) => {
+      //   const z = entities[s];
+      //   return Math.round(z.x) === Math.round(e.x) && Math.round(z.y) === Math.round(e.y);
+      // })
+    ];
+  }
+
   tick(delta, components: Record<string, Component<any, any>>) {
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
-      const d = make<PhysicsActorComponent>(c, "PhysicsActorComponent");
-      if (d) {
-        d.x = d.x + d.dx;
-        d.y = d.y + d.dy;
 
-        if (d.x < 0) {
-          d.x = this.mapSize + d.dx * 2;
+      const s = make<PhysicsSetComponent>(c, "PhysicsSetComponent") as any;
+      // debugger
+      if (s) { 
+        entities[s.entity] = {
+          ...entities[s.entity],
+          ...s,
         }
-        if (d.x > this.mapSize) {
-          d.x = d.dx*2;
+        if (!spaces[s.y]) {
+          spaces[s.y] = [];
         }
-        if (d.y < 0) {
-          d.y = this.mapSize + d.dy*2;
+        if (!spaces[s.y][s.x]) {
+          spaces[s.y][s.x] = ["", []];
         }
-        if (d.y > this.mapSize) {
-          d.y = d.dy*2;
-        }
-
+        spaces[s.y][s.x][0] = cKey;
+        return false
       }
+
+      const a = make<PhysicsActorComponent>(c, "PhysicsActorComponent") as any;
+      if (a) {
+        entities[a.entity] = {
+          ...entities[a.entity],
+          ...a,
+        }
+
+        // let actorFound = false;
+        // spaces[Math.round(a.y)][Math.round(a.x)][1].forEach((actorOnTile) => {
+        //   if (actorOnTile === a.entityUid) {
+        //     actorFound = true;
+        //   }
+        // });
+        // if (!actorFound) {
+        //   spaces[Math.round(a.y)][Math.round(a.x)][1].push(a.entityUid)
+        // }
+        
+        a.x = a.x + a.dx;
+        a.y = a.y + a.dy;
+
+        if (a.x < 0) {
+          a.x = this.mapSize + a.dx * 2;
+        }
+        if (a.x > this.mapSize) {
+          a.x = a.dx*2;
+        }
+        if (a.y < 0) {
+          a.y = this.mapSize + a.dy*2;
+        }
+        if (a.y > this.mapSize) {
+          a.y = a.dy*2;
+        }
+        return false
+      }
+
+      return true
+
     })
 
+    // debugger
     return components;
   }
   
