@@ -22,7 +22,7 @@ type IEvents = (
   event: Event,
 ) => void;
 
-type ILogic = [IBoot, IUpdate, IEvents?];
+type ILogic = [IBoot, IUpdate, IEvents, ("2d" | "webgl") ];
 
 type IAppLogic<IApps extends string> = Record<IApps, ILogic>
 

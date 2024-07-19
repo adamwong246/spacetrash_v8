@@ -27,7 +27,6 @@ const ProPanelContainer = (props) => {
     };
 
   const renderChildren = () => {
-      // debugger
         return React.Children.map(props.children, (child) => {
             if (!child) return null;
             return React.cloneElement(child, {

@@ -210,7 +210,6 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
             layer={stateRef.current.stack.findIndex((s) => s === 'shipmap')}
             desktopState={stateRef.current}
             pushToTop={() => {
-              // debugger
               setDesktopState({
                 ...stateRef.current,
                 stack: [
@@ -233,7 +232,6 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
           layer={stateRef.current.stack.findIndex((s) => s === 'manual')}
           desktopState={stateRef.current}
           pushToTop={() => {
-            // debugger
             setDesktopState({
               ...desktopState,
               stack: [

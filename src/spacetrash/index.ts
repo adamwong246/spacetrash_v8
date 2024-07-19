@@ -38,22 +38,30 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           reply(this.terminal.boot());
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+
+        }, "2d"],
         manual: [(ecs, reply) => {
-          // return []
+          return []
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+
+        }, "2d"],
         drone: [(ecs, reply) => {
           // return []
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+
+        }, "webgl"],
         shipmap: [(ecs, reply) => {
           // return []
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+
+        }, "2d"],
       },
       async (ecs) => {
         return
@@ -67,12 +75,17 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           reply(["terminal-update", this.terminal.login()]);
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+
+        }, "2d"],
         manual: [(ecs, reply) => {
           // return []
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+
+        }, "2d"],
+
         drone: [(ecs, reply) => {
           // return []
         }, (ecs, reply) => {
@@ -88,6 +101,23 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                 canvas2d.strokeStyle = "grey";
                 canvas2d.stroke();
               }
+              if (canvas.constructor.name === "WebGLRenderingContext") {
+                const gl = canvas as WebGLRenderingContext;
+
+                // Set the color of the canvas. 
+                // Parameters are RGB colors (red, green, blue, alpha) 
+                gl.clearColor(0, 0.6, 0.0, 1.0);
+                // Clear the color buffer with specified color 
+                gl.clear(gl.COLOR_BUFFER_BIT);
+
+                // canvas2d.beginPath();
+                // canvas2d.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
+                // canvas2d.fillStyle = "green";
+                // canvas2d.fill();
+                // canvas2d.lineWidth = 1;
+                // canvas2d.strokeStyle = "grey";
+                // canvas2d.stroke();
+              }
 
             }
           ];
@@ -101,7 +131,9 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             droneMouseX = x;
             droneMouseY = y;
           }
-        }],
+        }, "webgl"],
+
+
         shipmap: [(ecs, reply) => {
           // return []
         }, (ecs, reply) => {
@@ -255,7 +287,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             shipMapMouseX = x;
             shipMapMouseY = y;
           }
-        }],
+        }, "2d"],
       },
       (ecs) => {
 
@@ -300,7 +332,6 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
               // new DoorTile(4, 4, 1),
             ]
           )
-          // debugger
           res();
         })
       }

@@ -35,10 +35,18 @@ export class Game<SystemKeys extends string> {
     key: string,
     run: boolean,
     // context?: CanvasRenderingContext2D,
+    // canvasContext: "2d" | "webgl",
     canvas?: OffscreenCanvas,
     callback?: (data: any) => void,
   ) {
-    this.canvasContexts[key] = { run, canvas, callback, canvasContext: "2d" };
+    console.log(key, this.state.getCurrent().appLogic[key]);
+    this.canvasContexts[key] = {
+      run,
+      canvas,
+      callback,
+      canvasContext: this.state.getCurrent().appLogic[key][3]
+      // canvasContext: this.canvasContexts[key].canvasContext
+    };
     // this.animationLoop(key);
 
 
@@ -90,7 +98,6 @@ export class Game<SystemKeys extends string> {
         const c = ctx as OffscreenCanvasRenderingContext2D;
         c.clearRect(0, 0, 800, 600);
         drawOps.forEach((d) => {
-          // debugger
           d(c);
         })  
       }
@@ -99,7 +106,6 @@ export class Game<SystemKeys extends string> {
         const gl = ctx as WebGLRenderingContext;
         gl.clear(gl.COLOR_BUFFER_BIT);
         drawOps.forEach((d) => {
-          // debugger
           d(gl);
         })  
       }

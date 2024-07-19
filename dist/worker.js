@@ -25223,7 +25223,14 @@ var Game = class {
     newScene.boot(to, this.ecs, this.postMessage);
   }
   register(key, run, canvas, callback) {
-    this.canvasContexts[key] = { run, canvas, callback, canvasContext: "2d" };
+    console.log(key, this.state.getCurrent().appLogic[key]);
+    this.canvasContexts[key] = {
+      run,
+      canvas,
+      callback,
+      canvasContext: this.state.getCurrent().appLogic[key][3]
+      // canvasContext: this.canvasContexts[key].canvasContext
+    };
     const s = this.state.get(this.state.currrent);
     const clbk = this.canvasContexts[key].callback;
     s.boot(key, this.ecs, clbk || (() => {
@@ -26065,19 +26072,24 @@ var Spacetrash = class extends Game {
           reply(this.terminal.boot());
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+        }, "2d"],
         manual: [(ecs, reply) => {
+          return [];
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+        }, "2d"],
         drone: [(ecs, reply) => {
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+        }, "webgl"],
         shipmap: [(ecs, reply) => {
         }, (ecs, reply) => {
           return [];
-        }]
+        }, (ecs, events) => {
+        }, "2d"]
       },
       async (ecs) => {
         return;
@@ -26091,11 +26103,13 @@ var Spacetrash = class extends Game {
           reply(["terminal-update", this.terminal.login()]);
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+        }, "2d"],
         manual: [(ecs, reply) => {
         }, (ecs, reply) => {
           return [];
-        }],
+        }, (ecs, events) => {
+        }, "2d"],
         drone: [(ecs, reply) => {
         }, (ecs, reply) => {
           return [
@@ -26110,6 +26124,11 @@ var Spacetrash = class extends Game {
                 canvas2d.strokeStyle = "grey";
                 canvas2d.stroke();
               }
+              if (canvas.constructor.name === "WebGLRenderingContext") {
+                const gl = canvas;
+                gl.clearColor(0, 0.6, 0, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+              }
             }
           ];
         }, (ecs, event) => {
@@ -26120,7 +26139,7 @@ var Spacetrash = class extends Game {
             droneMouseX = x;
             droneMouseY = y;
           }
-        }],
+        }, "webgl"],
         shipmap: [(ecs, reply) => {
         }, (ecs, reply) => {
           const toReturn = [];
@@ -26189,7 +26208,7 @@ var Spacetrash = class extends Game {
             shipMapMouseX = x;
             shipMapMouseY = y;
           }
-        }]
+        }, "2d"]
       },
       (ecs) => {
         const e = [];
@@ -26212,7 +26231,7 @@ var Spacetrash = class extends Game {
             [
               ...e,
               ...[
-                ...new Array(15e3)
+                ...new Array(150)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,

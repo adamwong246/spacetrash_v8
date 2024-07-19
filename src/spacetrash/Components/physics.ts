@@ -15,7 +15,6 @@ export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> 
     super(spe , [SpaceTrashSystems.physical]);
     this.x = x;
     this.y = y;
-    // debugger
   }
 
   getMove(): unknown {
