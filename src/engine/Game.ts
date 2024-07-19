@@ -9,7 +9,7 @@ export class Game<SystemKeys extends string> {
     run: boolean,
     canvas?: OffscreenCanvas,
     callback?: (a: any) => void,
-    // canvasContext: "2d" | "webgl"
+    canvasContext: "2d" | "webgl"
 
   }>;
   ecs: ECS<SystemKeys>
@@ -38,7 +38,7 @@ export class Game<SystemKeys extends string> {
     canvas?: OffscreenCanvas,
     callback?: (data: any) => void,
   ) {
-    this.canvasContexts[key] = { run, canvas, callback };
+    this.canvasContexts[key] = { run, canvas, callback, canvasContext: "2d" };
     // this.animationLoop(key);
 
 
@@ -74,24 +74,37 @@ export class Game<SystemKeys extends string> {
   draw(key: string) {
     const s = this.state.get(this.state.currrent);
 
-    const ctx = this.canvasContexts[key].canvas?.getContext("2d") as OffscreenCanvasRenderingContext2D;
+    const ctx = this.canvasContexts[key].canvas?.getContext(
+      this.canvasContexts[key].canvasContext
+    );
     const clbk = this.canvasContexts[key].callback;
 
     if (ctx) {
-      const drawOps: ((ctx: OffscreenCanvasRenderingContext2D) => void)[] = s.draw(
+      const drawOps: ((ctx: OffscreenCanvasRenderingContext2D | WebGLRenderingContext) => void)[] = s.draw(
         key,
         clbk || (() => { }),
         this.ecs.getComponents(),
       );
 
-      ctx.clearRect(0, 0, 800, 600);
+      if (this.canvasContexts[key].canvasContext === "2d") {
+        const c = ctx as OffscreenCanvasRenderingContext2D;
+        c.clearRect(0, 0, 800, 600);
+        drawOps.forEach((d) => {
+          // debugger
+          d(c);
+        })  
+      }
+
+      if (this.canvasContexts[key].canvasContext === "webgl") {
+        const gl = ctx as WebGLRenderingContext;
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        drawOps.forEach((d) => {
+          // debugger
+          d(gl);
+        })  
+      }
 
       
-  
-      drawOps.forEach((d) => {
-        // debugger
-        d(ctx);
-      })
 
     }
 

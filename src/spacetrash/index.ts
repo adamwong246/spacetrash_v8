@@ -78,13 +78,17 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
         }, (ecs, reply) => {
           return [
             (canvas) => {
-              canvas.beginPath();
-              canvas.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
-              canvas.fillStyle = "green";
-              canvas.fill();
-              canvas.lineWidth = 1;
-              canvas.strokeStyle = "grey";
-              canvas.stroke();
+              if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+                canvas2d.beginPath();
+                canvas2d.arc(droneMouseX, droneMouseY, tSize / 3, 0, 2 * Math.PI);
+                canvas2d.fillStyle = "green";
+                canvas2d.fill();
+                canvas2d.lineWidth = 1;
+                canvas2d.strokeStyle = "grey";
+                canvas2d.stroke();
+              }
+
             }
           ];
         }, (ecs, event: any) => {
@@ -105,7 +109,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
           const toReturn = [];
 
           const thingsToDraw: Record<string, Partial<{
-            draw: (c: OffscreenCanvasRenderingContext2D) => void;
+            draw: (c: OffscreenCanvasRenderingContext2D | WebGLRenderingContext) => void;
           }>> = {};
 
           Object.keys(ecs).forEach((ecKey) => {
@@ -114,35 +118,48 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
             if (!thingsToDraw[ec.entity]) {
               thingsToDraw[ec.entity] = {
                 draw: undefined
-              };  
+              };
             }
-            
+
             if (ec.constructor.name === "PhysicsSetComponent") {
               const setpiece = ec as PhysicsSetComponent;
+
               thingsToDraw[ec.entity].draw = (canvas) => {
-                canvas.beginPath();
-                canvas.rect(
-                  (setpiece.x * tSize) - tSize / 2,
-                  (setpiece.y * tSize) - tSize / 2,
-                  tSize,
-                  tSize
-                );
-                canvas.stroke();
+
+                if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                  const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+                  canvas2d.beginPath();
+                  canvas2d.rect(
+                    (setpiece.x * tSize) - tSize / 2,
+                    (setpiece.y * tSize) - tSize / 2,
+                    tSize,
+                    tSize
+                  );
+                  canvas2d.stroke();
+                }
+
+
               }
             }
 
             if (ec.constructor.name === "PhysicsActorComponent") {
               const actor = ec as PhysicsActorComponent;
               thingsToDraw[ec.entity].draw = (canvas) => {
-                canvas.beginPath();
-                canvas.arc(
-                  actor.x * tSize,
-                  actor.y * tSize,
-                  tSize / 3,
-                  0,
-                  2 * Math.PI,
-                )
-                canvas.stroke();
+
+                if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                  const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+                  canvas2d.beginPath();
+                  canvas2d.arc(
+                    actor.x * tSize,
+                    actor.y * tSize,
+                    tSize / 3,
+                    0,
+                    2 * Math.PI,
+                  )
+                  canvas2d.stroke();
+                }
+
+
               }
             }
 
@@ -156,14 +173,18 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
               })
             ),
             (canvas) => {
-              canvas.beginPath();
-              canvas.arc(shipMapMouseX, shipMapMouseY, tSize / 3, 0, 2 * Math.PI);
-              canvas.lineWidth = 1;
-              canvas.strokeStyle = "grey";
-              canvas.stroke();
+              if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+                const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+                canvas2d.beginPath();
+                canvas2d.arc(shipMapMouseX, shipMapMouseY, tSize / 3, 0, 2 * Math.PI);
+                canvas2d.lineWidth = 1;
+                canvas2d.strokeStyle = "grey";
+                canvas2d.stroke();
+              }
+
             }
           ];
-          
+
           // if (canvas) {
           //   Object.keys(ecs).forEach((ecKey) => {
           //     const ec = ecs[ecKey];

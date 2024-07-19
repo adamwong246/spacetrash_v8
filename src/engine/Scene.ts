@@ -15,7 +15,7 @@ type IBoot = (
 type IUpdate = (
   ecs: IECSComponents,
   reply: IReply
-) => ((ctx: OffscreenCanvasRenderingContext2D) => void)[]
+) => ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext) => void)[]
 
 type IEvents = (
   ecs: ECS<any>,
@@ -56,7 +56,7 @@ export class Scene<IApps extends string> extends Tree {
     app: IApps,
     bootReplier: (x: any) => void,
     components: Record<string, Component<any, any>>,
-  ): ((ctx: OffscreenCanvasRenderingContext2D) => void)[] {
+  ): ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext) => void)[] {
     return this.appLogic[app][1](
       components,
       bootReplier
