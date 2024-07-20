@@ -33,6 +33,8 @@ export const TileSize = 10;
 //   r: any;
 // }> = {};
 
+
+
 const entities: Record<string, {
   type: 'set' | 'actor'
   x: number,
@@ -76,10 +78,32 @@ class MainSystem extends System<ISpaceTrashSystems> {
   // }
 
   tick(delta, components: Record<string, Component<any, any>>) {
+
+    const getAt = (x: number, y: number) => {
+      if (!spaces[Math.round(y)]) {
+        return null;
+      }
+      if (x < 0) {
+        return null
+      }
+      if (x > 16) {
+        return null;
+      }
+      if (y < 0) {
+        return null
+      }
+      if (y > 15) {
+        return null;
+      }
+      const [setpiece, actors2] = spaces[Math.round(y)][Math.round(x)];
+
+      (components[littables[((components[setpiece] as any).entity)]] as LitableComponent).luminance = 2;
+    }
+
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
 
-      
+
       const lit = make<LitComponent>(c, "LitComponent") as any;
       if (lit) {
         entities[lit.entity] = {
@@ -91,13 +115,13 @@ class MainSystem extends System<ISpaceTrashSystems> {
 
       const littable = make<LitableComponent>(c, "LitableComponent") as any;
       if (littable) {
-        
+
         littable.luminance = -1;
 
         littables[littable.entity] = cKey;
 
         entities[littable.entity] = {
-          
+
           ...entities[littable.entity],
           ...littable,
         }
@@ -154,7 +178,7 @@ class MainSystem extends System<ISpaceTrashSystems> {
 
     Object.keys(entities).forEach((eKey) => {
       const e = entities[eKey];
-      
+
 
       // if the entity is shining
       if (e.radiance) {
@@ -162,17 +186,26 @@ class MainSystem extends System<ISpaceTrashSystems> {
         if (!spaces[Math.round(e.y)]) {
           spaces[Math.round(e.y)] = [];
         }
-        
+
         // find the floor underneath and any entities on top
-        if (spaces[Math.round(e.y)][Math.round(e.x)]) {  
-          
-          const [setpiece, actors] = spaces[Math.round(e.y)][Math.round(e.x)];
+        if (spaces[Math.round(e.y)][Math.round(e.x)]) {
 
-          const e2 = (components[setpiece] as any).entity;
-          const e3 = littables[e2];
+          // const [setpiece, actors] = spaces[Math.round(e.y)][Math.round(e.x)];
+          // (components[littables[((components[setpiece] as any).entity)]] as LitableComponent).luminance = 2;
 
-          (components[e3] as LitableComponent).luminance = 2;
-          
+          getAt(e.x, e.y);
+          getAt(e.x, e.y + 1);
+          getAt(e.x, e.y - 1);
+          getAt(e.x + 1, e.y);
+          getAt(e.x - 1, e.y);
+          getAt(e.x + 1, e.y + 1);
+          getAt(e.x + 1, e.y - 1);
+          getAt(e.x - 1, e.y + 1);
+          getAt(e.x - 1, e.y - 1);
+
+          // const [setpiece2, actors2] = spaces[Math.round(e.y)-1][Math.round(e.x)-1];
+          // (components[littables[((components[setpiece2] as any).entity)]] as LitableComponent).luminance = 2;
+
           // const setPieceEntity = setpiece.entity;
           // console.log([setpiece, ...actors])
           // for (const found of [setpiece, ...actors]) {
@@ -180,7 +213,7 @@ class MainSystem extends System<ISpaceTrashSystems> {
           //   (components[found] as any).luminance = 2;
           // }
         }
-        
+
 
       }
 

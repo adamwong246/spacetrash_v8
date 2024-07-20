@@ -25520,11 +25520,11 @@ var PhysicsActorComponent = class extends PhysicsComponent {
   }
 };
 var PhysicsSetComponent = class extends PhysicsComponent {
-  r;
   solid;
-  constructor(spe, x = 0, y = 0, r, solid) {
+  tileType;
+  constructor(spe, x = 0, y = 0, solid, tileType) {
     super(spe, x, y);
-    this.r = r;
+    this.tileType = tileType;
     this.solid = solid;
   }
   getMove() {
@@ -25580,24 +25580,6 @@ var LitableComponent = class extends InCastingComponent {
   constructor(e, luminance = -1) {
     super(e);
     this.luminance = luminance;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/spacetrash/Components/solidity.ts
-var SolidityComponent = class extends SpaceTrashComponent {
-  solidity;
-  constructor(e, solidity) {
-    super(
-      e
-      // [SpaceTrashSystems.physical]
-      // [SpaceTrashSystems.power]
-    );
-    this.solidity = solidity;
   }
   getMove() {
     throw new Error("Method not implemented.");
@@ -25685,47 +25667,71 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
 };
 
 // src/spacetrash/Entities/setpieces/index.ts
-var FloorTile = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0) {
+var Tile = class extends SpaceTrashEntityComponent {
+  tiletype;
+  constructor(x, y, tiletype) {
     const spe = new SpaceTrashEntity();
     super(
       spe,
       [
-        new PhysicsSetComponent(spe, x, y, `south`, false),
-        // new UnmovingComponent(spe),
-        // new SolidityComponent(spe, 1),
+        new PhysicsSetComponent(spe, x, y, true, tiletype),
         new LitableComponent(spe)
       ]
     );
+    this.tiletype = tiletype;
   }
 };
-var WallTile = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0) {
-    const spe = new SpaceTrashEntity();
+var FloorTile = class extends Tile {
+  constructor(x = 0, y = 0) {
     super(
-      spe,
-      [
-        new PhysicsSetComponent(spe, x, y, `south`, true),
-        // new UnmovingComponent(spe),
-        new SolidityComponent(spe, 0),
-        new LitableComponent(spe)
-      ]
+      x,
+      y,
+      "FloorTile"
     );
   }
 };
-var DoorTile = class extends SpaceTrashEntityComponent {
-  constructor(x = 0, y = 0, r = 0) {
-    const spe = new SpaceTrashEntity();
+var WallTile = class extends Tile {
+  constructor(x = 0, y = 0) {
     super(
-      spe,
-      [
-        new PhysicsSetComponent(spe, x, y, `south`, true),
-        // new AttackableComponent(spe),
-        // new UnmovingComponent(spe),
-        // new PowerConsumingComponent(spe),
-        new SolidityComponent(spe, 0),
-        new LitableComponent(spe)
-      ]
+      x,
+      y,
+      "WallTile"
+    );
+  }
+};
+var SouthWest = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "SouthWest"
+    );
+  }
+};
+var SouthEast = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "SouthEast"
+    );
+  }
+};
+var NorthWest = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "NorthWest"
+    );
+  }
+};
+var NorthEast = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "NorthEast"
     );
   }
 };
@@ -25859,6 +25865,25 @@ var MainSystem = class extends System {
   //   ];
   // }
   tick(delta, components) {
+    const getAt = (x, y) => {
+      if (!spaces[Math.round(y)]) {
+        return null;
+      }
+      if (x < 0) {
+        return null;
+      }
+      if (x > 16) {
+        return null;
+      }
+      if (y < 0) {
+        return null;
+      }
+      if (y > 15) {
+        return null;
+      }
+      const [setpiece, actors2] = spaces[Math.round(y)][Math.round(x)];
+      components[littables[components[setpiece].entity]].luminance = 2;
+    };
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
       const lit = make(c, "LitComponent");
@@ -25924,10 +25949,15 @@ var MainSystem = class extends System {
           spaces[Math.round(e.y)] = [];
         }
         if (spaces[Math.round(e.y)][Math.round(e.x)]) {
-          const [setpiece, actors] = spaces[Math.round(e.y)][Math.round(e.x)];
-          const e2 = components[setpiece].entity;
-          const e3 = littables[e2];
-          components[e3].luminance = 2;
+          getAt(e.x, e.y);
+          getAt(e.x, e.y + 1);
+          getAt(e.x, e.y - 1);
+          getAt(e.x + 1, e.y);
+          getAt(e.x - 1, e.y);
+          getAt(e.x + 1, e.y + 1);
+          getAt(e.x + 1, e.y - 1);
+          getAt(e.x - 1, e.y + 1);
+          getAt(e.x - 1, e.y - 1);
         }
       }
     });
@@ -25941,7 +25971,7 @@ var droneMouseX = 0;
 var droneMouseY = 0;
 var shipMapMouseX = 0;
 var shipMapMouseY = 0;
-var tSize = 10;
+var tSize = 20;
 var Spacetrash = class extends Game {
   terminal;
   constructor(workerPostMessage) {
@@ -26043,22 +26073,86 @@ var Spacetrash = class extends Game {
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                     const canvas2d = canvas;
                     canvas2d.beginPath();
-                    canvas2d.rect(
-                      setpiece.x * tSize - tSize / 2 + 1,
-                      setpiece.y * tSize - tSize / 2 + 1,
-                      tSize - 1,
-                      tSize - 1
-                    );
-                    canvas2d.stroke();
+                    if (setpiece.tileType === "NorthEast") {
+                      var path = new Path2D();
+                      path.moveTo(setpiece.x * tSize - tSize / 2, setpiece.y * tSize - tSize / 2);
+                      path.lineTo(setpiece.x * tSize - tSize / 2, setpiece.y * tSize + tSize / 2);
+                      path.lineTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize + tSize / 2);
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.fill(path);
+                    }
+                    if (setpiece.tileType === "NorthWest") {
+                      var path = new Path2D();
+                      path.moveTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize - tSize / 2);
+                      path.lineTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize + tSize / 2);
+                      path.lineTo(setpiece.x * tSize - tSize / 2, setpiece.y * tSize + tSize / 2);
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.fill(path);
+                    }
+                    if (setpiece.tileType === "SouthEast") {
+                      var path = new Path2D();
+                      path.moveTo(setpiece.x * tSize - tSize / 2, setpiece.y * tSize - tSize / 2);
+                      path.lineTo(setpiece.x * tSize - tSize / 2, setpiece.y * tSize + tSize / 2);
+                      path.lineTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize - tSize / 2);
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.fill(path);
+                    }
+                    if (setpiece.tileType === "SouthWest") {
+                      var sWidth = setpiece.x * tSize;
+                      var sHeight = setpiece.y * tSize;
+                      var path = new Path2D();
+                      path.moveTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize + tSize / 2);
+                      path.lineTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize - tSize / 2);
+                      path.lineTo(setpiece.x * tSize - tSize / 2, setpiece.y * tSize - tSize / 2);
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.fill(path);
+                    }
+                    if (setpiece.tileType === "TileA") {
+                      var sWidth = setpiece.x * tSize;
+                      var sHeight = setpiece.y * tSize;
+                      var path = new Path2D();
+                      path.moveTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize + tSize / 2);
+                      path.lineTo(setpiece.x * tSize + tSize / 2, setpiece.y * tSize);
+                      path.lineTo(setpiece.x * tSize, setpiece.y * tSize + tSize / 2);
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.fill(path);
+                    }
+                    if (setpiece.tileType === "TileB") {
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.rect(
+                        setpiece.x * tSize - tSize / 2 + 1,
+                        setpiece.y * tSize + 1,
+                        tSize - 1,
+                        tSize / 2 - 1
+                      );
+                    }
+                    if (setpiece.tileType === "FloorTile") {
+                      canvas2d.fillStyle = "white";
+                      canvas2d.rect(
+                        setpiece.x * tSize - tSize / 2 + 1,
+                        setpiece.y * tSize - tSize / 2 + 1,
+                        tSize - 1,
+                        tSize - 1
+                      );
+                    }
+                    if (setpiece.tileType === "WallTile") {
+                      canvas2d.fillStyle = "darkgrey";
+                      canvas2d.rect(
+                        setpiece.x * tSize - tSize / 2 + 1,
+                        setpiece.y * tSize - tSize / 2 + 1,
+                        tSize - 1,
+                        tSize - 1
+                      );
+                    }
                     if (opts?.fill) {
                       debugger;
                       canvas2d.fillStyle = opts.fill;
-                      canvas2d.fill();
                     }
                     if (opts?.stroke) {
                       canvas2d.strokeStyle = opts.stroke;
-                      canvas2d.stroke();
                     }
+                    canvas2d.stroke();
+                    canvas2d.fill();
                   }
                 };
               }
@@ -26071,7 +26165,7 @@ var Spacetrash = class extends Game {
                     canvas2d.arc(
                       actor.x * tSize,
                       actor.y * tSize,
-                      tSize / 3,
+                      tSize / 6,
                       0,
                       2 * Math.PI
                     );
@@ -26147,25 +26241,32 @@ var Spacetrash = class extends Game {
       (ecs) => {
         const e = [];
         return new Promise((res, rej) => {
-          const roomsSize = 32;
+          const roomsSize = 16;
           for (let y = 0; y < roomsSize; y++) {
             for (let x = 0; x < roomsSize; x++) {
-              e.push(new FloorTile(x, y, 1));
+              e.push(new FloorTile(x, y));
             }
-            e.push(new WallTile(0, y, 1));
-            e.push(new WallTile(y, 0, 1));
-            e.push(new WallTile(roomsSize, y, 1));
-            e.push(new WallTile(y, roomsSize, 1));
+            e.push(new WallTile(0, y));
+            e.push(new WallTile(y, 0));
+            e.push(new WallTile(roomsSize, y));
+            e.push(new WallTile(y, roomsSize));
           }
-          e.push(new WallTile(4, 4, 1));
-          e.push(new WallTile(5, 5, 1));
-          e.push(new DoorTile(6, 6, 1));
-          e.push(new DoorTile(16, 16, 1));
+          e.push(new SouthEast(1, 1));
+          e.push(new SouthWest(3, 1));
+          e.push(new WallTile(4, 1));
+          e.push(new NorthWest(5, 4));
+          e.push(new WallTile(5, 5));
+          e.push(new SouthWest(5, 6));
+          e.push(new WallTile(6, 6));
+          e.push(new SouthEast(7, 6));
+          e.push(new WallTile(7, 5));
+          e.push(new NorthEast(7, 4));
+          e.push(new WallTile(6, 4));
           ecs.setEntitiesComponent(
             [
               ...e,
               ...[
-                ...new Array(10)
+                ...new Array(16)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,

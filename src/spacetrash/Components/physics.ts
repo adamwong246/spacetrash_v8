@@ -5,6 +5,7 @@ import { SpaceTrashEntity } from "../../spacetrash/Entities";
 import { ConveyanceComponent } from "./conveyance";
 
 import { ISpaceTrashComponents } from ".";
+import { ITiles } from "../lib/EntityComponent";
 
 export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> {
   x: number;
@@ -62,18 +63,18 @@ export class PhysicsActorComponent extends PhysicsComponent {
 export type IDirs = `north` | `south` | `east` | `west`;
 
 export class PhysicsSetComponent extends PhysicsComponent {
-  r: IDirs;
   solid: boolean;
+  tileType: ITiles;
   
   constructor(
     spe: SpaceTrashEntity,
     x: number = 0,
     y: number = 0,
-    r: IDirs,
     solid: boolean,
+    tileType: ITiles
   ) {
     super(spe, x, y);
-    this.r = r;
+    this.tileType = tileType;
     this.solid = solid;
   }
 
