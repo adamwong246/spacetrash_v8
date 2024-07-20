@@ -13,7 +13,7 @@ export abstract class OutCastingComponent extends Component<unknown, ISpaceTrash
   dropoff: (x: number) => number;
 
   constructor(spe: SpaceTrashEntity) {
-    super(spe, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
+    super(spe);
   }
 
   payload() {
@@ -90,11 +90,11 @@ export class GunComponent extends OutCastingComponent {
 export class LitComponent extends OutCastingComponent {
   // dropoff = (x) => 1 / (x ^ 2);
   // ray: ERays.light
-  // albedo: number;
+  radiance: number;
 
   constructor(spe: SpaceTrashEntity) {
     super(spe);
-    this.albedo = -1;
+    this.radiance = -1;
   }
 
   getMove(): unknown {

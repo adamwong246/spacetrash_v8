@@ -9,8 +9,9 @@ import { SpaceTrashEntityComponent } from "./lib/EntityComponent";
 import { SpaceTrashTerminal } from "./lib/Terminal";
 
 import { SpaceTrashDrone } from "./Entities";
-import { ISpaceTrashSystems, SpaceTrashSystems } from "./Systems";
+
 import { ISpaceTrashApps } from "./UI";
+import { SpaceTrashMainSystem } from "./System";
 
 
 let droneMouseX = 0;
@@ -18,9 +19,9 @@ let droneMouseY = 0;
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
 
-const tSize = 30;
+const tSize = 10;
 
-export default class Spacetrash extends Game<ISpaceTrashSystems> {
+export default class Spacetrash extends Game<any> {
 
   terminal: SpaceTrashTerminal;
   constructor(
@@ -168,10 +169,10 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                     const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
                     canvas2d.beginPath();
                     canvas2d.rect(
-                      (setpiece.x * tSize) - tSize / 2,
-                      (setpiece.y * tSize) - tSize / 2,
-                      tSize,
-                      tSize
+                      ((setpiece.x * tSize) - tSize / 2)+1,
+                      ((setpiece.y * tSize) - tSize / 2) + 1,
+                      tSize-1,
+                      tSize-1
                     );
                     canvas2d.stroke();
 
@@ -180,6 +181,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                       canvas2d.fill();
                     }
                     if (opts?.stroke) {
+                      // console.log(opts.stroke)
                       canvas2d.strokeStyle = opts.stroke;
                       canvas2d.stroke();
                     }
@@ -195,45 +197,57 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                     const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
-                    canvas2d.beginPath();
-                    canvas2d.arc(
-                      actor.x * tSize,
-                      actor.y * tSize,
-                      tSize / 3,
-                      0,
-                      2 * Math.PI,
-                    )
-                    canvas2d.stroke();
+                    // canvas2d.beginPath();
+                    // canvas2d.arc(
+                    //   actor.x * tSize,
+                    //   actor.y * tSize,
+                    //   tSize / 3,
+                    //   0,
+                    //   2 * Math.PI,
+                    // )
+                    // canvas2d.stroke();
                   }
 
 
                 }
               }
 
-              if (ec.constructor.name === "SolidityComponent") {
-                if (ec.solidity === 0) {
-                  thingsToDraw[ec.entity] = {
-                    ...thingsToDraw[ec.entity],
-                    opts: {
-                      ...thingsToDraw[ec.entity].opts,
-                      fill: "white"
-                    }
-                  };
-                } else {
-                  thingsToDraw[ec.entity] = {
-                    ...thingsToDraw[ec.entity],
-                    opts: {
-                      ...thingsToDraw[ec.entity].opts,
-                      fill: "lightgrey"
-                    }
-                  };
-                }
-              }
+              // if (ec.constructor.name === "SolidityComponent") {
+              //   if (ec.solidity === 0) {
+              //     thingsToDraw[ec.entity] = {
+              //       ...thingsToDraw[ec.entity],
+              //       opts: {
+              //         ...thingsToDraw[ec.entity].opts,
+              //         fill: "white"
+              //       }
+              //     };
+              //   } else {
+              //     thingsToDraw[ec.entity] = {
+              //       ...thingsToDraw[ec.entity],
+              //       opts: {
+              //         ...thingsToDraw[ec.entity].opts,
+              //         fill: "lightgrey"
+              //       }
+              //     };
+              //   }
+              // }
 
               // console.log(ec.constructor.name);
               if (ec.constructor.name === "LitableComponent") {
-                // console.log("marl2", ec.albedo)
-                if (ec.albedo === -1) {
+                // debugger
+                // console.log("mark2", ec.luminance)
+                // if (ec.luminance === -1) {
+                //   // debugger  
+                //   thingsToDraw[ec.entity] = {
+                //     ...thingsToDraw[ec.entity],
+                //     opts: {
+                //       ...thingsToDraw[ec.entity].opts,
+                //       stroke: "black"
+                //     }
+                //   };
+                // } 
+                if (ec.luminance === -1) {
+                  
                   thingsToDraw[ec.entity] = {
                     ...thingsToDraw[ec.entity],
                     opts: {
@@ -241,15 +255,8 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
                       stroke: "grey"
                     }
                   };
-                } else if (ec.albedo === 0) {
-                  thingsToDraw[ec.entity] = {
-                    ...thingsToDraw[ec.entity],
-                    opts: {
-                      ...thingsToDraw[ec.entity].opts,
-                      stroke: "red"
-                    }
-                  };
                 } else {
+
                   thingsToDraw[ec.entity] = {
                     ...thingsToDraw[ec.entity],
                     opts: {
@@ -365,7 +372,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
         const e: SpaceTrashEntityComponent[] = [];
         return new Promise((res, rej) => {
 
-          const roomsSize = 16;
+          const roomsSize = 32;
 
           for (let y = 0; y < roomsSize; y++) {
             for (let x = 0; x < roomsSize; x++) {
@@ -390,7 +397,7 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
               ...e,
               ...[
-                ...new Array(3)
+                ...new Array(10)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,
@@ -410,10 +417,10 @@ export default class Spacetrash extends Game<ISpaceTrashSystems> {
 
     super(
       state,
-      SpaceTrashSystems,
+      SpaceTrashMainSystem,
       workerPostMessage
     );
-    this.ecs = new ECS(SpaceTrashSystems);
+    this.ecs = new ECS(SpaceTrashMainSystem);
     this.terminal = new SpaceTrashTerminal();
   }
 

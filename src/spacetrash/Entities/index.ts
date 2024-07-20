@@ -54,7 +54,7 @@ export class SpaceTrashDrone extends SpaceTrashEntityComponent {
         new CameraComponent(spe),
         new AttackableComponent(spe),
         new PowerStoringComponent(spe),
-        new LitableComponent(spe, albedo)
+        // new LitableComponent(spe, albedo)
       ],
     );
   }

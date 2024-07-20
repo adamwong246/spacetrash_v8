@@ -11,7 +11,7 @@ export abstract class InCastingComponent extends SpaceTrashComponent {
   // ray: ERays
 
   constructor(e) {
-    super(e, [SpaceTrashSystems.casting, SpaceTrashSystems.physical]);
+    super(e);
   }
 
   payload() {
@@ -108,11 +108,11 @@ export class MovementComponent extends InCastingComponent {
 
 export class LitableComponent extends InCastingComponent {
   // ray: ERays.visible
-  albedo: number;
+  luminance: number;
 
-  constructor(e, albedo = -1) {
+  constructor(e, luminance = -1) {
     super(e);
-    this.albedo = albedo;
+    this.luminance = luminance;
   }
 
   getMove(): unknown {

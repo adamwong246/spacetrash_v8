@@ -16,7 +16,7 @@ export class Game<SystemKeys extends string> {
 
   constructor(
     state: StateSpace,
-    systems: Record<SystemKeys, System<SystemKeys>>,
+    systems: System<SystemKeys>,
     postMessage: (message: any, options?: WindowPostMessageOptions | undefined) => void
   ) {
     this.state = state;

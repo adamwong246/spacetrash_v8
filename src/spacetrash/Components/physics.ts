@@ -1,5 +1,5 @@
 import Component from "../../engine/Component";
-import { SpaceTrashSystems } from "../../spacetrash/Systems";
+
 import { SpaceTrashEntity } from "../../spacetrash/Entities";
 
 import { ConveyanceComponent } from "./conveyance";
@@ -12,7 +12,7 @@ export class PhysicsComponent extends Component<unknown, ISpaceTrashComponents> 
   
   
   constructor(spe: SpaceTrashEntity, x: number = 0, y: number = 0) {
-    super(spe , [SpaceTrashSystems.physical]);
+    super(spe);
     this.x = x;
     this.y = y;
   }

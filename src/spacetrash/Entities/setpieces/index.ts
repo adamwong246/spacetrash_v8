@@ -12,10 +12,11 @@ export class FloorTile extends SpaceTrashEntityComponent {
     const spe = new SpaceTrashEntity();
     super(
       spe,
-      [new PhysicsSetComponent(spe, x, y, `south`, false),
-      new UnmovingComponent(spe),
-      new SolidityComponent(spe, 1),
-      new LitableComponent(spe)
+      [
+        new PhysicsSetComponent(spe, x, y, `south`, false),
+        // new UnmovingComponent(spe),
+        // new SolidityComponent(spe, 1),
+        new LitableComponent(spe)
       ],
     );
   }
@@ -27,9 +28,10 @@ export class WallTile extends SpaceTrashEntityComponent {
     const spe = new SpaceTrashEntity();
     super(
       spe,
-      [new PhysicsSetComponent(spe, x, y, `south`, true),
-      new UnmovingComponent(spe),
-      new SolidityComponent(spe, 0),
+      [
+        new PhysicsSetComponent(spe, x, y, `south`, true),
+      // new UnmovingComponent(spe),
+      // new SolidityComponent(spe, 0),
       new LitableComponent(spe)
       ],
     );
@@ -41,11 +43,12 @@ export class DoorTile extends SpaceTrashEntityComponent {
     const spe = new SpaceTrashEntity();
     super(
       spe,
-      [new PhysicsSetComponent(spe, x, y, `south`, true),
-      new AttackableComponent(spe),
-      new UnmovingComponent(spe),
-      new PowerConsumingComponent(spe),
-      new SolidityComponent(spe, 0),
+      [
+        new PhysicsSetComponent(spe, x, y, `south`, true),
+      // new AttackableComponent(spe),
+      // new UnmovingComponent(spe),
+      // new PowerConsumingComponent(spe),
+      // new SolidityComponent(spe, 0),
       new LitableComponent(spe)
       ],
     );
