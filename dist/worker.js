@@ -25588,6 +25588,24 @@ var LitableComponent = class extends InCastingComponent {
   }
 };
 
+// src/spacetrash/Components/solidity.ts
+var SolidityComponent = class extends SpaceTrashComponent {
+  solidity;
+  constructor(e, solidity) {
+    super(
+      e
+      // [SpaceTrashSystems.physical]
+      // [SpaceTrashSystems.power]
+    );
+    this.solidity = solidity;
+  }
+  getMove() {
+    throw new Error("Method not implemented.");
+  }
+  setMove(move) {
+  }
+};
+
 // src/spacetrash/Components/conveyance.ts
 var ConveyanceComponent = class extends Component {
   constructor(e) {
@@ -25689,7 +25707,23 @@ var WallTile = class extends SpaceTrashEntityComponent {
       [
         new PhysicsSetComponent(spe, x, y, `south`, true),
         // new UnmovingComponent(spe),
-        // new SolidityComponent(spe, 0),
+        new SolidityComponent(spe, 0),
+        new LitableComponent(spe)
+      ]
+    );
+  }
+};
+var DoorTile = class extends SpaceTrashEntityComponent {
+  constructor(x = 0, y = 0, r = 0) {
+    const spe = new SpaceTrashEntity();
+    super(
+      spe,
+      [
+        new PhysicsSetComponent(spe, x, y, `south`, true),
+        // new AttackableComponent(spe),
+        // new UnmovingComponent(spe),
+        // new PowerConsumingComponent(spe),
+        new SolidityComponent(spe, 0),
         new LitableComponent(spe)
       ]
     );
@@ -26017,6 +26051,7 @@ var Spacetrash = class extends Game {
                     );
                     canvas2d.stroke();
                     if (opts?.fill) {
+                      debugger;
                       canvas2d.fillStyle = opts.fill;
                       canvas2d.fill();
                     }
@@ -26032,8 +26067,36 @@ var Spacetrash = class extends Game {
                 thingsToDraw[ec.entity].draw = (canvas) => {
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                     const canvas2d = canvas;
+                    canvas2d.beginPath();
+                    canvas2d.arc(
+                      actor.x * tSize,
+                      actor.y * tSize,
+                      tSize / 3,
+                      0,
+                      2 * Math.PI
+                    );
+                    canvas2d.stroke();
                   }
                 };
+              }
+              if (ec.constructor.name === "SolidityComponent") {
+                if (ec.solidity === 0) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "white"
+                    }
+                  };
+                } else {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "lightgrey"
+                    }
+                  };
+                }
               }
               if (ec.constructor.name === "LitableComponent") {
                 if (ec.luminance === -1) {
@@ -26094,6 +26157,10 @@ var Spacetrash = class extends Game {
             e.push(new WallTile(roomsSize, y, 1));
             e.push(new WallTile(y, roomsSize, 1));
           }
+          e.push(new WallTile(4, 4, 1));
+          e.push(new WallTile(5, 5, 1));
+          e.push(new DoorTile(6, 6, 1));
+          e.push(new DoorTile(16, 16, 1));
           ecs.setEntitiesComponent(
             [
               ...e,

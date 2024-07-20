@@ -31,7 +31,7 @@ export class WallTile extends SpaceTrashEntityComponent {
       [
         new PhysicsSetComponent(spe, x, y, `south`, true),
       // new UnmovingComponent(spe),
-      // new SolidityComponent(spe, 0),
+      new SolidityComponent(spe, 0),
       new LitableComponent(spe)
       ],
     );
@@ -48,7 +48,7 @@ export class DoorTile extends SpaceTrashEntityComponent {
       // new AttackableComponent(spe),
       // new UnmovingComponent(spe),
       // new PowerConsumingComponent(spe),
-      // new SolidityComponent(spe, 0),
+      new SolidityComponent(spe, 0),
       new LitableComponent(spe)
       ],
     );

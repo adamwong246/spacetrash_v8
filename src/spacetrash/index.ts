@@ -177,6 +177,7 @@ export default class Spacetrash extends Game<any> {
                     canvas2d.stroke();
 
                     if (opts?.fill) {
+                      debugger
                       canvas2d.fillStyle = opts.fill;
                       canvas2d.fill();
                     }
@@ -197,40 +198,40 @@ export default class Spacetrash extends Game<any> {
 
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                     const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
-                    // canvas2d.beginPath();
-                    // canvas2d.arc(
-                    //   actor.x * tSize,
-                    //   actor.y * tSize,
-                    //   tSize / 3,
-                    //   0,
-                    //   2 * Math.PI,
-                    // )
-                    // canvas2d.stroke();
+                    canvas2d.beginPath();
+                    canvas2d.arc(
+                      actor.x * tSize,
+                      actor.y * tSize,
+                      tSize / 3,
+                      0,
+                      2 * Math.PI,
+                    )
+                    canvas2d.stroke();
                   }
 
 
                 }
               }
 
-              // if (ec.constructor.name === "SolidityComponent") {
-              //   if (ec.solidity === 0) {
-              //     thingsToDraw[ec.entity] = {
-              //       ...thingsToDraw[ec.entity],
-              //       opts: {
-              //         ...thingsToDraw[ec.entity].opts,
-              //         fill: "white"
-              //       }
-              //     };
-              //   } else {
-              //     thingsToDraw[ec.entity] = {
-              //       ...thingsToDraw[ec.entity],
-              //       opts: {
-              //         ...thingsToDraw[ec.entity].opts,
-              //         fill: "lightgrey"
-              //       }
-              //     };
-              //   }
-              // }
+              if (ec.constructor.name === "SolidityComponent") {
+                if (ec.solidity === 0) {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "white"
+                    }
+                  };
+                } else {
+                  thingsToDraw[ec.entity] = {
+                    ...thingsToDraw[ec.entity],
+                    opts: {
+                      ...thingsToDraw[ec.entity].opts,
+                      fill: "lightgrey"
+                    }
+                  };
+                }
+              }
 
               // console.log(ec.constructor.name);
               if (ec.constructor.name === "LitableComponent") {
@@ -386,10 +387,10 @@ export default class Spacetrash extends Game<any> {
 
           }
 
-          // e.push(new WallTile(4, 4, 1))
-          // e.push(new WallTile(5, 5, 1))
-          // e.push(new DoorTile(6, 6, 1))
-          // e.push(new DoorTile(16, 16, 1))
+          e.push(new WallTile(4, 4, 1))
+          e.push(new WallTile(5, 5, 1))
+          e.push(new DoorTile(6, 6, 1))
+          e.push(new DoorTile(16, 16, 1))
 
           ecs.setEntitiesComponent(
             [

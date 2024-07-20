@@ -1,6 +1,5 @@
-import { ISpaceTrashComponents, SpaceTrashComponent } from ".";
+import { SpaceTrashComponent } from ".";
 
-import { SpaceTrashSystems } from "../Systems";
 
 export class SolidityComponent extends SpaceTrashComponent {  
   solidity: number;
@@ -8,7 +7,7 @@ export class SolidityComponent extends SpaceTrashComponent {
   constructor(e, solidity: number) {
     super(
       e,
-      [SpaceTrashSystems.physical]
+      // [SpaceTrashSystems.physical]
       // [SpaceTrashSystems.power]
     );
     this.solidity = solidity
