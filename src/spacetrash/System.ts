@@ -19,21 +19,75 @@ import { PhysicsSetComponent, PhysicsActorComponent } from "./Components/physics
 export type ISpaceTrashSystems = `physical` | 'casting';  //| `physical` | `casting`; // | `upgradeable` | `power` | `atmosphere` | `fluids` | `doors` | `hack`;
 export const MapSize = 32;
 export const TileSize = 10;
-// export const SpaceTrashSystems = {
-//   // gui: new GUIable(),
-//   physical: new Physical(MapSize),
-//   casting: new FOV(),
-// };
 
-// const entities: Record<string, {
-//   type: 'set' | 'actor'
-//   x: number,
-//   y: number,
-//   luminance: number;
-//   r: any;
-// }> = {};
+type IDirections =
+  `north` | `west` | `east` | `south` |
+  `northeast` | `northwest` | `southeast` | `southwest` |
+  `northbynorthwest` | `westbynorthwest` |
+  `eastbynortheast` | `northbynortheast` |
+  `southbysouthwest` | `westbysouthwest` |
+  `eastbysoutheast` | `soutbysoutheast`;
 
+const getDirection = (x: number, y: number): IDirections => {
+  if(x === 0){
+    if (y > 0) {
+      return `north`
+    }
+    if (y < 0) {
+      return `south`
+    }
+    else {
+      throw ('invalid coords')
+    }
+  }
 
+  if(y === 0){
+    if (x > 0) {
+      return `east`
+    }
+    if (x < 0) {
+      return `west`
+    }
+    else {
+      throw ('invalid coords')
+    }
+  }
+
+  if (x > 0) {
+    if (y > 0) {
+      if (x === y) {
+        return "northeast"
+      }
+    }
+  }
+
+  if (x < 0) {
+    if (y > 0) {
+      if (x === y) {
+        return "northwest"
+      }
+    }
+  }
+
+  if (x > 0) {
+    if (y < 0) {
+      if (x === y) {
+        return "southeast"
+      }
+    }
+  }
+
+  if (x < 0) {
+    if (y < 0) {
+      if (x === y) {
+        return "southwest"
+      }
+    }
+  }
+
+  // return`north`
+  throw 'idk'
+}
 
 const entities: Record<string, {
   type: 'set' | 'actor'
@@ -79,20 +133,42 @@ class MainSystem extends System<ISpaceTrashSystems> {
 
   tick(delta, components: Record<string, Component<any, any>>) {
 
-    const getAt = (x: number, y: number) => {
+    const setpiece = (x: number, y: number): LitableComponent | null => {
       if (!spaces[Math.round(y)]) {
         return null;
       }
       if (x < 0) {
         return null
       }
-      if (x > 16) {
+      if (x > 31) {
         return null;
       }
       if (y < 0) {
         return null
       }
-      if (y > 15) {
+      if (y > 31) {
+        return null;
+      }
+      const [setpiece, actors2] = spaces[Math.round(y)][Math.round(x)];
+
+      // (components[littables[((components[setpiece] as any).entity)]] as LitableComponent).luminance = 2;
+      return components[littables[((components[setpiece] as any).entity)]] as LitableComponent;
+    }
+
+    const illuminate = (x: number, y: number) => {
+      if (!spaces[Math.round(y)]) {
+        return null;
+      }
+      if (x < 0) {
+        return null
+      }
+      if (x > 31) {
+        return null;
+      }
+      if (y < 0) {
+        return null
+      }
+      if (y > 31) {
         return null;
       }
       const [setpiece, actors2] = spaces[Math.round(y)][Math.round(x)];
@@ -193,15 +269,86 @@ class MainSystem extends System<ISpaceTrashSystems> {
           // const [setpiece, actors] = spaces[Math.round(e.y)][Math.round(e.x)];
           // (components[littables[((components[setpiece] as any).entity)]] as LitableComponent).luminance = 2;
 
-          getAt(e.x, e.y);
-          getAt(e.x, e.y + 1);
-          getAt(e.x, e.y - 1);
-          getAt(e.x + 1, e.y);
-          getAt(e.x - 1, e.y);
-          getAt(e.x + 1, e.y + 1);
-          getAt(e.x + 1, e.y - 1);
-          getAt(e.x - 1, e.y + 1);
-          getAt(e.x - 1, e.y - 1);
+          illuminate(e.x, e.y);
+
+
+
+          // (di, dj) is a vector - direction in which we move right now
+          let di = 1;
+          let dj = 0;
+          // length of current segment
+          let segment_length = 1;
+          // current position (i, j) and how much of current segment we passed
+          let i = 0;
+          let j = 0;
+          let segment_passed = 0;
+
+          let onTarget = false;
+
+          // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
+          for (let k = 0; k < 300; k++) {
+            // make a step, add 'direction' vector (di, dj) to current position (i, j)
+            i += di;
+            j += dj;
+            ++segment_passed;
+            // console.log(i + " " + j);
+
+            if (setpiece(i + e.x, j + e.y)) {
+              onTarget = true
+
+              // const expr = 'Papayas';
+              // switch (getDirection(i, j)) {
+              //   case 'Oranges':
+              //     console.log('Oranges are $0.59 a pound.');
+              //     break;
+              //   case 'Mangoes':
+              //   case 'Papayas':
+              //     console.log('Mangoes and papayas are $2.79 a pound.');
+              //     // Expected output: "Mangoes and papayas are $2.79 a pound."
+              //     break;
+              //   default:
+              //     console.log(`Sorry, we are out of ${expr}.`);
+              // }
+
+            } else {
+              onTarget = false;
+            }
+            illuminate(i + e.x, j + e.y);
+
+
+            if (segment_passed == segment_length) {
+              // done with current segment
+              segment_passed = 0;
+
+              // 'rotate' directions
+              let buffer = di;
+              di = -dj;
+              dj = buffer;
+
+              // increase segment length if necessary
+              if (dj == 0) {
+                ++segment_length;
+              }
+            }
+          }
+
+
+
+
+
+          // let stop = false;
+          // while (!stop) {
+
+          // }
+
+          // illuminate(e.x, e.y + 1);
+          // illuminate(e.x, e.y - 1);
+          // illuminate(e.x + 1, e.y);
+          // illuminate(e.x - 1, e.y);
+          // illuminate(e.x + 1, e.y + 1);
+          // illuminate(e.x + 1, e.y - 1);
+          // illuminate(e.x - 1, e.y + 1);
+          // illuminate(e.x - 1, e.y - 1);
 
           // const [setpiece2, actors2] = spaces[Math.round(e.y)-1][Math.round(e.x)-1];
           // (components[littables[((components[setpiece2] as any).entity)]] as LitableComponent).luminance = 2;

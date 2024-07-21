@@ -25865,24 +25865,43 @@ var MainSystem = class extends System {
   //   ];
   // }
   tick(delta, components) {
-    const getAt = (x, y) => {
+    const setpiece = (x, y) => {
       if (!spaces[Math.round(y)]) {
         return null;
       }
       if (x < 0) {
         return null;
       }
-      if (x > 16) {
+      if (x > 31) {
         return null;
       }
       if (y < 0) {
         return null;
       }
-      if (y > 15) {
+      if (y > 31) {
         return null;
       }
-      const [setpiece, actors2] = spaces[Math.round(y)][Math.round(x)];
-      components[littables[components[setpiece].entity]].luminance = 2;
+      const [setpiece2, actors2] = spaces[Math.round(y)][Math.round(x)];
+      return components[littables[components[setpiece2].entity]];
+    };
+    const illuminate = (x, y) => {
+      if (!spaces[Math.round(y)]) {
+        return null;
+      }
+      if (x < 0) {
+        return null;
+      }
+      if (x > 31) {
+        return null;
+      }
+      if (y < 0) {
+        return null;
+      }
+      if (y > 31) {
+        return null;
+      }
+      const [setpiece2, actors2] = spaces[Math.round(y)][Math.round(x)];
+      components[littables[components[setpiece2].entity]].luminance = 2;
     };
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
@@ -25949,15 +25968,34 @@ var MainSystem = class extends System {
           spaces[Math.round(e.y)] = [];
         }
         if (spaces[Math.round(e.y)][Math.round(e.x)]) {
-          getAt(e.x, e.y);
-          getAt(e.x, e.y + 1);
-          getAt(e.x, e.y - 1);
-          getAt(e.x + 1, e.y);
-          getAt(e.x - 1, e.y);
-          getAt(e.x + 1, e.y + 1);
-          getAt(e.x + 1, e.y - 1);
-          getAt(e.x - 1, e.y + 1);
-          getAt(e.x - 1, e.y - 1);
+          illuminate(e.x, e.y);
+          let di = 1;
+          let dj = 0;
+          let segment_length = 1;
+          let i = 0;
+          let j = 0;
+          let segment_passed = 0;
+          let onTarget = false;
+          for (let k = 0; k < 300; k++) {
+            i += di;
+            j += dj;
+            ++segment_passed;
+            if (setpiece(i + e.x, j + e.y)) {
+              onTarget = true;
+            } else {
+              onTarget = false;
+            }
+            illuminate(i + e.x, j + e.y);
+            if (segment_passed == segment_length) {
+              segment_passed = 0;
+              let buffer = di;
+              di = -dj;
+              dj = buffer;
+              if (dj == 0) {
+                ++segment_length;
+              }
+            }
+          }
         }
       }
     });
@@ -25971,7 +26009,7 @@ var droneMouseX = 0;
 var droneMouseY = 0;
 var shipMapMouseX = 0;
 var shipMapMouseY = 0;
-var tSize = 20;
+var tSize = 10;
 var Spacetrash = class extends Game {
   terminal;
   constructor(workerPostMessage) {
@@ -26241,7 +26279,7 @@ var Spacetrash = class extends Game {
       (ecs) => {
         const e = [];
         return new Promise((res, rej) => {
-          const roomsSize = 16;
+          const roomsSize = 32;
           for (let y = 0; y < roomsSize; y++) {
             for (let x = 0; x < roomsSize; x++) {
               e.push(new FloorTile(x, y));
@@ -26262,11 +26300,19 @@ var Spacetrash = class extends Game {
           e.push(new WallTile(7, 5));
           e.push(new NorthEast(7, 4));
           e.push(new WallTile(6, 4));
+          e.push(new WallTile(6, 7));
+          e.push(new WallTile(6, 8));
+          e.push(new WallTile(6, 9));
+          e.push(new WallTile(6, 10));
+          e.push(new WallTile(6, 11));
+          e.push(new SouthWest(6, 12));
+          e.push(new WallTile(7, 12));
+          e.push(new WallTile(8, 12));
           ecs.setEntitiesComponent(
             [
               ...e,
               ...[
-                ...new Array(16)
+                ...new Array(10)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10,
@@ -26274,8 +26320,10 @@ var Spacetrash = class extends Game {
                   // Math.random() * mapSize,
                   // Math.random() * mapSize,
                   5,
-                  (Math.random() - 0.5) / 4,
-                  (Math.random() - 0.5) / 4
+                  (Math.random() - 0.5) / 6,
+                  (Math.random() - 0.5) / 6
+                  // 0,
+                  // 0
                 );
               })
               // new DoorTile(4, 4, 1),

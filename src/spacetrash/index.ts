@@ -19,7 +19,7 @@ let droneMouseY = 0;
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
 
-const tSize = 20;
+const tSize = 10;
 
 export default class Spacetrash extends Game<any> {
 
@@ -496,7 +496,7 @@ export default class Spacetrash extends Game<any> {
         const e: SpaceTrashEntityComponent[] = [];
         return new Promise((res, rej) => {
 
-          const roomsSize = 16;
+          const roomsSize = 32;
 
           for (let y = 0; y < roomsSize; y++) {
             for (let x = 0; x < roomsSize; x++) {
@@ -526,6 +526,15 @@ export default class Spacetrash extends Game<any> {
           e.push(new WallTile(7, 5))
           e.push(new NorthEast(7, 4))
           e.push(new WallTile(6, 4))
+
+          e.push(new WallTile(6, 7))
+          e.push(new WallTile(6, 8))
+          e.push(new WallTile(6, 9))
+          e.push(new WallTile(6, 10))
+          e.push(new WallTile(6, 11))
+          e.push(new SouthWest(6, 12))
+          e.push(new WallTile(7, 12))
+          e.push(new WallTile(8, 12))
           // e.push(new DoorTile(6, 6, 1))
           // e.push(new DoorTile(16, 16, 1))
 
@@ -535,15 +544,20 @@ export default class Spacetrash extends Game<any> {
 
               ...e,
               ...[
-                ...new Array(16)
+                ...new Array(10)
               ].map((n) => {
                 return new SpaceTrashDrone(
                   10, 10,
                   // Math.random() * mapSize,
                   // Math.random() * mapSize,
                   5,
-                  (Math.random() - 0.5) / 4,
-                  (Math.random() - 0.5) / 4)
+
+                  (Math.random() - 0.5) / 6,
+                  (Math.random() - 0.5) / 6,
+                  // 0,
+                  // 0
+                )
+                  
               }),
               // new DoorTile(4, 4, 1),
             ]
