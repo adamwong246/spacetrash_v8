@@ -4,18 +4,11 @@ import { StateSpace } from "../engine/StateSpace";
 import { ECS } from "../engine/ECS";
 
 import { PhysicsActorComponent, PhysicsSetComponent } from "./Components/physics";
-import {
-  FloorTile, WallTile, DoorTile, TileJ, TileA, TileB, SouthWest, SouthEast, NorthEast, NorthWest
-} from "./Entities/setpieces";
-import { SpaceTrashEntityComponent } from "./lib/EntityComponent";
 import { SpaceTrashTerminal } from "./lib/Terminal";
-
 import { SpaceTrashDrone } from "./Entities";
-
 import { ISpaceTrashApps } from "./UI";
-import { SpaceTrashMainSystem } from "./System";
 import { SpaceTrashShip } from "./ship";
-
+import { SpaceTrashMainSystem } from "./system";
 
 let droneMouseX = 0;
 let droneMouseY = 0;
