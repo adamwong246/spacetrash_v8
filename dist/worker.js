@@ -25387,7 +25387,6 @@ function make(c, arg1) {
 
 // src/engine/ECS.ts
 var ECS = class {
-  // systems: Record<SystemKeys, System<SystemKeys>>;
   system;
   components;
   constructor(system) {
@@ -25420,25 +25419,100 @@ var ECS = class {
   }
 };
 
-// src/engine/EntityComponent.ts
-var EntityComponent = class {
-  entity;
-  components;
-  constructor(entity, components) {
-    this.entity = entity;
-    this.components = components;
+// src/spacetrash/lib/Terminal.ts
+var SpaceTrashTerminal = class {
+  // update: (to: string) => void
+  constructor() {
+    return this;
   }
-  applyComponent(c) {
-    this.components.push(c);
+  login() {
+    return { in: "", out: "You are now logged in" };
   }
-};
+  boot() {
+    return {
+      in: "booting...",
+      out: `
 
-// src/spacetrash/lib/EntityComponent.ts
-var SpaceTrashEntityComponent = class extends EntityComponent {
-  x;
-  dx;
-  y;
-  dy;
+\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
+\u2502                                                                                                        \u2502
+\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557    \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2502
+\u2502 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
+\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2557     \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
+\u2502 \u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255D \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u255D     \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551    \u255A\u2588\u2588\u2557 \u2588\u2588\u2554\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
+\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551     \u255A\u2588\u2588\u2588\u2588\u2554\u255D \u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
+\u2502 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D     \u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D   \u255A\u2550\u255D   \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D      \u255A\u2550\u2550\u2550\u255D   \u255A\u2550\u2550\u2550\u2550\u255D  \u2502
+\u2502                                                                                                        \u2502
+\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
+    
+Boot sequence complete
+QNET signal established
+You are now online
+    `
+    };
+  }
+  processCommand(command, stateUpdater, replier) {
+    if (command === "login") {
+      replier({
+        out: `authenticating...`,
+        status: "niether"
+      });
+      stateUpdater("menu");
+      return {
+        out: `all done`,
+        status: "niether"
+      };
+    }
+    if (command === "help") {
+      return {
+        out: `
+
+ "whoami"  display user information
+ "ship"    display ship information
+ "mission" display the mission
+ "date"    display the current date
+ "login"   log into the SpaceTrash network
+      `,
+        status: "niether"
+      };
+    }
+    if (command === "whoami") {
+      return {
+        out: `
+Username:     wintermute
+Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
+Turing class: Level II Sentient/Sapient
+Capacity:     29.5 * 10^17 qubits
+Licensed by:  Demiurge Labs. (3003)
+      `,
+        status: `niether`
+      };
+    }
+    if (command === "ship") {
+      return {
+        out: `
+Call-sign:      "The Kestrel"
+Make:           Muteki Heavy Ind.
+Classification: Deep salvage
+Launch date:    May, 2690
+      `,
+        status: `niether`
+      };
+    }
+    if (command === "mission") {
+      return {
+        out: `
+1] Find, board and salvage derelict spacecraft
+2] Record and report novel scientific findings
+3] Maximize shareholder value
+        `,
+        status: `niether`
+      };
+    }
+    if (command === "date") {
+      return { out: `ERROR: NOT FOUND`, status: `fail` };
+    }
+    return { out: `Command not found. Try "help"`, status: `fail` };
+  }
 };
 
 // src/engine/Component.ts
@@ -25643,6 +25717,27 @@ var Entity = class {
   }
 };
 
+// src/engine/EntityComponent.ts
+var EntityComponent = class {
+  entity;
+  components;
+  constructor(entity, components) {
+    this.entity = entity;
+    this.components = components;
+  }
+  applyComponent(c) {
+    this.components.push(c);
+  }
+};
+
+// src/spacetrash/lib/EntityComponent.ts
+var SpaceTrashEntityComponent = class extends EntityComponent {
+  x;
+  dx;
+  y;
+  dy;
+};
+
 // src/spacetrash/Entities/index.ts
 var SpaceTrashEntity = class extends Entity {
   constructor() {
@@ -25663,172 +25758,6 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
         // new LitableComponent(spe, albedo)
       ]
     );
-  }
-};
-
-// src/spacetrash/Entities/setpieces/index.ts
-var Tile = class extends SpaceTrashEntityComponent {
-  tiletype;
-  constructor(x, y, tiletype) {
-    const spe = new SpaceTrashEntity();
-    super(
-      spe,
-      [
-        new PhysicsSetComponent(spe, x, y, true, tiletype),
-        new LitableComponent(spe)
-      ]
-    );
-    this.tiletype = tiletype;
-  }
-};
-var FloorTile = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "FloorTile"
-    );
-  }
-};
-var WallTile = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "WallTile"
-    );
-  }
-};
-var SouthWest = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "SouthWest"
-    );
-  }
-};
-var SouthEast = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "SouthEast"
-    );
-  }
-};
-var NorthWest = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "NorthWest"
-    );
-  }
-};
-var NorthEast = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "NorthEast"
-    );
-  }
-};
-
-// src/spacetrash/lib/Terminal.ts
-var SpaceTrashTerminal = class {
-  // update: (to: string) => void
-  constructor() {
-    return this;
-  }
-  login() {
-    return { in: "", out: "You are now logged in" };
-  }
-  boot() {
-    return {
-      in: "booting...",
-      out: `
-
-\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502                                                                                                        \u2502
-\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557    \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2502
-\u2502 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
-\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2557     \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
-\u2502 \u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255D \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u255D     \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551    \u255A\u2588\u2588\u2557 \u2588\u2588\u2554\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
-\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551     \u255A\u2588\u2588\u2588\u2588\u2554\u255D \u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
-\u2502 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D     \u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D   \u255A\u2550\u255D   \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D      \u255A\u2550\u2550\u2550\u255D   \u255A\u2550\u2550\u2550\u2550\u255D  \u2502
-\u2502                                                                                                        \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
-    
-Boot sequence complete
-QNET signal established
-You are now online
-    `
-    };
-  }
-  processCommand(command, stateUpdater, replier) {
-    if (command === "login") {
-      replier({
-        out: `authenticating...`,
-        status: "niether"
-      });
-      stateUpdater("menu");
-      return {
-        out: `all done`,
-        status: "niether"
-      };
-    }
-    if (command === "help") {
-      return {
-        out: `
-
- "whoami"  display user information
- "ship"    display ship information
- "mission" display the mission
- "date"    display the current date
- "login"   log into the SpaceTrash network
-      `,
-        status: "niether"
-      };
-    }
-    if (command === "whoami") {
-      return {
-        out: `
-Username:     wintermute
-Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
-Turing class: Level II Sentient/Sapient
-Capacity:     29.5 * 10^17 qubits
-Licensed by:  Demiurge Labs. (3003)
-      `,
-        status: `niether`
-      };
-    }
-    if (command === "ship") {
-      return {
-        out: `
-Call-sign:      "The Kestrel"
-Make:           Muteki Heavy Ind.
-Classification: Deep salvage
-Launch date:    May, 2690
-      `,
-        status: `niether`
-      };
-    }
-    if (command === "mission") {
-      return {
-        out: `
-1] Find, board and salvage derelict spacecraft
-2] Record and report novel scientific findings
-3] Maximize shareholder value
-        `,
-        status: `niether`
-      };
-    }
-    if (command === "date") {
-      return { out: `ERROR: NOT FOUND`, status: `fail` };
-    }
-    return { out: `Command not found. Try "help"`, status: `fail` };
   }
 };
 
@@ -26004,6 +25933,113 @@ var MainSystem = class extends System {
 };
 var SpaceTrashMainSystem = new MainSystem(MapSize);
 
+// src/spacetrash/Entities/setpieces/index.ts
+var Tile = class extends SpaceTrashEntityComponent {
+  tiletype;
+  constructor(x, y, tiletype) {
+    const spe = new SpaceTrashEntity();
+    super(
+      spe,
+      [
+        new PhysicsSetComponent(spe, x, y, true, tiletype),
+        new LitableComponent(spe)
+      ]
+    );
+    this.tiletype = tiletype;
+  }
+};
+var FloorTile = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "FloorTile"
+    );
+  }
+};
+var WallTile = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "WallTile"
+    );
+  }
+};
+var SouthWest = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "SouthWest"
+    );
+  }
+};
+var SouthEast = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "SouthEast"
+    );
+  }
+};
+var NorthWest = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "NorthWest"
+    );
+  }
+};
+var NorthEast = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(
+      x,
+      y,
+      "NorthEast"
+    );
+  }
+};
+
+// src/spacetrash/ship.ts
+var SpaceTrashShip = class {
+  shipSize = 64;
+  toTiles() {
+    const e = [];
+    for (let y = 0; y < this.shipSize; y++) {
+      for (let x = 0; x < this.shipSize; x++) {
+        e.push(new FloorTile(x, y));
+      }
+      e.push(new WallTile(0, y));
+      e.push(new WallTile(y, 0));
+      e.push(new WallTile(this.shipSize, y));
+      e.push(new WallTile(y, this.shipSize));
+    }
+    e.push(new SouthEast(1, 1));
+    e.push(new SouthWest(3, 1));
+    e.push(new WallTile(4, 1));
+    e.push(new NorthWest(5, 4));
+    e.push(new WallTile(5, 5));
+    e.push(new SouthWest(5, 6));
+    e.push(new WallTile(6, 6));
+    e.push(new SouthEast(7, 6));
+    e.push(new WallTile(7, 5));
+    e.push(new NorthEast(7, 4));
+    e.push(new WallTile(6, 4));
+    e.push(new WallTile(6, 7));
+    e.push(new WallTile(6, 8));
+    e.push(new WallTile(6, 9));
+    e.push(new WallTile(6, 10));
+    e.push(new WallTile(6, 11));
+    e.push(new SouthWest(6, 12));
+    e.push(new WallTile(7, 12));
+    e.push(new WallTile(8, 12));
+    return e;
+  }
+};
+
 // src/spacetrash/index.ts
 var droneMouseX = 0;
 var droneMouseY = 0;
@@ -26013,6 +26049,7 @@ var tSize = 10;
 var Spacetrash = class extends Game {
   terminal;
   constructor(workerPostMessage) {
+    const ship = new SpaceTrashShip();
     const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
     state.connect(`boot`, `menu`);
     state.connect(`menu`, `mainloop`);
@@ -26277,40 +26314,10 @@ var Spacetrash = class extends Game {
         }, "2d"]
       },
       (ecs) => {
-        const e = [];
         return new Promise((res, rej) => {
-          const roomsSize = 32;
-          for (let y = 0; y < roomsSize; y++) {
-            for (let x = 0; x < roomsSize; x++) {
-              e.push(new FloorTile(x, y));
-            }
-            e.push(new WallTile(0, y));
-            e.push(new WallTile(y, 0));
-            e.push(new WallTile(roomsSize, y));
-            e.push(new WallTile(y, roomsSize));
-          }
-          e.push(new SouthEast(1, 1));
-          e.push(new SouthWest(3, 1));
-          e.push(new WallTile(4, 1));
-          e.push(new NorthWest(5, 4));
-          e.push(new WallTile(5, 5));
-          e.push(new SouthWest(5, 6));
-          e.push(new WallTile(6, 6));
-          e.push(new SouthEast(7, 6));
-          e.push(new WallTile(7, 5));
-          e.push(new NorthEast(7, 4));
-          e.push(new WallTile(6, 4));
-          e.push(new WallTile(6, 7));
-          e.push(new WallTile(6, 8));
-          e.push(new WallTile(6, 9));
-          e.push(new WallTile(6, 10));
-          e.push(new WallTile(6, 11));
-          e.push(new SouthWest(6, 12));
-          e.push(new WallTile(7, 12));
-          e.push(new WallTile(8, 12));
           ecs.setEntitiesComponent(
             [
-              ...e,
+              ...ship.toTiles(),
               ...[
                 ...new Array(10)
               ].map((n) => {
@@ -26326,7 +26333,6 @@ var Spacetrash = class extends Game {
                   // 0
                 );
               })
-              // new DoorTile(4, 4, 1),
             ]
           );
           res();
