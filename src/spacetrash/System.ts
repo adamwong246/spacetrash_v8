@@ -10,7 +10,7 @@ import {
 } from "./Components/physics";
 
 export type ISpaceTrashSystems = `physical` | "casting"; //| `physical` | `casting`; // | `upgradeable` | `power` | `atmosphere` | `fluids` | `doors` | `hack`;
-export const MapSize = 32;
+export const MapSize = 64;
 export const TileSize = 10;
 
 type IDirections =
@@ -256,10 +256,12 @@ class MainSystem extends System<ISpaceTrashSystems> {
 
     /////////////////////////////////////////////////////////////////////////////////
 
+    const bots = [];
+
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
 
-      const a = make<PhysicsActorComponent>(c, "PhysicsActorComponent") as any;
+      const a = make<PhysicsActorComponent>(c, "PhysicsActorComponent");
 
       if (a) {
         // console.log(a.entity, a)
@@ -434,40 +436,18 @@ class MainSystem extends System<ISpaceTrashSystems> {
             }
           }
 
-          // if (Math.abs(a.dx) > Math.abs(a.dy)) {
-          //   console.log("X");
-          //   // debugger;
-          //   // a.x = a.x - 2 * a.dx;
-          //   // a.y = a.y - 2 * a.dy;
-
-          //   a.dx = a.dx * -1;
-          //   // update the position
-          //   a.x = a.x + a.dx;
-          //   a.y = a.y + a.dy;
-          // } else if (Math.abs(a.dx) < Math.abs(a.dy)) {
-          //   console.log("Y");
-          //   // debugger;
-          //   // a.x = a.x - 2 * a.dx;
-          //   // a.y = a.y - 2 * a.dy;
-          //   a.dy = a.dy * -1;
-          //   // update the position
-          //   a.x = a.x + a.dx;
-          //   a.y = a.y + a.dy;
-          // } else {
-          //   debugger;
-          //   a.x = a.x - 1 * a.dx;
-          //   a.y = a.y - 1 * a.dy;
-          //   a.dx = a.dx * -1;
-          //   a.dy = a.dy * -1;
-          // }
         } else {
           // // update the position
           // a.x = a.x + a.dx;
           // a.y = a.y + a.dy;
         }
+
+
+
         // update the position
         a.x = a.x + a.dx;
         a.y = a.y + a.dy;
+        bots.push(a);
 
         return;
       }
@@ -478,17 +458,21 @@ class MainSystem extends System<ISpaceTrashSystems> {
     //   (components[l] as LitableComponent).luminance = 0;
     // })
 
-    Object.keys(entities).forEach((eKey) => {
-      const e = entities[eKey];
+    bots.forEach((bot: PhysicsActorComponent) => {
+
+      const e = entities[bot.entity];
 
       // if the entity is shining
-      if (e.radiance) {
+      const botHasMoved: boolean = (Math.round(e.x) !== Math.round(e.x + e.dx)) || (Math.round(e.y) !== Math.round(e.y + e.dy))
+
+      if (e.radiance && true) {
         if (!spaces[Math.round(e.y)]) {
           spaces[Math.round(e.y)] = [];
         }
 
         // find the floor underneath and any entities on top
         if (spaces[Math.round(e.y)][Math.round(e.x)]) {
+
 
           // illuminate the space upon which we stand
           illuminate(e.x, e.y);
@@ -506,7 +490,7 @@ class MainSystem extends System<ISpaceTrashSystems> {
           let onTarget = false;
 
           // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
-          for (let k = 0; k < 50; k++) {
+          for (let k = 0; k < 2; k++) {
             // make a step, add 'direction' vector (di, dj) to current position (i, j)
             i += di;
             j += dj;
@@ -581,7 +565,23 @@ class MainSystem extends System<ISpaceTrashSystems> {
           // }
         }
       }
+
     });
+
+    bots.forEach((bot: PhysicsActorComponent) => {
+
+      const e = entities[bot.entity];
+      // // update the position
+      e.x = e.x + e.dx;
+      e.y = e.y + e.dy;
+      
+
+    });
+
+      
+    // Object.keys(entities).forEach((eKey) => {
+      
+    // });
     // debugger
     return components;
   }

@@ -25831,7 +25831,7 @@ var System = class {
 };
 
 // src/spacetrash/System.ts
-var MapSize = 32;
+var MapSize = 64;
 var entities = {};
 var spaces = [[]];
 var littables = {};
@@ -25943,6 +25943,7 @@ var MainSystem = class extends System {
       }
       const a = make(c, "PhysicsActorComponent");
     });
+    const bots = [];
     Object.keys(components).forEach((cKey) => {
       const c = components[cKey];
       const a = make(c, "PhysicsActorComponent");
@@ -26020,12 +26021,14 @@ var MainSystem = class extends System {
         }
         a.x = a.x + a.dx;
         a.y = a.y + a.dy;
+        bots.push(a);
         return;
       }
     });
-    Object.keys(entities).forEach((eKey) => {
-      const e = entities[eKey];
-      if (e.radiance) {
+    bots.forEach((bot) => {
+      const e = entities[bot.entity];
+      const botHasMoved = Math.round(e.x) !== Math.round(e.x + e.dx) || Math.round(e.y) !== Math.round(e.y + e.dy);
+      if (e.radiance && true) {
         if (!spaces[Math.round(e.y)]) {
           spaces[Math.round(e.y)] = [];
         }
@@ -26038,7 +26041,7 @@ var MainSystem = class extends System {
           let j = 0;
           let segment_passed = 0;
           let onTarget = false;
-          for (let k = 0; k < 50; k++) {
+          for (let k = 0; k < 2; k++) {
             i += di;
             j += dj;
             ++segment_passed;
@@ -26067,6 +26070,11 @@ var MainSystem = class extends System {
           }
         }
       }
+    });
+    bots.forEach((bot) => {
+      const e = entities[bot.entity];
+      e.x = e.x + e.dx;
+      e.y = e.y + e.dy;
     });
     return components;
   }
@@ -26284,13 +26292,6 @@ var Spacetrash = class extends Game {
                       );
                     }
                     if (setpiece.tileType === "FloorTile") {
-                      canvas2d.fillStyle = "white";
-                      canvas2d.rect(
-                        setpiece.x * tSize - tSize / 2 + 1,
-                        setpiece.y * tSize - tSize / 2 + 1,
-                        tSize - 1,
-                        tSize - 1
-                      );
                     }
                     if (setpiece.tileType === "WallTile") {
                       canvas2d.fillStyle = "darkgrey";
@@ -26398,7 +26399,7 @@ var Spacetrash = class extends Game {
       },
       (ecs) => {
         const drones = [
-          ...new Array(100)
+          ...new Array(32)
         ].map((n) => {
           return new SpaceTrashDrone(
             MapSize / 2,

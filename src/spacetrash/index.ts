@@ -272,13 +272,13 @@ export default class Spacetrash extends Game<any> {
                       // canvas2d.fill();
                     }
                     if (setpiece.tileType === "FloorTile") {
-                      canvas2d.fillStyle = "white";
-                      canvas2d.rect(
-                        ((setpiece.x * tSize) - tSize / 2) + 1,
-                        ((setpiece.y * tSize) - tSize / 2) + 1,
-                        tSize - 1,
-                        tSize - 1
-                      );
+                      // canvas2d.fillStyle = "white";
+                      // canvas2d.rect(
+                      //   ((setpiece.x * tSize) - tSize / 2) + 1,
+                      //   ((setpiece.y * tSize) - tSize / 2) + 1,
+                      //   tSize - 1,
+                      //   tSize - 1
+                      // );
                     }
                     if (setpiece.tileType === "WallTile") {
                       canvas2d.fillStyle = "darkgrey";
@@ -424,7 +424,7 @@ export default class Spacetrash extends Game<any> {
       },
       (ecs) => {
         const drones = [
-          ...new Array(100)
+          ...new Array(32)
         ].map((n) => {
           return new SpaceTrashDrone(
             MapSize / 2,
