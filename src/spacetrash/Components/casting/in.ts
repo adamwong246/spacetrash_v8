@@ -1,7 +1,7 @@
-import { SpaceTrashSystems } from "../../Systems";
-import { ERays } from "../../lib";
+// import { SpaceTrashSystems } from "../../Systems";
+// import { ERays } from "../../lib";
 
-import { ISpaceTrashComponents } from "..";
+// import { ISpaceTrashComponents } from "..";
 
 import { SpaceTrashComponent } from "..";
 

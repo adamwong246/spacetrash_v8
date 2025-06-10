@@ -25205,6 +25205,54 @@ var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   return ESpaceTrashApps2;
 })(ESpaceTrashApps || {});
 
+// src/engine/lib.ts
+function uuidv4() {
+  return "10000000-1000-4000-8000-100000000000".replace(
+    /[018]/g,
+    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  );
+}
+function make(c, arg1) {
+  if (c.constructor.name === arg1) {
+    return c;
+  }
+  return null;
+}
+
+// src/engine/ECS.ts
+var ECS = class {
+  system;
+  components;
+  constructor(system) {
+    this.system = system;
+    this.components = {};
+  }
+  setComponents(arg0) {
+    this.components = arg0;
+  }
+  getComponents(system) {
+    return this.components;
+  }
+  setEntitiesComponent(ecss) {
+    ecss.forEach((ec) => {
+      const entityUuid = uuidv4();
+      ec.components.forEach((c) => {
+        const componentUid = uuidv4();
+        this.components[componentUid] = {
+          ...c,
+          entity: entityUuid,
+          constructor: {
+            name: c.constructor.name
+          }
+        };
+      });
+    });
+  }
+  tick(delta) {
+    this.components = this.system.tick(delta, this.components);
+  }
+};
+
 // src/engine/Game.ts
 var Game = class {
   postMessage;
@@ -25213,16 +25261,19 @@ var Game = class {
   ecs;
   constructor(state, systems, postMessage2) {
     this.state = state;
+    this.ecs = new ECS(systems);
     this.postMessage = postMessage2;
     this.canvasContexts = {};
     this.changeScene = this.changeScene.bind(this);
   }
   changeScene(to) {
+    console.log("this.changeScene", to);
     this.state.setCurrent(to);
     const newScene = this.state.getCurrent();
     newScene.boot(to, this.ecs, this.postMessage);
   }
   register(key, run, canvas, callback) {
+    console.log("register", key, this.state.getCurrent().appLogic[key]);
     this.canvasContexts[key] = {
       run,
       canvas,
@@ -25230,10 +25281,7 @@ var Game = class {
       canvasContext: this.state.getCurrent().appLogic[key][3]
       // canvasContext: this.canvasContexts[key].canvasContext
     };
-    const s = this.state.get(this.state.currrent);
-    const clbk = this.canvasContexts[key].callback;
-    s.boot(key, this.ecs, clbk || (() => {
-    }));
+    this.canvasContexts[key].callback && this.canvasContexts[key].callback(false);
   }
   async start() {
     var fps = 60;
@@ -25371,54 +25419,6 @@ var StateSpace = class extends DirectedGraph {
   }
 };
 
-// src/engine/lib.ts
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(
-    /[018]/g,
-    (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
-  );
-}
-function make(c, arg1) {
-  if (c.constructor.name === arg1) {
-    return c;
-  }
-  return null;
-}
-
-// src/engine/ECS.ts
-var ECS = class {
-  system;
-  components;
-  constructor(system) {
-    this.system = system;
-    this.components = {};
-  }
-  setComponents(arg0) {
-    this.components = arg0;
-  }
-  getComponents(system) {
-    return this.components;
-  }
-  setEntitiesComponent(ecss) {
-    ecss.forEach((ec) => {
-      const entityUuid = uuidv4();
-      ec.components.forEach((c) => {
-        const componentUid = uuidv4();
-        this.components[componentUid] = {
-          ...c,
-          entity: entityUuid,
-          constructor: {
-            name: c.constructor.name
-          }
-        };
-      });
-    });
-  }
-  tick(delta) {
-    this.components = this.system.tick(delta, this.components);
-  }
-};
-
 // src/spacetrash/lib/Terminal.ts
 var SpaceTrashTerminal = class {
   // update: (to: string) => void
@@ -25517,9 +25517,7 @@ Launch date:    May, 2690
 
 // src/engine/Component.ts
 var Component = class {
-  // uuid: string;
   entityUid;
-  // systemsUids: string[];
   constructor(entityUid) {
     this.entityUid = entityUid;
   }
@@ -25712,9 +25710,6 @@ var PowerStoringComponent = class extends PoweredComponent {
 
 // src/engine/Entity.ts
 var Entity = class {
-  // uuid: string;
-  constructor() {
-  }
 };
 
 // src/engine/EntityComponent.ts
@@ -25760,178 +25755,6 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
     );
   }
 };
-
-// src/engine/System.ts
-var System = class {
-};
-
-// src/spacetrash/System.ts
-var MapSize = 32;
-var entities = {};
-var spaces = [[]];
-var littables = {};
-var MainSystem = class extends System {
-  mapSize;
-  constructor(mapSize) {
-    super();
-    this.mapSize = mapSize;
-  }
-  // getFov(literId: string): string[] {
-  //   const e = entities[literId];
-  //   if (!spaces[e.y]) {
-  //     spaces[e.y] = [];
-  //   }
-  //   // if (!spaces[e.y][e.x]) {
-  //   //   spaces[e.y][e.x] = [];
-  //   // }
-  //   // debugger
-  //   return [
-  //     spaces[e.y][e.x] && spaces[e.y][e.x][0],
-  //     // ...Object.keys(entities).filter((s) => {
-  //     //   const z = entities[s];
-  //     //   return Math.round(z.x) === Math.round(e.x) && Math.round(z.y) === Math.round(e.y);
-  //     // })
-  //   ];
-  // }
-  tick(delta, components) {
-    const setpiece = (x, y) => {
-      if (!spaces[Math.round(y)]) {
-        return null;
-      }
-      if (x < 0) {
-        return null;
-      }
-      if (x > 31) {
-        return null;
-      }
-      if (y < 0) {
-        return null;
-      }
-      if (y > 31) {
-        return null;
-      }
-      const [setpiece2, actors2] = spaces[Math.round(y)][Math.round(x)];
-      return components[littables[components[setpiece2].entity]];
-    };
-    const illuminate = (x, y) => {
-      if (!spaces[Math.round(y)]) {
-        return null;
-      }
-      if (x < 0) {
-        return null;
-      }
-      if (x > 31) {
-        return null;
-      }
-      if (y < 0) {
-        return null;
-      }
-      if (y > 31) {
-        return null;
-      }
-      const [setpiece2, actors2] = spaces[Math.round(y)][Math.round(x)];
-      components[littables[components[setpiece2].entity]].luminance = 2;
-    };
-    Object.keys(components).forEach((cKey) => {
-      const c = components[cKey];
-      const lit = make(c, "LitComponent");
-      if (lit) {
-        entities[lit.entity] = {
-          ...entities[lit.entity],
-          ...lit
-        };
-        return;
-      }
-      const littable = make(c, "LitableComponent");
-      if (littable) {
-        littable.luminance = -1;
-        littables[littable.entity] = cKey;
-        entities[littable.entity] = {
-          ...entities[littable.entity],
-          ...littable
-        };
-        return;
-      }
-      const s = make(c, "PhysicsSetComponent");
-      if (s) {
-        entities[s.entity] = {
-          ...entities[s.entity],
-          ...s
-        };
-        if (!spaces[s.y]) {
-          spaces[s.y] = [];
-        }
-        if (!spaces[s.y][s.x]) {
-          spaces[s.y][s.x] = ["", []];
-        }
-        spaces[s.y][s.x][0] = cKey;
-        return;
-      }
-      const a = make(c, "PhysicsActorComponent");
-      if (a) {
-        entities[a.entity] = {
-          ...entities[a.entity],
-          ...a
-        };
-        a.x = a.x + a.dx;
-        a.y = a.y + a.dy;
-        if (a.x < 0) {
-          a.x = this.mapSize + a.dx * 2;
-        }
-        if (a.x > this.mapSize) {
-          a.x = a.dx * 2;
-        }
-        if (a.y < 0) {
-          a.y = this.mapSize + a.dy * 2;
-        }
-        if (a.y > this.mapSize) {
-          a.y = a.dy * 2;
-        }
-        return;
-      }
-    });
-    Object.keys(entities).forEach((eKey) => {
-      const e = entities[eKey];
-      if (e.radiance) {
-        if (!spaces[Math.round(e.y)]) {
-          spaces[Math.round(e.y)] = [];
-        }
-        if (spaces[Math.round(e.y)][Math.round(e.x)]) {
-          illuminate(e.x, e.y);
-          let di = 1;
-          let dj = 0;
-          let segment_length = 1;
-          let i = 0;
-          let j = 0;
-          let segment_passed = 0;
-          let onTarget = false;
-          for (let k = 0; k < 300; k++) {
-            i += di;
-            j += dj;
-            ++segment_passed;
-            if (setpiece(i + e.x, j + e.y)) {
-              onTarget = true;
-            } else {
-              onTarget = false;
-            }
-            illuminate(i + e.x, j + e.y);
-            if (segment_passed == segment_length) {
-              segment_passed = 0;
-              let buffer = di;
-              di = -dj;
-              dj = buffer;
-              if (dj == 0) {
-                ++segment_length;
-              }
-            }
-          }
-        }
-      }
-    });
-    return components;
-  }
-};
-var SpaceTrashMainSystem = new MainSystem(MapSize);
 
 // src/spacetrash/Entities/setpieces/index.ts
 var Tile = class extends SpaceTrashEntityComponent {
@@ -26003,19 +25826,268 @@ var NorthEast = class extends Tile {
   }
 };
 
+// src/engine/System.ts
+var System = class {
+};
+
+// src/spacetrash/System.ts
+var MapSize = 32;
+var entities = {};
+var spaces = [[]];
+var littables = {};
+var MainSystem = class extends System {
+  mapSize;
+  constructor(mapSize) {
+    super();
+    this.mapSize = mapSize;
+  }
+  // getFov(literId: string): string[] {
+  //   const e = entities[literId];
+  //   if (!spaces[e.y]) {
+  //     spaces[e.y] = [];
+  //   }
+  //   // if (!spaces[e.y][e.x]) {
+  //   //   spaces[e.y][e.x] = [];
+  //   // }
+  //   // debugger
+  //   return [
+  //     spaces[e.y][e.x] && spaces[e.y][e.x][0],
+  //     // ...Object.keys(entities).filter((s) => {
+  //     //   const z = entities[s];
+  //     //   return Math.round(z.x) === Math.round(e.x) && Math.round(z.y) === Math.round(e.y);
+  //     // })
+  //   ];
+  // }
+  tick(delta, components) {
+    const setpiece = (xFloat, yFloat) => {
+      const x = Math.round(xFloat);
+      const y = Math.round(yFloat);
+      const mSize = this.mapSize * 10;
+      const lowX = 0;
+      const highX = this.mapSize - 1;
+      const lowY = 0;
+      const highY = this.mapSize - 1;
+      if (x < lowX) {
+        return null;
+      }
+      if (x > highX) {
+        return null;
+      }
+      if (y < lowY) {
+        return null;
+      }
+      if (y > highY) {
+        return null;
+      }
+      let setpiece2, actors2;
+      try {
+        [setpiece2, actors2] = spaces[y][x];
+      } catch (e) {
+        debugger;
+      }
+      return components[littables[components[setpiece2].entity]];
+    };
+    const illuminate = (xFloat, yFloat) => {
+      const x = Math.round(xFloat);
+      const y = Math.round(yFloat);
+      const mSize = this.mapSize;
+      if (x < 0) {
+        return null;
+      }
+      if (x > mSize - 1) {
+        return null;
+      }
+      if (y < 0) {
+        return null;
+      }
+      if (y > mSize - 1) {
+        return null;
+      }
+      const [setpiece2, actors2] = spaces[y][x];
+      components[littables[components[setpiece2].entity]].luminance = 2;
+    };
+    Object.keys(components).forEach((cKey) => {
+      const c = components[cKey];
+      const lit = make(c, "LitComponent");
+      if (lit) {
+        entities[lit.entity] = {
+          ...entities[lit.entity],
+          ...lit
+        };
+        return;
+      }
+      const littable = make(c, "LitableComponent");
+      if (littable) {
+        littable.luminance = -1;
+        littables[littable.entity] = cKey;
+        entities[littable.entity] = {
+          ...entities[littable.entity],
+          ...littable
+        };
+        return;
+      }
+      const s = make(c, "PhysicsSetComponent");
+      if (s) {
+        entities[s.entity] = {
+          ...entities[s.entity],
+          ...s
+        };
+        if (!spaces[s.y]) {
+          spaces[s.y] = [];
+        }
+        if (!spaces[s.y][s.x]) {
+          spaces[s.y][s.x] = ["", []];
+        }
+        spaces[s.y][s.x][0] = cKey;
+        return;
+      }
+      const a = make(c, "PhysicsActorComponent");
+    });
+    Object.keys(components).forEach((cKey) => {
+      const c = components[cKey];
+      const a = make(c, "PhysicsActorComponent");
+      if (a) {
+        entities[a.entity] = {
+          ...entities[a.entity],
+          ...a
+        };
+        let x = Math.round(a.x + a.dx);
+        let y = Math.round(a.y + a.dy);
+        const magX = Math.abs(a.dx);
+        const magY = Math.abs(a.dy);
+        if (x > this.mapSize - 1) {
+          x = 0;
+        }
+        if (y > this.mapSize - 1) {
+          y = 0;
+        }
+        if (x < 0) {
+          x = this.mapSize - 1;
+        }
+        if (y < 0) {
+          y = this.mapSize - 1;
+        }
+        const spaceToCheck = spaces[y][x][0];
+        if (components[spaceToCheck].tileType !== "FloorTile") {
+          if (x < Math.round(a.x)) {
+            if (y < Math.round(a.y)) {
+              console.log("Nw");
+              if (magX < magY) {
+                a.dy = a.dy * -1;
+              } else {
+                a.dx = a.dx * -1;
+              }
+            } else if (y > Math.round(a.y)) {
+              console.log("Sw");
+              if (magX > magY) {
+                a.dx = a.dx * -1;
+              } else {
+                a.dy = a.dy * -1;
+              }
+            } else {
+              console.log("w");
+              a.dx = a.dx * -1;
+            }
+          } else if (x > Math.round(a.x)) {
+            if (y < Math.round(a.y)) {
+              console.log("Ne");
+              if (magX > magY) {
+                a.dx = a.dx * -1;
+              } else {
+                a.dy = a.dy * -1;
+              }
+            } else if (y > Math.round(a.y)) {
+              console.log("Se");
+              if (magX > magY) {
+                a.dy = a.dy * -1;
+              } else {
+                a.dx = a.dx * -1;
+              }
+            } else {
+              console.log("e");
+              a.dx = a.dx * -1;
+            }
+          } else {
+            if (y < Math.round(a.y)) {
+              console.log("N");
+              a.dy = a.dy * -1;
+            } else {
+              console.log("S");
+              a.dy = a.dy * -1;
+            }
+          }
+        } else {
+        }
+        a.x = a.x + a.dx;
+        a.y = a.y + a.dy;
+        return;
+      }
+    });
+    Object.keys(entities).forEach((eKey) => {
+      const e = entities[eKey];
+      if (e.radiance) {
+        if (!spaces[Math.round(e.y)]) {
+          spaces[Math.round(e.y)] = [];
+        }
+        if (spaces[Math.round(e.y)][Math.round(e.x)]) {
+          illuminate(e.x, e.y);
+          let di = 1;
+          let dj = 0;
+          let segment_length = 1;
+          let i = 0;
+          let j = 0;
+          let segment_passed = 0;
+          let onTarget = false;
+          for (let k = 0; k < 50; k++) {
+            i += di;
+            j += dj;
+            ++segment_passed;
+            const x = Math.round(i + e.x) - 1;
+            const y = Math.round(j + e.y) - 1;
+            const eId = setpiece(x, y)?.entity;
+            const entity = entities[eId];
+            if (entity) {
+              if (entity.tileType !== "FloorTile") {
+                onTarget = true;
+              } else {
+                onTarget = false;
+              }
+            } else {
+            }
+            illuminate(i + e.x, j + e.y);
+            if (segment_passed == segment_length) {
+              segment_passed = 0;
+              let buffer = di;
+              di = -dj;
+              dj = buffer;
+              if (dj == 0) {
+                ++segment_length;
+              }
+            }
+          }
+        }
+      }
+    });
+    return components;
+  }
+};
+var SpaceTrashMainSystem = new MainSystem(MapSize);
+
 // src/spacetrash/ship.ts
 var SpaceTrashShip = class {
-  shipSize = 64;
+  shipSize = MapSize;
   toTiles() {
     const e = [];
-    for (let y = 0; y < this.shipSize; y++) {
-      for (let x = 0; x < this.shipSize; x++) {
+    for (let y = 1; y < this.shipSize - 1; y++) {
+      for (let x = 1; x < this.shipSize - 1; x++) {
         e.push(new FloorTile(x, y));
       }
-      e.push(new WallTile(0, y));
-      e.push(new WallTile(y, 0));
-      e.push(new WallTile(this.shipSize, y));
-      e.push(new WallTile(y, this.shipSize));
+    }
+    for (let z = 0; z < this.shipSize; z++) {
+      e.push(new WallTile(0, z));
+      e.push(new WallTile(z, 0));
+      e.push(new WallTile(this.shipSize - 1, z));
+      e.push(new WallTile(z, this.shipSize - 1));
     }
     e.push(new SouthEast(1, 1));
     e.push(new SouthWest(3, 1));
@@ -26036,6 +26108,14 @@ var SpaceTrashShip = class {
     e.push(new SouthWest(6, 12));
     e.push(new WallTile(7, 12));
     e.push(new WallTile(8, 12));
+    new Array(100).fill(true).forEach((i) => {
+      e.push(
+        new WallTile(
+          Math.round(Math.random() * (this.shipSize - 1)),
+          Math.round(Math.random() * (this.shipSize - 1))
+        )
+      );
+    });
     return e;
   }
 };
@@ -26057,8 +26137,9 @@ var Spacetrash = class extends Game {
       "bootscene_view_v0",
       {
         terminal: [(ecs, reply) => {
+          console.log("mark1");
           reply(this.terminal.boot());
-        }, (ecs, reply) => {
+        }, (ecs, update) => {
           return [];
         }, (ecs, events) => {
         }, "2d"],
@@ -26087,6 +26168,7 @@ var Spacetrash = class extends Game {
       "menuscene_view_v0",
       {
         terminal: [(ecs, reply) => {
+          console.log("mark2");
           reply(["login", ""]);
           reply(["terminal-update", this.terminal.login()]);
         }, (ecs, reply) => {
@@ -26220,7 +26302,6 @@ var Spacetrash = class extends Game {
                       );
                     }
                     if (opts?.fill) {
-                      debugger;
                       canvas2d.fillStyle = opts.fill;
                     }
                     if (opts?.stroke) {
@@ -26240,10 +26321,12 @@ var Spacetrash = class extends Game {
                     canvas2d.arc(
                       actor.x * tSize,
                       actor.y * tSize,
-                      tSize / 6,
+                      tSize / 2,
                       0,
                       2 * Math.PI
                     );
+                    canvas2d.fillStyle = "orange";
+                    canvas2d.fill();
                     canvas2d.stroke();
                   }
                 };
@@ -26262,7 +26345,7 @@ var Spacetrash = class extends Game {
                     ...thingsToDraw[ec.entity],
                     opts: {
                       ...thingsToDraw[ec.entity].opts,
-                      fill: "lightgrey"
+                      fill: "red"
                     }
                   };
                 }
@@ -26296,9 +26379,9 @@ var Spacetrash = class extends Game {
               if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                 const canvas2d = canvas;
                 canvas2d.beginPath();
-                canvas2d.arc(shipMapMouseX, shipMapMouseY, tSize / 3, 0, 2 * Math.PI);
+                canvas2d.arc(shipMapMouseX, shipMapMouseY, tSize / 1, 0, 2 * Math.PI);
                 canvas2d.lineWidth = 1;
-                canvas2d.strokeStyle = "grey";
+                canvas2d.strokeStyle = "green";
                 canvas2d.stroke();
               }
             }
@@ -26314,25 +26397,30 @@ var Spacetrash = class extends Game {
         }, "2d"]
       },
       (ecs) => {
+        const drones = [
+          ...new Array(100)
+        ].map((n) => {
+          return new SpaceTrashDrone(
+            MapSize / 2,
+            MapSize / 2,
+            // Math.random() * mapSize,
+            // Math.random() * mapSize,
+            5,
+            // 0.1, 0
+            (Math.random() - 0.5) / 5,
+            (Math.random() - 0.5) / 5
+            // 0.09,
+            // -0.08
+            // 0,
+            // 0
+          );
+        });
+        console.log("drones", drones);
         return new Promise((res, rej) => {
           ecs.setEntitiesComponent(
             [
               ...ship.toTiles(),
-              ...[
-                ...new Array(10)
-              ].map((n) => {
-                return new SpaceTrashDrone(
-                  10,
-                  10,
-                  // Math.random() * mapSize,
-                  // Math.random() * mapSize,
-                  5,
-                  (Math.random() - 0.5) / 6,
-                  (Math.random() - 0.5) / 6
-                  // 0,
-                  // 0
-                );
-              })
+              ...drones
             ]
           );
           res();
@@ -26344,8 +26432,8 @@ var Spacetrash = class extends Game {
       SpaceTrashMainSystem,
       workerPostMessage
     );
-    this.ecs = new ECS(SpaceTrashMainSystem);
     this.terminal = new SpaceTrashTerminal();
+    this.start();
   }
   async terminalIn(input, callback) {
     return {

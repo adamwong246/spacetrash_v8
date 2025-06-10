@@ -53,4 +53,13 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
 
 };
 
+// sp.register(
+//   `register-terminal`,
+//   true,
+//   undefined,
+//   (data) => {
+//     postMessage([`terminal-update`, data]);
+//   }
+// )
+
 sp.start();

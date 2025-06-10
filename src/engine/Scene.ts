@@ -1,11 +1,10 @@
 
 import Component from "./Component";
 import { ECS } from "./ECS";
-import { EntityComponent } from "./EntityComponent";
 import { Tree } from "./Tree";
 
 type IECSComponents = Record<string, Component<any, any>>;
-type IReply = (x: any) => void;
+type IReply = (ecs: any) => void;
 
 type IBoot = (
   ecs: ECS<any>,
@@ -14,7 +13,7 @@ type IBoot = (
 
 type IUpdate = (
   ecs: IECSComponents,
-  reply: IReply
+  update: any
 ) => ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext, opts?) => void)[]
 
 type IEvents = (
@@ -23,6 +22,7 @@ type IEvents = (
 ) => void;
 
 type ILogic = [IBoot, IUpdate, IEvents, ("2d" | "webgl") ];
+// type ILogic = ((e, r) => any)[];
 
 type IAppLogic<IApps extends string> = Record<IApps, ILogic>
 
@@ -46,15 +46,23 @@ export class Scene<IApps extends string> extends Tree {
     bootReplier: IReply
     
   ) {
+    // console.log("sceneboot 2", stateKey, bootReplier.toString())
+    
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
+      // console.log("k", k, this.appLogic[k][0].toString())
+      // this.appLogic.forEach((ak) => {
+        
+      // })
       this.appLogic[k][0](ecs, bootReplier); 
+      
+      // bootReplier(ecs)
     })
   }
 
   draw(
     app: IApps,
-    bootReplier: (x: any) => void,
+    bootReplier: IReply,
     components: Record<string, Component<any, any>>,
   ): ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext) => void)[] {
     return this.appLogic[app][1](

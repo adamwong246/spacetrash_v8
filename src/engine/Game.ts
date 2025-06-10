@@ -20,12 +20,16 @@ export class Game<SystemKeys extends string> {
     postMessage: (message: any, options?: WindowPostMessageOptions | undefined) => void
   ) {
     this.state = state;
+
+    this.ecs = new ECS(systems);
+
     this.postMessage = postMessage;
     this.canvasContexts = {};
     this.changeScene = this.changeScene.bind(this)
   }
 
   changeScene(to: string) {
+    console.log("this.changeScene", to)
     this.state.setCurrent(to);
     const newScene = this.state.getCurrent();
     newScene.boot(to, this.ecs, this.postMessage);
@@ -39,7 +43,7 @@ export class Game<SystemKeys extends string> {
     canvas?: OffscreenCanvas,
     callback?: (data: any) => void,
   ) {
-    // console.log(key, this.state.getCurrent().appLogic[key]);
+    console.log("register", key, this.state.getCurrent().appLogic[key]);
     this.canvasContexts[key] = {
       run,
       canvas,
@@ -49,10 +53,11 @@ export class Game<SystemKeys extends string> {
     };
     // this.animationLoop(key);
 
-
-    const s = this.state.get(this.state.currrent);
-    const clbk = this.canvasContexts[key].callback;
-    s.boot(key, this.ecs, clbk || (() => { }));
+    // debugger
+    // const s = this.state.get(this.state.currrent);
+    // const clbk = this.canvasContexts[key].callback;
+    // s.boot(key, this.ecs, clbk || (() => { }));
+    this.canvasContexts[key].callback && this.canvasContexts[key].callback(false);
 
   }
 
@@ -61,6 +66,10 @@ export class Game<SystemKeys extends string> {
     let then = performance.now();
     const interval = 1000 / fps;
     let delta = 0;
+
+    // this.state.getCurrent().boot("asd", ecs)
+    // this.changeScene(this.state.getCurrent().name)
+
     while (true) {
       let now = await new Promise(requestAnimationFrame);
       if (now - then < interval - delta) {

@@ -8,7 +8,7 @@ import { SpaceTrashTerminal } from "./lib/Terminal";
 import { SpaceTrashDrone } from "./Entities";
 import { ISpaceTrashApps } from "./UI";
 import { SpaceTrashShip } from "./ship";
-import { SpaceTrashMainSystem } from "./system";
+import { MapSize, SpaceTrashMainSystem } from "./System";
 
 let droneMouseX = 0;
 let droneMouseY = 0;
@@ -34,8 +34,9 @@ export default class Spacetrash extends Game<any> {
     state.set('boot', new Scene<ISpaceTrashApps>('bootscene_view_v0',
       {
         terminal: [(ecs, reply) => {
+          console.log("mark1")
           reply(this.terminal.boot());
-        }, (ecs, reply) => {
+        }, (ecs, update) => {
           return [];
         }, (ecs, events) => {
 
@@ -70,6 +71,8 @@ export default class Spacetrash extends Game<any> {
     state.set('menu', new Scene<ISpaceTrashApps>('menuscene_view_v0',
       {
         terminal: [(ecs, reply) => {
+          console.log("mark2");
+          
           reply(["login", ""]);
           reply(["terminal-update", this.terminal.login()]);
         }, (ecs, reply) => {
@@ -291,7 +294,7 @@ export default class Spacetrash extends Game<any> {
 
 
                     if (opts?.fill) {
-                      debugger
+                      // debugger
                       canvas2d.fillStyle = opts.fill;
                       // canvas2d.fill();
                     }
@@ -318,10 +321,12 @@ export default class Spacetrash extends Game<any> {
                     canvas2d.arc(
                       actor.x * tSize,
                       actor.y * tSize,
-                      tSize / 6,
+                      tSize / 2,
                       0,
                       2 * Math.PI,
                     )
+                    canvas2d.fillStyle ="orange"
+                    canvas2d.fill()
                     canvas2d.stroke();
                   }
 
@@ -343,7 +348,7 @@ export default class Spacetrash extends Game<any> {
                     ...thingsToDraw[ec.entity],
                     opts: {
                       ...thingsToDraw[ec.entity].opts,
-                      fill: "lightgrey"
+                      fill: "red"
                     }
                   };
                 }
@@ -352,7 +357,7 @@ export default class Spacetrash extends Game<any> {
               // console.log(ec.constructor.name);
               if (ec.constructor.name === "LitableComponent") {
                 // debugger
-                // console.log("mark2", ec.luminance)
+
                 // if (ec.luminance === -1) {
                 //   // debugger  
                 //   thingsToDraw[ec.entity] = {
@@ -396,9 +401,9 @@ export default class Spacetrash extends Game<any> {
               if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                 const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
                 canvas2d.beginPath();
-                canvas2d.arc(shipMapMouseX, shipMapMouseY, tSize / 3, 0, 2 * Math.PI);
+                canvas2d.arc(shipMapMouseX, shipMapMouseY, tSize / 1, 0, 2 * Math.PI);
                 canvas2d.lineWidth = 1;
-                canvas2d.strokeStyle = "grey";
+                canvas2d.strokeStyle = "green";
                 canvas2d.stroke();
               }
 
@@ -418,26 +423,33 @@ export default class Spacetrash extends Game<any> {
         }, "2d"],
       },
       (ecs) => {
+        const drones = [
+          ...new Array(100)
+        ].map((n) => {
+          return new SpaceTrashDrone(
+            MapSize / 2,
+            MapSize/2,
+            // Math.random() * mapSize,
+            // Math.random() * mapSize,
+            5,
+
+            // 0.1, 0
+            (Math.random() - 0.5) / 5,
+            (Math.random() - 0.5) / 5,
+            // 0.09,
+            // -0.08
+            // 0,
+            // 0
+          )
+
+        })
+        console.log("drones", drones)
+        // debugger
         return new Promise((res, rej) => {
           ecs.setEntitiesComponent(
             [
               ...ship.toTiles(),
-              ...[
-                ...new Array(10)
-              ].map((n) => {
-                return new SpaceTrashDrone(
-                  10, 10,
-                  // Math.random() * mapSize,
-                  // Math.random() * mapSize,
-                  5,
-
-                  (Math.random() - 0.5) / 6,
-                  (Math.random() - 0.5) / 6,
-                  // 0,
-                  // 0
-                )
-
-              }),
+              ...drones,
             ]
           )
           res();
@@ -450,8 +462,8 @@ export default class Spacetrash extends Game<any> {
       SpaceTrashMainSystem,
       workerPostMessage
     );
-    this.ecs = new ECS(SpaceTrashMainSystem);
     this.terminal = new SpaceTrashTerminal();
+    this.start()
   }
 
   async terminalIn(
@@ -468,66 +480,3 @@ export default class Spacetrash extends Game<any> {
     };
   }
 }
-
-
-
-// if (canvas) {
-//   Object.keys(ecs).forEach((ecKey) => {
-//     const ec = ecs[ecKey];
-
-//     if (ec.constructor.name === "PhysicsSetComponent") {
-//       const setpiece = ec as PhysicsActorComponent;
-
-//       canvas.beginPath();
-//       canvas.rect(
-//         (setpiece.x * tSize) - tSize / 2,
-//         (setpiece.y * tSize) - tSize / 2,
-//         tSize,
-//         tSize
-//       );
-//       canvas.stroke();
-
-//     }
-//     if (ec.constructor.name === "PhysicsActorComponent") {
-
-//       const drone = ec as PhysicsActorComponent;
-
-//       canvas.beginPath();
-
-//       let startAngle = 0; // Starting point on circle
-//       let endAngle = Math.PI + (Math.PI * 1) / 2; // End point on circle
-//       let counterclockwise = 2 % 2 === 1; // Draw counterclockwise
-
-//       // canvas.rect(
-//       //   (Math.round(drone.x) * tSize) - tSize / 2,
-//       //   (Math.round(drone.y) * tSize) - tSize / 2,
-//       //   tSize,
-//       //   tSize
-//       // );
-//       // canvas.stroke();
-//       canvas.beginPath();
-
-//       canvas.arc(
-//         drone.x * tSize,
-//         drone.y * tSize,
-//         tSize / 3,
-//         startAngle,
-//         endAngle,
-//         counterclockwise
-//       );
-//       canvas.fillStyle = "blue";
-//       canvas.fill();
-//       canvas.lineWidth = 1;
-//       canvas.strokeStyle = "red";
-//       canvas.stroke();
-//     }
-//   })
-
-//   canvas.beginPath();
-//   canvas.arc(shipMapMouseX, shipMapMouseY, tSize / 2, 0, 2 * Math.PI);
-//   canvas.fillStyle = "transparent";
-//   canvas.fill();
-//   canvas.lineWidth = 1;
-//   canvas.strokeStyle = "white";
-//   canvas.stroke();
-// }
