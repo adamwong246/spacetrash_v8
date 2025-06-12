@@ -1,7 +1,6 @@
-import Component from "../../../engine/Component";
+import {Component} from "../../../engine/Component";
 
 import { SpaceTrashEntity } from "../../Entities";
-import { SpaceTrashSystems } from "../../Systems";
 import { ERays } from "../../lib";
 
 import { ISpaceTrashComponents } from "..";

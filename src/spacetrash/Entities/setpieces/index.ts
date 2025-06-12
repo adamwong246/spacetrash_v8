@@ -7,7 +7,8 @@ import { PowerConsumingComponent } from "../../Components/power";
 
 import { SpaceTrashEntity } from "..";
 
-export abstract class Tile extends SpaceTrashEntityComponent {
+export class Tile extends SpaceTrashEntityComponent {
+  
   tiletype: ITiles;
 
   constructor(x: number, y: number, tiletype: ITiles) {
@@ -20,6 +21,11 @@ export abstract class Tile extends SpaceTrashEntityComponent {
       ],
     );
     this.tiletype = tiletype;
+
+  }
+
+  validate ()  {
+    console.log("validate tile!");
   }
 }
 
@@ -240,19 +246,19 @@ export const Tiles = [
   SouthWest,SouthEast, NorthWest, NorthEast,
 ];
 
-export class DoorTile extends SpaceTrashEntityComponent {
-  constructor(x: number = 0, y: number = 0, r: number = 0) {
-    const spe = new SpaceTrashEntity();
-    super(
-      spe,
-      [
-        new PhysicsSetComponent(spe, x, y, true, 'Door'),
-      // new AttackableComponent(spe),
-      // new UnmovingComponent(spe),
-      // new PowerConsumingComponent(spe),
-      new SolidityComponent(spe, 0),
-      new LitableComponent(spe)
-      ],
-    );
-  }
-}
+// export class DoorTile extends SpaceTrashEntityComponent {
+//   constructor(x: number = 0, y: number = 0, r: number = 0) {
+//     const spe = new SpaceTrashEntity();
+//     super(
+//       spe,
+//       [
+//         new PhysicsSetComponent(spe, x, y, true, 'Door'),
+//       // new AttackableComponent(spe),
+//       // new UnmovingComponent(spe),
+//       // new PowerConsumingComponent(spe),
+//       new SolidityComponent(spe, 0),
+//       new LitableComponent(spe)
+//       ],
+//     );
+//   }
+// }

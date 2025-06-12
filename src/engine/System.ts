@@ -1,12 +1,18 @@
-import Component from "./Component";
 import { Entity } from "./Entity";
+import { IStores } from "./types";
 
 export type IMoves = { entity: Entity, move: any }[];
 
-export abstract class System<SystemKeys extends string> {
-  
+export abstract class System{
+  componentsStore = new Set<string>();
+
+  constructor(componentsStore: Set<string>) {
+    this.componentsStore = componentsStore;
+  }
+
   abstract tick(
     delta: number, 
-    components: Record<string, Component<any, any>>
-  ): Record<string, Component<any, any>>
+    components: IStores,
+    buffer? :Int32Array<SharedArrayBuffer>
+  )
 }

@@ -1,39 +1,39 @@
+import * as THREE from "three";
 
-import Component from "./Component";
 import { ECS } from "./ECS";
 import { Tree } from "./Tree";
+import {  IStores } from "./types";
 
-type IECSComponents = Record<string, Component<any, any>>;
 type IReply = (ecs: any) => void;
 
 type IBoot = (
-  ecs: ECS<any>,
+  ecs: ECS,
   reply: IReply
 ) => void;
 
 type IUpdate = (
-  ecs: IECSComponents,
+  cs: IStores,
   update: any
-) => ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext, opts?) => void)[]
+) => ((ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer, opts?) => void)[]
 
 type IEvents = (
-  ecs: ECS<any>,
+  ecs: ECS,
   event: Event,
 ) => void;
 
-type ILogic = [IBoot, IUpdate, IEvents, ("2d" | "webgl") ];
+type ILogic = [IBoot, IUpdate, IEvents, ("2d" | "webgl2") ];
 // type ILogic = ((e, r) => any)[];
 
 type IAppLogic<IApps extends string> = Record<IApps, ILogic>
 
 export class Scene<IApps extends string> extends Tree {
   appLogic: IAppLogic<IApps>;
-  sceneBoot: (ecs: ECS<any>) => Promise<void>;
+  sceneBoot: (ecs: ECS) => Promise<void>;
 
   constructor(
     name: string,
     appLogic: IAppLogic<IApps>,
-    sceneBoot: (ecs: ECS<any>) => Promise<void>,
+    sceneBoot: (ecs: ECS) => Promise<void>,
   ) {
     super(name);
     this.appLogic = appLogic;
@@ -42,12 +42,11 @@ export class Scene<IApps extends string> extends Tree {
 
   async boot(
     stateKey: string,
-    ecs: ECS<any>,
+    ecs: ECS,
     bootReplier: IReply
     
   ) {
-    // console.log("sceneboot 2", stateKey, bootReplier.toString())
-    
+
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
       // console.log("k", k, this.appLogic[k][0].toString())
@@ -63,19 +62,23 @@ export class Scene<IApps extends string> extends Tree {
   draw(
     app: IApps,
     bootReplier: IReply,
-    components: Record<string, Component<any, any>>,
-  ): ((ctx: OffscreenCanvasRenderingContext2D |WebGLRenderingContext) => void)[] {
+    componentsStores: IStores,
+  ): ((ctx: OffscreenCanvasRenderingContext2D |THREE.WebGLRenderer) => void)[] {
     return this.appLogic[app][1](
-      components,
+      componentsStores,
       bootReplier
     );
   }
 
   inputEvent(
-    inputEvent: Event,
+    inputEvent: Event|string,
     app: string,
-    ecs: ECS<any>,
+    ecs: ECS,
   ) {
+    if (app === "document") {
+      return;
+    }
+
     this.appLogic[app][2] && this.appLogic[app][2](
       ecs,
       inputEvent

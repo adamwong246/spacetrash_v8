@@ -6,15 +6,15 @@ export function uuidv4() {
   );
 }
 
-export function make<T>(c: Component<any, any>, arg1: string): T | null {
-  if (c.constructor.name === arg1) {
-    return c as T;
-  }
-  return null;
-}
+// export function make<T>(c: Component<any, any>, arg1: string): T | null {
+//   if (c.constructor.name === arg1) {
+//     return c as T;
+//   }
+//   return null;
+// }
 
-export function makes<T>(cs: Component<any, any>[], arg1: string): T[] {
-  return cs.filter((c) => {
-    return c.constructor.name === arg1
-  }) as T[];
-}
+// export function makes<T>(cs: Component<any, any>[], arg1: string): T[] {
+//   return cs.filter((c) => {
+//     return c.constructor.name === arg1
+//   }) as T[];
+// }

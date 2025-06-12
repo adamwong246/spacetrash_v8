@@ -4,13 +4,14 @@ import stringifyEvent from "../Event";
 export const UICanvas = (props: {
   worker: Worker;
   app: string;
+  rendering: "2d" | "webgl2"
 }) => {
   const canvasRef = useRef(null)
 
   useEffect(() => {
     if (canvasRef.current) {
-      const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
-      props.worker.postMessage([props.app + "-register", offscreen], [offscreen]);
+    const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
+      props.worker.postMessage([props.app + "-register", offscreen, props.rendering], [offscreen]);
     }
   }, [canvasRef]);
 

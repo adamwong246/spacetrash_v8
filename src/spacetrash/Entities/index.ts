@@ -7,6 +7,7 @@ import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, Pow
 
 import { Entity } from "../../engine/Entity";
 import { SpaceTrashEntityComponent } from "../lib/EntityComponent";
+import { VideoComponent } from "../Components/video";
 
 
 export class SpaceTrashEntity extends Entity {
@@ -17,6 +18,7 @@ export class SpaceTrashEntity extends Entity {
 }
 
 export class Slime extends SpaceTrashEntityComponent {
+
   constructor(
     spe: SpaceTrashEntity,
     x: number = 0,
@@ -26,16 +28,25 @@ export class Slime extends SpaceTrashEntityComponent {
     dy: number = 0,
   ) {
 
+    const p = new PhysicsActorComponent(spe, x, y, r, new SpawningComponent(spe), dx, dy);
     super(
       spe,
-      [new PhysicsActorComponent(spe, x, y, r, new SpawningComponent(spe), dx, dy),
+      [p,
       new ThermalComponent(spe),
       new MeleeComponent(spe, 1)],
     );
+
+
+
+    
   }
+
+  
 }
 
 export class SpaceTrashDrone extends SpaceTrashEntityComponent {
+
+  physicsActorComponent: PhysicsActorComponent;
 
   constructor(
     x: number = 0,
@@ -46,17 +57,23 @@ export class SpaceTrashDrone extends SpaceTrashEntityComponent {
     albedo: number = 0,
   ) {
     const spe = new SpaceTrashEntity();
+
+    const physicsActorComponent = new PhysicsActorComponent(spe, x, y, r, new WheeledComponent(spe), dx, dy);
+
     super(
       spe,
       [
-        new PhysicsActorComponent(spe, x, y, r, new WheeledComponent(spe), dx, dy),
+        physicsActorComponent,
         new LitComponent(spe),
         new CameraComponent(spe),
         new AttackableComponent(spe),
         new PowerStoringComponent(spe),
-        // new LitableComponent(spe, albedo)
+        // new LitableComponent(spe, albedo),
+        new VideoComponent()
       ],
     );
+
+    this.physicsActorComponent = physicsActorComponent;
   }
 }
 

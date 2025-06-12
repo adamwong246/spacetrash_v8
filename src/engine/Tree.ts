@@ -14,7 +14,7 @@ export abstract class Tree   {
 }
 
 export class Root extends Tree   {
-  name: string;
+  // name: string;
   root: Scene<any>;
 
   constructor(
@@ -26,7 +26,7 @@ export class Root extends Tree   {
 }
 
 export class Branch extends Tree   {
-  name: string;
+  // name: string;
   // parent: Scene;
   children: Scene<any>;
 
@@ -39,7 +39,7 @@ export class Branch extends Tree   {
 }
 
 export class Leaf extends Tree   {
-  name: string;
+  // name: string;
   // parent: Scene;
 
   constructor(

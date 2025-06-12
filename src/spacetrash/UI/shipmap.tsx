@@ -13,7 +13,7 @@ export const ShipMapApp = (props: {
       position: "relative",
     }}
   >
-  <UICanvas worker={props.worker} app={"shipmap"} />
+  <UICanvas worker={props.worker} app={"shipmap"} rendering="2d"/>
 
 
   </div>);

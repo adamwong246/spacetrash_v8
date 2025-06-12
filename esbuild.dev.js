@@ -31,5 +31,9 @@ esbuild.context({
   ],
 
 }).then((ctx) => {
-  ctx.serve();
+  ctx.serve({
+    cors: {
+      origin: 'https://localhost',
+    },
+  });
 })

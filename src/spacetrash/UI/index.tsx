@@ -68,6 +68,7 @@ const initialState: () => IState = () => {
   }
 };
 
+
 export const SpaceTrashDesktop = (props: { worker: Worker }) => {
 
   const [desktopState, setDesktopState] = useState<IState>(initialState());
@@ -75,14 +76,12 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
   const stateRef = useRef<IState>();
   stateRef.current = desktopState;
 
-
-
   props.worker.onmessage = (e) => {
     if (!stateRef.current) {
       return;
     }
 
-    console.log("Message received from worker", e);
+    // console.log("Message received from worker", e);
 
     if (e.data[0] === 'terminal-update') {
 

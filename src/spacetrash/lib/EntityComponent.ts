@@ -17,7 +17,8 @@ export enum ETiles {
   'South', 'TileI', 'TileJ','`WallTile'
 }
 
-export class SpaceTrashEntityComponent extends EntityComponent {
+export abstract class SpaceTrashEntityComponent extends EntityComponent {
+
   x: number;
   dx: number;
   y: number;

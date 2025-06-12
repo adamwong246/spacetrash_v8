@@ -1,4 +1,4 @@
-import Component from "../../engine/Component";
+import {Component} from "../../engine/Component";
 
 import { SpaceTrashEntity } from "../../spacetrash/Entities";
 

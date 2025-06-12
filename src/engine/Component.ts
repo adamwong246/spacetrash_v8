@@ -1,12 +1,7 @@
-export default abstract class Component<IMove, IComponents> {
+export abstract class Component<IMove, IComponents> {
 
-  entityUid: string;
+}
 
-  constructor(
-    entityUid: string,
-    
-  ) {
-    this.entityUid = entityUid;
-  }
+export abstract class TwoD_Component<IMove, IComponents> extends Component<IMove, IComponents>{
 
 }

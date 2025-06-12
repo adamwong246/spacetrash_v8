@@ -25,6 +25,7 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
 
     Object.keys(ESpaceTrashApps).forEach(spApp => {
       if (msg.data[0] === `${spApp}-register`) {
+        // for apps without a canvas
         if (msg.data.length === 1) {
           sp.register(
             spApp,
@@ -32,9 +33,11 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
             undefined,
             (data) => {
               postMessage([`${spApp}-update`, data]);
-            }
+            },
+            undefined
           )
         } 
+        // for apps with a canvas
         else {
           sp.register(
             spApp,
@@ -43,7 +46,8 @@ self.onmessage = function handleMessageFromMain(msg: MessageEvent) {
             msg.data[1],
             (data) => {
               postMessage([`${spApp}-update`, data]);
-            }
+            },
+            msg.data[2],
           )
         }
         
