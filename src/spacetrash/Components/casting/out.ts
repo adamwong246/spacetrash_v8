@@ -4,6 +4,7 @@ import { SpaceTrashEntity } from "../../Entities";
 import { ERays } from "../../lib";
 
 import { ISpaceTrashComponents } from "..";
+import { ComponentStore, Store } from "../../../engine/types";
 
 export abstract class OutCastingComponent extends Component<unknown, ISpaceTrashComponents> {
   // fov: number;
@@ -11,8 +12,8 @@ export abstract class OutCastingComponent extends Component<unknown, ISpaceTrash
   // intensity: number;
   dropoff: (x: number) => number;
 
-  constructor(spe: SpaceTrashEntity) {
-    super(spe);
+  constructor() {
+    super();
   }
 
   payload() {
@@ -53,10 +54,10 @@ export class MeleeComponent extends AttackingComponent {
   // dropoff = (x) => x < 2 ? 10 : 0;
   
   constructor(
-    spe: SpaceTrashEntity,
+
     intensity: number
   ) {
-    super(spe);
+    super();
     // this.intensity = intensity;
   }
 
@@ -87,22 +88,21 @@ export class GunComponent extends OutCastingComponent {
 }
 
 export class LitComponent extends OutCastingComponent {
-  // dropoff = (x) => 1 / (x ^ 2);
-  // ray: ERays.light
   radiance: number;
 
-  constructor(spe: SpaceTrashEntity) {
-    super(spe);
+  constructor() {
+    super();
     this.radiance = -1;
   }
 
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
+  
+}
 
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
+export class LitStore extends Store<LitComponent>{
+  make(...a: any[]): LitComponent {
+    return new LitComponent();
+    // throw new Error("Method not implemented.");
   }
+  
+  
 }

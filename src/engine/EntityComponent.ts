@@ -14,10 +14,4 @@ export abstract class EntityComponent {
   applyComponent (c: Component<any, any>) {
     this.components.push(c)
   }
-
-  // abstract validate: () => any
-  // abstract validate(): void 
-  // validate() {
-  //   throw new Error("Method not implemented.");
-  // }
 }

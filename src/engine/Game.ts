@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { ECS } from "./ECS";
 import { StateSpace } from "./StateSpace";
 import { System } from "./System";
+import { Phase1 } from "../spacetrash/Components/phase1";
+import { ComponentStore, IStores } from "./types";
 
 export class Game{
   postMessage: (
@@ -28,7 +30,7 @@ export class Game{
   constructor(
     state: StateSpace,
     system: System,
-    components: Set<string>,
+    components: IStores,
     postMessage: (
       message: any,
       options?: WindowPostMessageOptions | undefined
@@ -75,7 +77,7 @@ export class Game{
 
     if (canvasContext === "2d") {
       drawSurface = canvas?.getContext(
-        "2d"
+        "2d", { alpha: false }
       ) as OffscreenCanvasRenderingContext2D;
     } else if (canvasContext === "webgl2") {
       const d = canvas?.getContext("webgl2") as WebGL2RenderingContext;
@@ -143,9 +145,7 @@ export class Game{
     const s = this.state.get(this.state.currrent);
 
     const ds = this.canvasContexts[key].drawSurface;
-    // const ctx = this.canvasContexts[key].drawSurface?.getContext(
-    //   this.canvasContexts[key].canvasContext
-    // );
+    
     const clbk = this.canvasContexts[key].callback;
 
     if (ds) {

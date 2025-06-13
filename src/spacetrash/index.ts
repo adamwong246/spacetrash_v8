@@ -3,8 +3,7 @@ import { Scene } from "../engine/Scene";
 import { StateSpace } from "../engine/StateSpace";
 import SpaceTrashPlayer from "./Player";
 import {
-  PhysicsActorComponent,
-  PhysicsSetComponent,
+  
 } from "./Components/physics";
 import { SpaceTrashTerminal } from "./lib/Terminal";
 import { SpaceTrashDrone } from "./Entities";
@@ -13,21 +12,28 @@ import { SpaceTrashShip } from "./ship";
 import { ActorSize, BotSlots, MapSize, NumberOfActors, SpaceTrashMainSystem, TileSize } from "./System";
 import {
   AttackableComponent,
+  AttackableStore,
   CameraComponent,
+  CameraStore,
   LitableComponent,
+  LittableStore,
 } from "./Components/casting/in";
 import { PowerStoringComponent } from "./Components/power";
-import { LitComponent } from "./Components/casting/out";
+import { LitComponent, LitStore } from "./Components/casting/out";
 import { shipMapUpdateLoop } from "./shipMapUpdateLoop";
 import { renderDrone } from "./renderDrone";
 import { VideoComponent } from "./Components/video";
-import { Phase0 } from "./Components/phase0";
+import { Phase0, Phase0Store } from "./Components/phase0";
+import { Phase1, Phase1Store } from "./Components/phase1";
+import { PhysicsActorStore } from "./Components/actor";
+import { PhysicsSetPieceStore } from "./Components/setPiece";
+import { WebGLRenderer } from "three/src/renderers/WebGLRenderer.js";
 // import SpaceTrashPlayer from "./Player";
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
 
-export default class Spacetrash extends Game<any> {
+export default class Spacetrash extends Game {
   terminal: SpaceTrashTerminal;
 
   constructor(
@@ -166,18 +172,21 @@ export default class Spacetrash extends Game<any> {
               // return []
             },
             (componentStores, reply) => {
-              const thingsToDraw: Record<string, any> = shipMapUpdateLoop(
+              const thingsToDraw: (c: WebGLRenderer) => any[] = shipMapUpdateLoop(
                 componentStores,
                 reply
               );
 
+
               return [
-                ...Object.keys(thingsToDraw).map((k) => {
+                ...Object.entries(thingsToDraw).map(([i, k]) => {
+
                   return (c) =>
-                    thingsToDraw[k].draw(c, thingsToDraw[k].opts) ||
-                    ((c) => null);
+                    k(c);
                 }),
+
                 (canvas) => {
+
                   if (
                     canvas.constructor.name ===
                     "OffscreenCanvasRenderingContext2D"
@@ -250,17 +259,50 @@ export default class Spacetrash extends Game<any> {
     super(
       state,
       SpaceTrashMainSystem,
-      new Set([
-        AttackableComponent.name,
-        CameraComponent.name,
-        LitableComponent.name,
-        LitComponent.name,
-        PhysicsActorComponent.name,
-        PhysicsSetComponent.name,
-        PowerStoringComponent.name,
-        VideoComponent.name,
-        Phase0.name
-      ]),
+      {
+        PhysicsSetPieceComponent: new PhysicsSetPieceStore(),
+        PhysicsActorComponent: new PhysicsActorStore(),
+        LitableComponent: new LittableStore(),
+        LitComponent: new LitStore(),
+        CameraComponent: new CameraStore(),
+        AttackableComponent: new AttackableStore(),
+
+        Phase0: new Phase0Store(),
+        Phase1: new Phase1Store()
+        
+      },
+      // [
+      //   new PhysicsSetPieceStore(),
+      //   new PhysicsActorStore(),
+      //   new LittableStore(),
+      //   new LitStore(),
+
+      //   new Phase0Store(),
+      //   new Phase1Store()
+      // ],
+      // {
+      //   setPieces: new PhysicsSetPieceStore(),
+      //   actors: new PhysicsActorStore(),
+
+      //   // setPart2: new Phase0Store(),
+      //   // actorsPart2: new Phase1Store(),
+
+      //   littables: new LittableStore(),
+      //   lits: new LitStore(),
+        
+      // },
+      // new Set([
+      //   // AttackableComponent.constructor,
+      //   // CameraComponent.constructor,
+      //   // LitableComponent.constructor,
+      //   // LitComponent.constructor,
+      //   // PhysicsActorComponent.constructor,
+      //   // PhysicsSetComponent.constructor,
+      //   // PowerStoringComponent.constructor,
+      //   // VideoComponent.constructor,
+      //   // Phase0.constructor,
+      //   // new Phase1Store()
+      // ]),
       workerPostMessage
     );
     this.terminal = new SpaceTrashTerminal();

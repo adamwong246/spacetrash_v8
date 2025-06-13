@@ -1,13 +1,14 @@
 
-import { InCastingComponent, AttackableComponent, ThermalComponent, CameraComponent, LitableComponent } from "../Components/casting/in";
-import { OutCastingComponent, MeleeComponent, GunComponent, LitComponent } from "../Components/casting/out";
-import { UnmovingComponent, SpawningComponent, PanningComponent, WheeledComponent } from "../Components/conveyance";
-import { PhysicsComponent, PhysicsSetComponent, PhysicsActorComponent } from "../Components/physics";
-import { PoweredComponent, PowerConsumingComponent, PowerProducingComponent, PowerStoringComponent } from "../Components/power";
+import { AttackableComponent, ThermalComponent, CameraComponent } from "../Components/casting/in";
+import { MeleeComponent, LitComponent } from "../Components/casting/out";
+import { SpawningComponent, WheeledComponent } from "../Components/conveyance";
+
+import { PowerStoringComponent } from "../Components/power";
 
 import { Entity } from "../../engine/Entity";
 import { SpaceTrashEntityComponent } from "../lib/EntityComponent";
 import { VideoComponent } from "../Components/video";
+import { PhysicsActorComponent } from "../Components/actor";
 
 
 export class SpaceTrashEntity extends Entity {
@@ -28,12 +29,12 @@ export class Slime extends SpaceTrashEntityComponent {
     dy: number = 0,
   ) {
 
-    const p = new PhysicsActorComponent(spe, x, y, r, new SpawningComponent(spe), dx, dy);
+    const p = new PhysicsActorComponent(x, y, r, dx, dy);
     super(
       spe,
       [p,
-      new ThermalComponent(spe),
-      new MeleeComponent(spe, 1)],
+      new ThermalComponent(),
+      new MeleeComponent(1)],
     );
 
 
@@ -58,18 +59,18 @@ export class SpaceTrashDrone extends SpaceTrashEntityComponent {
   ) {
     const spe = new SpaceTrashEntity();
 
-    const physicsActorComponent = new PhysicsActorComponent(spe, x, y, r, new WheeledComponent(spe), dx, dy);
+    const physicsActorComponent = new PhysicsActorComponent(x, y, r,  dx, dy);
 
     super(
       spe,
       [
         physicsActorComponent,
-        new LitComponent(spe),
-        new CameraComponent(spe),
-        new AttackableComponent(spe),
-        new PowerStoringComponent(spe),
+        new LitComponent(),
+        // new CameraComponent(),
+        // new AttackableComponent(),
+        // new PowerStoringComponent(spe),
         // new LitableComponent(spe, albedo),
-        new VideoComponent()
+        // new VideoComponent()
       ],
     );
 

@@ -37569,6 +37569,256 @@ var Scene = class extends Object3D {
     return data;
   }
 };
+var DataTexture = class extends Texture {
+  /**
+   * Constructs a new data texture.
+   *
+   * @param {?TypedArray} [data=null] - The buffer data.
+   * @param {number} [width=1] - The width of the texture.
+   * @param {number} [height=1] - The height of the texture.
+   * @param {number} [format=RGBAFormat] - The texture format.
+   * @param {number} [type=UnsignedByteType] - The texture type.
+   * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+   * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+   * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+   * @param {number} [magFilter=NearestFilter] - The mag filter value.
+   * @param {number} [minFilter=NearestFilter] - The min filter value.
+   * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+   * @param {string} [colorSpace=NoColorSpace] - The color space.
+   */
+  constructor(data = null, width = 1, height = 1, format, type, mapping, wrapS, wrapT, magFilter = NearestFilter, minFilter = NearestFilter, anisotropy, colorSpace) {
+    super(null, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace);
+    this.isDataTexture = true;
+    this.image = { data, width, height };
+    this.generateMipmaps = false;
+    this.flipY = false;
+    this.unpackAlignment = 1;
+  }
+};
+var InstancedBufferAttribute = class extends BufferAttribute {
+  /**
+   * Constructs a new instanced buffer attribute.
+   *
+   * @param {TypedArray} array - The array holding the attribute data.
+   * @param {number} itemSize - The item size.
+   * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+   * @param {number} [meshPerAttribute=1] - How often a value of this buffer attribute should be repeated.
+   */
+  constructor(array, itemSize, normalized, meshPerAttribute = 1) {
+    super(array, itemSize, normalized);
+    this.isInstancedBufferAttribute = true;
+    this.meshPerAttribute = meshPerAttribute;
+  }
+  copy(source) {
+    super.copy(source);
+    this.meshPerAttribute = source.meshPerAttribute;
+    return this;
+  }
+  toJSON() {
+    const data = super.toJSON();
+    data.meshPerAttribute = this.meshPerAttribute;
+    data.isInstancedBufferAttribute = true;
+    return data;
+  }
+};
+var _instanceLocalMatrix = /* @__PURE__ */ new Matrix4();
+var _instanceWorldMatrix = /* @__PURE__ */ new Matrix4();
+var _instanceIntersects = [];
+var _box3 = /* @__PURE__ */ new Box3();
+var _identity = /* @__PURE__ */ new Matrix4();
+var _mesh$1 = /* @__PURE__ */ new Mesh();
+var _sphere$4 = /* @__PURE__ */ new Sphere();
+var InstancedMesh = class extends Mesh {
+  /**
+   * Constructs a new instanced mesh.
+   *
+   * @param {BufferGeometry} [geometry] - The mesh geometry.
+   * @param {Material|Array<Material>} [material] - The mesh material.
+   * @param {number} count - The number of instances.
+   */
+  constructor(geometry, material2, count) {
+    super(geometry, material2);
+    this.isInstancedMesh = true;
+    this.instanceMatrix = new InstancedBufferAttribute(new Float32Array(count * 16), 16);
+    this.instanceColor = null;
+    this.morphTexture = null;
+    this.count = count;
+    this.boundingBox = null;
+    this.boundingSphere = null;
+    for (let i = 0; i < count; i++) {
+      this.setMatrixAt(i, _identity);
+    }
+  }
+  /**
+   * Computes the bounding box of the instanced mesh, and updates {@link InstancedMesh#boundingBox}.
+   * The bounding box is not automatically computed by the engine; this method must be called by your app.
+   * You may need to recompute the bounding box if an instance is transformed via {@link InstancedMesh#setMatrixAt}.
+   */
+  computeBoundingBox() {
+    const geometry = this.geometry;
+    const count = this.count;
+    if (this.boundingBox === null) {
+      this.boundingBox = new Box3();
+    }
+    if (geometry.boundingBox === null) {
+      geometry.computeBoundingBox();
+    }
+    this.boundingBox.makeEmpty();
+    for (let i = 0; i < count; i++) {
+      this.getMatrixAt(i, _instanceLocalMatrix);
+      _box3.copy(geometry.boundingBox).applyMatrix4(_instanceLocalMatrix);
+      this.boundingBox.union(_box3);
+    }
+  }
+  /**
+   * Computes the bounding sphere of the instanced mesh, and updates {@link InstancedMesh#boundingSphere}
+   * The engine automatically computes the bounding sphere when it is needed, e.g., for ray casting or view frustum culling.
+   * You may need to recompute the bounding sphere if an instance is transformed via {@link InstancedMesh#setMatrixAt}.
+   */
+  computeBoundingSphere() {
+    const geometry = this.geometry;
+    const count = this.count;
+    if (this.boundingSphere === null) {
+      this.boundingSphere = new Sphere();
+    }
+    if (geometry.boundingSphere === null) {
+      geometry.computeBoundingSphere();
+    }
+    this.boundingSphere.makeEmpty();
+    for (let i = 0; i < count; i++) {
+      this.getMatrixAt(i, _instanceLocalMatrix);
+      _sphere$4.copy(geometry.boundingSphere).applyMatrix4(_instanceLocalMatrix);
+      this.boundingSphere.union(_sphere$4);
+    }
+  }
+  copy(source, recursive) {
+    super.copy(source, recursive);
+    this.instanceMatrix.copy(source.instanceMatrix);
+    if (source.morphTexture !== null) this.morphTexture = source.morphTexture.clone();
+    if (source.instanceColor !== null) this.instanceColor = source.instanceColor.clone();
+    this.count = source.count;
+    if (source.boundingBox !== null) this.boundingBox = source.boundingBox.clone();
+    if (source.boundingSphere !== null) this.boundingSphere = source.boundingSphere.clone();
+    return this;
+  }
+  /**
+   * Gets the color of the defined instance.
+   *
+   * @param {number} index - The instance index.
+   * @param {Color} color - The target object that is used to store the method's result.
+   */
+  getColorAt(index, color) {
+    color.fromArray(this.instanceColor.array, index * 3);
+  }
+  /**
+   * Gets the local transformation matrix of the defined instance.
+   *
+   * @param {number} index - The instance index.
+   * @param {Matrix4} matrix - The target object that is used to store the method's result.
+   */
+  getMatrixAt(index, matrix) {
+    matrix.fromArray(this.instanceMatrix.array, index * 16);
+  }
+  /**
+   * Gets the morph target weights of the defined instance.
+   *
+   * @param {number} index - The instance index.
+   * @param {Mesh} object - The target object that is used to store the method's result.
+   */
+  getMorphAt(index, object) {
+    const objectInfluences = object.morphTargetInfluences;
+    const array = this.morphTexture.source.data.data;
+    const len = objectInfluences.length + 1;
+    const dataIndex = index * len + 1;
+    for (let i = 0; i < objectInfluences.length; i++) {
+      objectInfluences[i] = array[dataIndex + i];
+    }
+  }
+  raycast(raycaster, intersects) {
+    const matrixWorld = this.matrixWorld;
+    const raycastTimes = this.count;
+    _mesh$1.geometry = this.geometry;
+    _mesh$1.material = this.material;
+    if (_mesh$1.material === void 0) return;
+    if (this.boundingSphere === null) this.computeBoundingSphere();
+    _sphere$4.copy(this.boundingSphere);
+    _sphere$4.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsSphere(_sphere$4) === false) return;
+    for (let instanceId = 0; instanceId < raycastTimes; instanceId++) {
+      this.getMatrixAt(instanceId, _instanceLocalMatrix);
+      _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix);
+      _mesh$1.matrixWorld = _instanceWorldMatrix;
+      _mesh$1.raycast(raycaster, _instanceIntersects);
+      for (let i = 0, l = _instanceIntersects.length; i < l; i++) {
+        const intersect = _instanceIntersects[i];
+        intersect.instanceId = instanceId;
+        intersect.object = this;
+        intersects.push(intersect);
+      }
+      _instanceIntersects.length = 0;
+    }
+  }
+  /**
+   * Sets the given color to the defined instance. Make sure you set the `needsUpdate` flag of
+   * {@link InstancedMesh#instanceColor} to `true` after updating all the colors.
+   *
+   * @param {number} index - The instance index.
+   * @param {Color} color - The instance color.
+   */
+  setColorAt(index, color) {
+    if (this.instanceColor === null) {
+      this.instanceColor = new InstancedBufferAttribute(new Float32Array(this.instanceMatrix.count * 3).fill(1), 3);
+    }
+    color.toArray(this.instanceColor.array, index * 3);
+  }
+  /**
+   * Sets the given local transformation matrix to the defined instance. Make sure you set the `needsUpdate` flag of
+   * {@link InstancedMesh#instanceMatrix} to `true` after updating all the colors.
+   *
+   * @param {number} index - The instance index.
+   * @param {Matrix4} matrix - The local transformation.
+   */
+  setMatrixAt(index, matrix) {
+    matrix.toArray(this.instanceMatrix.array, index * 16);
+  }
+  /**
+   * Sets the morph target weights to the defined instance. Make sure you set the `needsUpdate` flag of
+   * {@link InstancedMesh#morphTexture} to `true` after updating all the influences.
+   *
+   * @param {number} index - The instance index.
+   * @param {Mesh} object -  A mesh which `morphTargetInfluences` property containing the morph target weights
+   * of a single instance.
+   */
+  setMorphAt(index, object) {
+    const objectInfluences = object.morphTargetInfluences;
+    const len = objectInfluences.length + 1;
+    if (this.morphTexture === null) {
+      this.morphTexture = new DataTexture(new Float32Array(len * this.count), len, this.count, RedFormat, FloatType);
+    }
+    const array = this.morphTexture.source.data.data;
+    let morphInfluencesSum = 0;
+    for (let i = 0; i < objectInfluences.length; i++) {
+      morphInfluencesSum += objectInfluences[i];
+    }
+    const morphBaseInfluence = this.geometry.morphTargetsRelative ? 1 : 1 - morphInfluencesSum;
+    const dataIndex = len * index;
+    array[dataIndex] = morphBaseInfluence;
+    array.set(objectInfluences, dataIndex + 1);
+  }
+  updateMorphTargets() {
+  }
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever this instance is no longer used in your app.
+   */
+  dispose() {
+    this.dispatchEvent({ type: "dispose" });
+    if (this.morphTexture !== null) {
+      this.morphTexture.dispose();
+      this.morphTexture = null;
+    }
+  }
+};
 var _vector1 = /* @__PURE__ */ new Vector3();
 var _vector2 = /* @__PURE__ */ new Vector3();
 var _normalMatrix = /* @__PURE__ */ new Matrix3();
@@ -37980,228 +38230,6 @@ var Frustum = class {
     return new this.constructor().copy(this);
   }
 };
-var LineBasicMaterial = class extends Material {
-  /**
-   * Constructs a new line basic material.
-   *
-   * @param {Object} [parameters] - An object with one or more properties
-   * defining the material's appearance. Any property of the material
-   * (including any property from inherited materials) can be passed
-   * in here. Color values can be passed any type of value accepted
-   * by {@link Color#set}.
-   */
-  constructor(parameters) {
-    super();
-    this.isLineBasicMaterial = true;
-    this.type = "LineBasicMaterial";
-    this.color = new Color(16777215);
-    this.map = null;
-    this.linewidth = 1;
-    this.linecap = "round";
-    this.linejoin = "round";
-    this.fog = true;
-    this.setValues(parameters);
-  }
-  copy(source) {
-    super.copy(source);
-    this.color.copy(source.color);
-    this.map = source.map;
-    this.linewidth = source.linewidth;
-    this.linecap = source.linecap;
-    this.linejoin = source.linejoin;
-    this.fog = source.fog;
-    return this;
-  }
-};
-var _vStart = /* @__PURE__ */ new Vector3();
-var _vEnd = /* @__PURE__ */ new Vector3();
-var _inverseMatrix$1 = /* @__PURE__ */ new Matrix4();
-var _ray$1 = /* @__PURE__ */ new Ray();
-var _sphere$1 = /* @__PURE__ */ new Sphere();
-var _intersectPointOnRay = /* @__PURE__ */ new Vector3();
-var _intersectPointOnSegment = /* @__PURE__ */ new Vector3();
-var Line = class extends Object3D {
-  /**
-   * Constructs a new line.
-   *
-   * @param {BufferGeometry} [geometry] - The line geometry.
-   * @param {Material|Array<Material>} [material] - The line material.
-   */
-  constructor(geometry = new BufferGeometry(), material2 = new LineBasicMaterial()) {
-    super();
-    this.isLine = true;
-    this.type = "Line";
-    this.geometry = geometry;
-    this.material = material2;
-    this.morphTargetDictionary = void 0;
-    this.morphTargetInfluences = void 0;
-    this.updateMorphTargets();
-  }
-  copy(source, recursive) {
-    super.copy(source, recursive);
-    this.material = Array.isArray(source.material) ? source.material.slice() : source.material;
-    this.geometry = source.geometry;
-    return this;
-  }
-  /**
-   * Computes an array of distance values which are necessary for rendering dashed lines.
-   * For each vertex in the geometry, the method calculates the cumulative length from the
-   * current point to the very beginning of the line.
-   *
-   * @return {Line} A reference to this line.
-   */
-  computeLineDistances() {
-    const geometry = this.geometry;
-    if (geometry.index === null) {
-      const positionAttribute = geometry.attributes.position;
-      const lineDistances = [0];
-      for (let i = 1, l = positionAttribute.count; i < l; i++) {
-        _vStart.fromBufferAttribute(positionAttribute, i - 1);
-        _vEnd.fromBufferAttribute(positionAttribute, i);
-        lineDistances[i] = lineDistances[i - 1];
-        lineDistances[i] += _vStart.distanceTo(_vEnd);
-      }
-      geometry.setAttribute("lineDistance", new Float32BufferAttribute(lineDistances, 1));
-    } else {
-      console.warn("THREE.Line.computeLineDistances(): Computation only possible with non-indexed BufferGeometry.");
-    }
-    return this;
-  }
-  /**
-   * Computes intersection points between a casted ray and this line.
-   *
-   * @param {Raycaster} raycaster - The raycaster.
-   * @param {Array<Object>} intersects - The target array that holds the intersection points.
-   */
-  raycast(raycaster, intersects) {
-    const geometry = this.geometry;
-    const matrixWorld = this.matrixWorld;
-    const threshold = raycaster.params.Line.threshold;
-    const drawRange = geometry.drawRange;
-    if (geometry.boundingSphere === null) geometry.computeBoundingSphere();
-    _sphere$1.copy(geometry.boundingSphere);
-    _sphere$1.applyMatrix4(matrixWorld);
-    _sphere$1.radius += threshold;
-    if (raycaster.ray.intersectsSphere(_sphere$1) === false) return;
-    _inverseMatrix$1.copy(matrixWorld).invert();
-    _ray$1.copy(raycaster.ray).applyMatrix4(_inverseMatrix$1);
-    const localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3);
-    const localThresholdSq = localThreshold * localThreshold;
-    const step = this.isLineSegments ? 2 : 1;
-    const index = geometry.index;
-    const attributes = geometry.attributes;
-    const positionAttribute = attributes.position;
-    if (index !== null) {
-      const start = Math.max(0, drawRange.start);
-      const end = Math.min(index.count, drawRange.start + drawRange.count);
-      for (let i = start, l = end - 1; i < l; i += step) {
-        const a = index.getX(i);
-        const b = index.getX(i + 1);
-        const intersect = checkIntersection(this, raycaster, _ray$1, localThresholdSq, a, b, i);
-        if (intersect) {
-          intersects.push(intersect);
-        }
-      }
-      if (this.isLineLoop) {
-        const a = index.getX(end - 1);
-        const b = index.getX(start);
-        const intersect = checkIntersection(this, raycaster, _ray$1, localThresholdSq, a, b, end - 1);
-        if (intersect) {
-          intersects.push(intersect);
-        }
-      }
-    } else {
-      const start = Math.max(0, drawRange.start);
-      const end = Math.min(positionAttribute.count, drawRange.start + drawRange.count);
-      for (let i = start, l = end - 1; i < l; i += step) {
-        const intersect = checkIntersection(this, raycaster, _ray$1, localThresholdSq, i, i + 1, i);
-        if (intersect) {
-          intersects.push(intersect);
-        }
-      }
-      if (this.isLineLoop) {
-        const intersect = checkIntersection(this, raycaster, _ray$1, localThresholdSq, end - 1, start, end - 1);
-        if (intersect) {
-          intersects.push(intersect);
-        }
-      }
-    }
-  }
-  /**
-   * Sets the values of {@link Line#morphTargetDictionary} and {@link Line#morphTargetInfluences}
-   * to make sure existing morph targets can influence this 3D object.
-   */
-  updateMorphTargets() {
-    const geometry = this.geometry;
-    const morphAttributes = geometry.morphAttributes;
-    const keys = Object.keys(morphAttributes);
-    if (keys.length > 0) {
-      const morphAttribute = morphAttributes[keys[0]];
-      if (morphAttribute !== void 0) {
-        this.morphTargetInfluences = [];
-        this.morphTargetDictionary = {};
-        for (let m = 0, ml = morphAttribute.length; m < ml; m++) {
-          const name = morphAttribute[m].name || String(m);
-          this.morphTargetInfluences.push(0);
-          this.morphTargetDictionary[name] = m;
-        }
-      }
-    }
-  }
-};
-function checkIntersection(object, raycaster, ray, thresholdSq, a, b, i) {
-  const positionAttribute = object.geometry.attributes.position;
-  _vStart.fromBufferAttribute(positionAttribute, a);
-  _vEnd.fromBufferAttribute(positionAttribute, b);
-  const distSq = ray.distanceSqToSegment(_vStart, _vEnd, _intersectPointOnRay, _intersectPointOnSegment);
-  if (distSq > thresholdSq) return;
-  _intersectPointOnRay.applyMatrix4(object.matrixWorld);
-  const distance = raycaster.ray.origin.distanceTo(_intersectPointOnRay);
-  if (distance < raycaster.near || distance > raycaster.far) return;
-  return {
-    distance,
-    // What do we want? intersection point on the ray or on the segment??
-    // point: raycaster.ray.at( distance ),
-    point: _intersectPointOnSegment.clone().applyMatrix4(object.matrixWorld),
-    index: i,
-    face: null,
-    faceIndex: null,
-    barycoord: null,
-    object
-  };
-}
-var _start = /* @__PURE__ */ new Vector3();
-var _end = /* @__PURE__ */ new Vector3();
-var LineSegments = class extends Line {
-  /**
-   * Constructs a new line segments.
-   *
-   * @param {BufferGeometry} [geometry] - The line geometry.
-   * @param {Material|Array<Material>} [material] - The line material.
-   */
-  constructor(geometry, material2) {
-    super(geometry, material2);
-    this.isLineSegments = true;
-    this.type = "LineSegments";
-  }
-  computeLineDistances() {
-    const geometry = this.geometry;
-    if (geometry.index === null) {
-      const positionAttribute = geometry.attributes.position;
-      const lineDistances = [];
-      for (let i = 0, l = positionAttribute.count; i < l; i += 2) {
-        _start.fromBufferAttribute(positionAttribute, i);
-        _end.fromBufferAttribute(positionAttribute, i + 1);
-        lineDistances[i] = i === 0 ? 0 : lineDistances[i - 1];
-        lineDistances[i + 1] = lineDistances[i] + _start.distanceTo(_end);
-      }
-      geometry.setAttribute("lineDistance", new Float32BufferAttribute(lineDistances, 1));
-    } else {
-      console.warn("THREE.LineSegments.computeLineDistances(): Computation only possible with non-indexed BufferGeometry.");
-    }
-    return this;
-  }
-};
 var DepthTexture = class extends Texture {
   /**
    * Constructs a new depth texture.
@@ -38389,99 +38417,6 @@ var CylinderGeometry = class _CylinderGeometry extends BufferGeometry {
    */
   static fromJSON(data) {
     return new _CylinderGeometry(data.radiusTop, data.radiusBottom, data.height, data.radialSegments, data.heightSegments, data.openEnded, data.thetaStart, data.thetaLength);
-  }
-};
-var _v0 = /* @__PURE__ */ new Vector3();
-var _v1$1 = /* @__PURE__ */ new Vector3();
-var _normal = /* @__PURE__ */ new Vector3();
-var _triangle = /* @__PURE__ */ new Triangle();
-var EdgesGeometry = class extends BufferGeometry {
-  /**
-   * Constructs a new edges geometry.
-   *
-   * @param {?BufferGeometry} [geometry=null] - The geometry.
-   * @param {number} [thresholdAngle=1] - An edge is only rendered if the angle (in degrees)
-   * between the face normals of the adjoining faces exceeds this value.
-   */
-  constructor(geometry = null, thresholdAngle = 1) {
-    super();
-    this.type = "EdgesGeometry";
-    this.parameters = {
-      geometry,
-      thresholdAngle
-    };
-    if (geometry !== null) {
-      const precisionPoints = 4;
-      const precision = Math.pow(10, precisionPoints);
-      const thresholdDot = Math.cos(DEG2RAD * thresholdAngle);
-      const indexAttr = geometry.getIndex();
-      const positionAttr = geometry.getAttribute("position");
-      const indexCount = indexAttr ? indexAttr.count : positionAttr.count;
-      const indexArr = [0, 0, 0];
-      const vertKeys = ["a", "b", "c"];
-      const hashes = new Array(3);
-      const edgeData = {};
-      const vertices = [];
-      for (let i = 0; i < indexCount; i += 3) {
-        if (indexAttr) {
-          indexArr[0] = indexAttr.getX(i);
-          indexArr[1] = indexAttr.getX(i + 1);
-          indexArr[2] = indexAttr.getX(i + 2);
-        } else {
-          indexArr[0] = i;
-          indexArr[1] = i + 1;
-          indexArr[2] = i + 2;
-        }
-        const { a, b, c } = _triangle;
-        a.fromBufferAttribute(positionAttr, indexArr[0]);
-        b.fromBufferAttribute(positionAttr, indexArr[1]);
-        c.fromBufferAttribute(positionAttr, indexArr[2]);
-        _triangle.getNormal(_normal);
-        hashes[0] = `${Math.round(a.x * precision)},${Math.round(a.y * precision)},${Math.round(a.z * precision)}`;
-        hashes[1] = `${Math.round(b.x * precision)},${Math.round(b.y * precision)},${Math.round(b.z * precision)}`;
-        hashes[2] = `${Math.round(c.x * precision)},${Math.round(c.y * precision)},${Math.round(c.z * precision)}`;
-        if (hashes[0] === hashes[1] || hashes[1] === hashes[2] || hashes[2] === hashes[0]) {
-          continue;
-        }
-        for (let j = 0; j < 3; j++) {
-          const jNext = (j + 1) % 3;
-          const vecHash0 = hashes[j];
-          const vecHash1 = hashes[jNext];
-          const v0 = _triangle[vertKeys[j]];
-          const v1 = _triangle[vertKeys[jNext]];
-          const hash = `${vecHash0}_${vecHash1}`;
-          const reverseHash = `${vecHash1}_${vecHash0}`;
-          if (reverseHash in edgeData && edgeData[reverseHash]) {
-            if (_normal.dot(edgeData[reverseHash].normal) <= thresholdDot) {
-              vertices.push(v0.x, v0.y, v0.z);
-              vertices.push(v1.x, v1.y, v1.z);
-            }
-            edgeData[reverseHash] = null;
-          } else if (!(hash in edgeData)) {
-            edgeData[hash] = {
-              index0: indexArr[j],
-              index1: indexArr[jNext],
-              normal: _normal.clone()
-            };
-          }
-        }
-      }
-      for (const key in edgeData) {
-        if (edgeData[key]) {
-          const { index0, index1 } = edgeData[key];
-          _v0.fromBufferAttribute(positionAttr, index0);
-          _v1$1.fromBufferAttribute(positionAttr, index1);
-          vertices.push(_v0.x, _v0.y, _v0.z);
-          vertices.push(_v1$1.x, _v1$1.y, _v1$1.z);
-        }
-      }
-      this.setAttribute("position", new Float32BufferAttribute(vertices, 3));
-    }
-  }
-  copy(source) {
-    super.copy(source);
-    this.parameters = Object.assign({}, source.parameters);
-    return this;
   }
 };
 var PlaneGeometry = class _PlaneGeometry extends BufferGeometry {
@@ -43666,12 +43601,12 @@ function getToneMappingFunction(functionName, toneMapping) {
   }
   return "vec3 " + functionName + "( vec3 color ) { return " + toneMappingName + "ToneMapping( color ); }";
 }
-var _v02 = /* @__PURE__ */ new Vector3();
+var _v0 = /* @__PURE__ */ new Vector3();
 function getLuminanceFunction() {
-  ColorManagement.getLuminanceCoefficients(_v02);
-  const r = _v02.x.toFixed(4);
-  const g = _v02.y.toFixed(4);
-  const b = _v02.z.toFixed(4);
+  ColorManagement.getLuminanceCoefficients(_v0);
+  const r = _v0.x.toFixed(4);
+  const g = _v0.y.toFixed(4);
+  const b = _v0.z.toFixed(4);
   return [
     "float luminance( const in vec3 rgb ) {",
     `	const vec3 weights = vec3( ${r}, ${g}, ${b} );`,
@@ -50237,47 +50172,54 @@ var WebGLRenderer = class {
 };
 
 // src/engine/ECS.ts
-var EntityMax = 4096;
+var EntityMax = 65535;
 var ECS = class {
   system;
   componentStores;
-  // entities: IEntitiesStore;
-  entitiesV2;
+  entities;
   paused = true;
+  nextId = 0;
   constructor(system, components) {
     this.system = system;
-    this.componentStores = {};
-    const sharedBuffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * EntityMax);
+    this.componentStores = [];
+    const sharedBuffer = new SharedArrayBuffer(
+      Int32Array.BYTES_PER_ELEMENT * EntityMax
+    );
     const sharedArray = new Int32Array(sharedBuffer);
-    this.entitiesV2 = sharedArray;
-    components.forEach((c) => {
-      this.componentStores[c] = [];
+    this.entities = sharedArray;
+    Object.entries(components).forEach(([k, c]) => {
+      this.componentStores[k] = c;
     });
   }
+  addComponent(i, c) {
+    this.componentStores[c.constructor.name].add(c, i);
+  }
+  addEntity() {
+    const toReturn = this.nextId;
+    this.entities[this.nextId] = this.nextId;
+    this.nextId++;
+    return toReturn;
+  }
   setEntitiesComponent(entityComponents) {
-    let i = 0;
     entityComponents.forEach((e) => {
       if (!e) {
         console.error("e should not be null!");
         debugger;
       }
-      this.entitiesV2[i] = i;
-      i++;
+      const i = this.addEntity();
       e.components.forEach((c) => {
         if (!c.constructor.name) {
           console.error("constructor-name not found.", c);
         } else {
-          if (!this.componentStores[c.constructor.name]) {
-            console.error(`${c.constructor.name} is not registered with the ECS. Did you forget to add it to your Game's construction?`);
-          } else {
-            this.componentStores[c.constructor.name].push([i, c]);
-          }
+          this.addComponent(i, c);
         }
       });
     });
-    console.log(`You have ${i} entities`);
-    if (i > EntityMax) {
-      console.error(`You have too many entities! You can have no more than ${EntityMax}`);
+    console.log(`You have ${this.nextId} entities`);
+    if (this.nextId > EntityMax) {
+      console.error(
+        `You have too many entities! You can have no more than ${EntityMax}`
+      );
       debugger;
     }
   }
@@ -50286,7 +50228,7 @@ var ECS = class {
   }
   async tick(delta) {
     if (!this.paused) {
-      await this.system.tick(delta, this.componentStores, this.entitiesV2);
+      await this.system.tick(delta, this.componentStores, this.entities);
     }
   }
 };
@@ -50319,7 +50261,8 @@ var Game = class {
     let drawSurface;
     if (canvasContext === "2d") {
       drawSurface = canvas?.getContext(
-        "2d"
+        "2d",
+        { alpha: false }
       );
     } else if (canvasContext === "webgl2") {
       const d = canvas?.getContext("webgl2");
@@ -50525,58 +50468,6 @@ var SpaceTrashPlayer = class {
 };
 var Player_default = new SpaceTrashPlayer();
 
-// src/engine/Component.ts
-var Component = class {
-};
-var TwoD_Component = class extends Component {
-};
-
-// src/spacetrash/Components/physics.ts
-var PhysicsComponent = class extends Component {
-  x;
-  y;
-  constructor(spe, x = 0, y = 0) {
-    super(spe);
-    this.x = x;
-    this.y = y;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var PhysicsActorComponent = class extends PhysicsComponent {
-  dx;
-  dy;
-  r;
-  constructor(spe, x = 0, y = 0, r = 0, conveyance, dx, dy) {
-    super(spe, x, y);
-    this.dx = dx;
-    this.dy = dy;
-    this.r = r;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var PhysicsSetComponent = class extends PhysicsComponent {
-  solid;
-  tileType;
-  constructor(spe, x = 0, y = 0, solid, tileType) {
-    super(spe, x, y);
-    this.tileType = tileType;
-    this.solid = solid;
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
 // src/spacetrash/lib/Terminal.ts
 var SpaceTrashTerminal = class {
   loggedIn = false;
@@ -50697,14 +50588,62 @@ Launch date:    May, 2690
   }
 };
 
+// src/engine/Component.ts
+var Component = class {
+};
+var TwoD_Component = class extends Component {
+};
+
+// src/engine/types.ts
+var ComponentStore = class {
+};
+var Store = class extends ComponentStore {
+  store = [];
+  add(c, i) {
+    this.store.push([i, c]);
+  }
+};
+
+// src/spacetrash/Components/physics.ts
+var PhysicsComponent = class extends Component {
+  x;
+  y;
+  constructor(x = 0, y = 0) {
+    super();
+    this.x = x;
+    this.y = y;
+  }
+};
+
+// src/spacetrash/Components/actor.ts
+var PhysicsActorComponent = class extends PhysicsComponent {
+  dx;
+  dy;
+  r;
+  constructor(x = 0, y = 0, r = 0, dx, dy) {
+    super(x, y);
+    this.dx = dx;
+    this.dy = dy;
+    this.r = r;
+  }
+};
+var PhysicsActorStore = class extends Store {
+  constructor() {
+    super();
+  }
+  make(x = 0, y = 0, r = 0, dx, dy) {
+    return new PhysicsActorComponent(x, y, r, dx, dy);
+  }
+};
+
 // src/spacetrash/Components/casting/out.ts
 var OutCastingComponent = class extends Component {
   // fov: number;
   // ray: ERays;
   // intensity: number;
   dropoff;
-  constructor(spe) {
-    super(spe);
+  constructor() {
+    super();
   }
   payload() {
     return {
@@ -50720,17 +50659,31 @@ var OutCastingComponent = class extends Component {
   }
 };
 var LitComponent = class extends OutCastingComponent {
-  // dropoff = (x) => 1 / (x ^ 2);
-  // ray: ERays.light
   radiance;
-  constructor(spe) {
-    super(spe);
+  constructor() {
+    super();
     this.radiance = -1;
   }
-  getMove() {
-    throw new Error("Method not implemented.");
+};
+var LitStore = class extends Store {
+  make(...a) {
+    return new LitComponent();
   }
-  setMove(move) {
+};
+
+// src/spacetrash/Components/setPiece.ts
+var PhysicsSetPieceComponent = class extends PhysicsComponent {
+  solid;
+  tileType;
+  constructor(x = 0, y = 0, solid, tileType) {
+    super(x, y);
+    this.tileType = tileType;
+    this.solid = solid;
+  }
+};
+var PhysicsSetPieceStore = class extends Store {
+  make(x = 0, y = 0, solid, tileType) {
+    return new PhysicsSetPieceComponent(x, y, solid, tileType);
   }
 };
 
@@ -50740,99 +50693,37 @@ var SpaceTrashComponent = class extends Component {
 
 // src/spacetrash/Components/casting/in.ts
 var InCastingComponent = class extends SpaceTrashComponent {
-  // fov: number;
-  // threshold: number;
-  // ray: ERays
-  constructor(e) {
-    super(e);
+  constructor() {
+    super();
   }
   payload() {
-    return {
-      // fov: this.fov,
-      // threshold: this.threshold,
-      // ray: this.ray,
-    };
+    return {};
   }
 };
 var AttackableComponent = class extends InCastingComponent {
-  // fov = 1;
-  // threshold = 0;
-  // ray = ERays.attack;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
+};
+var AttackableStore = class extends Store {
+  make(...a) {
+    return new AttackableComponent();
   }
 };
 var CameraComponent = class extends InCastingComponent {
-  // fov: number;
-  // threshold = 10;
-  // ray: ERays.visible
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
+};
+var CameraStore = class extends Store {
+  make(...a) {
+    return new CameraComponent();
   }
 };
 var LitableComponent = class extends InCastingComponent {
-  // ray: ERays.visible
   luminance;
-  constructor(e, luminance = -1) {
-    super(e);
+  constructor(luminance = -1) {
+    super();
     this.luminance = luminance;
   }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
 };
-
-// src/spacetrash/Components/conveyance.ts
-var ConveyanceComponent = class extends Component {
-  constructor(e) {
-    super(e);
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var WheeledComponent = class extends ConveyanceComponent {
-  forwardback;
-  leftright;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-
-// src/spacetrash/Components/power.ts
-var PoweredComponent = class extends Component {
-  constructor(spe) {
-    super(
-      spe,
-      []
-      // [SpaceTrashSystems.power]
-    );
-  }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
-};
-var PowerStoringComponent = class extends PoweredComponent {
-  voltsCurrent;
-  voltsMax;
-  amps;
-  damage;
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
+var LittableStore = class extends Store {
+  make(...a) {
+    return new LitableComponent();
   }
 };
 
@@ -50851,11 +50742,6 @@ var EntityComponent = class {
   applyComponent(c) {
     this.components.push(c);
   }
-  // abstract validate: () => any
-  // abstract validate(): void 
-  // validate() {
-  //   throw new Error("Method not implemented.");
-  // }
 };
 
 // src/spacetrash/lib/EntityComponent.ts
@@ -50864,13 +50750,6 @@ var SpaceTrashEntityComponent = class extends EntityComponent {
   dx;
   y;
   dy;
-};
-
-// src/spacetrash/Components/video.ts
-var VideoComponent = class extends SpaceTrashComponent {
-  constructor() {
-    super();
-  }
 };
 
 // src/spacetrash/Entities/index.ts
@@ -50883,17 +50762,17 @@ var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
   physicsActorComponent;
   constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, albedo = 0) {
     const spe = new SpaceTrashEntity();
-    const physicsActorComponent = new PhysicsActorComponent(spe, x, y, r, new WheeledComponent(spe), dx, dy);
+    const physicsActorComponent = new PhysicsActorComponent(x, y, r, dx, dy);
     super(
       spe,
       [
         physicsActorComponent,
-        new LitComponent(spe),
-        new CameraComponent(spe),
-        new AttackableComponent(spe),
-        new PowerStoringComponent(spe),
+        new LitComponent()
+        // new CameraComponent(),
+        // new AttackableComponent(),
+        // new PowerStoringComponent(spe),
         // new LitableComponent(spe, albedo),
-        new VideoComponent()
+        // new VideoComponent()
       ]
     );
     this.physicsActorComponent = physicsActorComponent;
@@ -50905,13 +50784,10 @@ var Tile = class extends SpaceTrashEntityComponent {
   tiletype;
   constructor(x, y, tiletype) {
     const spe = new SpaceTrashEntity();
-    super(
-      spe,
-      [
-        new PhysicsSetComponent(spe, x, y, true, tiletype),
-        new LitableComponent(spe)
-      ]
-    );
+    super(spe, [
+      new PhysicsSetPieceComponent(x, y, true, tiletype),
+      new LitableComponent()
+    ]);
     this.tiletype = tiletype;
   }
   validate() {
@@ -50920,65 +50796,37 @@ var Tile = class extends SpaceTrashEntityComponent {
 };
 var FloorTile = class extends Tile {
   constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "FloorTile"
-    );
+    super(x, y, "FloorTile");
   }
 };
 var WallTile = class extends Tile {
   constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "WallTile"
-    );
+    super(x, y, "WallTile");
   }
 };
 var SouthWest = class extends Tile {
   constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "SouthWest"
-    );
+    super(x, y, "SouthWest");
   }
 };
 var SouthEast = class extends Tile {
   constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "SouthEast"
-    );
+    super(x, y, "SouthEast");
   }
 };
 var NorthWest = class extends Tile {
   constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "NorthWest"
-    );
+    super(x, y, "NorthWest");
   }
 };
 var NorthEast = class extends Tile {
   constructor(x = 0, y = 0) {
-    super(
-      x,
-      y,
-      "NorthEast"
-    );
+    super(x, y, "NorthEast");
   }
 };
 
 // src/engine/System.ts
 var System = class {
-  componentsStore = /* @__PURE__ */ new Set();
-  constructor(componentsStore) {
-    this.componentsStore = componentsStore;
-  }
 };
 
 // src/spacetrash/Components/phase0.ts
@@ -50987,14 +50835,29 @@ var Phase0 = class extends TwoD_Component {
   actorIds = [];
   litIds = [];
   littableId = -1;
+  tileType;
+  luminance;
   constructor() {
     super();
   }
 };
+var Phase0Store = class extends ComponentStore {
+  store;
+  constructor() {
+    super();
+    this.store = [[]];
+  }
+  add(a) {
+    throw new Error("Method not implemented.");
+  }
+  make() {
+    return new Phase0();
+  }
+};
 
 // src/spacetrash/System.ts
-var MapSize = 32;
-var NumberOfActors = 16;
+var MapSize = 64;
+var NumberOfActors = 24;
 var BotSlots = 9;
 var TileSize = 8;
 var ActorSize = TileSize / 3;
@@ -51007,17 +50870,17 @@ var firstTick = true;
 var MainSystem = class extends System {
   mapSize;
   working;
-  constructor(mapSize, componentsStore) {
-    super(componentsStore);
+  constructor(mapSize) {
+    super();
     this.mapSize = mapSize;
   }
   tick(delta, store, entities) {
-    console.log("tick", entities[0], entities[1], entities[2]);
     return new Promise((res, rej) => {
-      const phaseZero = store[Phase0.name];
-      const setPieces2 = store[PhysicsSetComponent.name];
-      const lightableEntitiesStore = store[LitableComponent.name];
-      const les = lightableEntitiesStore;
+      const phaseZero = store["Phase0"].store;
+      const phaseOne = store["Phase1"].store;
+      const actorsStore = store["PhysicsActorComponent"];
+      const setPieces2 = store["PhysicsSetPieceComponent"];
+      const lightableEntitiesStore = store["LitableComponent"];
       if (firstTick) {
         firstTick = false;
         for (let y = 0; y < MapSize; y++) {
@@ -51026,19 +50889,27 @@ var MainSystem = class extends System {
             phaseZero[y][x] = new Phase0();
           }
         }
-        setPieces2.forEach(([i, s], ndx) => {
+        setPieces2.store.forEach(([i, s], ndx) => {
           phaseZero[s.y][s.x].setId = ndx;
-          phaseZero[s.y][s.x].littableId = les.findIndex(
+          phaseZero[s.y][s.x].tileType = s.tileType;
+          phaseZero[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
             ([eid, b]) => eid == i
           );
         });
+        for (let y = 0; y < actorsStore.store.length; y++) {
+          phaseOne[y] = [actorsStore.store[y][0], actorsStore.store[y][1].x, actorsStore.store[y][1].y];
+        }
       } else {
-        lightableEntitiesStore.forEach(([lid, l]) => {
+        lightableEntitiesStore.store.forEach(([lid, l]) => {
           l.luminance = 0;
         });
+        for (let y = 0; y < MapSize; y++) {
+          for (let x = 0; x < MapSize; x++) {
+            phaseZero[y][x].luminance = 0;
+          }
+        }
         const lightingEntitiesStore = store[LitComponent.name];
-        const actorsStore = store[PhysicsActorComponent.name];
-        const illuminate = (xFloat, yFloat, eid) => {
+        const illuminate = (xFloat, yFloat) => {
           const x = Math.round(xFloat);
           const y = Math.round(yFloat);
           const mSize = this.mapSize;
@@ -51056,19 +50927,24 @@ var MainSystem = class extends System {
           }
           const space = phaseZero[y][x];
           const lightableIdOfSpace = space.littableId;
-          const litable = lightableEntitiesStore[lightableIdOfSpace];
+          const litable = lightableEntitiesStore.store[lightableIdOfSpace];
           if (!litable) {
             console.error("litable not found");
             return;
           }
           const [eid3, litableComponent] = litable;
           litableComponent.luminance = 2;
+          phaseZero[y][x].luminance = 2;
         };
-        lightingEntitiesStore.forEach(([eid, lightingComponent], ndx) => {
-          const [eid2, actor] = actorsStore.find((a) => a[0] === eid);
+        lightingEntitiesStore.store.forEach(([eid, lightingComponent], ndx) => {
+          const [eid2, actor] = actorsStore.store.find((a) => a[0] === eid);
           if (lightingComponent.radiance) {
-            if (phaseZero[Math.round(actor.y)][Math.round(actor.x)]) {
-              illuminate(actor.x, actor.y, eid);
+            let x = Math.round(actor.x);
+            let y = Math.round(actor.y);
+            if (x >= MapSize) x = 0;
+            if (y >= MapSize) y = 0;
+            if (phaseZero[y][x]) {
+              illuminate(actor.x, actor.y);
               let di = 1;
               let dj = 0;
               let segment_length = 1;
@@ -51076,13 +50952,13 @@ var MainSystem = class extends System {
               let j = 0;
               let segment_passed = 0;
               let onTarget = false;
-              for (let k = 0; k < 200; k++) {
+              for (let k = 0; k < 150; k++) {
                 i += di;
                 j += dj;
                 ++segment_passed;
-                const x = Math.round(i + actor.x) - 1;
-                const y = Math.round(j + actor.y) - 1;
-                illuminate(i + actor.x, j + actor.y, eid);
+                const x2 = Math.round(i + actor.x) - 1;
+                const y2 = Math.round(j + actor.y) - 1;
+                illuminate(i + actor.x, j + actor.y);
                 if (segment_passed == segment_length) {
                   segment_passed = 0;
                   let buffer = di;
@@ -51096,7 +50972,7 @@ var MainSystem = class extends System {
             }
           }
         });
-        actorsStore.forEach(([i, a], n) => {
+        actorsStore.store.forEach(([i, a], n) => {
           let x = Math.round(a.x + a.dx);
           if (x >= this.mapSize - 1) x = 0;
           if (x < 0) x = this.mapSize - 1;
@@ -51115,7 +50991,7 @@ var MainSystem = class extends System {
             console.error(phaseZero);
             debugger;
           }
-          const tileType = setPieces2[spaceToCheck.setId][1].tileType;
+          const tileType = setPieces2.store[spaceToCheck.setId][1].tileType;
           if (tileType !== "FloorTile") {
             const magX = Math.abs(a.dx);
             const magY = Math.abs(a.dy);
@@ -51160,7 +51036,7 @@ var MainSystem = class extends System {
             }
           } else {
           }
-          actorsStore.forEach(([i2, a2], n2) => {
+          actorsStore.store.forEach(([i2, a2], n2) => {
             if (n !== n2) {
               if (actorsCollide(a, a2)) {
                 a.x = a.x - a.dx;
@@ -51194,24 +51070,14 @@ var MainSystem = class extends System {
           a.y = a.y + a.dy;
           a.dx = a.dx * 0.999;
           a.dy = a.dy * 0.999;
+          phaseOne[n] = [i, actorsStore.store[n][1].x, actorsStore.store[n][1].y];
         });
       }
       res(true);
     });
   }
 };
-var SpaceTrashMainSystem = new MainSystem(
-  MapSize,
-  /* @__PURE__ */ new Set([
-    // AttackableComponent.name,
-    // CameraComponent.name,
-    LitableComponent.name,
-    LitComponent.name,
-    PhysicsActorComponent.name,
-    PhysicsSetComponent.name
-    // PowerStoringComponent.name,
-  ])
-);
+var SpaceTrashMainSystem = new MainSystem(MapSize);
 
 // src/spacetrash/ship.ts
 var SpaceTrashShip = class extends EntityComponent {
@@ -51236,7 +51102,7 @@ var SpaceTrashShip = class extends EntityComponent {
       return;
     }
     const p = t.components.find((c) => {
-      return c.constructor.name === "PhysicsSetComponent";
+      return c.constructor.name === "PhysicsSetPieceComponent";
     });
     const x = p.x;
     const y = p.y;
@@ -51316,237 +51182,94 @@ var SpaceTrashShip = class extends EntityComponent {
 
 // src/spacetrash/shipMapUpdateLoop.ts
 var shipMapUpdateLoop = (componentStores, reply) => {
-  const thingsToDraw = {};
-  const phaseZero = componentStores[Phase0.name];
-  const setLights = {};
-  const litEntities = componentStores[LitableComponent.name];
-  debugger;
-  litEntities.forEach(([eid, littable], n) => {
-    if (!setLights[eid]) {
-      setLights[eid] = [-1, -1];
-    }
-    setLights[eid][1] = n;
-  });
-  for (let y = 0; y < MapSize; y++) {
-    for (let x = 0; x < MapSize; x++) {
-      const tileid = `${x}-${y}`;
-      if (!thingsToDraw[tileid]) {
-        thingsToDraw[tileid] = {
-          draw: () => {
-          },
-          opts: {
-            fill: ""
-          }
-        };
-      }
-      thingsToDraw[tileid].draw = (canvas2d, opts) => {
-        canvas2d.rect(
-          x * TileSize - TileSize / 2 + 1,
-          y * TileSize - TileSize / 2 + 1,
-          TileSize - 1,
-          TileSize - 1
-        );
-      };
-    }
-  }
-  const physicsSetPieces = componentStores[PhysicsSetComponent.name];
-  physicsSetPieces.forEach(([id, setpiece], sNdx) => {
-    if (!thingsToDraw[id]) {
-      thingsToDraw[id] = {
-        draw: () => {
-        },
-        opts: {
-          fill: ""
-        }
-      };
-    }
-    thingsToDraw[id].draw = (canvas, opts) => {
-      if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
+  const thingsToDraw = [];
+  const phaseZero = componentStores["Phase0"].store;
+  const phaseOne = componentStores["Phase1"].store;
+  const litEntities = componentStores["LitableComponent"].store;
+  const physicsSetPieces = componentStores["PhysicsSetPieceComponent"].store;
+  for (let y = 0; y < MapSize - 1; y++) {
+    for (let x = 0; x < MapSize - 1; x++) {
+      thingsToDraw.push((canvas) => {
+        const z = phaseZero[y][x];
         const canvas2d = canvas;
         canvas2d.beginPath();
-        if (setpiece.tileType === "NorthEast") {
-          var path = new Path2D();
-          path.moveTo(
-            setpiece.x * TileSize - TileSize / 2,
-            setpiece.y * TileSize - TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize - TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.fill(path);
-        }
-        if (setpiece.tileType === "NorthWest") {
-          var path = new Path2D();
-          path.moveTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize - TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize - TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.fill(path);
-        }
-        if (setpiece.tileType === "SouthEast") {
-          var path = new Path2D();
-          path.moveTo(
-            setpiece.x * TileSize - TileSize / 2,
-            setpiece.y * TileSize - TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize - TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize - TileSize / 2
-          );
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.fill(path);
-        }
-        if (setpiece.tileType === "SouthWest") {
-          var sWidth = setpiece.x * TileSize;
-          var sHeight = setpiece.y * TileSize;
-          var path = new Path2D();
-          path.moveTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize - TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize - TileSize / 2,
-            setpiece.y * TileSize - TileSize / 2
-          );
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.fill(path);
-        }
-        if (setpiece.tileType === "TileA") {
-          var sWidth = setpiece.x * TileSize;
-          var sHeight = setpiece.y * TileSize;
-          var path = new Path2D();
-          path.moveTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          path.lineTo(
-            setpiece.x * TileSize + TileSize / 2,
-            setpiece.y * TileSize
-          );
-          path.lineTo(
-            setpiece.x * TileSize,
-            setpiece.y * TileSize + TileSize / 2
-          );
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.fill(path);
-        }
-        if (setpiece.tileType === "TileB") {
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.rect(
-            setpiece.x * TileSize - TileSize / 2 + 1,
-            setpiece.y * TileSize + 1,
-            TileSize - 1,
-            TileSize / 2 - 1
-          );
-        }
-        if (setpiece.tileType === "FloorTile") {
-          const [littableEntityId, littalbe] = litEntities.find((a) => a[0] === id);
-          if (littalbe && littalbe.luminance > 0) {
+        if (z.tileType === "FloorTile") {
+          if (z.luminance > 0) {
             canvas2d.fillStyle = "yellow";
-            canvas2d.rect(
-              setpiece.x * TileSize - TileSize / 2 + 1,
-              setpiece.y * TileSize - TileSize / 2 + 1,
-              TileSize - 1,
-              TileSize - 1
-            );
           } else {
             canvas2d.fillStyle = "white";
           }
-        }
-        if (setpiece.tileType === "WallTile") {
-          canvas2d.fillStyle = "darkgrey";
           canvas2d.rect(
-            setpiece.x * TileSize - TileSize / 2 + 1,
-            setpiece.y * TileSize - TileSize / 2 + 1,
+            Math.floor(x * TileSize - TileSize / 2 + 1),
+            Math.floor(y * TileSize - TileSize / 2 + 1),
             TileSize - 1,
             TileSize - 1
           );
         }
-        if (opts?.fill) {
-          canvas2d.fillStyle = opts.fill;
+        if (z.tileType === "WallTile") {
+          canvas2d.fillStyle = "darkgrey";
+          canvas2d.rect(
+            Math.floor(x * TileSize - TileSize / 2 + 1),
+            Math.floor(y * TileSize - TileSize / 2 + 1),
+            TileSize - 1,
+            TileSize - 1
+          );
         }
-        if (opts?.stroke) {
-          canvas2d.strokeStyle = opts.stroke;
-        }
-        canvas2d.stroke();
         canvas2d.fill();
-      }
-    };
-  });
-  const physicsActorPieces = componentStores[PhysicsActorComponent.name];
-  physicsActorPieces.forEach(([id, actor]) => {
-    if (!thingsToDraw[id]) {
-      thingsToDraw[id] = {
-        draw: () => {
-        },
-        opts: {
-          fill: ""
-        }
-      };
+        canvas2d.stroke();
+      });
     }
-    thingsToDraw[id].draw = (canvas) => {
-      if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
-        const canvas2d = canvas;
-        canvas2d.beginPath();
-        canvas2d.arc(
-          actor.x * TileSize,
-          actor.y * TileSize,
-          actor.r,
-          0,
-          2 * Math.PI
-        );
-        canvas2d.fillStyle = "orange";
-        canvas2d.fill();
-        canvas2d.stroke();
-      }
-    };
+  }
+  phaseOne.forEach((actor, i) => {
+    thingsToDraw.push((canvas) => {
+      const canvas2d = canvas;
+      canvas2d.beginPath();
+      canvas2d.arc(
+        actor[1] * TileSize,
+        actor[2] * TileSize,
+        TileSize / 2,
+        0,
+        2 * Math.PI
+      );
+      canvas2d.fillStyle = "orange";
+      canvas2d.fill();
+      canvas2d.stroke();
+    });
   });
   return thingsToDraw;
 };
 
 // src/spacetrash/renderDrone.ts
 var scene = new Scene();
-var camera = new PerspectiveCamera(75, 600 / 400, 0.1, 1e3);
+var camera = new PerspectiveCamera(75, 600 / 400, 0.1, 1e4);
 camera.position.y = MapSize / 2 * TileSize;
 camera.position.x = MapSize / 2 * TileSize;
 camera.rotation.x = 1.5708;
 var cubeGeometry = new BoxGeometry(TileSize, TileSize, TileSize);
-var cylinderGeometry = new CylinderGeometry(TileSize / 3, TileSize / 6, TileSize);
+var cylinderGeometry = new CylinderGeometry(
+  TileSize / 3,
+  TileSize / 6,
+  TileSize
+);
 var material = new MeshBasicMaterial({ color: "#433F81" });
 var floorGeometry = new PlaneGeometry(TileSize, TileSize);
 var unlitFloorMaterial = new MeshBasicMaterial({ color: "lightgrey" });
 var litFloorMaterial = new MeshBasicMaterial({ color: "yellow" });
+var cubeMaterial = new MeshBasicMaterial({ color: "red" });
+var instancedFloorMesh = new InstancedMesh(
+  floorGeometry,
+  litFloorMaterial,
+  Math.pow(MapSize, 2)
+);
 var setPieces = {};
 var actors = {};
 var renderDrone = (componentStores, ctx) => {
   const gl = ctx;
-  const physicsSetPieces = componentStores[PhysicsSetComponent.name];
+  const physicsSetPieces = componentStores[PhysicsSetPieceComponent.name];
   const physicsActors = componentStores[PhysicsActorComponent.name];
   const littables = componentStores[LitableComponent.name];
-  for (const setPiece of physicsSetPieces) {
+  let pieces = 0;
+  for (const setPiece of physicsSetPieces.store) {
     const s = setPiece[1];
     const eid = setPiece[0];
     if (!setPieces[eid]) {
@@ -51558,50 +51281,71 @@ var renderDrone = (componentStores, ctx) => {
         c.position.x = s.x * TileSize;
         c.position.y = s.y * TileSize;
         setPieces[eid] = c;
+        pieces++;
         scene.add(c);
-        scene.add(new LineSegments(new EdgesGeometry(cubeGeometry), new LineBasicMaterial({ color: 16777215 })));
       } else {
         const f = new Mesh(floorGeometry, unlitFloorMaterial);
         f.position.x = s.x * TileSize;
         f.position.y = s.y * TileSize;
         f.position.z = -TileSize / 2;
-        setPieces[eid] = f;
-        scene.add(f);
-        scene.add(new LineSegments(new EdgesGeometry(floorGeometry), new LineBasicMaterial({ color: 16777215 })));
-      }
-    }
-    for (const [leid, l] of littables) {
-      if (leid === eid) {
-        if (l.luminance > 0) {
-          setPieces[eid].material = litFloorMaterial;
-        } else {
-          setPieces[eid].material = unlitFloorMaterial;
+        for (const [leid, l] of littables.store) {
+          if (leid === eid) {
+            if (l.luminance > 0) {
+              f.material = litFloorMaterial;
+            } else {
+              f.material = unlitFloorMaterial;
+            }
+          }
         }
+        setPieces[eid] = f;
+        pieces++;
+        scene.add(f);
       }
     }
-    for (const actor of physicsActors) {
-      const a = actor[1];
-      const eid2 = actor[0];
-      if (!actors[eid2]) {
-        const c = new Mesh(cylinderGeometry, material);
-        c.material = new MeshBasicMaterial({
-          color: "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
-        });
-        c.position.x = a.x * TileSize;
-        c.position.y = a.y * TileSize;
-        c.rotation.x = -3.14 / 2;
-        actors[eid2] = c;
-        scene.add(c);
-      } else {
-        actors[eid2].position.x = a.x * TileSize;
-        actors[eid2].position.y = a.y * TileSize;
-      }
+  }
+  for (const actor of physicsActors.store) {
+    const a = actor[1];
+    const eid = actor[0];
+    if (!actors[eid]) {
+      const c = new Mesh(cylinderGeometry, material);
+      c.material = new MeshBasicMaterial({
+        color: "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
+      });
+      c.position.x = a.x * TileSize;
+      c.position.y = a.y * TileSize;
+      c.rotation.x = -3.14 / 2;
+      actors[eid] = c;
+      pieces++;
+      scene.add(c);
+    } else {
+      actors[eid].position.x = a.x * TileSize;
+      actors[eid].position.y = a.y * TileSize;
     }
   }
   const firstbot = Player_default.bots[Player_default.videoFeed];
   camera.position.x = firstbot.x * TileSize;
   camera.position.y = firstbot.y * TileSize;
   gl.render(scene, camera);
+};
+
+// src/spacetrash/Components/phase1.ts
+var Phase1 = class extends TwoD_Component {
+  constructor() {
+    super();
+  }
+};
+var Phase1Store = class extends ComponentStore {
+  store;
+  constructor() {
+    super();
+    this.store = [];
+  }
+  add(a) {
+    throw new Error("Method not implemented.");
+  }
+  make() {
+    return new Phase1();
+  }
 };
 
 // src/spacetrash/index.ts
@@ -51742,8 +51486,8 @@ var Spacetrash = class extends Game {
                 reply
               );
               return [
-                ...Object.keys(thingsToDraw).map((k) => {
-                  return (c) => thingsToDraw[k].draw(c, thingsToDraw[k].opts) || ((c2) => null);
+                ...Object.entries(thingsToDraw).map(([i, k]) => {
+                  return (c) => k(c);
                 }),
                 (canvas) => {
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
@@ -51810,17 +51554,44 @@ var Spacetrash = class extends Game {
     super(
       state,
       SpaceTrashMainSystem,
-      /* @__PURE__ */ new Set([
-        AttackableComponent.name,
-        CameraComponent.name,
-        LitableComponent.name,
-        LitComponent.name,
-        PhysicsActorComponent.name,
-        PhysicsSetComponent.name,
-        PowerStoringComponent.name,
-        VideoComponent.name,
-        Phase0.name
-      ]),
+      {
+        PhysicsSetPieceComponent: new PhysicsSetPieceStore(),
+        PhysicsActorComponent: new PhysicsActorStore(),
+        LitableComponent: new LittableStore(),
+        LitComponent: new LitStore(),
+        CameraComponent: new CameraStore(),
+        AttackableComponent: new AttackableStore(),
+        Phase0: new Phase0Store(),
+        Phase1: new Phase1Store()
+      },
+      // [
+      //   new PhysicsSetPieceStore(),
+      //   new PhysicsActorStore(),
+      //   new LittableStore(),
+      //   new LitStore(),
+      //   new Phase0Store(),
+      //   new Phase1Store()
+      // ],
+      // {
+      //   setPieces: new PhysicsSetPieceStore(),
+      //   actors: new PhysicsActorStore(),
+      //   // setPart2: new Phase0Store(),
+      //   // actorsPart2: new Phase1Store(),
+      //   littables: new LittableStore(),
+      //   lits: new LitStore(),
+      // },
+      // new Set([
+      //   // AttackableComponent.constructor,
+      //   // CameraComponent.constructor,
+      //   // LitableComponent.constructor,
+      //   // LitComponent.constructor,
+      //   // PhysicsActorComponent.constructor,
+      //   // PhysicsSetComponent.constructor,
+      //   // PowerStoringComponent.constructor,
+      //   // VideoComponent.constructor,
+      //   // Phase0.constructor,
+      //   // new Phase1Store()
+      // ]),
       workerPostMessage
     );
     this.terminal = new SpaceTrashTerminal();

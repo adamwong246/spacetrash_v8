@@ -4,124 +4,53 @@
 // import { ISpaceTrashComponents } from "..";
 
 import { SpaceTrashComponent } from "..";
+import { ComponentStore, Store } from "../../../engine/types";
 
 export abstract class InCastingComponent extends SpaceTrashComponent {
-  // fov: number;
-  // threshold: number;
-  // ray: ERays
-
-  constructor(e) {
-    super(e);
+  constructor() {
+    super();
   }
 
   payload() {
-    return {
-      // fov: this.fov,
-      // threshold: this.threshold,
-      // ray: this.ray,
-    }
+    return {};
   }
-
 }
 
-export class AttackableComponent extends InCastingComponent {
-  // fov = 1;
-  // threshold = 0;
-  // ray = ERays.attack;
+export class AttackableComponent extends InCastingComponent {}
 
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
-
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
+export class AttackableStore extends Store<AttackableComponent> {
+  make(...a: any[]): AttackableComponent {
+    return new AttackableComponent();
   }
 }
 
 
-export class MicrophoneComponent extends InCastingComponent {
-  // fov = 1;
-  // threshold = 10;
-  // ray = ERays.sound;
-  
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
+export class MicrophoneComponent extends InCastingComponent {}
 
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
+export class CameraComponent extends InCastingComponent {}
+
+export class CameraStore extends Store<CameraComponent> {
+  make(...a: any[]): CameraComponent {
+    return new CameraComponent();
   }
 }
 
 
-export class CameraComponent extends InCastingComponent {
-  // fov: number;
-  // threshold = 10;
-  // ray: ERays.visible
+export class ThermalComponent extends InCastingComponent {}
 
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
-
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
-  }
-}
-
-export class ThermalComponent extends InCastingComponent {
-  // fov = 1;
-  // threshold = 0;
-  // ray: ERays.thermal
-
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
-
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
-  }
-}
-
-export class MovementComponent extends InCastingComponent {
-  // fov = 270;
-  // threshold = 1;
-  // ray: ERays.movement;
-
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
-
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
-  }
-}
+export class MovementComponent extends InCastingComponent {}
 
 export class LitableComponent extends InCastingComponent {
-  // ray: ERays.visible
   luminance: number;
 
-  constructor(e, luminance = -1) {
-    super(e);
+  constructor(luminance = -1) {
+    super();
     this.luminance = luminance;
   }
+}
 
-  getMove(): unknown {
-    throw new Error("Method not implemented.");
-  }
-
-  setMove(move: unknown) {
-    // this.x = move.x;
-    // this.y = move.y;
-    // this.r = move.r;
+export class LittableStore extends Store<LitableComponent> {
+  make(...a: any[]): LitableComponent {
+    return new LitableComponent();
   }
 }

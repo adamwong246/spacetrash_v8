@@ -1,17 +1,20 @@
 import { System } from "../engine/System";
-import { IComponentsStores, IEntitiesStore, IStores } from "../engine/types";
+import { ComponentStore, IComponentsStores, IEntitiesStore, IStores } from "../engine/types";
+import { PhysicsActorComponent, PhysicsActorStore } from "./Components/actor";
 
-import { LitableComponent } from "./Components/casting/in";
-import { LitComponent } from "./Components/casting/out";
-import { Phase0 } from "./Components/phase0";
+import { LitableComponent, LittableStore } from "./Components/casting/in";
+import { LitComponent, LitStore } from "./Components/casting/out";
+import { Phase0, Phase0Store } from "./Components/phase0";
+import { Phase1Store } from "./Components/phase1";
 import {
-  PhysicsSetComponent,
-  PhysicsActorComponent,
+  
 } from "./Components/physics";
+import { PhysicsSetPieceComponent, PhysicsSetPieceStore } from "./Components/setPiece";
+import { Tile } from "./Entities/setpieces";
 
 export type ISpaceTrashSystems = `physical` | "casting"; //| `physical` | `casting`; // | `upgradeable` | `power` | `atmosphere` | `fluids` | `doors` | `hack`;
-export const MapSize = 32;
-export const NumberOfActors = 16;
+export const MapSize = 64;
+export const NumberOfActors = 24;
 export const BotSlots = 9;
 export const TileSize = 8;
 export const ActorSize = TileSize / 3;
@@ -48,34 +51,25 @@ class MainSystem extends System {
   mapSize: number;
   working: boolean;
 
-  constructor(mapSize: number, componentsStore: Set<string>) {
-    super(componentsStore);
+  constructor(mapSize: number) {
+    super();
     this.mapSize = mapSize;
   }
 
-  tick(delta, store: IStores, entities: IEntitiesStore): Promise<boolean> {
-    console.log("tick", entities[0], entities[1], entities[2])
+  tick(delta, store: ComponentStore[], entities: IEntitiesStore): Promise<boolean> {
+    // console.log("tick", entities[0], entities[1], entities[2])
 
     return new Promise((res, rej) => {
+      const phaseZero = (store['Phase0'] as Phase0Store).store;
+      const phaseOne = (store['Phase1'] as Phase1Store).store;
 
-      const phaseZero = store[Phase0.name] as Phase0[][];
-
-      const setPieces = store[PhysicsSetComponent.name] as [
-        string,
-        PhysicsSetComponent
-      ][];
-  
-      const lightableEntitiesStore = store[LitableComponent.name] as [
-        string,
-        LitableComponent
-      ][];
-  
-      const les = lightableEntitiesStore;
+      const actorsStore = store['PhysicsActorComponent'] as PhysicsActorStore;
+      const setPieces = store['PhysicsSetPieceComponent'] as PhysicsSetPieceStore;
+      const lightableEntitiesStore = store['LitableComponent'] as LittableStore;
   
       if (firstTick) {
         firstTick = false;
 
-  
         for (let y = 0; y < MapSize; y++) {
           phaseZero[y] = [];
           for (let x = 0; x < MapSize; x++) {
@@ -83,25 +77,32 @@ class MainSystem extends System {
           }
         }
   
-        setPieces.forEach(([i, s], ndx) => {
-          // if (!phaseZero[s.y]) {
-          //   phaseZero[s.y] = [];
-          // }
-  
+        setPieces.store.forEach(([i, s], ndx) => {
           phaseZero[s.y][s.x].setId = ndx;
-          phaseZero[s.y][s.x].littableId = les.findIndex(
+          phaseZero[s.y][s.x].tileType = s.tileType;
+          phaseZero[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
             ([eid, b]: [string, LitableComponent]) => eid == i
           );
         });
+
+        for (let y = 0; y < actorsStore.store.length; y++) {
+          phaseOne[y] = [actorsStore.store[y][0], actorsStore.store[y][1].x, actorsStore.store[y][1].y];
+        }
 
         
       } else  {
 
   
         // clear the light sources
-        lightableEntitiesStore.forEach(([lid, l]) => {
+        lightableEntitiesStore.store.forEach(([lid, l]) => {
           l.luminance = 0;
         });
+        for (let y = 0; y < MapSize; y++) {
+          // phaseZero[y] = [];
+          for (let x = 0; x < MapSize; x++) {
+            phaseZero[y][x].luminance = 0;
+          }
+        }
   
         // map the entity id to the [lightId, actorId]
         // const entity2LightAndActor: Record<
@@ -109,16 +110,10 @@ class MainSystem extends System {
         //   { lightingNdx: number; actorNdx: number }
         // > = {};
   
-        const lightingEntitiesStore = store[LitComponent.name] as [
-          string,
-          LitComponent
-        ][];
-        const actorsStore = store[PhysicsActorComponent.name] as [
-          string,
-          PhysicsActorComponent
-        ][];
+        const lightingEntitiesStore = store[LitComponent.name] as LitStore;
+        
   
-        const illuminate = (xFloat: number, yFloat: number, eid: string): any => {
+        const illuminate = (xFloat: number, yFloat: number): any => {
           const x = Math.round(xFloat);
           const y = Math.round(yFloat);
           const mSize = this.mapSize;
@@ -142,7 +137,7 @@ class MainSystem extends System {
   
           const space = phaseZero[y][x];
           const lightableIdOfSpace = space.littableId;
-          const litable = lightableEntitiesStore[lightableIdOfSpace]; //(lightableEntitiesStore.find((a) => a[0] === lightableIdOfSpace) as [string, LitableComponent]);
+          const litable = lightableEntitiesStore.store[lightableIdOfSpace]; //(lightableEntitiesStore.find((a) => a[0] === lightableIdOfSpace) as [string, LitableComponent]);
   
           if (!litable) {
             console.error("litable not found");
@@ -150,22 +145,25 @@ class MainSystem extends System {
           }
           const [eid3, litableComponent] = litable;
           litableComponent.luminance = 2;
+          phaseZero[y][x].luminance = 2;
         };
   
-        lightingEntitiesStore.forEach(([eid, lightingComponent], ndx) => {
-          const [eid2, actor] = actorsStore.find((a) => a[0] === eid) as [
-            string,
-            PhysicsActorComponent
-          ];
+        lightingEntitiesStore.store.forEach(([eid, lightingComponent], ndx) => {
+          const [eid2, actor] = actorsStore.store.find((a) => a[0] === eid) as PhysicsActorComponent;
   
           if (lightingComponent.radiance) {
             // if (!phaseZero[Math.round(actor.y)]) {
             //   phaseZero[Math.round(actor.y)] = [];
             // }
             // find the floor underneath and any entities on top
-            if (phaseZero[Math.round(actor.y)][Math.round(actor.x)]) {
+            let x = Math.round(actor.x);
+            let y = Math.round(actor.y);
+            if (x >= MapSize) x = 0;
+            if (y >= MapSize) y = 0;
+
+            if ( phaseZero[y][x]) {
               // illuminate the space upon which we stand
-              illuminate(actor.x, actor.y, eid);
+              illuminate(actor.x, actor.y);
   
               // (di, dj) is a vector - direction in which we move right now
               let di = 1;
@@ -178,7 +176,7 @@ class MainSystem extends System {
               let segment_passed = 0;
               let onTarget = false;
               // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
-              for (let k = 0; k < 200; k++) {
+              for (let k = 0; k < 150; k++) {
                 // make a step, add 'direction' vector (di, dj) to current position (i, j)
                 i += di;
                 j += dj;
@@ -203,7 +201,7 @@ class MainSystem extends System {
                 // } else {
                 //   // console.log("idk", eId, x, y)
                 // }
-                illuminate(i + actor.x, j + actor.y, eid);
+                illuminate(i + actor.x, j + actor.y);
                 if (segment_passed == segment_length) {
                   // done with current segment
                   segment_passed = 0;
@@ -221,7 +219,7 @@ class MainSystem extends System {
           }
         });
   
-        actorsStore.forEach(([i, a], n) => {
+        actorsStore.store.forEach(([i, a], n) => {
           // x and y are the "look ahead" pointer
           let x = Math.round(a.x + a.dx);
           if (x >= this.mapSize - 1) x = 0;
@@ -253,7 +251,7 @@ class MainSystem extends System {
             console.error(phaseZero);
             debugger
           }
-          const tileType = setPieces[spaceToCheck.setId][1].tileType;
+          const tileType = (setPieces.store[spaceToCheck.setId][1] as PhysicsSetPieceComponent).tileType;
   
           if (tileType !== "FloorTile") {
             const magX = Math.abs(a.dx);
@@ -312,7 +310,7 @@ class MainSystem extends System {
           }
   
           // collision check with other actors
-          actorsStore.forEach(([i2, a2], n2) => {
+          actorsStore.store.forEach(([i2, a2], n2) => {
             // don't check against self
             if (n !== n2) {
               if (actorsCollide(a, a2)) {
@@ -354,6 +352,9 @@ class MainSystem extends System {
           // friction
           a.dx = a.dx * 0.999;
           a.dy = a.dy * 0.999;
+
+          phaseOne[n] = [i, actorsStore.store[n][1].x, actorsStore.store[n][1].y];
+
         });
 
 
@@ -366,15 +367,4 @@ class MainSystem extends System {
   }
 }
 
-export const SpaceTrashMainSystem = new MainSystem(
-  MapSize,
-  new Set([
-    // AttackableComponent.name,
-    // CameraComponent.name,
-    LitableComponent.name,
-    LitComponent.name,
-    PhysicsActorComponent.name,
-    PhysicsSetComponent.name,
-    // PowerStoringComponent.name,
-  ])
-);
+export const SpaceTrashMainSystem = new MainSystem(MapSize);

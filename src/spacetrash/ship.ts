@@ -2,7 +2,8 @@
 import { Component } from "../engine/Component";
 import { Entity } from "../engine/Entity";
 import { EntityComponent } from "../engine/EntityComponent";
-import { PhysicsSetComponent } from "./Components/physics";
+import { PhysicsSetPieceComponent } from "./Components/setPiece";
+
 import {
   FloorTile,
   WallTile,
@@ -44,8 +45,8 @@ export class SpaceTrashShip extends EntityComponent {
     }
 
     const p = t.components.find((c) => {
-      return c.constructor.name === "PhysicsSetComponent";
-    }) as PhysicsSetComponent;
+      return c.constructor.name === "PhysicsSetPieceComponent";
+    }) as PhysicsSetPieceComponent;
     const x = p.x;
     const y = p.y;
 

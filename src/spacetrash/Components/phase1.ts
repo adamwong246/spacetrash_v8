@@ -4,13 +4,7 @@ import { SpaceTrashEntity } from "../Entities";
 import { TwoD_Component } from "../../engine/Component";
 import { ComponentStore } from "../../engine/types";
 
-export class Phase0 extends TwoD_Component<unknown, ISpaceTrashComponents> {
-  setId = -1;
-  actorIds = [];
-  litIds = [];
-  littableId = -1;
-  tileType: string;
-  luminance: number;
+export class Phase1 extends TwoD_Component<unknown, ISpaceTrashComponents> {
 
   constructor() {
     super();
@@ -18,14 +12,12 @@ export class Phase0 extends TwoD_Component<unknown, ISpaceTrashComponents> {
 
 }
 
-
-
-export class Phase0Store extends ComponentStore {
-  store: Phase0[][];
-
+export class Phase1Store extends ComponentStore {
+  store: Phase1[];
+  
   constructor() {
     super();
-    this.store = [[]];
+    this.store = [];
   }
 
   add(a: any) {
@@ -33,8 +25,7 @@ export class Phase0Store extends ComponentStore {
   }
 
   make() {
-    return new Phase0();
+    return new Phase1();
   }
 
 }
-
