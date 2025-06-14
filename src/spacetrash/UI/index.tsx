@@ -9,6 +9,9 @@ import { ShipMapApp } from "./shipmap";
 import { ITerminalHooks, ITerminalState, TerminalApp } from "./terminal";
 import { ManualApp } from "./manual";
 import { DronesApp } from "./drones";
+import {SpaceTrashTerminal} from "../lib/Terminal";
+import { MainView } from "./MainView";
+import { MainView3d } from "./MainView2";
 
 export type ISpaceTrashApps = 'terminal' | `shipmap` | `manual` | `drone` | 'drones';
 
@@ -20,7 +23,7 @@ export enum ESpaceTrashApps {
   drones
 };
 
-type IState = IUiDekstop & {
+export type IState = IUiDekstop & {
   terminal: ITerminalState
 };
 
@@ -35,8 +38,11 @@ const initialState: () => IState = () => {
     ],
 
     terminal: {
+      loggedIn: false,
       buffer: "login",
-      history: [{ "in": "idk", out: "asdasd", timeStamp: 0 }],
+      history: [
+        { "in": "", out: "booting...", status: "niether" }
+      ],
     },
     windows: {
       terminal: {
@@ -80,97 +86,103 @@ const initialState: () => IState = () => {
 };
 
 
-export const SpaceTrashDesktop = (props: { worker: Worker }) => {
+
+const termV2 = new SpaceTrashTerminal();
+
+export const SpaceTrashDesktop = () => {
 
   const [desktopState, setDesktopState] = useState<IState>(initialState());
+  console.log(desktopState.terminal)
 
   const stateRef = useRef<IState>();
   stateRef.current = desktopState;
 
-  props.worker.onmessage = (e) => {
-    if (!stateRef.current) {
-      return;
-    }
+  
 
-    // console.log("Message received from worker", e);
+  // props.worker.onmessage = (e) => {
+  //   if (!stateRef.current) {
+  //     return;
+  //   }
 
-    if (e.data[0] === 'terminal-update') {
+  //   // console.log("Message received from worker", e);
 
-      flushSync(() => {
-        setDesktopState({
-          ...desktopState,
+  //   if (e.data[0] === 'terminal-update') {
 
-          terminal: {
-            ...desktopState.terminal,
+  //     flushSync(() => {
+  //       setDesktopState({
+  //         ...desktopState,
 
-            history: [
-              ...desktopState.terminal.history,
-              {
-                in: e.data[1].in,
-                out: e.data[1].out,
-                timeStamp: e.timeStamp
-              }
-            ].sort((e) => e.timeStamp)
-          }
-        });
-      });
+  //         terminal: {
+  //           ...desktopState.terminal,
+
+  //           history: [
+  //             ...desktopState.terminal.history,
+  //             {
+  //               in: e.data[1].in,
+  //               out: e.data[1].out,
+  //               timeStamp: e.timeStamp
+  //             }
+  //           ].sort((e) => e.timeStamp)
+  //         }
+  //       });
+  //     });
 
 
 
 
 
-    }
+  //   }
 
-    if (e.data[0] === 'login') {
-      flushSync(() => {
-        setDesktopState({
-          ...desktopState,
+  //   if (e.data[0] === 'login') {
+  //     flushSync(() => {
+  //       setDesktopState({
+  //         ...desktopState,
 
-          windows: {
-            ...desktopState.windows,
-            shipmap: {
-              ...desktopState.windows.shipmap,
-              "visible": true
-            },
-            manual: {
-              ...desktopState.windows.manual,
-              "visible": true
-            },
-            drone: {
-              ...desktopState.windows.drone,
-              "visible": true
-            },
-            drones: {
-              ...desktopState.windows.drone,
-              "visible": true
-            }
-          }
-        });
-      });
-    }
-  };
+  //         windows: {
+  //           ...desktopState.windows,
+  //           shipmap: {
+  //             ...desktopState.windows.shipmap,
+  //             "visible": true
+  //           },
+  //           manual: {
+  //             ...desktopState.windows.manual,
+  //             "visible": true
+  //           },
+  //           drone: {
+  //             ...desktopState.windows.drone,
+  //             "visible": true
+  //           },
+  //           drones: {
+  //             ...desktopState.windows.drone,
+  //             "visible": true
+  //           }
+  //         }
+  //       });
+  //     });
+  //   }
+  // };
 
-  const terminalHooks: ITerminalHooks = {
-    changeBuffer: (v: string) => {
-      setDesktopState({
-        ...desktopState,
-        terminal: {
-          ...desktopState.terminal,
-          buffer: v
-        }
-      })
-    },
-    submitBuffer: () => {
-      props.worker.postMessage(["terminal-in", desktopState.terminal.buffer])
-      setDesktopState({
-        ...desktopState,
-        terminal: {
-          ...desktopState.terminal,
-          buffer: ""
-        }
-      })
-    }
-  }
+  // const terminalHooks: ITerminalHooks = {
+  //   changeBuffer: (v: string) => {
+  //     setDesktopState({
+  //       ...desktopState,
+  //       terminal: {
+  //         ...desktopState.terminal,
+  //         buffer: v
+  //       }
+  //     })
+  //   },
+  //   submitBuffer: () => {
+  //     // props.worker.postMessage(["terminal-in", desktopState.terminal.buffer])
+  //     setDesktopState({
+  //       ...desktopState,
+  //       terminal: {
+  //         ...desktopState.terminal,
+  //         buffer: ""
+  //       }
+  //     })
+  //   }
+  // }
 
 
   return (
@@ -180,6 +192,9 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
       <pre>{JSON.stringify(desktopState, null, 2)}</pre> */}
       <div
       >
+
+        {/* <MainView/> */}
+        <MainView3d/>
 
         {
           desktopState.windows.terminal && <UIWindow
@@ -208,9 +223,11 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
             }} >
 
             <TerminalApp
-              worker={props.worker}
-              state={desktopState.terminal}
-              hooks={terminalHooks}
+              terminal={termV2}
+              // worker={props.worker}
+              state={desktopState}
+              stateSetter={setDesktopState}
+              // hooks={terminalHooks}
             />
 
           </UIWindow>
@@ -233,7 +250,9 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
               } as IState)
             }} >
 
-            <ShipMapApp worker={props.worker} />
+            <ShipMapApp
+              // worker={props.worker}
+            />
           </UIWindow>
 
         }
@@ -256,7 +275,9 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
               })
             }} >
 
-            <ManualApp worker={props.worker} />
+            <ManualApp
+              // worker={props.worker}
+            />
 
           </UIWindow>
 
@@ -280,58 +301,42 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
               })
             }} >
 
-            <DroneApp worker={props.worker} />
+            <DroneApp
+              // worker={props.worker}
+            />
 
           </UIWindow>
 
         }
 
-{
-        stateRef.current.windows['drones'] && stateRef.current.windows['drones'].visible && <UIWindow
-          key={'drones'}
-          app={'drones'}
-          uiwindow={stateRef.current.windows['drones']}
-          layer={stateRef.current.stack.findIndex((s) => s === 'drones')}
-          desktopState={stateRef.current}
-          pushToTop={() => {
+        {
+          stateRef.current.windows['drones'] && stateRef.current.windows['drones'].visible && <UIWindow
+            key={'drones'}
+            app={'drones'}
+            uiwindow={stateRef.current.windows['drones']}
+            layer={stateRef.current.stack.findIndex((s) => s === 'drones')}
+            desktopState={stateRef.current}
+            pushToTop={() => {
 
-            setDesktopState({
-              ...desktopState,
-              stack: [
-                ...desktopState.stack.filter((x) => x !== 'drones'),
-                'drones'
-              ]
-            })
-          }} >
+              setDesktopState({
+                ...desktopState,
+                stack: [
+                  ...desktopState.stack.filter((x) => x !== 'drones'),
+                  'drones'
+                ]
+              })
+            }} >
 
-          <DronesApp worker={props.worker}/>
+            <DronesApp
+              // worker={props.worker}
+            />
 
-        </UIWindow>
+          </UIWindow>
 
         }
-        
+
 
       </div>
     </div>
   );
 }
-
-//   Desktop({
-//   'terminal': {
-//     top: 100,
-//     left: 200,
-//     width: 800,
-//     height: 200,
-//     visible: true,
-//     app: {},
-//   },
-//   'manual': {
-//     top: 100,
-//     left: 200,
-//     width: 700,
-//     height: 200,
-//     visible: true,
-//     app: {},
-//   }
-// })
-
