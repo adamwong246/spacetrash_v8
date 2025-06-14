@@ -17,8 +17,7 @@ type IUpdate = (
 
 type IEvents = (ecs: ECS, event: Event) => void;
 
-type ILogic = [IBoot, IUpdate, IEvents, "2d" | "webgl2"];
-// type ILogic = ((e, r) => any)[];
+type ILogic = [IBoot, IUpdate, IEvents, "2d" | "webgl2" | "html"];
 
 type IAppLogic<IApps extends string> = Record<IApps, ILogic>;
 
@@ -39,13 +38,7 @@ export class Scene<IApps extends string> extends Tree {
   async boot(stateKey: string, ecs: ECS, bootReplier: IReply) {
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
-      // console.log("k", k, this.appLogic[k][0].toString())
-      // this.appLogic.forEach((ak) => {
-
-      // })
       this.appLogic[k][0](ecs, bootReplier);
-
-      // bootReplier(ecs)
     });
   }
 

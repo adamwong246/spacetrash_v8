@@ -2382,9 +2382,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React15 = require_react();
+        var React17 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React15.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React17.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3991,7 +3991,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React15.Children.forEach(props.children, function(child) {
+                React17.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -24358,11 +24358,11 @@ var require_prop_types = __commonJS({
 });
 
 // src/index.tsx
-var React14 = __toESM(require_react(), 1);
+var React16 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 
 // src/spacetrash/UI/index.tsx
-var import_react15 = __toESM(require_react(), 1);
+var import_react17 = __toESM(require_react(), 1);
 var import_react_dom3 = __toESM(require_react_dom(), 1);
 
 // src/engine/UI/UIWindow.tsx
@@ -25784,6 +25784,25 @@ ${props2.out}
   );
 };
 
+// src/spacetrash/UI/manual.tsx
+var import_react15 = __toESM(require_react(), 1);
+var ManualApp = (props) => {
+  return /* @__PURE__ */ import_react15.default.createElement(
+    "div",
+    null,
+    /* @__PURE__ */ import_react15.default.createElement("pre", null, "Manual goes here")
+  );
+};
+
+// src/spacetrash/UI/drones.tsx
+var import_react16 = __toESM(require_react(), 1);
+var DronesApp = (props) => {
+  props.worker.onmessage = (e) => {
+    debugger;
+  };
+  return /* @__PURE__ */ import_react16.default.createElement("div", null, /* @__PURE__ */ import_react16.default.createElement("pre", null, "Drones goes here"), /* @__PURE__ */ import_react16.default.createElement("table", null, /* @__PURE__ */ import_react16.default.createElement("tr", null, /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 4"), /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 5"), /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 6")), /* @__PURE__ */ import_react16.default.createElement("tr", null, /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 1"), /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 2"), /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 3")), /* @__PURE__ */ import_react16.default.createElement("tr", null, /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 4"), /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 5"), /* @__PURE__ */ import_react16.default.createElement("td", null, "Data 6"))));
+};
+
 // src/spacetrash/UI/index.tsx
 var initialState = () => {
   return {
@@ -25791,7 +25810,8 @@ var initialState = () => {
       `terminal`,
       `shipmap`,
       `manual`,
-      `drone`
+      `drone`,
+      `drones`
     ],
     terminal: {
       buffer: "login",
@@ -25825,13 +25845,20 @@ var initialState = () => {
         width: 280,
         height: 250,
         visible: false
+      },
+      drones: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+        visible: false
       }
     }
   };
 };
 var SpaceTrashDesktop = (props) => {
-  const [desktopState, setDesktopState] = (0, import_react15.useState)(initialState());
-  const stateRef = (0, import_react15.useRef)();
+  const [desktopState, setDesktopState] = (0, import_react17.useState)(initialState());
+  const stateRef = (0, import_react17.useRef)();
   stateRef.current = desktopState;
   props.worker.onmessage = (e) => {
     if (!stateRef.current) {
@@ -25872,6 +25899,10 @@ var SpaceTrashDesktop = (props) => {
             drone: {
               ...desktopState.windows.drone,
               "visible": true
+            },
+            drones: {
+              ...desktopState.windows.drone,
+              "visible": true
             }
           }
         });
@@ -25899,10 +25930,10 @@ var SpaceTrashDesktop = (props) => {
       });
     }
   };
-  return /* @__PURE__ */ import_react15.default.createElement("div", null, /* @__PURE__ */ import_react15.default.createElement(
+  return /* @__PURE__ */ import_react17.default.createElement("div", null, /* @__PURE__ */ import_react17.default.createElement(
     "div",
     null,
-    desktopState.windows.terminal && /* @__PURE__ */ import_react15.default.createElement(
+    desktopState.windows.terminal && /* @__PURE__ */ import_react17.default.createElement(
       UIWindow,
       {
         key: "terminal",
@@ -25926,7 +25957,7 @@ var SpaceTrashDesktop = (props) => {
           setDesktopState(newState);
         }
       },
-      /* @__PURE__ */ import_react15.default.createElement(
+      /* @__PURE__ */ import_react17.default.createElement(
         TerminalApp,
         {
           worker: props.worker,
@@ -25935,7 +25966,7 @@ var SpaceTrashDesktop = (props) => {
         }
       )
     ),
-    stateRef.current.windows["shipmap"] && stateRef.current.windows["shipmap"].visible && /* @__PURE__ */ import_react15.default.createElement(
+    stateRef.current.windows["shipmap"] && stateRef.current.windows["shipmap"].visible && /* @__PURE__ */ import_react17.default.createElement(
       UIWindow,
       {
         key: "shipmap",
@@ -25953,9 +25984,9 @@ var SpaceTrashDesktop = (props) => {
           });
         }
       },
-      /* @__PURE__ */ import_react15.default.createElement(ShipMapApp, { worker: props.worker })
+      /* @__PURE__ */ import_react17.default.createElement(ShipMapApp, { worker: props.worker })
     ),
-    stateRef.current.windows["manual"] && stateRef.current.windows["manual"].visible && /* @__PURE__ */ import_react15.default.createElement(
+    stateRef.current.windows["manual"] && stateRef.current.windows["manual"].visible && /* @__PURE__ */ import_react17.default.createElement(
       UIWindow,
       {
         key: "manual",
@@ -25973,9 +26004,9 @@ var SpaceTrashDesktop = (props) => {
           });
         }
       },
-      /* @__PURE__ */ import_react15.default.createElement("pre", null, "Manual goes here")
+      /* @__PURE__ */ import_react17.default.createElement(ManualApp, { worker: props.worker })
     ),
-    stateRef.current.windows["drone"] && stateRef.current.windows["drone"].visible && /* @__PURE__ */ import_react15.default.createElement(
+    stateRef.current.windows["drone"] && stateRef.current.windows["drone"].visible && /* @__PURE__ */ import_react17.default.createElement(
       UIWindow,
       {
         key: "drone",
@@ -25993,7 +26024,27 @@ var SpaceTrashDesktop = (props) => {
           });
         }
       },
-      /* @__PURE__ */ import_react15.default.createElement(DroneApp, { worker: props.worker })
+      /* @__PURE__ */ import_react17.default.createElement(DroneApp, { worker: props.worker })
+    ),
+    stateRef.current.windows["drones"] && stateRef.current.windows["drones"].visible && /* @__PURE__ */ import_react17.default.createElement(
+      UIWindow,
+      {
+        key: "drones",
+        app: "drones",
+        uiwindow: stateRef.current.windows["drones"],
+        layer: stateRef.current.stack.findIndex((s) => s === "drones"),
+        desktopState: stateRef.current,
+        pushToTop: () => {
+          setDesktopState({
+            ...desktopState,
+            stack: [
+              ...desktopState.stack.filter((x) => x !== "drones"),
+              "drones"
+            ]
+          });
+        }
+      },
+      /* @__PURE__ */ import_react17.default.createElement(DronesApp, { worker: props.worker })
     )
   ));
 };
@@ -26003,7 +26054,7 @@ var worker = new Worker("./worker.js");
 document.addEventListener("DOMContentLoaded", function(event) {
   const domNode = document.getElementById("react-root");
   if (domNode) {
-    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React14.createElement(
+    (0, import_client.createRoot)(domNode).render(/* @__PURE__ */ React16.createElement(
       SpaceTrashDesktop,
       {
         worker

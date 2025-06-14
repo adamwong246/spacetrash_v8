@@ -53,6 +53,7 @@ var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
 // Add cube to Scene
 // scene.add(cube);
 
+let reRender = true;
 let counter = 0;
 let i = 0;
 let r = false;
@@ -156,7 +157,6 @@ export const renderDrone = async (ecs: ECS, ctx: any) => {
 
         // drawOperations.push(SpaceTrashDrone.draw2d(s));
       } else {
-        debugger
         scene.remove(twoD[y][x].mesh);
         // scene.remove(setpiece.mesh);
       }
@@ -241,7 +241,8 @@ export const renderDrone = async (ecs: ECS, ctx: any) => {
         p.mesh = m;
         scene.add(p.mesh);
         p.renderedWebgl = "rendered";
-      } else if (p.renderedWebgl === "changed") {
+      } else if (p.renderedWebgl === "changed" && p.mesh) {
+        reRender = true;
         p.mesh.position.x = p.actorX * TileSize;
         p.mesh.position.y = p.actorY * TileSize;
         p.renderedWebgl = "rendered";
@@ -250,7 +251,7 @@ export const renderDrone = async (ecs: ECS, ctx: any) => {
       } else if (p.renderedWebgl === "rendered") {
         // no-op
       } else {
-        throw `should not be in renderState ${JSON.stringify(p)}`;
+        console.error( `should not be in renderState ${JSON.stringify(p)}`);
       }
     }
 
@@ -285,7 +286,12 @@ export const renderDrone = async (ecs: ECS, ctx: any) => {
   camera.position.x = firstbot.x * TileSize;
   camera.position.y = firstbot.y * TileSize;
 
-  gl.render(scene, camera);
+  if (true) {
+    console.log("reRender")
+    gl.render(scene, camera);
+    reRender = false
+  }
+  
 
 
   return

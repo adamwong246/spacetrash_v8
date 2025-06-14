@@ -7,14 +7,17 @@ import { IUiDekstop } from "../../engine/UI/WM";
 import { DroneApp } from "./drone";
 import { ShipMapApp } from "./shipmap";
 import { ITerminalHooks, ITerminalState, TerminalApp } from "./terminal";
+import { ManualApp } from "./manual";
+import { DronesApp } from "./drones";
 
-export type ISpaceTrashApps = 'terminal' | `shipmap` | `manual` | `drone`;
+export type ISpaceTrashApps = 'terminal' | `shipmap` | `manual` | `drone` | 'drones';
 
 export enum ESpaceTrashApps {
   terminal,
   manual,
   shipmap,
-  drone
+  drone,
+  drones
 };
 
 type IState = IUiDekstop & {
@@ -28,6 +31,7 @@ const initialState: () => IState = () => {
       `shipmap`,
       `manual`,
       `drone`,
+      `drones`,
     ],
 
     terminal: {
@@ -61,6 +65,13 @@ const initialState: () => IState = () => {
         left: 50,
         width: 280,
         height: 250,
+        visible: false,
+      },
+      drones: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
         visible: false,
       },
     }
@@ -126,6 +137,10 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
               "visible": true
             },
             drone: {
+              ...desktopState.windows.drone,
+              "visible": true
+            },
+            drones: {
               ...desktopState.windows.drone,
               "visible": true
             }
@@ -224,53 +239,77 @@ export const SpaceTrashDesktop = (props: { worker: Worker }) => {
         }
 
         {
-        stateRef.current.windows['manual'] && stateRef.current.windows['manual'].visible && <UIWindow
-          key={'manual'}
-          app={'manual'}
-          uiwindow={stateRef.current.windows['manual']}
-          layer={stateRef.current.stack.findIndex((s) => s === 'manual')}
-          desktopState={stateRef.current}
-          pushToTop={() => {
+          stateRef.current.windows['manual'] && stateRef.current.windows['manual'].visible && <UIWindow
+            key={'manual'}
+            app={'manual'}
+            uiwindow={stateRef.current.windows['manual']}
+            layer={stateRef.current.stack.findIndex((s) => s === 'manual')}
+            desktopState={stateRef.current}
+            pushToTop={() => {
 
-            setDesktopState({
-              ...desktopState,
-              stack: [
-                ...desktopState.stack.filter((x) => x !== 'manual'),
-                'manual'
-              ]
-            })
-          }} >
+              setDesktopState({
+                ...desktopState,
+                stack: [
+                  ...desktopState.stack.filter((x) => x !== 'manual'),
+                  'manual'
+                ]
+              })
+            }} >
 
-          <pre>Manual goes here</pre>
+            <ManualApp worker={props.worker} />
 
-        </UIWindow>
+          </UIWindow>
 
-      }
+        }
 
         {
-        stateRef.current.windows['drone'] && stateRef.current.windows['drone'].visible && <UIWindow
-          key={'drone'}
-          app={'drone'}
-          uiwindow={stateRef.current.windows['drone']}
-          layer={stateRef.current.stack.findIndex((s) => s === 'drone')}
+          stateRef.current.windows['drone'] && stateRef.current.windows['drone'].visible && <UIWindow
+            key={'drone'}
+            app={'drone'}
+            uiwindow={stateRef.current.windows['drone']}
+            layer={stateRef.current.stack.findIndex((s) => s === 'drone')}
+            desktopState={stateRef.current}
+            pushToTop={() => {
+
+              setDesktopState({
+                ...desktopState,
+                stack: [
+                  ...desktopState.stack.filter((x) => x !== 'drone'),
+                  'drone'
+                ]
+              })
+            }} >
+
+            <DroneApp worker={props.worker} />
+
+          </UIWindow>
+
+        }
+
+{
+        stateRef.current.windows['drones'] && stateRef.current.windows['drones'].visible && <UIWindow
+          key={'drones'}
+          app={'drones'}
+          uiwindow={stateRef.current.windows['drones']}
+          layer={stateRef.current.stack.findIndex((s) => s === 'drones')}
           desktopState={stateRef.current}
           pushToTop={() => {
 
             setDesktopState({
               ...desktopState,
               stack: [
-                ...desktopState.stack.filter((x) => x !== 'drone'),
-                'drone'
+                ...desktopState.stack.filter((x) => x !== 'drones'),
+                'drones'
               ]
             })
           }} >
 
-          <DroneApp worker={props.worker} />
+          <DronesApp worker={props.worker}/>
 
         </UIWindow>
 
-      }
-
+        }
+        
 
       </div>
     </div>

@@ -2382,9 +2382,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React11 = require_react();
+        var React13 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -3991,7 +3991,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React11.Children.forEach(props.children, function(child) {
+                React13.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -25217,7 +25217,7 @@ var require_graphology_umd_min = __commonJS({
 });
 
 // src/spacetrash/UI/index.tsx
-var import_react12 = __toESM(require_react(), 1);
+var import_react14 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 
 // src/engine/UI/UIWindow.tsx
@@ -25254,12 +25254,19 @@ var import_react10 = __toESM(require_react(), 1);
 // src/spacetrash/UI/terminal.tsx
 var import_react11 = __toESM(require_react(), 1);
 
+// src/spacetrash/UI/manual.tsx
+var import_react12 = __toESM(require_react(), 1);
+
+// src/spacetrash/UI/drones.tsx
+var import_react13 = __toESM(require_react(), 1);
+
 // src/spacetrash/UI/index.tsx
 var ESpaceTrashApps = /* @__PURE__ */ ((ESpaceTrashApps2) => {
   ESpaceTrashApps2[ESpaceTrashApps2["terminal"] = 0] = "terminal";
   ESpaceTrashApps2[ESpaceTrashApps2["manual"] = 1] = "manual";
   ESpaceTrashApps2[ESpaceTrashApps2["shipmap"] = 2] = "shipmap";
   ESpaceTrashApps2[ESpaceTrashApps2["drone"] = 3] = "drone";
+  ESpaceTrashApps2[ESpaceTrashApps2["drones"] = 4] = "drones";
   return ESpaceTrashApps2;
 })(ESpaceTrashApps || {});
 
@@ -50594,7 +50601,7 @@ You are now online
         out: `authenticating...`,
         status: "niether"
       });
-      stateUpdater("menu");
+      stateUpdater("mainloop");
       this.loggedIn = true;
       return {
         out: `all done`,
@@ -50903,8 +50910,8 @@ var Phase0Store = class extends TwoDStore {
 };
 
 // src/spacetrash/System.ts
-var MapSize = 128;
-var NumberOfActors = 30;
+var MapSize = 48;
+var NumberOfActors = 10;
 var BotSlots = 9;
 var TileSize = 8;
 var ActorSize = TileSize / 3;
@@ -51426,6 +51433,7 @@ var litFloorMaterial = new MeshBasicMaterial({
 var cubeMaterial = new MeshBasicMaterial({ color: "red" });
 var geometry = new BoxGeometry(0.5, 0.5, 0.5);
 var material = new MeshBasicMaterial({ color: "#433F81" });
+var reRender = true;
 var counter = 0;
 var renderDrone = async (ecs, ctx) => {
   const gl = ctx;
@@ -51477,7 +51485,6 @@ var renderDrone = async (ecs, ctx) => {
           throw `should not be in renderState ${JSON.stringify(twoD[y][x])}`;
         }
       } else {
-        debugger;
         scene.remove(twoD[y][x].mesh);
       }
     }
@@ -51492,21 +51499,26 @@ var renderDrone = async (ecs, ctx) => {
         p.mesh = m;
         scene.add(p.mesh);
         p.renderedWebgl = "rendered";
-      } else if (p.renderedWebgl === "changed") {
+      } else if (p.renderedWebgl === "changed" && p.mesh) {
+        reRender = true;
         p.mesh.position.x = p.actorX * TileSize;
         p.mesh.position.y = p.actorY * TileSize;
         p.renderedWebgl = "rendered";
       } else if (p.renderedWebgl === "unchanged") {
       } else if (p.renderedWebgl === "rendered") {
       } else {
-        throw `should not be in renderState ${JSON.stringify(p)}`;
+        console.error(`should not be in renderState ${JSON.stringify(p)}`);
       }
     }
   });
   const firstbot = Player_default.bots[Player_default.videoFeed];
   camera.position.x = firstbot.x * TileSize;
   camera.position.y = firstbot.y * TileSize;
-  gl.render(scene, camera);
+  if (true) {
+    console.log("reRender");
+    gl.render(scene, camera);
+    reRender = false;
+  }
   return;
 };
 
@@ -51541,8 +51553,8 @@ var Spacetrash = class extends Game {
   constructor(workerPostMessage) {
     const ship = new SpaceTrashShip();
     const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
-    state.connect(`boot`, `menu`);
-    state.connect(`menu`, `mainloop`);
+    state.connect(`boot`, `mainloop`);
+    state.connect(`mainloop`, `goodbye`);
     state.set(
       "boot",
       new Scene2(
@@ -51589,6 +51601,22 @@ var Spacetrash = class extends Game {
             (ecs, events) => {
             },
             "2d"
+          ],
+          drones: [
+            (ecs, reply) => {
+              debugger;
+              workerPostMessage([`drones-update`, "hello"]);
+            },
+            (ecs, reply) => {
+              debugger;
+              workerPostMessage([`drones-update`, "hello"]);
+              return [];
+            },
+            (ecs, events) => {
+              debugger;
+              workerPostMessage([`drones-update`, "hello"]);
+            },
+            "html"
           ]
         },
         async (ecs) => {
@@ -51597,7 +51625,7 @@ var Spacetrash = class extends Game {
       )
     );
     state.set(
-      "menu",
+      "mainloop",
       new Scene2(
         "menuscene_view_v0",
         {
@@ -51704,6 +51732,22 @@ var Spacetrash = class extends Game {
               }
             },
             "2d"
+          ],
+          drones: [
+            (ecs, reply) => {
+              debugger;
+              workerPostMessage([`drones-update`, "hello"]);
+            },
+            (ecs, reply) => {
+              debugger;
+              workerPostMessage([`drones-update`, "hello"]);
+              return [];
+            },
+            (ecs, events) => {
+              debugger;
+              workerPostMessage([`drones-update`, "hello"]);
+            },
+            "html"
           ]
         },
         (ecs) => {
@@ -51711,9 +51755,9 @@ var Spacetrash = class extends Game {
             return new SpaceTrashDrone(
               Math.random() * MapSize,
               Math.random() * MapSize,
-              ActorSize,
-              (Math.random() - 0.5) / 5,
-              (Math.random() - 0.5) / 5
+              ActorSize
+              // (Math.random() - 0.5) / 5,
+              // (Math.random() - 0.5) / 5
             );
           });
           Player_default.setBots(drones);
@@ -51721,9 +51765,9 @@ var Spacetrash = class extends Game {
             return new SpaceTrashDrone(
               Math.random() * MapSize,
               Math.random() * MapSize,
-              ActorSize,
-              (Math.random() - 0.5) / 5,
-              (Math.random() - 0.5) / 5
+              ActorSize
+              // (Math.random() - 0.5) / 5,
+              // (Math.random() - 0.5) / 5
             );
           });
           return new Promise((res, rej) => {

@@ -45,8 +45,8 @@ export default class Spacetrash extends Game {
     const ship = new SpaceTrashShip();
     const state = new StateSpace("stateSpace_v0", "boot", "goodbye");
 
-    state.connect(`boot`, `menu`);
-    state.connect(`menu`, `mainloop`);
+    state.connect(`boot`, `mainloop`);
+    state.connect(`mainloop`, `goodbye`);
 
     state.set(
       "boot",
@@ -93,6 +93,22 @@ export default class Spacetrash extends Game {
             (ecs, events) => {},
             "2d",
           ],
+          drones: [
+            (ecs, reply) => {
+              debugger
+              workerPostMessage([`drones-update`, 'hello']);
+            },
+            (ecs, reply) => {
+              debugger
+              workerPostMessage([`drones-update`, 'hello']);
+              return [];
+            },
+            (ecs, events) => {
+              debugger
+              workerPostMessage([`drones-update`, 'hello']);
+            },
+            "html",
+          ],
         },
         async (ecs) => {
           return;
@@ -101,7 +117,7 @@ export default class Spacetrash extends Game {
     );
 
     state.set(
-      "menu",
+      "mainloop",
       new Scene<ISpaceTrashApps>(
         "menuscene_view_v0",
         {
@@ -221,6 +237,23 @@ export default class Spacetrash extends Game {
             },
             "2d",
           ],
+
+          drones: [
+            (ecs, reply) => {
+              debugger
+              workerPostMessage([`drones-update`, 'hello']);
+            },
+            (ecs, reply) => {
+              debugger
+              workerPostMessage([`drones-update`, 'hello']);
+              return [];
+            },
+            (ecs, events) => {
+              debugger
+              workerPostMessage([`drones-update`, 'hello']);
+            },
+            "html",
+          ],
         },
         (ecs) => {
           const drones = [...new Array(BotSlots)].map((n) => {
@@ -228,8 +261,8 @@ export default class Spacetrash extends Game {
               Math.random() * MapSize,
               Math.random() * MapSize,
               ActorSize,
-              (Math.random() - 0.5) / 5,
-              (Math.random() - 0.5) / 5
+              // (Math.random() - 0.5) / 5,
+              // (Math.random() - 0.5) / 5
             );
           });
           SpaceTrashPlayer.setBots(drones);
@@ -239,8 +272,8 @@ export default class Spacetrash extends Game {
               Math.random() * MapSize,
               Math.random() * MapSize,
               ActorSize,
-              (Math.random() - 0.5) / 5,
-              (Math.random() - 0.5) / 5
+              // (Math.random() - 0.5) / 5,
+              // (Math.random() - 0.5) / 5
             );
           });
 

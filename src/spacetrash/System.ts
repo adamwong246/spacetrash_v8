@@ -13,8 +13,8 @@ import {
 } from "./Components/setPiece";
 
 export type ISpaceTrashSystems = `physical` | "casting"; //| `physical` | `casting`; // | `upgradeable` | `power` | `atmosphere` | `fluids` | `doors` | `hack`;
-export const MapSize = 128; // >= 21
-export const NumberOfActors = 30; // >=10
+export const MapSize = 48; // >= 21
+export const NumberOfActors = 10; // >=10
 export const BotSlots = 9;
 export const TileSize = 8;
 export const ActorSize = TileSize / 3;

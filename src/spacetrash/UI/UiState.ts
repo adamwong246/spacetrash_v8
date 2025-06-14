@@ -47,7 +47,7 @@ export type IDrones = IDrone1 | IDrone2 | IDrone3;
 export type IComStatus = 'pass' | 'fail' | 'niether';
 
 export type IUiState = {
-  mode: 'debug' | 'terminal' | 'notifications' | `map` | `manual` | `self` | `d1`
+  mode: 'debug' | 'terminal' | 'notifications' | `map` | `manual` | `self` | `d1` | 'drones'
   lastCommandStatus: string | null,
   terminalBuffer: string,
   terminalhistory: {

@@ -50,7 +50,7 @@ You are now online
         status: 'niether'
       })
       
-      stateUpdater("menu");
+      stateUpdater("mainloop");
       this.loggedIn = true;
 
       return {
