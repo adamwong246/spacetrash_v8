@@ -1,365 +1,126 @@
-import { IStores } from "../engine/types";
-import { PhysicsActorComponent, PhysicsActorStore } from "./Components/actor";
-import { LitableComponent, LittableStore } from "./Components/casting/in";
-import { Phase0, Phase0Store } from "./Components/phase0";
+import { ECS } from "../engine/ECS";
+import { PhysicsActorComponent } from "./Components/actor";
+import { Phase0Store } from "./Components/phase0";
 import { Phase1Store } from "./Components/phase1";
-import {
-  PhysicsSetPieceComponent,
-  PhysicsSetPieceStore,
-} from "./Components/setPiece";
+import { PhysicsSetPieceComponent } from "./Components/setPiece";
+import { SpaceTrashDrone } from "./Entities";
+import { Tile } from "./Entities/setpieces";
 
-import { MapSize, TileSize } from "./System";
+import { MapSize } from "./System";
 
-export const shipMapUpdateLoop = (componentStores: IStores, reply): any[] => {
-  // console.log("tick", entities[0], entities[1], entities[2])
-
-  const thingsToDraw: any[] = [];
+export const shipMapUpdateLoop = (ecs: ECS): ((canvas) => any)[] => {
 
 
-  // map entity id to actor and light
-  // const setLights: Record<string, [number, number]> = {};
+  const twoD = (ecs.stores["Phase0"] as Phase0Store).store;
+  const oneD = (ecs.stores["Phase1"] as Phase1Store).store;
 
-  /////////////////////////////////////////////////
-  const phaseZero = (componentStores["Phase0"] as Phase0Store).store;
-  const phaseOne = (componentStores["Phase1"] as Phase1Store).store;
+  let eraseOperations: ((canvas) => any)[] = [];
+  let drawOperations: ((canvas) => any)[] = [];
 
-  const litEntities = (componentStores["LitableComponent"] as LittableStore).store;
-  // const physicsActorPieces = (componentStores['PhysicsActorComponent'] as PhysicsActorStore).store;
-  const physicsSetPieces = (componentStores[
-    'PhysicsSetPieceComponent'
-  ] as PhysicsSetPieceStore).store
+  for (let y = 0; y < MapSize - 1; y++) {
+    for (let x = 0; x < MapSize - 1; x++) {
+      // thingsToDraw.push((canvas) => {
+      //   const z = phaseZero[y][x];
 
-  // litEntities.forEach(([eid, littable], n) => {
-  //   if (!setLights[eid]) {
-  //     setLights[eid] = [-1, -1];
-  //   }
-  //   setLights[eid][1] = n;
-  // });
+      //   const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
+      //   canvas2d.beginPath();
 
-  // for (let y = 0; y < MapSize; y++) {
-  //   // phaseZero[y] = [];
-  //   for (let x = 0; x < MapSize; x++) {
-  //     // phaseZero[y][x] = new Phase0();
-  //     const tileid = `${x}-${y}`;
+      //   if (z.tileType === "FloorTile") {
+      //     if (z.luminance > 0) {
+      //       canvas2d.fillStyle = "yellow";
+      //     } else {
+      //       canvas2d.fillStyle = "white";
+      //     }
 
-  //     if (!thingsToDraw[tileid]) {
-  //       thingsToDraw[tileid] = {
-  //         draw: () => {
-  //           // no-opt
-  //         },
-  //         opts: {
-  //           fill: "",
-  //         },
-  //       };
-  //     }
+      //     canvas2d.rect(
+      //       Math.floor(x * TileSize - TileSize / 2 + 1),
+      //       Math.floor(y * TileSize - TileSize / 2 + 1),
+      //       TileSize - 1,
+      //       TileSize - 1
+      //     );
+      //   }
+      //   if (z.tileType === "WallTile") {
+      //     canvas2d.fillStyle = "darkgrey";
+      //     canvas2d.rect(
+      //       Math.floor(x * TileSize - TileSize / 2 + 1),
+      //       Math.floor(y * TileSize - TileSize / 2 + 1),
+      //       TileSize - 1,
+      //       TileSize - 1
+      //     );
+      //   }
 
-  //     thingsToDraw[tileid].draw = (
-  //       canvas2d: OffscreenCanvasRenderingContext2D,
-  //       opts: {
-  //         fill: string;
-  //         stroke: string;
-  //       }
-  //     ) => {
-  //       canvas2d.rect(
-  //         ((x * TileSize) - TileSize / 2) + 1,
-  //         ((y * TileSize) - TileSize / 2) + 1,
-  //         TileSize - 1,
-  //         TileSize - 1
-  //       );
-  //     }
+      //   canvas2d.fill();
+      //   canvas2d.stroke();
+      // });
 
-  //   }
-  // }
+      const p = twoD[y][x];
+      const z = ecs.entities[p.setId];
+      const s: PhysicsSetPieceComponent =
+        ecs.componentStores["PhysicsSetPieceComponent"].store[z];
 
-  // /////////////////////////////////////////////////
+      // drawOperations.push(Tile.draw2d(s, p.luminance));
 
-  // physicsSetPieces.forEach(([id, setpiece], sNdx) => {
-  //   // console.log(physicsComponent);
-
-  //   // const thingToDraw = {
-  //   //   draw: () => {
-  //   //     // no-opt
-  //   //   },
-  //   //   opts: {
-  //   //     fill: "",
-  //   //   },
-  //   // }
-  //   //
-  //   // if (!thingsToDraw[id]) {
-  //   //   thingsToDraw[id] = {
-  //   //     draw: () => {
-  //   //       // no-opt
-  //   //     },
-  //   //     opts: {
-  //   //       fill: "",
-  //   //     },
-  //   //   };
-  //   // }
-
-  //   // const setpiece = ec as PhysicsSetComponent;
-  //   thingsToDraw.push((
-  //     canvas,
-  //   ) => {
-  //     if (
-  //       canvas.constructor.name ===
-  //       "OffscreenCanvasRenderingContext2D"
-  //     ) {
-  //       const canvas2d =
-  //         canvas as OffscreenCanvasRenderingContext2D;
-
-  //       // debugger
-  //       canvas2d.beginPath();
-
-  //       if (setpiece.tileType === "NorthEast") {
-  //         // canvas2d.arc(
-  //         //   (setpiece.x * TileSize) - TileSize / 2,
-  //         //   (setpiece.y * TileSize) + TileSize/2,
-  //         //   TileSize / 6,
-  //         //   0,
-  //         //   2 * Math.PI,
-  //         // )
-
-  //         // canvas2d.arc(
-  //         //   (setpiece.x * TileSize) + TileSize / 2,
-  //         //   (setpiece.y * TileSize) + TileSize/2,
-  //         //   TileSize / 6,
-  //         //   0,
-  //         //   2 * Math.PI,
-  //         // )
-
-  //         var path = new Path2D();
-
-  //         path.moveTo(
-  //           setpiece.x * TileSize - TileSize / 2,
-  //           setpiece.y * TileSize - TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize - TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-
-  //         canvas2d.fillStyle = "darkgrey";
-  //         canvas2d.fill(path);
-  //       }
-
-  //       if (setpiece.tileType === "NorthWest") {
-  //         var path = new Path2D();
-
-  //         path.moveTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize - TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize - TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-
-  //         canvas2d.fillStyle = "darkgrey";
-  //         canvas2d.fill(path);
-  //       }
-
-  //       if (setpiece.tileType === "SouthEast") {
-  //         var path = new Path2D();
-
-  //         path.moveTo(
-  //           setpiece.x * TileSize - TileSize / 2,
-  //           setpiece.y * TileSize - TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize - TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize - TileSize / 2
-  //         );
-
-  //         canvas2d.fillStyle = "darkgrey";
-  //         canvas2d.fill(path);
-  //       }
-
-  //       if (setpiece.tileType === "SouthWest") {
-  //         var sWidth = setpiece.x * TileSize;
-  //         var sHeight = setpiece.y * TileSize;
-
-  //         var path = new Path2D();
-
-  //         path.moveTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize - TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize - TileSize / 2,
-  //           setpiece.y * TileSize - TileSize / 2
-  //         );
-
-  //         canvas2d.fillStyle = "darkgrey";
-  //         canvas2d.fill(path);
-  //       }
-
-  //       if (setpiece.tileType === "TileA") {
-  //         var sWidth = setpiece.x * TileSize;
-  //         var sHeight = setpiece.y * TileSize;
-
-  //         var path = new Path2D();
-
-  //         path.moveTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize + TileSize / 2,
-  //           setpiece.y * TileSize
-  //         );
-  //         path.lineTo(
-  //           setpiece.x * TileSize,
-  //           setpiece.y * TileSize + TileSize / 2
-  //         );
-
-  //         canvas2d.fillStyle = "darkgrey";
-  //         canvas2d.fill(path);
-  //       }
-  //       if (setpiece.tileType === "TileB") {
-  //         canvas2d.fillStyle = "darkgrey";
-
-  //         canvas2d.rect(
-  //           setpiece.x * TileSize - TileSize / 2 + 1,
-  //           setpiece.y * TileSize + 1,
-  //           TileSize - 1,
-  //           TileSize / 2 - 1
-  //         );
-  //         // canvas2d.fill();
-  //       }
-  //       if (setpiece.tileType === "FloorTile") {
-  //         const [littableEntityId, littalbe] = (litEntities.find((a) => a[0] === id) as [number, LitableComponent]);
-
-  //         if (littalbe && littalbe.luminance > 0) {
-  //           canvas2d.fillStyle = "yellow";
-
-  //         } else {
-  //           canvas2d.fillStyle = "white";
-  //         }
-
-  //         canvas2d.rect(
-  //           ((setpiece.x * TileSize) - TileSize / 2) + 1,
-  //           ((setpiece.y * TileSize) - TileSize / 2) + 1,
-  //           TileSize - 1,
-  //           TileSize - 1
-  //         );
-
-  //       }
-  //       if (setpiece.tileType === "WallTile") {
-  //         canvas2d.fillStyle = "darkgrey";
-  //         canvas2d.rect(
-  //           setpiece.x * TileSize - TileSize / 2 + 1,
-  //           setpiece.y * TileSize - TileSize / 2 + 1,
-  //           TileSize - 1,
-  //           TileSize - 1
-  //         );
-  //       }
-
-  //       // if (opts?.fill) {
-  //       //   // debugger
-  //       //   canvas2d.fillStyle = opts.fill;
-  //       //   // canvas2d.fill();
-  //       // }
-  //       // if (opts?.stroke) {
-  //       //   // console.log(opts.stroke)
-  //       //   canvas2d.strokeStyle = opts.stroke;
-  //       //   // canvas2d.stroke();
-  //       // }
-  //       canvas2d.stroke();
-  //       canvas2d.fill();
-  //     }
-  //   });
-  // });
-
-  // /////////////////////////////////////////////////
-
-  for (let y = 0; y < MapSize-1; y++){
-    for (let x = 0; x < MapSize-1; x++){
-      thingsToDraw.push((canvas) => {
-        const z = phaseZero[y][x];
-
-        const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
-        canvas2d.beginPath();
-
-        // console.log(x, ((x * TileSize) - TileSize / 2) + 1)
-        // canvas2d.fillStyle = "darkgrey";
-        //   canvas2d.rect(
-        //     ((x * TileSize) - TileSize / 2) + 1,
-        //     ((y * TileSize) - TileSize / 2) + 1,
-        //     TileSize - 1,
-        //     TileSize - 1
-        //   );
-          
-        if (z.tileType === "FloorTile") {
-          // const [littableEntityId, littalbe] = (litEntities.find((a) => a[0] === id) as [number, LitableComponent]);
-
-          if (z.luminance > 0) {
-            canvas2d.fillStyle = "yellow";
-
-          } else {
-            canvas2d.fillStyle = "white";
-          }
-
-          canvas2d.rect(
-            Math.floor(((x * TileSize) - TileSize / 2) + 1),
-            Math.floor(((y * TileSize) - TileSize / 2) + 1),
-            TileSize - 1,
-            TileSize - 1
-          );
-
-        }
-        if (z.tileType === "WallTile") {
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.rect(
-            Math.floor(((x * TileSize) - TileSize / 2) + 1),
-            Math.floor(((y * TileSize) - TileSize / 2) + 1),
-            TileSize - 1,
-            TileSize - 1
-          );
-        }
-
-        canvas2d.fill();
-        canvas2d.stroke();
-
-      })
+      if (p.rendered2d === "fresh") {
+        drawOperations.push(Tile.draw2d(s, p));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "changed") {
+        drawOperations.push(Tile.draw2d(s, p));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "unchanged") {
+        // no-op
+      }  else if (p.rendered2d === "rendered") {
+        // no-op
+      } else {
+        throw `should not be in renderState ${JSON.stringify(p)}`;
+      }
+      
+      // drawOperations.push(Tile.draw2d(s, p.luminance));
+      // if (tick === 0 || p.dirty) {
+      //   drawOperations.push(Tile.draw2d(s, p.luminance));
+      //   debugger
+      //   p.dirty = false;
+      // }
     }
   }
-  
-  phaseOne.forEach((actor, i) => {
-    thingsToDraw.push((canvas) => {
 
-      const canvas2d = canvas as OffscreenCanvasRenderingContext2D;
-      canvas2d.beginPath();
-      canvas2d.arc(
-        actor[1] * TileSize,
-        actor[2] * TileSize,
-        TileSize/2,
-        0,
-        2 * Math.PI
-      );
-      canvas2d.fillStyle = "orange";
-      canvas2d.fill();
-      canvas2d.stroke();
-    })
+  oneD.forEach((actor, i) => {
+    const p = oneD[i];
+    const z = ecs.entities[p.actorId];
+    const s: PhysicsActorComponent =
+      ecs.componentStores["PhysicsActorComponent"].store[z];
+
+
+    if (!p.culled2d) {
+      if (p.rendered2d === "fresh") {
+        drawOperations.push(SpaceTrashDrone.draw2d(s));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "changed") {
+        drawOperations.push(SpaceTrashDrone.draw2d(s));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "unchanged") {
+        // no-op
+      } else if (p.rendered2d === "rendered") {
+        // no-op
+      } else {
+        throw `should not be in renderState ${JSON.stringify(p)}`;
+      }
+  
+      drawOperations.push(SpaceTrashDrone.draw2d(s));
+    }
+    
+
+    // const e = ecs.getEntityComponent<SpaceTrashDrone>(
+    //   oneD[i].actorId,
+    //   SpaceTrashDrone.constructor
+    // );
+    // if (tick === 0) {
+    //   drawOperations.push(e.draw2d);
+    // } else {
+    //   eraseOperations.push(e.erase2d);
+    //   drawOperations.push(e.draw2d);
+    // }
   });
 
-  // console.log(thingsToDraw)
-  
 
-  return thingsToDraw;
+  return [...eraseOperations, ...drawOperations];
 };

@@ -1,28 +1,29 @@
-import { Component } from "react";
-import { ISpaceTrashComponents } from ".";
-import { SpaceTrashEntity } from "../Entities";
-import { TwoD_Component } from "../../engine/Component";
-import { ComponentStore } from "../../engine/types";
+import * as THREE from "three";
 
-export class Phase0 extends TwoD_Component<unknown, ISpaceTrashComponents> {
+import { ISpaceTrashComponents } from ".";
+import { Component, TwoDOneD_Component } from "../../engine/Component";
+import { ComponentStore, TwoDStore } from "../../engine/types";
+
+export class Phase0 extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
   setId = -1;
   actorIds = [];
   litIds = [];
   littableId = -1;
   tileType: string;
   luminance: number;
+  mesh?: THREE.Mesh;
+  x: number;
+  y: number;
 
   constructor() {
     super();
-  }
 
+    this.x = -1;
+    this.y = -1;
+  }
 }
 
-
-
-export class Phase0Store extends ComponentStore {
-  store: Phase0[][];
-
+export class Phase0Store extends TwoDStore<Phase0> {
   constructor() {
     super();
     this.store = [[]];
@@ -35,6 +36,4 @@ export class Phase0Store extends ComponentStore {
   make() {
     return new Phase0();
   }
-
 }
-

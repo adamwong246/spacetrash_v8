@@ -3,6 +3,9 @@ import { SpaceTrashEntityComponent, ITiles } from "../../lib/EntityComponent";
 
 import { SpaceTrashEntity } from "..";
 import { PhysicsSetPieceComponent } from "../../Components/setPiece";
+import { TileSize } from "../../System";
+import { Phase1 } from "../../Components/phase1";
+import { Phase0 } from "../../Components/phase0";
 
 export class Tile extends SpaceTrashEntityComponent {
   tiletype: ITiles;
@@ -18,6 +21,58 @@ export class Tile extends SpaceTrashEntityComponent {
 
   validate() {
     console.log("validate tile!");
+  }
+
+  erase2d(draw2d: CanvasRenderingContext2D) {
+    draw2d.arc(10, 10, 3, 0, 90);
+  }
+
+  draw2d(draw2d: CanvasRenderingContext2D) {
+    draw2d.clearRect(1, 2, 3, 4);
+  }
+
+  static draw2d(
+    setPieceAndId: [number, PhysicsSetPieceComponent],
+    p: Phase0
+  ): (canvas2d: CanvasRenderingContext2D) => void {
+    const setPiece = setPieceAndId[1];
+
+    return (ctx: CanvasRenderingContext2D) => {
+      
+      ctx.beginPath();
+      if (setPiece.tileType === "FloorTile") {
+        if (p.luminance > 0) {
+          ctx.fillStyle = "yellow";
+        } else {
+          ctx.fillStyle = "white";
+        }
+
+        ctx.rect(
+          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
+          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
+          TileSize - 1,
+          TileSize - 1
+        );
+      }
+      if (setPiece.tileType === "WallTile") {
+        ctx.fillStyle = "darkgrey";
+        ctx.rect(
+          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
+          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
+          TileSize - 1,
+          TileSize - 1
+        );
+      }
+
+      ctx.fill();
+      ctx.stroke();
+
+      
+    };
+  }
+
+  static erase2d(draw2d: CanvasRenderingContext2D) {
+    // draw2d.clearRect(1, 2, 3, 4);
   }
 }
 

@@ -1,20 +1,22 @@
-import { Component } from "react";
-import { ISpaceTrashComponents } from ".";
-import { SpaceTrashEntity } from "../Entities";
-import { TwoD_Component } from "../../engine/Component";
-import { ComponentStore } from "../../engine/types";
+import * as THREE from "three";
 
-export class Phase1 extends TwoD_Component<unknown, ISpaceTrashComponents> {
+import { TwoD_Component, TwoDOneD_Component } from "../../engine/Component";
+import { OneDStore } from "../../engine/types";
+
+import { ISpaceTrashComponents } from ".";
+
+export class Phase1 extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
+  actorId: number;
+  actorX: number;
+  actorY: number;
+  mesh?: THREE.Mesh;
 
   constructor() {
     super();
   }
-
 }
 
-export class Phase1Store extends ComponentStore {
-  store: Phase1[];
-  
+export class Phase1Store extends OneDStore<Phase1> {
   constructor() {
     super();
     this.store = [];
@@ -27,5 +29,4 @@ export class Phase1Store extends ComponentStore {
   make() {
     return new Phase1();
   }
-
 }

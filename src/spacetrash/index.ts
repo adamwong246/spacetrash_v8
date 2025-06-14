@@ -135,11 +135,11 @@ export default class Spacetrash extends Game {
             },
 
             // draw function
-            (componentStores, reply) => {
+            (ecs, reply) => {
               return [
                 (ctx) => {
                   if (ctx.constructor.name === "WebGLRenderer") {
-                    renderDrone(componentStores, ctx);
+                    renderDrone(ecs, ctx);
                   }
                 },
               ];
@@ -171,19 +171,20 @@ export default class Spacetrash extends Game {
             (ecs, reply) => {
               // return []
             },
-            (componentStores, reply) => {
-              const thingsToDraw: (c: WebGLRenderer) => any[] = shipMapUpdateLoop(
-                componentStores,
-                reply
+            (ecs, reply) => {
+              const thingsToDraw = shipMapUpdateLoop(
+                ecs
               );
 
 
-              return [
-                ...Object.entries(thingsToDraw).map(([i, k]) => {
 
-                  return (c) =>
-                    k(c);
-                }),
+              return [
+                ...thingsToDraw,
+                // ...Object.entries(thingsToDraw).map(([i, k]) => {
+                //   return k;
+                //   // return (c) =>
+                //   //   k(c);
+                // }),
 
                 (canvas) => {
 
@@ -267,42 +268,14 @@ export default class Spacetrash extends Game {
         CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
 
-        Phase0: new Phase0Store(),
-        Phase1: new Phase1Store()
+        
         
       },
-      // [
-      //   new PhysicsSetPieceStore(),
-      //   new PhysicsActorStore(),
-      //   new LittableStore(),
-      //   new LitStore(),
-
-      //   new Phase0Store(),
-      //   new Phase1Store()
-      // ],
-      // {
-      //   setPieces: new PhysicsSetPieceStore(),
-      //   actors: new PhysicsActorStore(),
-
-      //   // setPart2: new Phase0Store(),
-      //   // actorsPart2: new Phase1Store(),
-
-      //   littables: new LittableStore(),
-      //   lits: new LitStore(),
-        
-      // },
-      // new Set([
-      //   // AttackableComponent.constructor,
-      //   // CameraComponent.constructor,
-      //   // LitableComponent.constructor,
-      //   // LitComponent.constructor,
-      //   // PhysicsActorComponent.constructor,
-      //   // PhysicsSetComponent.constructor,
-      //   // PowerStoringComponent.constructor,
-      //   // VideoComponent.constructor,
-      //   // Phase0.constructor,
-      //   // new Phase1Store()
-      // ]),
+      {
+        Phase0: new Phase0Store(),
+        Phase1: new Phase1Store()
+      },
+      
       workerPostMessage
     );
     this.terminal = new SpaceTrashTerminal();

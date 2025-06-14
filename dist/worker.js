@@ -237,20 +237,20 @@ var require_react_development = __commonJS({
         {
           Object.freeze(emptyObject);
         }
-        function Component2(props, context, updater) {
+        function Component3(props, context, updater) {
           this.props = props;
           this.context = context;
           this.refs = emptyObject;
           this.updater = updater || ReactNoopUpdateQueue;
         }
-        Component2.prototype.isReactComponent = {};
-        Component2.prototype.setState = function(partialState, callback) {
+        Component3.prototype.isReactComponent = {};
+        Component3.prototype.setState = function(partialState, callback) {
           if (typeof partialState !== "object" && typeof partialState !== "function" && partialState != null) {
             throw new Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");
           }
           this.updater.enqueueSetState(this, partialState, callback, "setState");
         };
-        Component2.prototype.forceUpdate = function(callback) {
+        Component3.prototype.forceUpdate = function(callback) {
           this.updater.enqueueForceUpdate(this, callback, "forceUpdate");
         };
         {
@@ -259,7 +259,7 @@ var require_react_development = __commonJS({
             replaceState: ["replaceState", "Refactor your code to use setState instead (see https://github.com/facebook/react/issues/3236)."]
           };
           var defineDeprecationWarning = function(methodName, info) {
-            Object.defineProperty(Component2.prototype, methodName, {
+            Object.defineProperty(Component3.prototype, methodName, {
               get: function() {
                 warn("%s(...) is deprecated in plain JavaScript React classes. %s", info[0], info[1]);
                 return void 0;
@@ -274,7 +274,7 @@ var require_react_development = __commonJS({
         }
         function ComponentDummy() {
         }
-        ComponentDummy.prototype = Component2.prototype;
+        ComponentDummy.prototype = Component3.prototype;
         function PureComponent(props, context, updater) {
           this.props = props;
           this.context = context;
@@ -283,7 +283,7 @@ var require_react_development = __commonJS({
         }
         var pureComponentPrototype = PureComponent.prototype = new ComponentDummy();
         pureComponentPrototype.constructor = PureComponent;
-        assign(pureComponentPrototype, Component2.prototype);
+        assign(pureComponentPrototype, Component3.prototype);
         pureComponentPrototype.isPureReactComponent = true;
         function createRef() {
           var refObject = {
@@ -1348,8 +1348,8 @@ var require_react_development = __commonJS({
             return describeNativeComponentFrame(fn, false);
           }
         }
-        function shouldConstruct(Component3) {
-          var prototype = Component3.prototype;
+        function shouldConstruct(Component4) {
+          var prototype = Component4.prototype;
           return !!(prototype && prototype.isReactComponent);
         }
         function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
@@ -1855,7 +1855,7 @@ var require_react_development = __commonJS({
           only: onlyChild
         };
         exports.Children = Children;
-        exports.Component = Component2;
+        exports.Component = Component3;
         exports.Fragment = REACT_FRAGMENT_TYPE;
         exports.Profiler = REACT_PROFILER_TYPE;
         exports.PureComponent = PureComponent;
@@ -3420,8 +3420,8 @@ var require_react_dom_development = __commonJS({
             return describeNativeComponentFrame(fn, false);
           }
         }
-        function shouldConstruct(Component2) {
-          var prototype = Component2.prototype;
+        function shouldConstruct(Component3) {
+          var prototype = Component3.prototype;
           return !!(prototype && prototype.isReactComponent);
         }
         function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
@@ -10884,9 +10884,9 @@ var require_react_dom_development = __commonJS({
         var contextStackCursor = createCursor(emptyContextObject);
         var didPerformWorkStackCursor = createCursor(false);
         var previousContext = emptyContextObject;
-        function getUnmaskedContext(workInProgress2, Component2, didPushOwnContextIfProvider) {
+        function getUnmaskedContext(workInProgress2, Component3, didPushOwnContextIfProvider) {
           {
-            if (didPushOwnContextIfProvider && isContextProvider(Component2)) {
+            if (didPushOwnContextIfProvider && isContextProvider(Component3)) {
               return previousContext;
             }
             return contextStackCursor.current;
@@ -11023,8 +11023,8 @@ var require_react_dom_development = __commonJS({
                 case HostRoot:
                   return node.stateNode.context;
                 case ClassComponent: {
-                  var Component2 = node.type;
-                  if (isContextProvider(Component2)) {
+                  var Component3 = node.type;
+                  if (isContextProvider(Component3)) {
                     return node.stateNode.__reactInternalMemoizedMergedChildContext;
                   }
                   break;
@@ -13478,7 +13478,7 @@ var require_react_dom_development = __commonJS({
           }
           return true;
         }
-        function renderWithHooks(current2, workInProgress2, Component2, props, secondArg, nextRenderLanes) {
+        function renderWithHooks(current2, workInProgress2, Component3, props, secondArg, nextRenderLanes) {
           renderLanes = nextRenderLanes;
           currentlyRenderingFiber$1 = workInProgress2;
           {
@@ -13498,7 +13498,7 @@ var require_react_dom_development = __commonJS({
               ReactCurrentDispatcher$1.current = HooksDispatcherOnMountInDEV;
             }
           }
-          var children = Component2(props, secondArg);
+          var children = Component3(props, secondArg);
           if (didScheduleRenderPhaseUpdateDuringThisPass) {
             var numberOfReRenders = 0;
             do {
@@ -13518,7 +13518,7 @@ var require_react_dom_development = __commonJS({
                 hookTypesUpdateIndexDev = -1;
               }
               ReactCurrentDispatcher$1.current = HooksDispatcherOnRerenderInDEV;
-              children = Component2(props, secondArg);
+              children = Component3(props, secondArg);
             } while (didScheduleRenderPhaseUpdateDuringThisPass);
           }
           ReactCurrentDispatcher$1.current = ContextOnlyDispatcher;
@@ -15317,10 +15317,10 @@ var require_react_dom_development = __commonJS({
             child = child.sibling;
           }
         }
-        function resolveDefaultProps(Component2, baseProps) {
-          if (Component2 && Component2.defaultProps) {
+        function resolveDefaultProps(Component3, baseProps) {
+          if (Component3 && Component3.defaultProps) {
             var props = assign({}, baseProps);
-            var defaultProps = Component2.defaultProps;
+            var defaultProps = Component3.defaultProps;
             for (var propName in defaultProps) {
               if (props[propName] === void 0) {
                 props[propName] = defaultProps[propName];
@@ -16249,22 +16249,22 @@ var require_react_dom_development = __commonJS({
           workInProgress2.child = reconcileChildFibers(workInProgress2, current2.child, null, renderLanes2);
           workInProgress2.child = reconcileChildFibers(workInProgress2, null, nextChildren, renderLanes2);
         }
-        function updateForwardRef(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+        function updateForwardRef(current2, workInProgress2, Component3, nextProps, renderLanes2) {
           {
             if (workInProgress2.type !== workInProgress2.elementType) {
-              var innerPropTypes = Component2.propTypes;
+              var innerPropTypes = Component3.propTypes;
               if (innerPropTypes) {
                 checkPropTypes(
                   innerPropTypes,
                   nextProps,
                   // Resolved props
                   "prop",
-                  getComponentNameFromType(Component2)
+                  getComponentNameFromType(Component3)
                 );
               }
             }
           }
-          var render2 = Component2.render;
+          var render2 = Component3.render;
           var ref = workInProgress2.ref;
           var nextChildren;
           var hasId;
@@ -16302,11 +16302,11 @@ var require_react_dom_development = __commonJS({
           reconcileChildren(current2, workInProgress2, nextChildren, renderLanes2);
           return workInProgress2.child;
         }
-        function updateMemoComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+        function updateMemoComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
           if (current2 === null) {
-            var type = Component2.type;
-            if (isSimpleFunctionComponent(type) && Component2.compare === null && // SimpleMemoComponent codepath doesn't resolve outer props either.
-            Component2.defaultProps === void 0) {
+            var type = Component3.type;
+            if (isSimpleFunctionComponent(type) && Component3.compare === null && // SimpleMemoComponent codepath doesn't resolve outer props either.
+            Component3.defaultProps === void 0) {
               var resolvedType = type;
               {
                 resolvedType = resolveFunctionForHotReloading(type);
@@ -16329,7 +16329,7 @@ var require_react_dom_development = __commonJS({
                   getComponentNameFromType(type)
                 );
               }
-              if (Component2.defaultProps !== void 0) {
+              if (Component3.defaultProps !== void 0) {
                 var componentName = getComponentNameFromType(type) || "Unknown";
                 if (!didWarnAboutDefaultPropsOnFunctionComponent[componentName]) {
                   error("%s: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.", componentName);
@@ -16337,14 +16337,14 @@ var require_react_dom_development = __commonJS({
                 }
               }
             }
-            var child = createFiberFromTypeAndProps(Component2.type, null, nextProps, workInProgress2, workInProgress2.mode, renderLanes2);
+            var child = createFiberFromTypeAndProps(Component3.type, null, nextProps, workInProgress2, workInProgress2.mode, renderLanes2);
             child.ref = workInProgress2.ref;
             child.return = workInProgress2;
             workInProgress2.child = child;
             return child;
           }
           {
-            var _type = Component2.type;
+            var _type = Component3.type;
             var _innerPropTypes = _type.propTypes;
             if (_innerPropTypes) {
               checkPropTypes(
@@ -16360,7 +16360,7 @@ var require_react_dom_development = __commonJS({
           var hasScheduledUpdateOrContext = checkScheduledUpdateOrContext(current2, renderLanes2);
           if (!hasScheduledUpdateOrContext) {
             var prevProps = currentChild.memoizedProps;
-            var compare = Component2.compare;
+            var compare = Component3.compare;
             compare = compare !== null ? compare : shallowEqual;
             if (compare(prevProps, nextProps) && current2.ref === workInProgress2.ref) {
               return bailoutOnAlreadyFinishedWork(current2, workInProgress2, renderLanes2);
@@ -16373,7 +16373,7 @@ var require_react_dom_development = __commonJS({
           workInProgress2.child = newChild;
           return newChild;
         }
-        function updateSimpleMemoComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+        function updateSimpleMemoComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
           {
             if (workInProgress2.type !== workInProgress2.elementType) {
               var outerMemoType = workInProgress2.elementType;
@@ -16413,7 +16413,7 @@ var require_react_dom_development = __commonJS({
               }
             }
           }
-          return updateFunctionComponent(current2, workInProgress2, Component2, nextProps, renderLanes2);
+          return updateFunctionComponent(current2, workInProgress2, Component3, nextProps, renderLanes2);
         }
         function updateOffscreenComponent(current2, workInProgress2, renderLanes2) {
           var nextProps = workInProgress2.pendingProps;
@@ -16503,24 +16503,24 @@ var require_react_dom_development = __commonJS({
             }
           }
         }
-        function updateFunctionComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+        function updateFunctionComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
           {
             if (workInProgress2.type !== workInProgress2.elementType) {
-              var innerPropTypes = Component2.propTypes;
+              var innerPropTypes = Component3.propTypes;
               if (innerPropTypes) {
                 checkPropTypes(
                   innerPropTypes,
                   nextProps,
                   // Resolved props
                   "prop",
-                  getComponentNameFromType(Component2)
+                  getComponentNameFromType(Component3)
                 );
               }
             }
           }
           var context;
           {
-            var unmaskedContext = getUnmaskedContext(workInProgress2, Component2, true);
+            var unmaskedContext = getUnmaskedContext(workInProgress2, Component3, true);
             context = getMaskedContext(workInProgress2, unmaskedContext);
           }
           var nextChildren;
@@ -16532,12 +16532,12 @@ var require_react_dom_development = __commonJS({
           {
             ReactCurrentOwner$1.current = workInProgress2;
             setIsRendering(true);
-            nextChildren = renderWithHooks(current2, workInProgress2, Component2, nextProps, context, renderLanes2);
+            nextChildren = renderWithHooks(current2, workInProgress2, Component3, nextProps, context, renderLanes2);
             hasId = checkDidRenderIdHook();
             if (workInProgress2.mode & StrictLegacyMode) {
               setIsStrictModeForDevtools(true);
               try {
-                nextChildren = renderWithHooks(current2, workInProgress2, Component2, nextProps, context, renderLanes2);
+                nextChildren = renderWithHooks(current2, workInProgress2, Component3, nextProps, context, renderLanes2);
                 hasId = checkDidRenderIdHook();
               } finally {
                 setIsStrictModeForDevtools(false);
@@ -16559,7 +16559,7 @@ var require_react_dom_development = __commonJS({
           reconcileChildren(current2, workInProgress2, nextChildren, renderLanes2);
           return workInProgress2.child;
         }
-        function updateClassComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+        function updateClassComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
           {
             switch (shouldError(workInProgress2)) {
               case false: {
@@ -16582,20 +16582,20 @@ var require_react_dom_development = __commonJS({
               }
             }
             if (workInProgress2.type !== workInProgress2.elementType) {
-              var innerPropTypes = Component2.propTypes;
+              var innerPropTypes = Component3.propTypes;
               if (innerPropTypes) {
                 checkPropTypes(
                   innerPropTypes,
                   nextProps,
                   // Resolved props
                   "prop",
-                  getComponentNameFromType(Component2)
+                  getComponentNameFromType(Component3)
                 );
               }
             }
           }
           var hasContext;
-          if (isContextProvider(Component2)) {
+          if (isContextProvider(Component3)) {
             hasContext = true;
             pushContextProvider(workInProgress2);
           } else {
@@ -16606,15 +16606,15 @@ var require_react_dom_development = __commonJS({
           var shouldUpdate;
           if (instance === null) {
             resetSuspendedCurrentOnMountInLegacyMode(current2, workInProgress2);
-            constructClassInstance(workInProgress2, Component2, nextProps);
-            mountClassInstance(workInProgress2, Component2, nextProps, renderLanes2);
+            constructClassInstance(workInProgress2, Component3, nextProps);
+            mountClassInstance(workInProgress2, Component3, nextProps, renderLanes2);
             shouldUpdate = true;
           } else if (current2 === null) {
-            shouldUpdate = resumeMountClassInstance(workInProgress2, Component2, nextProps, renderLanes2);
+            shouldUpdate = resumeMountClassInstance(workInProgress2, Component3, nextProps, renderLanes2);
           } else {
-            shouldUpdate = updateClassInstance(current2, workInProgress2, Component2, nextProps, renderLanes2);
+            shouldUpdate = updateClassInstance(current2, workInProgress2, Component3, nextProps, renderLanes2);
           }
-          var nextUnitOfWork = finishClassComponent(current2, workInProgress2, Component2, shouldUpdate, hasContext, renderLanes2);
+          var nextUnitOfWork = finishClassComponent(current2, workInProgress2, Component3, shouldUpdate, hasContext, renderLanes2);
           {
             var inst = workInProgress2.stateNode;
             if (shouldUpdate && inst.props !== nextProps) {
@@ -16626,19 +16626,19 @@ var require_react_dom_development = __commonJS({
           }
           return nextUnitOfWork;
         }
-        function finishClassComponent(current2, workInProgress2, Component2, shouldUpdate, hasContext, renderLanes2) {
+        function finishClassComponent(current2, workInProgress2, Component3, shouldUpdate, hasContext, renderLanes2) {
           markRef(current2, workInProgress2);
           var didCaptureError = (workInProgress2.flags & DidCapture) !== NoFlags;
           if (!shouldUpdate && !didCaptureError) {
             if (hasContext) {
-              invalidateContextProvider(workInProgress2, Component2, false);
+              invalidateContextProvider(workInProgress2, Component3, false);
             }
             return bailoutOnAlreadyFinishedWork(current2, workInProgress2, renderLanes2);
           }
           var instance = workInProgress2.stateNode;
           ReactCurrentOwner$1.current = workInProgress2;
           var nextChildren;
-          if (didCaptureError && typeof Component2.getDerivedStateFromError !== "function") {
+          if (didCaptureError && typeof Component3.getDerivedStateFromError !== "function") {
             nextChildren = null;
             {
               stopProfilerTimerIfRunning();
@@ -16672,7 +16672,7 @@ var require_react_dom_development = __commonJS({
           }
           workInProgress2.memoizedState = instance.state;
           if (hasContext) {
-            invalidateContextProvider(workInProgress2, Component2, true);
+            invalidateContextProvider(workInProgress2, Component3, true);
           }
           return workInProgress2.child;
         }
@@ -16772,45 +16772,45 @@ var require_react_dom_development = __commonJS({
           var lazyComponent = elementType;
           var payload = lazyComponent._payload;
           var init = lazyComponent._init;
-          var Component2 = init(payload);
-          workInProgress2.type = Component2;
-          var resolvedTag = workInProgress2.tag = resolveLazyComponentTag(Component2);
-          var resolvedProps = resolveDefaultProps(Component2, props);
+          var Component3 = init(payload);
+          workInProgress2.type = Component3;
+          var resolvedTag = workInProgress2.tag = resolveLazyComponentTag(Component3);
+          var resolvedProps = resolveDefaultProps(Component3, props);
           var child;
           switch (resolvedTag) {
             case FunctionComponent: {
               {
-                validateFunctionComponentInDev(workInProgress2, Component2);
-                workInProgress2.type = Component2 = resolveFunctionForHotReloading(Component2);
+                validateFunctionComponentInDev(workInProgress2, Component3);
+                workInProgress2.type = Component3 = resolveFunctionForHotReloading(Component3);
               }
-              child = updateFunctionComponent(null, workInProgress2, Component2, resolvedProps, renderLanes2);
+              child = updateFunctionComponent(null, workInProgress2, Component3, resolvedProps, renderLanes2);
               return child;
             }
             case ClassComponent: {
               {
-                workInProgress2.type = Component2 = resolveClassForHotReloading(Component2);
+                workInProgress2.type = Component3 = resolveClassForHotReloading(Component3);
               }
-              child = updateClassComponent(null, workInProgress2, Component2, resolvedProps, renderLanes2);
+              child = updateClassComponent(null, workInProgress2, Component3, resolvedProps, renderLanes2);
               return child;
             }
             case ForwardRef: {
               {
-                workInProgress2.type = Component2 = resolveForwardRefForHotReloading(Component2);
+                workInProgress2.type = Component3 = resolveForwardRefForHotReloading(Component3);
               }
-              child = updateForwardRef(null, workInProgress2, Component2, resolvedProps, renderLanes2);
+              child = updateForwardRef(null, workInProgress2, Component3, resolvedProps, renderLanes2);
               return child;
             }
             case MemoComponent: {
               {
                 if (workInProgress2.type !== workInProgress2.elementType) {
-                  var outerPropTypes = Component2.propTypes;
+                  var outerPropTypes = Component3.propTypes;
                   if (outerPropTypes) {
                     checkPropTypes(
                       outerPropTypes,
                       resolvedProps,
                       // Resolved for outer only
                       "prop",
-                      getComponentNameFromType(Component2)
+                      getComponentNameFromType(Component3)
                     );
                   }
                 }
@@ -16818,8 +16818,8 @@ var require_react_dom_development = __commonJS({
               child = updateMemoComponent(
                 null,
                 workInProgress2,
-                Component2,
-                resolveDefaultProps(Component2.type, resolvedProps),
+                Component3,
+                resolveDefaultProps(Component3.type, resolvedProps),
                 // The inner type can have defaults too
                 renderLanes2
               );
@@ -16828,33 +16828,33 @@ var require_react_dom_development = __commonJS({
           }
           var hint = "";
           {
-            if (Component2 !== null && typeof Component2 === "object" && Component2.$$typeof === REACT_LAZY_TYPE) {
+            if (Component3 !== null && typeof Component3 === "object" && Component3.$$typeof === REACT_LAZY_TYPE) {
               hint = " Did you wrap a component in React.lazy() more than once?";
             }
           }
-          throw new Error("Element type is invalid. Received a promise that resolves to: " + Component2 + ". " + ("Lazy element type must resolve to a class or function." + hint));
+          throw new Error("Element type is invalid. Received a promise that resolves to: " + Component3 + ". " + ("Lazy element type must resolve to a class or function." + hint));
         }
-        function mountIncompleteClassComponent(_current, workInProgress2, Component2, nextProps, renderLanes2) {
+        function mountIncompleteClassComponent(_current, workInProgress2, Component3, nextProps, renderLanes2) {
           resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress2);
           workInProgress2.tag = ClassComponent;
           var hasContext;
-          if (isContextProvider(Component2)) {
+          if (isContextProvider(Component3)) {
             hasContext = true;
             pushContextProvider(workInProgress2);
           } else {
             hasContext = false;
           }
           prepareToReadContext(workInProgress2, renderLanes2);
-          constructClassInstance(workInProgress2, Component2, nextProps);
-          mountClassInstance(workInProgress2, Component2, nextProps, renderLanes2);
-          return finishClassComponent(null, workInProgress2, Component2, true, hasContext, renderLanes2);
+          constructClassInstance(workInProgress2, Component3, nextProps);
+          mountClassInstance(workInProgress2, Component3, nextProps, renderLanes2);
+          return finishClassComponent(null, workInProgress2, Component3, true, hasContext, renderLanes2);
         }
-        function mountIndeterminateComponent(_current, workInProgress2, Component2, renderLanes2) {
+        function mountIndeterminateComponent(_current, workInProgress2, Component3, renderLanes2) {
           resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress2);
           var props = workInProgress2.pendingProps;
           var context;
           {
-            var unmaskedContext = getUnmaskedContext(workInProgress2, Component2, false);
+            var unmaskedContext = getUnmaskedContext(workInProgress2, Component3, false);
             context = getMaskedContext(workInProgress2, unmaskedContext);
           }
           prepareToReadContext(workInProgress2, renderLanes2);
@@ -16864,8 +16864,8 @@ var require_react_dom_development = __commonJS({
             markComponentRenderStarted(workInProgress2);
           }
           {
-            if (Component2.prototype && typeof Component2.prototype.render === "function") {
-              var componentName = getComponentNameFromType(Component2) || "Unknown";
+            if (Component3.prototype && typeof Component3.prototype.render === "function") {
+              var componentName = getComponentNameFromType(Component3) || "Unknown";
               if (!didWarnAboutBadClass[componentName]) {
                 error("The <%s /> component appears to have a render method, but doesn't extend React.Component. This is likely to cause errors. Change %s to extend React.Component instead.", componentName, componentName);
                 didWarnAboutBadClass[componentName] = true;
@@ -16876,7 +16876,7 @@ var require_react_dom_development = __commonJS({
             }
             setIsRendering(true);
             ReactCurrentOwner$1.current = workInProgress2;
-            value = renderWithHooks(null, workInProgress2, Component2, props, context, renderLanes2);
+            value = renderWithHooks(null, workInProgress2, Component3, props, context, renderLanes2);
             hasId = checkDidRenderIdHook();
             setIsRendering(false);
           }
@@ -16886,7 +16886,7 @@ var require_react_dom_development = __commonJS({
           workInProgress2.flags |= PerformedWork;
           {
             if (typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0) {
-              var _componentName = getComponentNameFromType(Component2) || "Unknown";
+              var _componentName = getComponentNameFromType(Component3) || "Unknown";
               if (!didWarnAboutModulePatternComponent[_componentName]) {
                 error("The <%s /> component appears to be a function component that returns a class instance. Change %s to a class that extends React.Component instead. If you can't use a class try assigning the prototype on the function as a workaround. `%s.prototype = React.Component.prototype`. Don't use an arrow function since it cannot be called with `new` by React.", _componentName, _componentName, _componentName);
                 didWarnAboutModulePatternComponent[_componentName] = true;
@@ -16899,7 +16899,7 @@ var require_react_dom_development = __commonJS({
             typeof value === "object" && value !== null && typeof value.render === "function" && value.$$typeof === void 0
           ) {
             {
-              var _componentName2 = getComponentNameFromType(Component2) || "Unknown";
+              var _componentName2 = getComponentNameFromType(Component3) || "Unknown";
               if (!didWarnAboutModulePatternComponent[_componentName2]) {
                 error("The <%s /> component appears to be a function component that returns a class instance. Change %s to a class that extends React.Component instead. If you can't use a class try assigning the prototype on the function as a workaround. `%s.prototype = React.Component.prototype`. Don't use an arrow function since it cannot be called with `new` by React.", _componentName2, _componentName2, _componentName2);
                 didWarnAboutModulePatternComponent[_componentName2] = true;
@@ -16909,7 +16909,7 @@ var require_react_dom_development = __commonJS({
             workInProgress2.memoizedState = null;
             workInProgress2.updateQueue = null;
             var hasContext = false;
-            if (isContextProvider(Component2)) {
+            if (isContextProvider(Component3)) {
               hasContext = true;
               pushContextProvider(workInProgress2);
             } else {
@@ -16918,15 +16918,15 @@ var require_react_dom_development = __commonJS({
             workInProgress2.memoizedState = value.state !== null && value.state !== void 0 ? value.state : null;
             initializeUpdateQueue(workInProgress2);
             adoptClassInstance(workInProgress2, value);
-            mountClassInstance(workInProgress2, Component2, props, renderLanes2);
-            return finishClassComponent(null, workInProgress2, Component2, true, hasContext, renderLanes2);
+            mountClassInstance(workInProgress2, Component3, props, renderLanes2);
+            return finishClassComponent(null, workInProgress2, Component3, true, hasContext, renderLanes2);
           } else {
             workInProgress2.tag = FunctionComponent;
             {
               if (workInProgress2.mode & StrictLegacyMode) {
                 setIsStrictModeForDevtools(true);
                 try {
-                  value = renderWithHooks(null, workInProgress2, Component2, props, context, renderLanes2);
+                  value = renderWithHooks(null, workInProgress2, Component3, props, context, renderLanes2);
                   hasId = checkDidRenderIdHook();
                 } finally {
                   setIsStrictModeForDevtools(false);
@@ -16938,16 +16938,16 @@ var require_react_dom_development = __commonJS({
             }
             reconcileChildren(null, workInProgress2, value, renderLanes2);
             {
-              validateFunctionComponentInDev(workInProgress2, Component2);
+              validateFunctionComponentInDev(workInProgress2, Component3);
             }
             return workInProgress2.child;
           }
         }
-        function validateFunctionComponentInDev(workInProgress2, Component2) {
+        function validateFunctionComponentInDev(workInProgress2, Component3) {
           {
-            if (Component2) {
-              if (Component2.childContextTypes) {
-                error("%s(...): childContextTypes cannot be defined on a function component.", Component2.displayName || Component2.name || "Component");
+            if (Component3) {
+              if (Component3.childContextTypes) {
+                error("%s(...): childContextTypes cannot be defined on a function component.", Component3.displayName || Component3.name || "Component");
               }
             }
             if (workInProgress2.ref !== null) {
@@ -16966,22 +16966,22 @@ var require_react_dom_development = __commonJS({
                 error("Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s", info);
               }
             }
-            if (Component2.defaultProps !== void 0) {
-              var componentName = getComponentNameFromType(Component2) || "Unknown";
+            if (Component3.defaultProps !== void 0) {
+              var componentName = getComponentNameFromType(Component3) || "Unknown";
               if (!didWarnAboutDefaultPropsOnFunctionComponent[componentName]) {
                 error("%s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.", componentName);
                 didWarnAboutDefaultPropsOnFunctionComponent[componentName] = true;
               }
             }
-            if (typeof Component2.getDerivedStateFromProps === "function") {
-              var _componentName3 = getComponentNameFromType(Component2) || "Unknown";
+            if (typeof Component3.getDerivedStateFromProps === "function") {
+              var _componentName3 = getComponentNameFromType(Component3) || "Unknown";
               if (!didWarnAboutGetDerivedStateOnFunctionComponent[_componentName3]) {
                 error("%s: Function components do not support getDerivedStateFromProps.", _componentName3);
                 didWarnAboutGetDerivedStateOnFunctionComponent[_componentName3] = true;
               }
             }
-            if (typeof Component2.contextType === "object" && Component2.contextType !== null) {
-              var _componentName4 = getComponentNameFromType(Component2) || "Unknown";
+            if (typeof Component3.contextType === "object" && Component3.contextType !== null) {
+              var _componentName4 = getComponentNameFromType(Component3) || "Unknown";
               if (!didWarnAboutContextTypeOnFunctionComponent[_componentName4]) {
                 error("%s: Function components do not support contextType.", _componentName4);
                 didWarnAboutContextTypeOnFunctionComponent[_componentName4] = true;
@@ -17743,8 +17743,8 @@ var require_react_dom_development = __commonJS({
               pushHostContext(workInProgress2);
               break;
             case ClassComponent: {
-              var Component2 = workInProgress2.type;
-              if (isContextProvider(Component2)) {
+              var Component3 = workInProgress2.type;
+              if (isContextProvider(Component3)) {
                 pushContextProvider(workInProgress2);
               }
               break;
@@ -17871,10 +17871,10 @@ var require_react_dom_development = __commonJS({
               return mountLazyComponent(current2, workInProgress2, elementType, renderLanes2);
             }
             case FunctionComponent: {
-              var Component2 = workInProgress2.type;
+              var Component3 = workInProgress2.type;
               var unresolvedProps = workInProgress2.pendingProps;
-              var resolvedProps = workInProgress2.elementType === Component2 ? unresolvedProps : resolveDefaultProps(Component2, unresolvedProps);
-              return updateFunctionComponent(current2, workInProgress2, Component2, resolvedProps, renderLanes2);
+              var resolvedProps = workInProgress2.elementType === Component3 ? unresolvedProps : resolveDefaultProps(Component3, unresolvedProps);
+              return updateFunctionComponent(current2, workInProgress2, Component3, resolvedProps, renderLanes2);
             }
             case ClassComponent: {
               var _Component = workInProgress2.type;
@@ -18178,8 +18178,8 @@ var require_react_dom_development = __commonJS({
               bubbleProperties(workInProgress2);
               return null;
             case ClassComponent: {
-              var Component2 = workInProgress2.type;
-              if (isContextProvider(Component2)) {
+              var Component3 = workInProgress2.type;
+              if (isContextProvider(Component3)) {
                 popContext(workInProgress2);
               }
               bubbleProperties(workInProgress2);
@@ -18497,8 +18497,8 @@ var require_react_dom_development = __commonJS({
           popTreeContext(workInProgress2);
           switch (workInProgress2.tag) {
             case ClassComponent: {
-              var Component2 = workInProgress2.type;
-              if (isContextProvider(Component2)) {
+              var Component3 = workInProgress2.type;
+              if (isContextProvider(Component3)) {
                 popContext(workInProgress2);
               }
               var flags = workInProgress2.flags;
@@ -22183,18 +22183,18 @@ var require_react_dom_development = __commonJS({
         var createFiber = function(tag, pendingProps, key, mode) {
           return new FiberNode(tag, pendingProps, key, mode);
         };
-        function shouldConstruct$1(Component2) {
-          var prototype = Component2.prototype;
+        function shouldConstruct$1(Component3) {
+          var prototype = Component3.prototype;
           return !!(prototype && prototype.isReactComponent);
         }
         function isSimpleFunctionComponent(type) {
           return typeof type === "function" && !shouldConstruct$1(type) && type.defaultProps === void 0;
         }
-        function resolveLazyComponentTag(Component2) {
-          if (typeof Component2 === "function") {
-            return shouldConstruct$1(Component2) ? ClassComponent : FunctionComponent;
-          } else if (Component2 !== void 0 && Component2 !== null) {
-            var $$typeof = Component2.$$typeof;
+        function resolveLazyComponentTag(Component3) {
+          if (typeof Component3 === "function") {
+            return shouldConstruct$1(Component3) ? ClassComponent : FunctionComponent;
+          } else if (Component3 !== void 0 && Component3 !== null) {
+            var $$typeof = Component3.$$typeof;
             if ($$typeof === REACT_FORWARD_REF_TYPE) {
               return ForwardRef;
             }
@@ -22635,9 +22635,9 @@ var require_react_dom_development = __commonJS({
           var fiber = get(parentComponent);
           var parentContext = findCurrentUnmaskedContext(fiber);
           if (fiber.tag === ClassComponent) {
-            var Component2 = fiber.type;
-            if (isContextProvider(Component2)) {
-              return processChildContext(fiber, Component2, parentContext);
+            var Component3 = fiber.type;
+            if (isContextProvider(Component3)) {
+              return processChildContext(fiber, Component3, parentContext);
             }
           }
           return parentContext;
@@ -25483,6 +25483,7 @@ var EventDispatcher = class {
   }
 };
 var _lut = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3a", "3b", "3c", "3d", "3e", "3f", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4a", "4b", "4c", "4d", "4e", "4f", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5a", "5b", "5c", "5d", "5e", "5f", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6a", "6b", "6c", "6d", "6e", "6f", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7a", "7b", "7c", "7d", "7e", "7f", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9a", "9b", "9c", "9d", "9e", "9f", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "aa", "ab", "ac", "ad", "ae", "af", "b0", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "ba", "bb", "bc", "bd", "be", "bf", "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "ca", "cb", "cc", "cd", "ce", "cf", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "da", "db", "dc", "dd", "de", "df", "e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "ea", "eb", "ec", "ed", "ee", "ef", "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe", "ff"];
+var _seed = 1234567;
 var DEG2RAD = Math.PI / 180;
 var RAD2DEG = 180 / Math.PI;
 function generateUUID() {
@@ -25499,8 +25500,101 @@ function clamp(value, min, max) {
 function euclideanModulo(n, m) {
   return (n % m + m) % m;
 }
+function mapLinear(x, a1, a2, b1, b2) {
+  return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
+}
+function inverseLerp(x, y, value) {
+  if (x !== y) {
+    return (value - x) / (y - x);
+  } else {
+    return 0;
+  }
+}
 function lerp(x, y, t) {
   return (1 - t) * x + t * y;
+}
+function damp(x, y, lambda, dt) {
+  return lerp(x, y, 1 - Math.exp(-lambda * dt));
+}
+function pingpong(x, length = 1) {
+  return length - Math.abs(euclideanModulo(x, length * 2) - length);
+}
+function smoothstep(x, min, max) {
+  if (x <= min) return 0;
+  if (x >= max) return 1;
+  x = (x - min) / (max - min);
+  return x * x * (3 - 2 * x);
+}
+function smootherstep(x, min, max) {
+  if (x <= min) return 0;
+  if (x >= max) return 1;
+  x = (x - min) / (max - min);
+  return x * x * x * (x * (x * 6 - 15) + 10);
+}
+function randInt(low, high) {
+  return low + Math.floor(Math.random() * (high - low + 1));
+}
+function randFloat(low, high) {
+  return low + Math.random() * (high - low);
+}
+function randFloatSpread(range) {
+  return range * (0.5 - Math.random());
+}
+function seededRandom(s) {
+  if (s !== void 0) _seed = s;
+  let t = _seed += 1831565813;
+  t = Math.imul(t ^ t >>> 15, t | 1);
+  t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+  return ((t ^ t >>> 14) >>> 0) / 4294967296;
+}
+function degToRad(degrees) {
+  return degrees * DEG2RAD;
+}
+function radToDeg(radians) {
+  return radians * RAD2DEG;
+}
+function isPowerOfTwo(value) {
+  return (value & value - 1) === 0 && value !== 0;
+}
+function ceilPowerOfTwo(value) {
+  return Math.pow(2, Math.ceil(Math.log(value) / Math.LN2));
+}
+function floorPowerOfTwo(value) {
+  return Math.pow(2, Math.floor(Math.log(value) / Math.LN2));
+}
+function setQuaternionFromProperEuler(q, a, b, c, order) {
+  const cos = Math.cos;
+  const sin = Math.sin;
+  const c2 = cos(b / 2);
+  const s2 = sin(b / 2);
+  const c13 = cos((a + c) / 2);
+  const s13 = sin((a + c) / 2);
+  const c1_3 = cos((a - c) / 2);
+  const s1_3 = sin((a - c) / 2);
+  const c3_1 = cos((c - a) / 2);
+  const s3_1 = sin((c - a) / 2);
+  switch (order) {
+    case "XYX":
+      q.set(c2 * s13, s2 * c1_3, s2 * s1_3, c2 * c13);
+      break;
+    case "YZY":
+      q.set(s2 * s1_3, c2 * s13, s2 * c1_3, c2 * c13);
+      break;
+    case "ZXZ":
+      q.set(s2 * c1_3, s2 * s1_3, c2 * s13, c2 * c13);
+      break;
+    case "XZX":
+      q.set(c2 * s13, s2 * s3_1, s2 * c3_1, c2 * c13);
+      break;
+    case "YXY":
+      q.set(s2 * c3_1, c2 * s13, s2 * s3_1, c2 * c13);
+      break;
+    case "ZYZ":
+      q.set(s2 * s3_1, s2 * c3_1, c2 * s13, c2 * c13);
+      break;
+    default:
+      console.warn("THREE.MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: " + order);
+  }
 }
 function denormalize(value, array) {
   switch (array.constructor) {
@@ -25542,6 +25636,250 @@ function normalize(value, array) {
       throw new Error("Invalid component type.");
   }
 }
+var MathUtils = {
+  DEG2RAD,
+  RAD2DEG,
+  /**
+   * Generate a [UUID]{@link https://en.wikipedia.org/wiki/Universally_unique_identifier}
+   * (universally unique identifier).
+   *
+   * @static
+   * @method
+   * @return {string} The UUID.
+   */
+  generateUUID,
+  /**
+   * Clamps the given value between min and max.
+   *
+   * @static
+   * @method
+   * @param {number} value - The value to clamp.
+   * @param {number} min - The min value.
+   * @param {number} max - The max value.
+   * @return {number} The clamped value.
+   */
+  clamp,
+  /**
+   * Computes the Euclidean modulo of the given parameters that
+   * is `( ( n % m ) + m ) % m`.
+   *
+   * @static
+   * @method
+   * @param {number} n - The first parameter.
+   * @param {number} m - The second parameter.
+   * @return {number} The Euclidean modulo.
+   */
+  euclideanModulo,
+  /**
+   * Performs a linear mapping from range `<a1, a2>` to range `<b1, b2>`
+   * for the given value.
+   *
+   * @static
+   * @method
+   * @param {number} x - The value to be mapped.
+   * @param {number} a1 - Minimum value for range A.
+   * @param {number} a2 - Maximum value for range A.
+   * @param {number} b1 - Minimum value for range B.
+   * @param {number} b2 - Maximum value for range B.
+   * @return {number} The mapped value.
+   */
+  mapLinear,
+  /**
+   * Returns the percentage in the closed interval `[0, 1]` of the given value
+   * between the start and end point.
+   *
+   * @static
+   * @method
+   * @param {number} x - The start point
+   * @param {number} y - The end point.
+   * @param {number} value - A value between start and end.
+   * @return {number} The interpolation factor.
+   */
+  inverseLerp,
+  /**
+   * Returns a value linearly interpolated from two known points based on the given interval -
+   * `t = 0` will return `x` and `t = 1` will return `y`.
+   *
+   * @static
+   * @method
+   * @param {number} x - The start point
+   * @param {number} y - The end point.
+   * @param {number} t - The interpolation factor in the closed interval `[0, 1]`.
+   * @return {number} The interpolated value.
+   */
+  lerp,
+  /**
+   * Smoothly interpolate a number from `x` to `y` in  a spring-like manner using a delta
+   * time to maintain frame rate independent movement. For details, see
+   * [Frame rate independent damping using lerp]{@link http://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/}.
+   *
+   * @static
+   * @method
+   * @param {number} x - The current point.
+   * @param {number} y - The target point.
+   * @param {number} lambda - A higher lambda value will make the movement more sudden,
+   * and a lower value will make the movement more gradual.
+   * @param {number} dt - Delta time in seconds.
+   * @return {number} The interpolated value.
+   */
+  damp,
+  /**
+   * Returns a value that alternates between `0` and the given `length` parameter.
+   *
+   * @static
+   * @method
+   * @param {number} x - The value to pingpong.
+   * @param {number} [length=1] - The positive value the function will pingpong to.
+   * @return {number} The alternated value.
+   */
+  pingpong,
+  /**
+   * Returns a value in the range `[0,1]` that represents the percentage that `x` has
+   * moved between `min` and `max`, but smoothed or slowed down the closer `x` is to
+   * the `min` and `max`.
+   *
+   * See [Smoothstep]{@link http://en.wikipedia.org/wiki/Smoothstep} for more details.
+   *
+   * @static
+   * @method
+   * @param {number} x - The value to evaluate based on its position between min and max.
+   * @param {number} min - The min value. Any x value below min will be `0`.
+   * @param {number} max - The max value. Any x value above max will be `1`.
+   * @return {number} The alternated value.
+   */
+  smoothstep,
+  /**
+   * A [variation on smoothstep]{@link https://en.wikipedia.org/wiki/Smoothstep#Variations}
+   * that has zero 1st and 2nd order derivatives at x=0 and x=1.
+   *
+   * @static
+   * @method
+   * @param {number} x - The value to evaluate based on its position between min and max.
+   * @param {number} min - The min value. Any x value below min will be `0`.
+   * @param {number} max - The max value. Any x value above max will be `1`.
+   * @return {number} The alternated value.
+   */
+  smootherstep,
+  /**
+   * Returns a random integer from `<low, high>` interval.
+   *
+   * @static
+   * @method
+   * @param {number} low - The lower value boundary.
+   * @param {number} high - The upper value boundary
+   * @return {number} A random integer.
+   */
+  randInt,
+  /**
+   * Returns a random float from `<low, high>` interval.
+   *
+   * @static
+   * @method
+   * @param {number} low - The lower value boundary.
+   * @param {number} high - The upper value boundary
+   * @return {number} A random float.
+   */
+  randFloat,
+  /**
+   * Returns a random integer from `<-range/2, range/2>` interval.
+   *
+   * @static
+   * @method
+   * @param {number} range - Defines the value range.
+   * @return {number} A random float.
+   */
+  randFloatSpread,
+  /**
+   * Returns a deterministic pseudo-random float in the interval `[0, 1]`.
+   *
+   * @static
+   * @method
+   * @param {number} [s] - The integer seed.
+   * @return {number} A random float.
+   */
+  seededRandom,
+  /**
+   * Converts degrees to radians.
+   *
+   * @static
+   * @method
+   * @param {number} degrees - A value in degrees.
+   * @return {number} The converted value in radians.
+   */
+  degToRad,
+  /**
+   * Converts radians to degrees.
+   *
+   * @static
+   * @method
+   * @param {number} radians - A value in radians.
+   * @return {number} The converted value in degrees.
+   */
+  radToDeg,
+  /**
+   * Returns `true` if the given number is a power of two.
+   *
+   * @static
+   * @method
+   * @param {number} value - The value to check.
+   * @return {boolean} Whether the given number is a power of two or not.
+   */
+  isPowerOfTwo,
+  /**
+   * Returns the smallest power of two that is greater than or equal to the given number.
+   *
+   * @static
+   * @method
+   * @param {number} value - The value to find a POT for.
+   * @return {number} The smallest power of two that is greater than or equal to the given number.
+   */
+  ceilPowerOfTwo,
+  /**
+   * Returns the largest power of two that is less than or equal to the given number.
+   *
+   * @static
+   * @method
+   * @param {number} value - The value to find a POT for.
+   * @return {number} The largest power of two that is less than or equal to the given number.
+   */
+  floorPowerOfTwo,
+  /**
+   * Sets the given quaternion from the [Intrinsic Proper Euler Angles]{@link https://en.wikipedia.org/wiki/Euler_angles}
+   * defined by the given angles and order.
+   *
+   * Rotations are applied to the axes in the order specified by order:
+   * rotation by angle `a` is applied first, then by angle `b`, then by angle `c`.
+   *
+   * @static
+   * @method
+   * @param {Quaternion} q - The quaternion to set.
+   * @param {number} a - The rotation applied to the first axis, in radians.
+   * @param {number} b - The rotation applied to the second axis, in radians.
+   * @param {number} c - The rotation applied to the third axis, in radians.
+   * @param {('XYX'|'XZX'|'YXY'|'YZY'|'ZXZ'|'ZYZ')} order - A string specifying the axes order.
+   */
+  setQuaternionFromProperEuler,
+  /**
+   * Normalizes the given value according to the given typed array.
+   *
+   * @static
+   * @method
+   * @param {number} value - The float value in the range `[0,1]` to normalize.
+   * @param {TypedArray} array - The typed array that defines the data type of the value.
+   * @return {number} The normalize value.
+   */
+  normalize,
+  /**
+   * Denormalizes the given value according to the given typed array.
+   *
+   * @static
+   * @method
+   * @param {number} value - The value to denormalize.
+   * @param {TypedArray} array - The typed array that defines the data type of the value.
+   * @return {number} The denormalize (float) value in the range `[0,1]`.
+   */
+  denormalize
+};
 var Vector2 = class _Vector2 {
   /**
    * Constructs a new 2D vector.
@@ -30045,9 +30383,9 @@ var Box3 = class {
    */
   expandByObject(object, precise = false) {
     object.updateWorldMatrix(false, false);
-    const geometry = object.geometry;
-    if (geometry !== void 0) {
-      const positionAttribute = geometry.getAttribute("position");
+    const geometry2 = object.geometry;
+    if (geometry2 !== void 0) {
+      const positionAttribute = geometry2.getAttribute("position");
       if (precise === true && positionAttribute !== void 0 && object.isInstancedMesh !== true) {
         for (let i = 0, l = positionAttribute.count; i < l; i++) {
           if (object.isMesh === true) {
@@ -30065,10 +30403,10 @@ var Box3 = class {
           }
           _box$4.copy(object.boundingBox);
         } else {
-          if (geometry.boundingBox === null) {
-            geometry.computeBoundingBox();
+          if (geometry2.boundingBox === null) {
+            geometry2.computeBoundingBox();
           }
-          _box$4.copy(geometry.boundingBox);
+          _box$4.copy(geometry2.boundingBox);
         }
         _box$4.applyMatrix4(object.matrixWorld);
         this.union(_box$4);
@@ -36230,11 +36568,11 @@ var Mesh = class extends Object3D {
    * @param {BufferGeometry} [geometry] - The mesh geometry.
    * @param {Material|Array<Material>} [material] - The mesh material.
    */
-  constructor(geometry = new BufferGeometry(), material2 = new MeshBasicMaterial()) {
+  constructor(geometry2 = new BufferGeometry(), material2 = new MeshBasicMaterial()) {
     super();
     this.isMesh = true;
     this.type = "Mesh";
-    this.geometry = geometry;
+    this.geometry = geometry2;
     this.material = material2;
     this.morphTargetDictionary = void 0;
     this.morphTargetInfluences = void 0;
@@ -36258,8 +36596,8 @@ var Mesh = class extends Object3D {
    * to make sure existing morph targets can influence this 3D object.
    */
   updateMorphTargets() {
-    const geometry = this.geometry;
-    const morphAttributes = geometry.morphAttributes;
+    const geometry2 = this.geometry;
+    const morphAttributes = geometry2.morphAttributes;
     const keys = Object.keys(morphAttributes);
     if (keys.length > 0) {
       const morphAttribute = morphAttributes[keys[0]];
@@ -36283,10 +36621,10 @@ var Mesh = class extends Object3D {
    * @return {Vector3} The vertex position in local space.
    */
   getVertexPosition(index, target) {
-    const geometry = this.geometry;
-    const position = geometry.attributes.position;
-    const morphPosition = geometry.morphAttributes.position;
-    const morphTargetsRelative = geometry.morphTargetsRelative;
+    const geometry2 = this.geometry;
+    const position = geometry2.attributes.position;
+    const morphPosition = geometry2.morphAttributes.position;
+    const morphTargetsRelative = geometry2.morphTargetsRelative;
     target.fromBufferAttribute(position, index);
     const morphInfluences = this.morphTargetInfluences;
     if (morphPosition && morphInfluences) {
@@ -36313,12 +36651,12 @@ var Mesh = class extends Object3D {
    * @param {Array<Object>} intersects - The target array that holds the intersection points.
    */
   raycast(raycaster, intersects) {
-    const geometry = this.geometry;
+    const geometry2 = this.geometry;
     const material2 = this.material;
     const matrixWorld = this.matrixWorld;
     if (material2 === void 0) return;
-    if (geometry.boundingSphere === null) geometry.computeBoundingSphere();
-    _sphere$6.copy(geometry.boundingSphere);
+    if (geometry2.boundingSphere === null) geometry2.computeBoundingSphere();
+    _sphere$6.copy(geometry2.boundingSphere);
     _sphere$6.applyMatrix4(matrixWorld);
     _ray$3.copy(raycaster.ray).recast(raycaster.near);
     if (_sphere$6.containsPoint(_ray$3.origin) === false) {
@@ -36327,22 +36665,22 @@ var Mesh = class extends Object3D {
     }
     _inverseMatrix$3.copy(matrixWorld).invert();
     _ray$3.copy(raycaster.ray).applyMatrix4(_inverseMatrix$3);
-    if (geometry.boundingBox !== null) {
-      if (_ray$3.intersectsBox(geometry.boundingBox) === false) return;
+    if (geometry2.boundingBox !== null) {
+      if (_ray$3.intersectsBox(geometry2.boundingBox) === false) return;
     }
     this._computeIntersections(raycaster, intersects, _ray$3);
   }
   _computeIntersections(raycaster, intersects, rayLocalSpace) {
     let intersection;
-    const geometry = this.geometry;
+    const geometry2 = this.geometry;
     const material2 = this.material;
-    const index = geometry.index;
-    const position = geometry.attributes.position;
-    const uv = geometry.attributes.uv;
-    const uv1 = geometry.attributes.uv1;
-    const normal = geometry.attributes.normal;
-    const groups = geometry.groups;
-    const drawRange = geometry.drawRange;
+    const index = geometry2.index;
+    const position = geometry2.attributes.position;
+    const uv = geometry2.attributes.uv;
+    const uv1 = geometry2.attributes.uv1;
+    const normal = geometry2.attributes.normal;
+    const groups = geometry2.groups;
+    const drawRange = geometry2.drawRange;
     if (index !== null) {
       if (Array.isArray(material2)) {
         for (let i = 0, il = groups.length; i < il; i++) {
@@ -37236,7 +37574,7 @@ var WebGLCubeRenderTarget = class extends WebGLRenderTarget {
 			`
       )
     };
-    const geometry = new BoxGeometry(5, 5, 5);
+    const geometry2 = new BoxGeometry(5, 5, 5);
     const material2 = new ShaderMaterial({
       name: "CubemapFromEquirect",
       uniforms: cloneUniforms(shader.uniforms),
@@ -37246,7 +37584,7 @@ var WebGLCubeRenderTarget = class extends WebGLRenderTarget {
       blending: NoBlending
     });
     material2.uniforms.tEquirect.value = texture;
-    const mesh = new Mesh(geometry, material2);
+    const mesh = new Mesh(geometry2, material2);
     const currentMinFilter = texture.minFilter;
     if (texture.minFilter === LinearMipmapLinearFilter) texture.minFilter = LinearFilter;
     const camera2 = new CubeCamera(1, 10, this);
@@ -37567,256 +37905,6 @@ var Scene = class extends Object3D {
     if (this.environmentIntensity !== 1) data.object.environmentIntensity = this.environmentIntensity;
     data.object.environmentRotation = this.environmentRotation.toArray();
     return data;
-  }
-};
-var DataTexture = class extends Texture {
-  /**
-   * Constructs a new data texture.
-   *
-   * @param {?TypedArray} [data=null] - The buffer data.
-   * @param {number} [width=1] - The width of the texture.
-   * @param {number} [height=1] - The height of the texture.
-   * @param {number} [format=RGBAFormat] - The texture format.
-   * @param {number} [type=UnsignedByteType] - The texture type.
-   * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
-   * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
-   * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
-   * @param {number} [magFilter=NearestFilter] - The mag filter value.
-   * @param {number} [minFilter=NearestFilter] - The min filter value.
-   * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
-   * @param {string} [colorSpace=NoColorSpace] - The color space.
-   */
-  constructor(data = null, width = 1, height = 1, format, type, mapping, wrapS, wrapT, magFilter = NearestFilter, minFilter = NearestFilter, anisotropy, colorSpace) {
-    super(null, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace);
-    this.isDataTexture = true;
-    this.image = { data, width, height };
-    this.generateMipmaps = false;
-    this.flipY = false;
-    this.unpackAlignment = 1;
-  }
-};
-var InstancedBufferAttribute = class extends BufferAttribute {
-  /**
-   * Constructs a new instanced buffer attribute.
-   *
-   * @param {TypedArray} array - The array holding the attribute data.
-   * @param {number} itemSize - The item size.
-   * @param {boolean} [normalized=false] - Whether the data are normalized or not.
-   * @param {number} [meshPerAttribute=1] - How often a value of this buffer attribute should be repeated.
-   */
-  constructor(array, itemSize, normalized, meshPerAttribute = 1) {
-    super(array, itemSize, normalized);
-    this.isInstancedBufferAttribute = true;
-    this.meshPerAttribute = meshPerAttribute;
-  }
-  copy(source) {
-    super.copy(source);
-    this.meshPerAttribute = source.meshPerAttribute;
-    return this;
-  }
-  toJSON() {
-    const data = super.toJSON();
-    data.meshPerAttribute = this.meshPerAttribute;
-    data.isInstancedBufferAttribute = true;
-    return data;
-  }
-};
-var _instanceLocalMatrix = /* @__PURE__ */ new Matrix4();
-var _instanceWorldMatrix = /* @__PURE__ */ new Matrix4();
-var _instanceIntersects = [];
-var _box3 = /* @__PURE__ */ new Box3();
-var _identity = /* @__PURE__ */ new Matrix4();
-var _mesh$1 = /* @__PURE__ */ new Mesh();
-var _sphere$4 = /* @__PURE__ */ new Sphere();
-var InstancedMesh = class extends Mesh {
-  /**
-   * Constructs a new instanced mesh.
-   *
-   * @param {BufferGeometry} [geometry] - The mesh geometry.
-   * @param {Material|Array<Material>} [material] - The mesh material.
-   * @param {number} count - The number of instances.
-   */
-  constructor(geometry, material2, count) {
-    super(geometry, material2);
-    this.isInstancedMesh = true;
-    this.instanceMatrix = new InstancedBufferAttribute(new Float32Array(count * 16), 16);
-    this.instanceColor = null;
-    this.morphTexture = null;
-    this.count = count;
-    this.boundingBox = null;
-    this.boundingSphere = null;
-    for (let i = 0; i < count; i++) {
-      this.setMatrixAt(i, _identity);
-    }
-  }
-  /**
-   * Computes the bounding box of the instanced mesh, and updates {@link InstancedMesh#boundingBox}.
-   * The bounding box is not automatically computed by the engine; this method must be called by your app.
-   * You may need to recompute the bounding box if an instance is transformed via {@link InstancedMesh#setMatrixAt}.
-   */
-  computeBoundingBox() {
-    const geometry = this.geometry;
-    const count = this.count;
-    if (this.boundingBox === null) {
-      this.boundingBox = new Box3();
-    }
-    if (geometry.boundingBox === null) {
-      geometry.computeBoundingBox();
-    }
-    this.boundingBox.makeEmpty();
-    for (let i = 0; i < count; i++) {
-      this.getMatrixAt(i, _instanceLocalMatrix);
-      _box3.copy(geometry.boundingBox).applyMatrix4(_instanceLocalMatrix);
-      this.boundingBox.union(_box3);
-    }
-  }
-  /**
-   * Computes the bounding sphere of the instanced mesh, and updates {@link InstancedMesh#boundingSphere}
-   * The engine automatically computes the bounding sphere when it is needed, e.g., for ray casting or view frustum culling.
-   * You may need to recompute the bounding sphere if an instance is transformed via {@link InstancedMesh#setMatrixAt}.
-   */
-  computeBoundingSphere() {
-    const geometry = this.geometry;
-    const count = this.count;
-    if (this.boundingSphere === null) {
-      this.boundingSphere = new Sphere();
-    }
-    if (geometry.boundingSphere === null) {
-      geometry.computeBoundingSphere();
-    }
-    this.boundingSphere.makeEmpty();
-    for (let i = 0; i < count; i++) {
-      this.getMatrixAt(i, _instanceLocalMatrix);
-      _sphere$4.copy(geometry.boundingSphere).applyMatrix4(_instanceLocalMatrix);
-      this.boundingSphere.union(_sphere$4);
-    }
-  }
-  copy(source, recursive) {
-    super.copy(source, recursive);
-    this.instanceMatrix.copy(source.instanceMatrix);
-    if (source.morphTexture !== null) this.morphTexture = source.morphTexture.clone();
-    if (source.instanceColor !== null) this.instanceColor = source.instanceColor.clone();
-    this.count = source.count;
-    if (source.boundingBox !== null) this.boundingBox = source.boundingBox.clone();
-    if (source.boundingSphere !== null) this.boundingSphere = source.boundingSphere.clone();
-    return this;
-  }
-  /**
-   * Gets the color of the defined instance.
-   *
-   * @param {number} index - The instance index.
-   * @param {Color} color - The target object that is used to store the method's result.
-   */
-  getColorAt(index, color) {
-    color.fromArray(this.instanceColor.array, index * 3);
-  }
-  /**
-   * Gets the local transformation matrix of the defined instance.
-   *
-   * @param {number} index - The instance index.
-   * @param {Matrix4} matrix - The target object that is used to store the method's result.
-   */
-  getMatrixAt(index, matrix) {
-    matrix.fromArray(this.instanceMatrix.array, index * 16);
-  }
-  /**
-   * Gets the morph target weights of the defined instance.
-   *
-   * @param {number} index - The instance index.
-   * @param {Mesh} object - The target object that is used to store the method's result.
-   */
-  getMorphAt(index, object) {
-    const objectInfluences = object.morphTargetInfluences;
-    const array = this.morphTexture.source.data.data;
-    const len = objectInfluences.length + 1;
-    const dataIndex = index * len + 1;
-    for (let i = 0; i < objectInfluences.length; i++) {
-      objectInfluences[i] = array[dataIndex + i];
-    }
-  }
-  raycast(raycaster, intersects) {
-    const matrixWorld = this.matrixWorld;
-    const raycastTimes = this.count;
-    _mesh$1.geometry = this.geometry;
-    _mesh$1.material = this.material;
-    if (_mesh$1.material === void 0) return;
-    if (this.boundingSphere === null) this.computeBoundingSphere();
-    _sphere$4.copy(this.boundingSphere);
-    _sphere$4.applyMatrix4(matrixWorld);
-    if (raycaster.ray.intersectsSphere(_sphere$4) === false) return;
-    for (let instanceId = 0; instanceId < raycastTimes; instanceId++) {
-      this.getMatrixAt(instanceId, _instanceLocalMatrix);
-      _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix);
-      _mesh$1.matrixWorld = _instanceWorldMatrix;
-      _mesh$1.raycast(raycaster, _instanceIntersects);
-      for (let i = 0, l = _instanceIntersects.length; i < l; i++) {
-        const intersect = _instanceIntersects[i];
-        intersect.instanceId = instanceId;
-        intersect.object = this;
-        intersects.push(intersect);
-      }
-      _instanceIntersects.length = 0;
-    }
-  }
-  /**
-   * Sets the given color to the defined instance. Make sure you set the `needsUpdate` flag of
-   * {@link InstancedMesh#instanceColor} to `true` after updating all the colors.
-   *
-   * @param {number} index - The instance index.
-   * @param {Color} color - The instance color.
-   */
-  setColorAt(index, color) {
-    if (this.instanceColor === null) {
-      this.instanceColor = new InstancedBufferAttribute(new Float32Array(this.instanceMatrix.count * 3).fill(1), 3);
-    }
-    color.toArray(this.instanceColor.array, index * 3);
-  }
-  /**
-   * Sets the given local transformation matrix to the defined instance. Make sure you set the `needsUpdate` flag of
-   * {@link InstancedMesh#instanceMatrix} to `true` after updating all the colors.
-   *
-   * @param {number} index - The instance index.
-   * @param {Matrix4} matrix - The local transformation.
-   */
-  setMatrixAt(index, matrix) {
-    matrix.toArray(this.instanceMatrix.array, index * 16);
-  }
-  /**
-   * Sets the morph target weights to the defined instance. Make sure you set the `needsUpdate` flag of
-   * {@link InstancedMesh#morphTexture} to `true` after updating all the influences.
-   *
-   * @param {number} index - The instance index.
-   * @param {Mesh} object -  A mesh which `morphTargetInfluences` property containing the morph target weights
-   * of a single instance.
-   */
-  setMorphAt(index, object) {
-    const objectInfluences = object.morphTargetInfluences;
-    const len = objectInfluences.length + 1;
-    if (this.morphTexture === null) {
-      this.morphTexture = new DataTexture(new Float32Array(len * this.count), len, this.count, RedFormat, FloatType);
-    }
-    const array = this.morphTexture.source.data.data;
-    let morphInfluencesSum = 0;
-    for (let i = 0; i < objectInfluences.length; i++) {
-      morphInfluencesSum += objectInfluences[i];
-    }
-    const morphBaseInfluence = this.geometry.morphTargetsRelative ? 1 : 1 - morphInfluencesSum;
-    const dataIndex = len * index;
-    array[dataIndex] = morphBaseInfluence;
-    array.set(objectInfluences, dataIndex + 1);
-  }
-  updateMorphTargets() {
-  }
-  /**
-   * Frees the GPU-related resources allocated by this instance. Call this
-   * method whenever this instance is no longer used in your app.
-   */
-  dispose() {
-    this.dispatchEvent({ type: "dispose" });
-    if (this.morphTexture !== null) {
-      this.morphTexture.dispose();
-      this.morphTexture = null;
-    }
   }
 };
 var _vector1 = /* @__PURE__ */ new Vector3();
@@ -38151,9 +38239,9 @@ var Frustum = class {
       if (object.boundingSphere === null) object.computeBoundingSphere();
       _sphere$3.copy(object.boundingSphere).applyMatrix4(object.matrixWorld);
     } else {
-      const geometry = object.geometry;
-      if (geometry.boundingSphere === null) geometry.computeBoundingSphere();
-      _sphere$3.copy(geometry.boundingSphere).applyMatrix4(object.matrixWorld);
+      const geometry2 = object.geometry;
+      if (geometry2.boundingSphere === null) geometry2.computeBoundingSphere();
+      _sphere$3.copy(geometry2.boundingSphere).applyMatrix4(object.matrixWorld);
     }
     return this.intersectsSphere(_sphere$3);
   }
@@ -41164,21 +41252,21 @@ function WebGLBindingStates(gl, attributes) {
   const defaultState = createBindingState(null);
   let currentState = defaultState;
   let forceUpdate = false;
-  function setup(object, material2, program, geometry, index) {
+  function setup(object, material2, program, geometry2, index) {
     let updateBuffers = false;
-    const state = getBindingState(geometry, program, material2);
+    const state = getBindingState(geometry2, program, material2);
     if (currentState !== state) {
       currentState = state;
       bindVertexArrayObject(currentState.object);
     }
-    updateBuffers = needsUpdate(object, geometry, program, index);
-    if (updateBuffers) saveCache(object, geometry, program, index);
+    updateBuffers = needsUpdate(object, geometry2, program, index);
+    if (updateBuffers) saveCache(object, geometry2, program, index);
     if (index !== null) {
       attributes.update(index, gl.ELEMENT_ARRAY_BUFFER);
     }
     if (updateBuffers || forceUpdate) {
       forceUpdate = false;
-      setupVertexAttributes(object, material2, program, geometry);
+      setupVertexAttributes(object, material2, program, geometry2);
       if (index !== null) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, attributes.get(index).buffer);
       }
@@ -41193,12 +41281,12 @@ function WebGLBindingStates(gl, attributes) {
   function deleteVertexArrayObject(vao) {
     return gl.deleteVertexArray(vao);
   }
-  function getBindingState(geometry, program, material2) {
+  function getBindingState(geometry2, program, material2) {
     const wireframe = material2.wireframe === true;
-    let programMap = bindingStates[geometry.id];
+    let programMap = bindingStates[geometry2.id];
     if (programMap === void 0) {
       programMap = {};
-      bindingStates[geometry.id] = programMap;
+      bindingStates[geometry2.id] = programMap;
     }
     let stateMap = programMap[program.id];
     if (stateMap === void 0) {
@@ -41234,9 +41322,9 @@ function WebGLBindingStates(gl, attributes) {
       index: null
     };
   }
-  function needsUpdate(object, geometry, program, index) {
+  function needsUpdate(object, geometry2, program, index) {
     const cachedAttributes = currentState.attributes;
-    const geometryAttributes = geometry.attributes;
+    const geometryAttributes = geometry2.attributes;
     let attributesNum = 0;
     const programAttributes = program.getAttributes();
     for (const name in programAttributes) {
@@ -41258,9 +41346,9 @@ function WebGLBindingStates(gl, attributes) {
     if (currentState.index !== index) return true;
     return false;
   }
-  function saveCache(object, geometry, program, index) {
+  function saveCache(object, geometry2, program, index) {
     const cache = {};
-    const attributes2 = geometry.attributes;
+    const attributes2 = geometry2.attributes;
     let attributesNum = 0;
     const programAttributes = program.getAttributes();
     for (const name in programAttributes) {
@@ -41324,9 +41412,9 @@ function WebGLBindingStates(gl, attributes) {
       gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
     }
   }
-  function setupVertexAttributes(object, material2, program, geometry) {
+  function setupVertexAttributes(object, material2, program, geometry2) {
     initAttributes();
-    const geometryAttributes = geometry.attributes;
+    const geometryAttributes = geometry2.attributes;
     const programAttributes = program.getAttributes();
     const materialDefaultAttributeValues = material2.defaultAttributeValues;
     for (const name in programAttributes) {
@@ -41354,8 +41442,8 @@ function WebGLBindingStates(gl, attributes) {
               for (let i = 0; i < programAttribute.locationSize; i++) {
                 enableAttributeAndDivisor(programAttribute.location + i, data.meshPerAttribute);
               }
-              if (object.isInstancedMesh !== true && geometry._maxInstanceCount === void 0) {
-                geometry._maxInstanceCount = data.meshPerAttribute * data.count;
+              if (object.isInstancedMesh !== true && geometry2._maxInstanceCount === void 0) {
+                geometry2._maxInstanceCount = data.meshPerAttribute * data.count;
               }
             } else {
               for (let i = 0; i < programAttribute.locationSize; i++) {
@@ -41379,8 +41467,8 @@ function WebGLBindingStates(gl, attributes) {
               for (let i = 0; i < programAttribute.locationSize; i++) {
                 enableAttributeAndDivisor(programAttribute.location + i, geometryAttribute.meshPerAttribute);
               }
-              if (object.isInstancedMesh !== true && geometry._maxInstanceCount === void 0) {
-                geometry._maxInstanceCount = geometryAttribute.meshPerAttribute * geometryAttribute.count;
+              if (object.isInstancedMesh !== true && geometry2._maxInstanceCount === void 0) {
+                geometry2._maxInstanceCount = geometryAttribute.meshPerAttribute * geometryAttribute.count;
               }
             } else {
               for (let i = 0; i < programAttribute.locationSize; i++) {
@@ -41437,9 +41525,9 @@ function WebGLBindingStates(gl, attributes) {
       delete bindingStates[geometryId];
     }
   }
-  function releaseStatesOfGeometry(geometry) {
-    if (bindingStates[geometry.id] === void 0) return;
-    const programMap = bindingStates[geometry.id];
+  function releaseStatesOfGeometry(geometry2) {
+    if (bindingStates[geometry2.id] === void 0) return;
+    const programMap = bindingStates[geometry2.id];
     for (const programId in programMap) {
       const stateMap = programMap[programId];
       for (const wireframe in stateMap) {
@@ -41448,7 +41536,7 @@ function WebGLBindingStates(gl, attributes) {
       }
       delete programMap[programId];
     }
-    delete bindingStates[geometry.id];
+    delete bindingStates[geometry2.id];
   }
   function releaseStatesOfProgram(program) {
     for (const geometryId in bindingStates) {
@@ -42534,43 +42622,43 @@ function WebGLGeometries(gl, attributes, info, bindingStates) {
   const geometries = {};
   const wireframeAttributes = /* @__PURE__ */ new WeakMap();
   function onGeometryDispose(event) {
-    const geometry = event.target;
-    if (geometry.index !== null) {
-      attributes.remove(geometry.index);
+    const geometry2 = event.target;
+    if (geometry2.index !== null) {
+      attributes.remove(geometry2.index);
     }
-    for (const name in geometry.attributes) {
-      attributes.remove(geometry.attributes[name]);
+    for (const name in geometry2.attributes) {
+      attributes.remove(geometry2.attributes[name]);
     }
-    geometry.removeEventListener("dispose", onGeometryDispose);
-    delete geometries[geometry.id];
-    const attribute = wireframeAttributes.get(geometry);
+    geometry2.removeEventListener("dispose", onGeometryDispose);
+    delete geometries[geometry2.id];
+    const attribute = wireframeAttributes.get(geometry2);
     if (attribute) {
       attributes.remove(attribute);
-      wireframeAttributes.delete(geometry);
+      wireframeAttributes.delete(geometry2);
     }
-    bindingStates.releaseStatesOfGeometry(geometry);
-    if (geometry.isInstancedBufferGeometry === true) {
-      delete geometry._maxInstanceCount;
+    bindingStates.releaseStatesOfGeometry(geometry2);
+    if (geometry2.isInstancedBufferGeometry === true) {
+      delete geometry2._maxInstanceCount;
     }
     info.memory.geometries--;
   }
-  function get(object, geometry) {
-    if (geometries[geometry.id] === true) return geometry;
-    geometry.addEventListener("dispose", onGeometryDispose);
-    geometries[geometry.id] = true;
+  function get(object, geometry2) {
+    if (geometries[geometry2.id] === true) return geometry2;
+    geometry2.addEventListener("dispose", onGeometryDispose);
+    geometries[geometry2.id] = true;
     info.memory.geometries++;
-    return geometry;
+    return geometry2;
   }
-  function update(geometry) {
-    const geometryAttributes = geometry.attributes;
+  function update(geometry2) {
+    const geometryAttributes = geometry2.attributes;
     for (const name in geometryAttributes) {
       attributes.update(geometryAttributes[name], gl.ARRAY_BUFFER);
     }
   }
-  function updateWireframeAttribute(geometry) {
+  function updateWireframeAttribute(geometry2) {
     const indices = [];
-    const geometryIndex = geometry.index;
-    const geometryPosition = geometry.attributes.position;
+    const geometryIndex = geometry2.index;
+    const geometryPosition = geometry2.attributes.position;
     let version = 0;
     if (geometryIndex !== null) {
       const array = geometryIndex.array;
@@ -42595,23 +42683,23 @@ function WebGLGeometries(gl, attributes, info, bindingStates) {
     }
     const attribute = new (arrayNeedsUint32(indices) ? Uint32BufferAttribute : Uint16BufferAttribute)(indices, 1);
     attribute.version = version;
-    const previousAttribute = wireframeAttributes.get(geometry);
+    const previousAttribute = wireframeAttributes.get(geometry2);
     if (previousAttribute) attributes.remove(previousAttribute);
-    wireframeAttributes.set(geometry, attribute);
+    wireframeAttributes.set(geometry2, attribute);
   }
-  function getWireframeAttribute(geometry) {
-    const currentAttribute = wireframeAttributes.get(geometry);
+  function getWireframeAttribute(geometry2) {
+    const currentAttribute = wireframeAttributes.get(geometry2);
     if (currentAttribute) {
-      const geometryIndex = geometry.index;
+      const geometryIndex = geometry2.index;
       if (geometryIndex !== null) {
         if (currentAttribute.version < geometryIndex.version) {
-          updateWireframeAttribute(geometry);
+          updateWireframeAttribute(geometry2);
         }
       }
     } else {
-      updateWireframeAttribute(geometry);
+      updateWireframeAttribute(geometry2);
     }
-    return wireframeAttributes.get(geometry);
+    return wireframeAttributes.get(geometry2);
   }
   return {
     get,
@@ -42724,29 +42812,29 @@ function WebGLInfo(gl) {
 function WebGLMorphtargets(gl, capabilities, textures) {
   const morphTextures = /* @__PURE__ */ new WeakMap();
   const morph = new Vector4();
-  function update(object, geometry, program) {
+  function update(object, geometry2, program) {
     const objectInfluences = object.morphTargetInfluences;
-    const morphAttribute = geometry.morphAttributes.position || geometry.morphAttributes.normal || geometry.morphAttributes.color;
+    const morphAttribute = geometry2.morphAttributes.position || geometry2.morphAttributes.normal || geometry2.morphAttributes.color;
     const morphTargetsCount = morphAttribute !== void 0 ? morphAttribute.length : 0;
-    let entry = morphTextures.get(geometry);
+    let entry = morphTextures.get(geometry2);
     if (entry === void 0 || entry.count !== morphTargetsCount) {
       let disposeTexture = function() {
         texture.dispose();
-        morphTextures.delete(geometry);
-        geometry.removeEventListener("dispose", disposeTexture);
+        morphTextures.delete(geometry2);
+        geometry2.removeEventListener("dispose", disposeTexture);
       };
       if (entry !== void 0) entry.texture.dispose();
-      const hasMorphPosition = geometry.morphAttributes.position !== void 0;
-      const hasMorphNormals = geometry.morphAttributes.normal !== void 0;
-      const hasMorphColors = geometry.morphAttributes.color !== void 0;
-      const morphTargets = geometry.morphAttributes.position || [];
-      const morphNormals = geometry.morphAttributes.normal || [];
-      const morphColors = geometry.morphAttributes.color || [];
+      const hasMorphPosition = geometry2.morphAttributes.position !== void 0;
+      const hasMorphNormals = geometry2.morphAttributes.normal !== void 0;
+      const hasMorphColors = geometry2.morphAttributes.color !== void 0;
+      const morphTargets = geometry2.morphAttributes.position || [];
+      const morphNormals = geometry2.morphAttributes.normal || [];
+      const morphColors = geometry2.morphAttributes.color || [];
       let vertexDataCount = 0;
       if (hasMorphPosition === true) vertexDataCount = 1;
       if (hasMorphNormals === true) vertexDataCount = 2;
       if (hasMorphColors === true) vertexDataCount = 3;
-      let width = geometry.attributes.position.count * vertexDataCount;
+      let width = geometry2.attributes.position.count * vertexDataCount;
       let height = 1;
       if (width > capabilities.maxTextureSize) {
         height = Math.ceil(width / capabilities.maxTextureSize);
@@ -42792,8 +42880,8 @@ function WebGLMorphtargets(gl, capabilities, textures) {
         texture,
         size: new Vector2(width, height)
       };
-      morphTextures.set(geometry, entry);
-      geometry.addEventListener("dispose", disposeTexture);
+      morphTextures.set(geometry2, entry);
+      geometry2.addEventListener("dispose", disposeTexture);
     }
     if (object.isInstancedMesh === true && object.morphTexture !== null) {
       program.getUniforms().setValue(gl, "morphTexture", object.morphTexture, textures);
@@ -42802,7 +42890,7 @@ function WebGLMorphtargets(gl, capabilities, textures) {
       for (let i = 0; i < objectInfluences.length; i++) {
         morphInfluencesSum += objectInfluences[i];
       }
-      const morphBaseInfluence = geometry.morphTargetsRelative ? 1 : 1 - morphInfluencesSum;
+      const morphBaseInfluence = geometry2.morphTargetsRelative ? 1 : 1 - morphInfluencesSum;
       program.getUniforms().setValue(gl, "morphTargetBaseInfluence", morphBaseInfluence);
       program.getUniforms().setValue(gl, "morphTargetInfluences", objectInfluences);
     }
@@ -42817,8 +42905,8 @@ function WebGLObjects(gl, geometries, attributes, info) {
   let updateMap = /* @__PURE__ */ new WeakMap();
   function update(object) {
     const frame = info.render.frame;
-    const geometry = object.geometry;
-    const buffergeometry = geometries.get(object, geometry);
+    const geometry2 = object.geometry;
+    const buffergeometry = geometries.get(object, geometry2);
     if (updateMap.get(buffergeometry) !== frame) {
       geometries.update(buffergeometry);
       updateMap.set(buffergeometry, frame);
@@ -44248,7 +44336,7 @@ function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions, capabilities,
   }
   function getParameters(material2, lights, shadows, scene2, object) {
     const fog = scene2.fog;
-    const geometry = object.geometry;
+    const geometry2 = object.geometry;
     const environment = material2.isMeshStandardMaterial ? scene2.environment : null;
     const envMap = (material2.isMeshStandardMaterial ? cubeuvmaps : cubemaps).get(material2.envMap || environment);
     const envMapCubeUVHeight = !!envMap && envMap.mapping === CubeUVReflectionMapping ? envMap.image.height : null;
@@ -44259,12 +44347,12 @@ function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions, capabilities,
         console.warn("THREE.WebGLProgram.getParameters:", material2.precision, "not supported, using", precision, "instead.");
       }
     }
-    const morphAttribute = geometry.morphAttributes.position || geometry.morphAttributes.normal || geometry.morphAttributes.color;
+    const morphAttribute = geometry2.morphAttributes.position || geometry2.morphAttributes.normal || geometry2.morphAttributes.color;
     const morphTargetsCount = morphAttribute !== void 0 ? morphAttribute.length : 0;
     let morphTextureStride = 0;
-    if (geometry.morphAttributes.position !== void 0) morphTextureStride = 1;
-    if (geometry.morphAttributes.normal !== void 0) morphTextureStride = 2;
-    if (geometry.morphAttributes.color !== void 0) morphTextureStride = 3;
+    if (geometry2.morphAttributes.position !== void 0) morphTextureStride = 1;
+    if (geometry2.morphAttributes.normal !== void 0) morphTextureStride = 2;
+    if (geometry2.morphAttributes.color !== void 0) morphTextureStride = 3;
     let vertexShader, fragmentShader;
     let customVertexShaderID, customFragmentShaderID;
     if (shaderID) {
@@ -44408,10 +44496,10 @@ function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions, capabilities,
       thicknessMapUv: HAS_THICKNESSMAP && getChannel(material2.thicknessMap.channel),
       alphaMapUv: HAS_ALPHAMAP && getChannel(material2.alphaMap.channel),
       //
-      vertexTangents: !!geometry.attributes.tangent && (HAS_NORMALMAP || HAS_ANISOTROPY),
+      vertexTangents: !!geometry2.attributes.tangent && (HAS_NORMALMAP || HAS_ANISOTROPY),
       vertexColors: material2.vertexColors,
-      vertexAlphas: material2.vertexColors === true && !!geometry.attributes.color && geometry.attributes.color.itemSize === 4,
-      pointsUvs: object.isPoints === true && !!geometry.attributes.uv && (HAS_MAP || HAS_ALPHAMAP),
+      vertexAlphas: material2.vertexColors === true && !!geometry2.attributes.color && geometry2.attributes.color.itemSize === 4,
+      pointsUvs: object.isPoints === true && !!geometry2.attributes.uv && (HAS_MAP || HAS_ALPHAMAP),
       fog: !!fog,
       useFog: material2.fog === true,
       fogExp2: !!fog && fog.isFogExp2,
@@ -44420,9 +44508,9 @@ function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions, capabilities,
       logarithmicDepthBuffer,
       reverseDepthBuffer,
       skinning: object.isSkinnedMesh === true,
-      morphTargets: geometry.morphAttributes.position !== void 0,
-      morphNormals: geometry.morphAttributes.normal !== void 0,
-      morphColors: geometry.morphAttributes.color !== void 0,
+      morphTargets: geometry2.morphAttributes.position !== void 0,
+      morphNormals: geometry2.morphAttributes.normal !== void 0,
+      morphColors: geometry2.morphAttributes.color !== void 0,
       morphTargetsCount,
       morphTextureStride,
       numDirLights: lights.directional.length,
@@ -44746,13 +44834,13 @@ function WebGLRenderList() {
     transmissive.length = 0;
     transparent.length = 0;
   }
-  function getNextRenderItem(object, geometry, material2, groupOrder, z, group) {
+  function getNextRenderItem(object, geometry2, material2, groupOrder, z, group) {
     let renderItem = renderItems[renderItemsIndex];
     if (renderItem === void 0) {
       renderItem = {
         id: object.id,
         object,
-        geometry,
+        geometry: geometry2,
         material: material2,
         groupOrder,
         renderOrder: object.renderOrder,
@@ -44763,7 +44851,7 @@ function WebGLRenderList() {
     } else {
       renderItem.id = object.id;
       renderItem.object = object;
-      renderItem.geometry = geometry;
+      renderItem.geometry = geometry2;
       renderItem.material = material2;
       renderItem.groupOrder = groupOrder;
       renderItem.renderOrder = object.renderOrder;
@@ -44773,8 +44861,8 @@ function WebGLRenderList() {
     renderItemsIndex++;
     return renderItem;
   }
-  function push(object, geometry, material2, groupOrder, z, group) {
-    const renderItem = getNextRenderItem(object, geometry, material2, groupOrder, z, group);
+  function push(object, geometry2, material2, groupOrder, z, group) {
+    const renderItem = getNextRenderItem(object, geometry2, material2, groupOrder, z, group);
     if (material2.transmission > 0) {
       transmissive.push(renderItem);
     } else if (material2.transparent === true) {
@@ -44783,8 +44871,8 @@ function WebGLRenderList() {
       opaque.push(renderItem);
     }
   }
-  function unshift(object, geometry, material2, groupOrder, z, group) {
-    const renderItem = getNextRenderItem(object, geometry, material2, groupOrder, z, group);
+  function unshift(object, geometry2, material2, groupOrder, z, group) {
+    const renderItem = getNextRenderItem(object, geometry2, material2, groupOrder, z, group);
     if (material2.transmission > 0) {
       transmissive.unshift(renderItem);
     } else if (material2.transparent === true) {
@@ -45378,7 +45466,7 @@ function WebGLShadowMap(renderer, objects, capabilities) {
     renderer.setRenderTarget(currentRenderTarget, activeCubeFace, activeMipmapLevel);
   };
   function VSMPass(shadow, camera2) {
-    const geometry = objects.update(fullScreenMesh);
+    const geometry2 = objects.update(fullScreenMesh);
     if (shadowMaterialVertical.defines.VSM_SAMPLES !== shadow.blurSamples) {
       shadowMaterialVertical.defines.VSM_SAMPLES = shadow.blurSamples;
       shadowMaterialHorizontal.defines.VSM_SAMPLES = shadow.blurSamples;
@@ -45393,13 +45481,13 @@ function WebGLShadowMap(renderer, objects, capabilities) {
     shadowMaterialVertical.uniforms.radius.value = shadow.radius;
     renderer.setRenderTarget(shadow.mapPass);
     renderer.clear();
-    renderer.renderBufferDirect(camera2, null, geometry, shadowMaterialVertical, fullScreenMesh, null);
+    renderer.renderBufferDirect(camera2, null, geometry2, shadowMaterialVertical, fullScreenMesh, null);
     shadowMaterialHorizontal.uniforms.shadow_pass.value = shadow.mapPass.texture;
     shadowMaterialHorizontal.uniforms.resolution.value = shadow.mapSize;
     shadowMaterialHorizontal.uniforms.radius.value = shadow.radius;
     renderer.setRenderTarget(shadow.map);
     renderer.clear();
-    renderer.renderBufferDirect(camera2, null, geometry, shadowMaterialHorizontal, fullScreenMesh, null);
+    renderer.renderBufferDirect(camera2, null, geometry2, shadowMaterialHorizontal, fullScreenMesh, null);
   }
   function getDepthMaterial(object, material2, light, type) {
     let result = null;
@@ -45454,25 +45542,25 @@ function WebGLShadowMap(renderer, objects, capabilities) {
     if (visible && (object.isMesh || object.isLine || object.isPoints)) {
       if ((object.castShadow || object.receiveShadow && type === VSMShadowMap) && (!object.frustumCulled || _frustum.intersectsObject(object))) {
         object.modelViewMatrix.multiplyMatrices(shadowCamera.matrixWorldInverse, object.matrixWorld);
-        const geometry = objects.update(object);
+        const geometry2 = objects.update(object);
         const material2 = object.material;
         if (Array.isArray(material2)) {
-          const groups = geometry.groups;
+          const groups = geometry2.groups;
           for (let k = 0, kl = groups.length; k < kl; k++) {
             const group = groups[k];
             const groupMaterial = material2[group.materialIndex];
             if (groupMaterial && groupMaterial.visible) {
               const depthMaterial = getDepthMaterial(object, groupMaterial, light, type);
-              object.onBeforeShadow(renderer, object, camera2, shadowCamera, geometry, depthMaterial, group);
-              renderer.renderBufferDirect(shadowCamera, null, geometry, depthMaterial, object, group);
-              object.onAfterShadow(renderer, object, camera2, shadowCamera, geometry, depthMaterial, group);
+              object.onBeforeShadow(renderer, object, camera2, shadowCamera, geometry2, depthMaterial, group);
+              renderer.renderBufferDirect(shadowCamera, null, geometry2, depthMaterial, object, group);
+              object.onAfterShadow(renderer, object, camera2, shadowCamera, geometry2, depthMaterial, group);
             }
           }
         } else if (material2.visible) {
           const depthMaterial = getDepthMaterial(object, material2, light, type);
-          object.onBeforeShadow(renderer, object, camera2, shadowCamera, geometry, depthMaterial, null);
-          renderer.renderBufferDirect(shadowCamera, null, geometry, depthMaterial, object, null);
-          object.onAfterShadow(renderer, object, camera2, shadowCamera, geometry, depthMaterial, null);
+          object.onBeforeShadow(renderer, object, camera2, shadowCamera, geometry2, depthMaterial, null);
+          renderer.renderBufferDirect(shadowCamera, null, geometry2, depthMaterial, object, null);
+          object.onAfterShadow(renderer, object, camera2, shadowCamera, geometry2, depthMaterial, null);
         }
       }
     }
@@ -49029,20 +49117,20 @@ var WebGLRenderer = class {
         }
       }
     }
-    this.renderBufferDirect = function(camera2, scene2, geometry, material2, object, group) {
+    this.renderBufferDirect = function(camera2, scene2, geometry2, material2, object, group) {
       if (scene2 === null) scene2 = _emptyScene;
       const frontFaceCW = object.isMesh && object.matrixWorld.determinant() < 0;
-      const program = setProgram(camera2, scene2, geometry, material2, object);
+      const program = setProgram(camera2, scene2, geometry2, material2, object);
       state.setMaterial(material2, frontFaceCW);
-      let index = geometry.index;
+      let index = geometry2.index;
       let rangeFactor = 1;
       if (material2.wireframe === true) {
-        index = geometries.getWireframeAttribute(geometry);
+        index = geometries.getWireframeAttribute(geometry2);
         if (index === void 0) return;
         rangeFactor = 2;
       }
-      const drawRange = geometry.drawRange;
-      const position = geometry.attributes.position;
+      const drawRange = geometry2.drawRange;
+      const position = geometry2.attributes.position;
       let drawStart = drawRange.start * rangeFactor;
       let drawEnd = (drawRange.start + drawRange.count) * rangeFactor;
       if (group !== null) {
@@ -49058,7 +49146,7 @@ var WebGLRenderer = class {
       }
       const drawCount = drawEnd - drawStart;
       if (drawCount < 0 || drawCount === Infinity) return;
-      bindingStates.setup(object, material2, program, geometry, index);
+      bindingStates.setup(object, material2, program, geometry2, index);
       let attribute;
       let renderer = bufferRenderer;
       if (index !== null) {
@@ -49110,9 +49198,9 @@ var WebGLRenderer = class {
         }
       } else if (object.isInstancedMesh) {
         renderer.renderInstances(drawStart, drawCount, object.count);
-      } else if (geometry.isInstancedBufferGeometry) {
-        const maxInstanceCount = geometry._maxInstanceCount !== void 0 ? geometry._maxInstanceCount : Infinity;
-        const instanceCount = Math.min(geometry.instanceCount, maxInstanceCount);
+      } else if (geometry2.isInstancedBufferGeometry) {
+        const maxInstanceCount = geometry2._maxInstanceCount !== void 0 ? geometry2._maxInstanceCount : Infinity;
+        const instanceCount = Math.min(geometry2.instanceCount, maxInstanceCount);
         renderer.renderInstances(drawStart, drawCount, instanceCount);
       } else {
         renderer.render(drawStart, drawCount);
@@ -49326,37 +49414,37 @@ var WebGLRenderer = class {
             if (sortObjects) {
               _vector4.setFromMatrixPosition(object.matrixWorld).applyMatrix4(_projScreenMatrix);
             }
-            const geometry = objects.update(object);
+            const geometry2 = objects.update(object);
             const material2 = object.material;
             if (material2.visible) {
-              currentRenderList.push(object, geometry, material2, groupOrder, _vector4.z, null);
+              currentRenderList.push(object, geometry2, material2, groupOrder, _vector4.z, null);
             }
           }
         } else if (object.isMesh || object.isLine || object.isPoints) {
           if (!object.frustumCulled || _frustum.intersectsObject(object)) {
-            const geometry = objects.update(object);
+            const geometry2 = objects.update(object);
             const material2 = object.material;
             if (sortObjects) {
               if (object.boundingSphere !== void 0) {
                 if (object.boundingSphere === null) object.computeBoundingSphere();
                 _vector4.copy(object.boundingSphere.center);
               } else {
-                if (geometry.boundingSphere === null) geometry.computeBoundingSphere();
-                _vector4.copy(geometry.boundingSphere.center);
+                if (geometry2.boundingSphere === null) geometry2.computeBoundingSphere();
+                _vector4.copy(geometry2.boundingSphere.center);
               }
               _vector4.applyMatrix4(object.matrixWorld).applyMatrix4(_projScreenMatrix);
             }
             if (Array.isArray(material2)) {
-              const groups = geometry.groups;
+              const groups = geometry2.groups;
               for (let i = 0, l = groups.length; i < l; i++) {
                 const group = groups[i];
                 const groupMaterial = material2[group.materialIndex];
                 if (groupMaterial && groupMaterial.visible) {
-                  currentRenderList.push(object, geometry, groupMaterial, groupOrder, _vector4.z, group);
+                  currentRenderList.push(object, geometry2, groupMaterial, groupOrder, _vector4.z, group);
                 }
               }
             } else if (material2.visible) {
-              currentRenderList.push(object, geometry, material2, groupOrder, _vector4.z, null);
+              currentRenderList.push(object, geometry2, material2, groupOrder, _vector4.z, null);
             }
           }
         }
@@ -49422,14 +49510,14 @@ var WebGLRenderer = class {
         for (let i = 0, l = transmissiveObjects.length; i < l; i++) {
           const renderItem = transmissiveObjects[i];
           const object = renderItem.object;
-          const geometry = renderItem.geometry;
+          const geometry2 = renderItem.geometry;
           const material2 = renderItem.material;
           const group = renderItem.group;
           if (material2.side === DoubleSide && object.layers.test(camera2.layers)) {
             const currentSide = material2.side;
             material2.side = BackSide;
             material2.needsUpdate = true;
-            renderObject(object, scene2, camera2, geometry, material2, group);
+            renderObject(object, scene2, camera2, geometry2, material2, group);
             material2.side = currentSide;
             material2.needsUpdate = true;
             renderTargetNeedsUpdate = true;
@@ -49450,34 +49538,34 @@ var WebGLRenderer = class {
       for (let i = 0, l = renderList.length; i < l; i++) {
         const renderItem = renderList[i];
         const object = renderItem.object;
-        const geometry = renderItem.geometry;
+        const geometry2 = renderItem.geometry;
         const group = renderItem.group;
         let material2 = renderItem.material;
         if (material2.allowOverride === true && overrideMaterial !== null) {
           material2 = overrideMaterial;
         }
         if (object.layers.test(camera2.layers)) {
-          renderObject(object, scene2, camera2, geometry, material2, group);
+          renderObject(object, scene2, camera2, geometry2, material2, group);
         }
       }
     }
-    function renderObject(object, scene2, camera2, geometry, material2, group) {
-      object.onBeforeRender(_this, scene2, camera2, geometry, material2, group);
+    function renderObject(object, scene2, camera2, geometry2, material2, group) {
+      object.onBeforeRender(_this, scene2, camera2, geometry2, material2, group);
       object.modelViewMatrix.multiplyMatrices(camera2.matrixWorldInverse, object.matrixWorld);
       object.normalMatrix.getNormalMatrix(object.modelViewMatrix);
-      material2.onBeforeRender(_this, scene2, camera2, geometry, object, group);
+      material2.onBeforeRender(_this, scene2, camera2, geometry2, object, group);
       if (material2.transparent === true && material2.side === DoubleSide && material2.forceSinglePass === false) {
         material2.side = BackSide;
         material2.needsUpdate = true;
-        _this.renderBufferDirect(camera2, scene2, geometry, material2, object, group);
+        _this.renderBufferDirect(camera2, scene2, geometry2, material2, object, group);
         material2.side = FrontSide;
         material2.needsUpdate = true;
-        _this.renderBufferDirect(camera2, scene2, geometry, material2, object, group);
+        _this.renderBufferDirect(camera2, scene2, geometry2, material2, object, group);
         material2.side = DoubleSide;
       } else {
-        _this.renderBufferDirect(camera2, scene2, geometry, material2, object, group);
+        _this.renderBufferDirect(camera2, scene2, geometry2, material2, object, group);
       }
-      object.onAfterRender(_this, scene2, camera2, geometry, material2, group);
+      object.onAfterRender(_this, scene2, camera2, geometry2, material2, group);
     }
     function getProgram(material2, scene2, object) {
       if (scene2.isScene !== true) scene2 = _emptyScene;
@@ -49568,25 +49656,25 @@ var WebGLRenderer = class {
       materialProperties.vertexTangents = parameters2.vertexTangents;
       materialProperties.toneMapping = parameters2.toneMapping;
     }
-    function setProgram(camera2, scene2, geometry, material2, object) {
+    function setProgram(camera2, scene2, geometry2, material2, object) {
       if (scene2.isScene !== true) scene2 = _emptyScene;
       textures.resetTextureUnits();
       const fog = scene2.fog;
       const environment = material2.isMeshStandardMaterial ? scene2.environment : null;
       const colorSpace = _currentRenderTarget === null ? _this.outputColorSpace : _currentRenderTarget.isXRRenderTarget === true ? _currentRenderTarget.texture.colorSpace : LinearSRGBColorSpace;
       const envMap = (material2.isMeshStandardMaterial ? cubeuvmaps : cubemaps).get(material2.envMap || environment);
-      const vertexAlphas = material2.vertexColors === true && !!geometry.attributes.color && geometry.attributes.color.itemSize === 4;
-      const vertexTangents = !!geometry.attributes.tangent && (!!material2.normalMap || material2.anisotropy > 0);
-      const morphTargets = !!geometry.morphAttributes.position;
-      const morphNormals = !!geometry.morphAttributes.normal;
-      const morphColors = !!geometry.morphAttributes.color;
+      const vertexAlphas = material2.vertexColors === true && !!geometry2.attributes.color && geometry2.attributes.color.itemSize === 4;
+      const vertexTangents = !!geometry2.attributes.tangent && (!!material2.normalMap || material2.anisotropy > 0);
+      const morphTargets = !!geometry2.morphAttributes.position;
+      const morphNormals = !!geometry2.morphAttributes.normal;
+      const morphColors = !!geometry2.morphAttributes.color;
       let toneMapping = NoToneMapping;
       if (material2.toneMapped) {
         if (_currentRenderTarget === null || _currentRenderTarget.isXRRenderTarget === true) {
           toneMapping = _this.toneMapping;
         }
       }
-      const morphAttribute = geometry.morphAttributes.position || geometry.morphAttributes.normal || geometry.morphAttributes.color;
+      const morphAttribute = geometry2.morphAttributes.position || geometry2.morphAttributes.normal || geometry2.morphAttributes.color;
       const morphTargetsCount = morphAttribute !== void 0 ? morphAttribute.length : 0;
       const materialProperties = properties.get(material2);
       const lights = currentRenderState.state.lights;
@@ -49718,9 +49806,9 @@ var WebGLRenderer = class {
           p_uniforms.setValue(_gl, "batchingColorTexture", object._colorsTexture, textures);
         }
       }
-      const morphAttributes = geometry.morphAttributes;
+      const morphAttributes = geometry2.morphAttributes;
       if (morphAttributes.position !== void 0 || morphAttributes.normal !== void 0 || morphAttributes.color !== void 0) {
-        morphtargets.update(object, geometry, program);
+        morphtargets.update(object, geometry2, program);
       }
       if (refreshMaterial || materialProperties.receiveShadow !== object.receiveShadow) {
         materialProperties.receiveShadow = object.receiveShadow;
@@ -50175,24 +50263,30 @@ var WebGLRenderer = class {
 var EntityMax = 65535;
 var ECS = class {
   system;
-  componentStores;
   entities;
+  componentStores;
+  stores;
   paused = true;
   nextId = 0;
-  constructor(system, components) {
+  constructor(system, componentStores, stores) {
     this.system = system;
-    this.componentStores = [];
+    this.componentStores = componentStores;
+    this.stores = stores;
     const sharedBuffer = new SharedArrayBuffer(
       Int32Array.BYTES_PER_ELEMENT * EntityMax
     );
     const sharedArray = new Int32Array(sharedBuffer);
     this.entities = sharedArray;
-    Object.entries(components).forEach(([k, c]) => {
-      this.componentStores[k] = c;
-    });
   }
   addComponent(i, c) {
     this.componentStores[c.constructor.name].add(c, i);
+  }
+  getComponents(i) {
+    return Object.values(this.componentStores).map((cs) => {
+      return cs.get(i);
+    }).filter((x) => {
+      return x !== void 0;
+    });
   }
   addEntity() {
     const toReturn = this.nextId;
@@ -50200,6 +50294,9 @@ var ECS = class {
     this.nextId++;
     return toReturn;
   }
+  // getEntityComponent<I extends EntityComponent>(i: number, klass: Function): I {
+  //   return klass(this.getComponents(i));
+  // }
   setEntitiesComponent(entityComponents) {
     entityComponents.forEach((e) => {
       if (!e) {
@@ -50228,24 +50325,24 @@ var ECS = class {
   }
   async tick(delta) {
     if (!this.paused) {
-      await this.system.tick(delta, this.componentStores, this.entities);
+      await this.system.tick(delta, this);
     }
   }
 };
 
 // src/engine/Game.ts
 var Game = class {
-  postMessage;
   state;
   canvasContexts;
   ecs;
-  constructor(state, system, components, postMessage2) {
+  constructor(state, system, componentStore, stores, postMessage2) {
     this.state = state;
-    this.ecs = new ECS(system, components);
+    this.ecs = new ECS(system, componentStore, stores);
     this.postMessage = postMessage2;
     this.canvasContexts = {};
     this.changeScene = this.changeScene.bind(this);
   }
+  postMessage;
   changeScene(to) {
     this.state.setCurrent(to);
     const newScene = this.state.getCurrent();
@@ -50260,10 +50357,9 @@ var Game = class {
     }
     let drawSurface;
     if (canvasContext === "2d") {
-      drawSurface = canvas?.getContext(
-        "2d",
-        { alpha: false }
-      );
+      drawSurface = canvas?.getContext("2d", {
+        alpha: false
+      });
     } else if (canvasContext === "webgl2") {
       const d = canvas?.getContext("webgl2");
       drawSurface = new WebGLRenderer({
@@ -50316,10 +50412,9 @@ var Game = class {
     const clbk = this.canvasContexts[key].callback;
     if (ds) {
       const drawOps = s.draw(key, clbk || (() => {
-      }), this.ecs.componentStores);
+      }), this.ecs);
       if (this.canvasContexts[key].canvasContext === "2d") {
         const twoDimDraw = ds;
-        twoDimDraw.clearRect(0, 0, 800, 600);
         drawOps.forEach((d) => {
           d(twoDimDraw);
         });
@@ -50361,20 +50456,14 @@ var Scene2 = class extends Tree {
       this.appLogic[k][0](ecs, bootReplier);
     });
   }
-  draw(app, bootReplier, componentsStores) {
-    return this.appLogic[app][1](
-      componentsStores,
-      bootReplier
-    );
+  draw(app, bootReplier, ecs) {
+    return this.appLogic[app][1](ecs, bootReplier);
   }
   inputEvent(inputEvent, app, ecs) {
     if (app === "document") {
       return;
     }
-    this.appLogic[app][2] && this.appLogic[app][2](
-      ecs,
-      inputEvent
-    );
+    this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
   }
 };
 
@@ -50440,28 +50529,28 @@ var SpaceTrashPlayer = class {
   yup() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 0.01;
+        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 1e-3;
       }
     }
   }
   ydown() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 0.01;
+        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 1e-3;
       }
     }
   }
   xleft() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 0.01;
+        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 1e-3;
       }
     }
   }
   xright() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 0.01;
+        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 1e-3;
       }
     }
   }
@@ -50591,16 +50680,48 @@ Launch date:    May, 2690
 // src/engine/Component.ts
 var Component = class {
 };
-var TwoD_Component = class extends Component {
+var TwoDOneD_Component = class extends Component {
+  culledWebgl;
+  renderedWebgl;
+  culled2d;
+  rendered2d;
 };
 
 // src/engine/types.ts
 var ComponentStore = class {
 };
-var Store = class extends ComponentStore {
+var Store = class {
+};
+var EntityComponentStore = class extends ComponentStore {
   store = [];
   add(c, i) {
     this.store.push([i, c]);
+  }
+  get(i) {
+    const toReturn = this.store.find((v) => {
+      return v[0] === i;
+    });
+    if (!toReturn) return void 0;
+    if (!toReturn[1]) throw "not found!";
+    return toReturn[1];
+  }
+};
+var OneDStore = class extends Store {
+  store;
+  add(e) {
+    this.store.push(e);
+  }
+  get(i) {
+    return this.store[i];
+  }
+};
+var TwoDStore = class extends Store {
+  store;
+  get(y, x) {
+    return this.store[y][x];
+  }
+  add(e) {
+    this.store.push(e);
   }
 };
 
@@ -50627,7 +50748,7 @@ var PhysicsActorComponent = class extends PhysicsComponent {
     this.r = r;
   }
 };
-var PhysicsActorStore = class extends Store {
+var PhysicsActorStore = class extends EntityComponentStore {
   constructor() {
     super();
   }
@@ -50652,11 +50773,6 @@ var OutCastingComponent = class extends Component {
       // ray: this.ray,
     };
   }
-  getMove() {
-    throw new Error("Method not implemented.");
-  }
-  setMove(move) {
-  }
 };
 var LitComponent = class extends OutCastingComponent {
   radiance;
@@ -50665,7 +50781,7 @@ var LitComponent = class extends OutCastingComponent {
     this.radiance = -1;
   }
 };
-var LitStore = class extends Store {
+var LitStore = class extends EntityComponentStore {
   make(...a) {
     return new LitComponent();
   }
@@ -50681,7 +50797,7 @@ var PhysicsSetPieceComponent = class extends PhysicsComponent {
     this.solid = solid;
   }
 };
-var PhysicsSetPieceStore = class extends Store {
+var PhysicsSetPieceStore = class extends EntityComponentStore {
   make(x = 0, y = 0, solid, tileType) {
     return new PhysicsSetPieceComponent(x, y, solid, tileType);
   }
@@ -50702,14 +50818,14 @@ var InCastingComponent = class extends SpaceTrashComponent {
 };
 var AttackableComponent = class extends InCastingComponent {
 };
-var AttackableStore = class extends Store {
+var AttackableStore = class extends EntityComponentStore {
   make(...a) {
     return new AttackableComponent();
   }
 };
 var CameraComponent = class extends InCastingComponent {
 };
-var CameraStore = class extends Store {
+var CameraStore = class extends EntityComponentStore {
   make(...a) {
     return new CameraComponent();
   }
@@ -50721,7 +50837,7 @@ var LitableComponent = class extends InCastingComponent {
     this.luminance = luminance;
   }
 };
-var LittableStore = class extends Store {
+var LittableStore = class extends EntityComponentStore {
   make(...a) {
     return new LitableComponent();
   }
@@ -50752,97 +50868,28 @@ var SpaceTrashEntityComponent = class extends EntityComponent {
   dy;
 };
 
-// src/spacetrash/Entities/index.ts
-var SpaceTrashEntity = class extends Entity {
-  constructor() {
-    super();
-  }
-};
-var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
-  physicsActorComponent;
-  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, albedo = 0) {
-    const spe = new SpaceTrashEntity();
-    const physicsActorComponent = new PhysicsActorComponent(x, y, r, dx, dy);
-    super(
-      spe,
-      [
-        physicsActorComponent,
-        new LitComponent()
-        // new CameraComponent(),
-        // new AttackableComponent(),
-        // new PowerStoringComponent(spe),
-        // new LitableComponent(spe, albedo),
-        // new VideoComponent()
-      ]
-    );
-    this.physicsActorComponent = physicsActorComponent;
-  }
-};
-
-// src/spacetrash/Entities/setpieces/index.ts
-var Tile = class extends SpaceTrashEntityComponent {
-  tiletype;
-  constructor(x, y, tiletype) {
-    const spe = new SpaceTrashEntity();
-    super(spe, [
-      new PhysicsSetPieceComponent(x, y, true, tiletype),
-      new LitableComponent()
-    ]);
-    this.tiletype = tiletype;
-  }
-  validate() {
-    console.log("validate tile!");
-  }
-};
-var FloorTile = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "FloorTile");
-  }
-};
-var WallTile = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "WallTile");
-  }
-};
-var SouthWest = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "SouthWest");
-  }
-};
-var SouthEast = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "SouthEast");
-  }
-};
-var NorthWest = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "NorthWest");
-  }
-};
-var NorthEast = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "NorthEast");
-  }
-};
-
 // src/engine/System.ts
 var System = class {
 };
 
 // src/spacetrash/Components/phase0.ts
-var Phase0 = class extends TwoD_Component {
+var Phase0 = class extends TwoDOneD_Component {
   setId = -1;
   actorIds = [];
   litIds = [];
   littableId = -1;
   tileType;
   luminance;
+  mesh;
+  x;
+  y;
   constructor() {
     super();
+    this.x = -1;
+    this.y = -1;
   }
 };
-var Phase0Store = class extends ComponentStore {
-  store;
+var Phase0Store = class extends TwoDStore {
   constructor() {
     super();
     this.store = [[]];
@@ -50856,11 +50903,12 @@ var Phase0Store = class extends ComponentStore {
 };
 
 // src/spacetrash/System.ts
-var MapSize = 64;
-var NumberOfActors = 24;
+var MapSize = 128;
+var NumberOfActors = 30;
 var BotSlots = 9;
 var TileSize = 8;
 var ActorSize = TileSize / 3;
+var ShadowLimit = 100;
 var distanceBetweenActors = (a, b) => {
   const toReturn = Math.hypot(b.x - a.x, b.y - a.y);
   return toReturn;
@@ -50874,22 +50922,25 @@ var MainSystem = class extends System {
     super();
     this.mapSize = mapSize;
   }
-  tick(delta, store, entities) {
+  tick(delta, ecs) {
     return new Promise((res, rej) => {
-      const phaseZero = store["Phase0"].store;
-      const phaseOne = store["Phase1"].store;
-      const actorsStore = store["PhysicsActorComponent"];
-      const setPieces2 = store["PhysicsSetPieceComponent"];
-      const lightableEntitiesStore = store["LitableComponent"];
+      const phaseZero = ecs.stores["Phase0"].store;
+      const phaseOne = ecs.stores["Phase1"].store;
+      const actorsStore = ecs.componentStores["PhysicsActorComponent"];
+      const setPieces = ecs.componentStores["PhysicsSetPieceComponent"];
+      const lightableEntitiesStore = ecs.componentStores["LitableComponent"];
       if (firstTick) {
         firstTick = false;
         for (let y = 0; y < MapSize; y++) {
           phaseZero[y] = [];
           for (let x = 0; x < MapSize; x++) {
             phaseZero[y][x] = new Phase0();
+            phaseZero[y][x].rendered2d = "fresh";
+            phaseZero[y][x].renderedWebgl = "fresh";
+            phaseZero[y][x].culledWebgl = true;
           }
         }
-        setPieces2.store.forEach(([i, s], ndx) => {
+        setPieces.store.forEach(([i, s], ndx) => {
           phaseZero[s.y][s.x].setId = ndx;
           phaseZero[s.y][s.x].tileType = s.tileType;
           phaseZero[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
@@ -50897,8 +50948,17 @@ var MainSystem = class extends System {
           );
         });
         for (let y = 0; y < actorsStore.store.length; y++) {
-          phaseOne[y] = [actorsStore.store[y][0], actorsStore.store[y][1].x, actorsStore.store[y][1].y];
+          phaseOne[y] = {
+            actorId: y,
+            actorX: actorsStore.store[y][1].x,
+            actorY: actorsStore.store[y][1].y,
+            rendered2d: "fresh",
+            renderedWebgl: "fresh",
+            culled2d: false,
+            culledWebgl: false
+          };
         }
+        res(true);
       } else {
         lightableEntitiesStore.store.forEach(([lid, l]) => {
           l.luminance = 0;
@@ -50908,7 +50968,7 @@ var MainSystem = class extends System {
             phaseZero[y][x].luminance = 0;
           }
         }
-        const lightingEntitiesStore = store[LitComponent.name];
+        const lightingEntitiesStore = ecs.componentStores[LitComponent.name];
         const illuminate = (xFloat, yFloat) => {
           const x = Math.round(xFloat);
           const y = Math.round(yFloat);
@@ -50934,10 +50994,19 @@ var MainSystem = class extends System {
           }
           const [eid3, litableComponent] = litable;
           litableComponent.luminance = 2;
-          phaseZero[y][x].luminance = 2;
+          if (phaseZero[y][x].luminance !== litableComponent.luminance) {
+            phaseZero[y][x].luminance = litableComponent.luminance;
+            phaseZero[y][x].culledWebgl = false;
+            if (phaseZero[y][x].rendered2d !== "fresh") {
+              phaseZero[y][x].rendered2d = "changed";
+              phaseZero[y][x].renderedWebgl = "changed";
+            }
+          }
         };
         lightingEntitiesStore.store.forEach(([eid, lightingComponent], ndx) => {
-          const [eid2, actor] = actorsStore.store.find((a) => a[0] === eid);
+          const [eid2, actor] = actorsStore.store.find(
+            (a) => a[0] === eid
+          );
           if (lightingComponent.radiance) {
             let x = Math.round(actor.x);
             let y = Math.round(actor.y);
@@ -50952,7 +51021,7 @@ var MainSystem = class extends System {
               let j = 0;
               let segment_passed = 0;
               let onTarget = false;
-              for (let k = 0; k < 150; k++) {
+              for (let k = 0; k < ShadowLimit; k++) {
                 i += di;
                 j += dj;
                 ++segment_passed;
@@ -50991,7 +51060,7 @@ var MainSystem = class extends System {
             console.error(phaseZero);
             debugger;
           }
-          const tileType = setPieces2.store[spaceToCheck.setId][1].tileType;
+          const tileType = setPieces.store[spaceToCheck.setId][1].tileType;
           if (tileType !== "FloorTile") {
             const magX = Math.abs(a.dx);
             const magY = Math.abs(a.dy);
@@ -51070,7 +51139,25 @@ var MainSystem = class extends System {
           a.y = a.y + a.dy;
           a.dx = a.dx * 0.999;
           a.dy = a.dy * 0.999;
-          phaseOne[n] = [i, actorsStore.store[n][1].x, actorsStore.store[n][1].y];
+          const prev = phaseOne[n];
+          const next = {
+            ...phaseOne[n],
+            actorId: n,
+            actorX: actorsStore.store[n][1].x,
+            actorY: actorsStore.store[n][1].y
+          };
+          if (prev.actorX === next.actorX && prev.actorY === prev.actorY) {
+            next.rendered2d = "unchanged";
+            next.renderedWebgl = "unchanged";
+          } else {
+            if (next.renderedWebgl !== "fresh") {
+              next.renderedWebgl = "changed";
+            }
+            if (next.rendered2d !== "fresh") {
+              next.rendered2d = "changed";
+            }
+          }
+          phaseOne[n] = next;
         });
       }
       res(true);
@@ -51078,6 +51165,117 @@ var MainSystem = class extends System {
   }
 };
 var SpaceTrashMainSystem = new MainSystem(MapSize);
+
+// src/spacetrash/Entities/index.ts
+var SpaceTrashEntity = class extends Entity {
+  constructor() {
+    super();
+  }
+};
+var SpaceTrashDrone = class extends SpaceTrashEntityComponent {
+  physicsActorComponent;
+  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, albedo = 0) {
+    const spe = new SpaceTrashEntity();
+    const physicsActorComponent = new PhysicsActorComponent(x, y, r, dx, dy);
+    super(spe, [
+      physicsActorComponent,
+      new LitComponent()
+      // new CameraComponent(),
+      // new AttackableComponent(),
+      // new PowerStoringComponent(spe),
+      // new LitableComponent(spe, albedo),
+      // new VideoComponent()
+    ]);
+    this.physicsActorComponent = physicsActorComponent;
+  }
+  static draw2d(s) {
+    return (ctx) => {
+      ctx.beginPath();
+      ctx.arc(s[1].x * TileSize, s[1].y * TileSize, TileSize / 2, 0, 2 * Math.PI);
+      ctx.stroke();
+    };
+  }
+  // draw2d(draw2d: CanvasRenderingContext2D) {
+  //   draw2d.beginPath();
+  //   draw2d.arc(
+  //     this.physicsActorComponent.x * TileSize,
+  //     this.physicsActorComponent.y * TileSize,
+  //     TileSize / 2,
+  //     0,
+  //     2 * Math.PI
+  //   );
+  //   draw2d.fillStyle = "orange";
+  //   draw2d.fill();
+  //   draw2d.stroke();
+  // }
+  // erase2d(draw2d: CanvasRenderingContext2D) {
+  //   // draw2d.clearRect(1, 2, 3, 4);
+  // }
+};
+
+// src/spacetrash/Entities/setpieces/index.ts
+var Tile = class extends SpaceTrashEntityComponent {
+  tiletype;
+  constructor(x, y, tiletype) {
+    const spe = new SpaceTrashEntity();
+    super(spe, [
+      new PhysicsSetPieceComponent(x, y, true, tiletype),
+      new LitableComponent()
+    ]);
+    this.tiletype = tiletype;
+  }
+  validate() {
+    console.log("validate tile!");
+  }
+  erase2d(draw2d) {
+    draw2d.arc(10, 10, 3, 0, 90);
+  }
+  draw2d(draw2d) {
+    draw2d.clearRect(1, 2, 3, 4);
+  }
+  static draw2d(setPieceAndId, p) {
+    const setPiece = setPieceAndId[1];
+    return (ctx) => {
+      ctx.beginPath();
+      if (setPiece.tileType === "FloorTile") {
+        if (p.luminance > 0) {
+          ctx.fillStyle = "yellow";
+        } else {
+          ctx.fillStyle = "white";
+        }
+        ctx.rect(
+          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
+          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
+          TileSize - 1,
+          TileSize - 1
+        );
+      }
+      if (setPiece.tileType === "WallTile") {
+        ctx.fillStyle = "darkgrey";
+        ctx.rect(
+          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
+          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
+          TileSize - 1,
+          TileSize - 1
+        );
+      }
+      ctx.fill();
+      ctx.stroke();
+    };
+  }
+  static erase2d(draw2d) {
+  }
+};
+var FloorTile = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "FloorTile");
+  }
+};
+var WallTile = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "WallTile");
+  }
+};
 
 // src/spacetrash/ship.ts
 var SpaceTrashShip = class extends EntityComponent {
@@ -51129,27 +51327,6 @@ var SpaceTrashShip = class extends EntityComponent {
       await this.addToMap(new WallTile(z + 1, this.shipSize - 1));
       await this.addToMap(new WallTile(0, z));
     }
-    this.addToMap(new NorthWest(15, 15));
-    this.addToMap(new WallTile(16, 15));
-    this.addToMap(new WallTile(17, 15));
-    this.addToMap(new WallTile(18, 15));
-    this.addToMap(new WallTile(19, 15));
-    this.addToMap(new NorthEast(20, 15));
-    this.addToMap(new WallTile(20, 16));
-    this.addToMap(new WallTile(20, 17));
-    this.addToMap(new WallTile(20, 18));
-    this.addToMap(new WallTile(20, 19));
-    this.addToMap(new SouthEast(20, 20));
-    this.addToMap(new WallTile(19, 20));
-    this.addToMap(new WallTile(18, 20));
-    this.addToMap(new WallTile(17, 20));
-    this.addToMap(new WallTile(16, 20));
-    this.addToMap(new SouthWest(15, 20));
-    this.addToMap(new WallTile(0, 20));
-    this.addToMap(new WallTile(18, 20));
-    this.addToMap(new WallTile(17, 20));
-    this.addToMap(new WallTile(16, 20));
-    this.addToMap(new SouthWest(15, 20));
     return;
   }
   constructor() {
@@ -51181,70 +51358,58 @@ var SpaceTrashShip = class extends EntityComponent {
 };
 
 // src/spacetrash/shipMapUpdateLoop.ts
-var shipMapUpdateLoop = (componentStores, reply) => {
-  const thingsToDraw = [];
-  const phaseZero = componentStores["Phase0"].store;
-  const phaseOne = componentStores["Phase1"].store;
-  const litEntities = componentStores["LitableComponent"].store;
-  const physicsSetPieces = componentStores["PhysicsSetPieceComponent"].store;
+var shipMapUpdateLoop = (ecs) => {
+  const twoD = ecs.stores["Phase0"].store;
+  const oneD = ecs.stores["Phase1"].store;
+  let eraseOperations = [];
+  let drawOperations = [];
   for (let y = 0; y < MapSize - 1; y++) {
     for (let x = 0; x < MapSize - 1; x++) {
-      thingsToDraw.push((canvas) => {
-        const z = phaseZero[y][x];
-        const canvas2d = canvas;
-        canvas2d.beginPath();
-        if (z.tileType === "FloorTile") {
-          if (z.luminance > 0) {
-            canvas2d.fillStyle = "yellow";
-          } else {
-            canvas2d.fillStyle = "white";
-          }
-          canvas2d.rect(
-            Math.floor(x * TileSize - TileSize / 2 + 1),
-            Math.floor(y * TileSize - TileSize / 2 + 1),
-            TileSize - 1,
-            TileSize - 1
-          );
-        }
-        if (z.tileType === "WallTile") {
-          canvas2d.fillStyle = "darkgrey";
-          canvas2d.rect(
-            Math.floor(x * TileSize - TileSize / 2 + 1),
-            Math.floor(y * TileSize - TileSize / 2 + 1),
-            TileSize - 1,
-            TileSize - 1
-          );
-        }
-        canvas2d.fill();
-        canvas2d.stroke();
-      });
+      const p = twoD[y][x];
+      const z = ecs.entities[p.setId];
+      const s = ecs.componentStores["PhysicsSetPieceComponent"].store[z];
+      if (p.rendered2d === "fresh") {
+        drawOperations.push(Tile.draw2d(s, p));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "changed") {
+        drawOperations.push(Tile.draw2d(s, p));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "unchanged") {
+      } else if (p.rendered2d === "rendered") {
+      } else {
+        throw `should not be in renderState ${JSON.stringify(p)}`;
+      }
     }
   }
-  phaseOne.forEach((actor, i) => {
-    thingsToDraw.push((canvas) => {
-      const canvas2d = canvas;
-      canvas2d.beginPath();
-      canvas2d.arc(
-        actor[1] * TileSize,
-        actor[2] * TileSize,
-        TileSize / 2,
-        0,
-        2 * Math.PI
-      );
-      canvas2d.fillStyle = "orange";
-      canvas2d.fill();
-      canvas2d.stroke();
-    });
+  oneD.forEach((actor, i) => {
+    const p = oneD[i];
+    const z = ecs.entities[p.actorId];
+    const s = ecs.componentStores["PhysicsActorComponent"].store[z];
+    if (!p.culled2d) {
+      if (p.rendered2d === "fresh") {
+        drawOperations.push(SpaceTrashDrone.draw2d(s));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "changed") {
+        drawOperations.push(SpaceTrashDrone.draw2d(s));
+        p.rendered2d = "rendered";
+      } else if (p.rendered2d === "unchanged") {
+      } else if (p.rendered2d === "rendered") {
+      } else {
+        throw `should not be in renderState ${JSON.stringify(p)}`;
+      }
+      drawOperations.push(SpaceTrashDrone.draw2d(s));
+    }
   });
-  return thingsToDraw;
+  return [...eraseOperations, ...drawOperations];
 };
 
 // src/spacetrash/renderDrone.ts
 var scene = new Scene();
 var camera = new PerspectiveCamera(75, 600 / 400, 0.1, 1e4);
+camera.position.z = 0;
 camera.position.y = MapSize / 2 * TileSize;
 camera.position.x = MapSize / 2 * TileSize;
-camera.rotation.x = 1.5708;
+camera.rotation.x = MathUtils.degToRad(260);
 var cubeGeometry = new BoxGeometry(TileSize, TileSize, TileSize);
 var cylinderGeometry = new CylinderGeometry(
   TileSize / 3,
@@ -51254,88 +51419,108 @@ var cylinderGeometry = new CylinderGeometry(
 var material = new MeshBasicMaterial({ color: "#433F81" });
 var floorGeometry = new PlaneGeometry(TileSize, TileSize);
 var unlitFloorMaterial = new MeshBasicMaterial({ color: "lightgrey" });
-var litFloorMaterial = new MeshBasicMaterial({ color: "yellow" });
+var litFloorMaterial = new MeshBasicMaterial({
+  color: "yellow",
+  wireframe: true
+});
 var cubeMaterial = new MeshBasicMaterial({ color: "red" });
-var instancedFloorMesh = new InstancedMesh(
-  floorGeometry,
-  litFloorMaterial,
-  Math.pow(MapSize, 2)
-);
-var setPieces = {};
-var actors = {};
-var renderDrone = (componentStores, ctx) => {
+var geometry = new BoxGeometry(0.5, 0.5, 0.5);
+var material = new MeshBasicMaterial({ color: "#433F81" });
+var counter = 0;
+var renderDrone = async (ecs, ctx) => {
   const gl = ctx;
-  const physicsSetPieces = componentStores[PhysicsSetPieceComponent.name];
-  const physicsActors = componentStores[PhysicsActorComponent.name];
-  const littables = componentStores[LitableComponent.name];
-  let pieces = 0;
-  for (const setPiece of physicsSetPieces.store) {
-    const s = setPiece[1];
-    const eid = setPiece[0];
-    if (!setPieces[eid]) {
-      if (s.tileType !== FloorTile.name) {
-        const c = new Mesh(cubeGeometry, unlitFloorMaterial);
-        c.material = new MeshBasicMaterial({
-          color: "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
-        });
-        c.position.x = s.x * TileSize;
-        c.position.y = s.y * TileSize;
-        setPieces[eid] = c;
-        pieces++;
-        scene.add(c);
-      } else {
-        const f = new Mesh(floorGeometry, unlitFloorMaterial);
-        f.position.x = s.x * TileSize;
-        f.position.y = s.y * TileSize;
-        f.position.z = -TileSize / 2;
-        for (const [leid, l] of littables.store) {
-          if (leid === eid) {
-            if (l.luminance > 0) {
-              f.material = litFloorMaterial;
-            } else {
-              f.material = unlitFloorMaterial;
-            }
-          }
+  const twoD = ecs.stores["Phase0"].store;
+  const oneD = ecs.stores["Phase1"].store;
+  for (let y = 0; y < MapSize; y++) {
+    for (let x = 0; x < MapSize; x++) {
+      if (!twoD[y][x].mesh) {
+        if (twoD[y][x].tileType === "FloorTile") {
+          twoD[y][x].mesh = new Mesh(floorGeometry, litFloorMaterial);
+          twoD[y][x].mesh.position.z = TileSize / 2;
+        } else if (twoD[y][x].tileType === "WallTile") {
+          twoD[y][x].mesh = new Mesh(cubeGeometry, litFloorMaterial);
+        } else {
+          twoD[y][x].mesh = new Mesh(floorGeometry, litFloorMaterial);
         }
-        setPieces[eid] = f;
-        pieces++;
-        scene.add(f);
+      }
+      if (!twoD[y][x].mesh) {
+        console.error(twoD[y][x]);
+        throw "no mesh";
+      }
+      if (!twoD[y][x].culledWebgl) {
+        if (twoD[y][x].renderedWebgl === "fresh") {
+          if (!twoD[y][x].mesh) {
+            console.error(twoD[y][x]);
+            throw "no mesh";
+          }
+          twoD[y][x].mesh.position.x = x * TileSize;
+          twoD[y][x].mesh.position.y = y * TileSize;
+          counter++;
+          scene.add(twoD[y][x].mesh);
+          twoD[y][x].renderedWebgl = "rendered";
+        } else if (twoD[y][x].renderedWebgl === "changed") {
+          if (!twoD[y][x].mesh) {
+            console.error(twoD[y][x]);
+            throw "no mesh, changed";
+          }
+        } else if (twoD[y][x].renderedWebgl === "unchanged") {
+          if (!twoD[y][x].mesh) {
+            console.error(twoD[y][x]);
+            throw "no mesh, unchanged";
+          }
+        } else if (twoD[y][x].renderedWebgl === "rendered") {
+          if (!twoD[y][x].mesh) {
+            console.error(twoD[y][x]);
+            throw "no mesh, rendered";
+          }
+        } else {
+          throw `should not be in renderState ${JSON.stringify(twoD[y][x])}`;
+        }
+      } else {
+        debugger;
+        scene.remove(twoD[y][x].mesh);
       }
     }
   }
-  for (const actor of physicsActors.store) {
-    const a = actor[1];
-    const eid = actor[0];
-    if (!actors[eid]) {
-      const c = new Mesh(cylinderGeometry, material);
-      c.material = new MeshBasicMaterial({
-        color: "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
-      });
-      c.position.x = a.x * TileSize;
-      c.position.y = a.y * TileSize;
-      c.rotation.x = -3.14 / 2;
-      actors[eid] = c;
-      pieces++;
-      scene.add(c);
-    } else {
-      actors[eid].position.x = a.x * TileSize;
-      actors[eid].position.y = a.y * TileSize;
+  oneD.forEach((actor, i) => {
+    const p = oneD[i];
+    if (!p.culledWebgl) {
+      if (p.renderedWebgl === "fresh") {
+        const m = new Mesh(cylinderGeometry, material);
+        m.position.x = p.actorX * TileSize;
+        m.position.y = p.actorY * TileSize;
+        p.mesh = m;
+        scene.add(p.mesh);
+        p.renderedWebgl = "rendered";
+      } else if (p.renderedWebgl === "changed") {
+        p.mesh.position.x = p.actorX * TileSize;
+        p.mesh.position.y = p.actorY * TileSize;
+        p.renderedWebgl = "rendered";
+      } else if (p.renderedWebgl === "unchanged") {
+      } else if (p.renderedWebgl === "rendered") {
+      } else {
+        throw `should not be in renderState ${JSON.stringify(p)}`;
+      }
     }
-  }
+  });
   const firstbot = Player_default.bots[Player_default.videoFeed];
   camera.position.x = firstbot.x * TileSize;
   camera.position.y = firstbot.y * TileSize;
   gl.render(scene, camera);
+  return;
 };
 
 // src/spacetrash/Components/phase1.ts
-var Phase1 = class extends TwoD_Component {
+var Phase1 = class extends TwoDOneD_Component {
+  actorId;
+  actorX;
+  actorY;
+  mesh;
   constructor() {
     super();
   }
 };
-var Phase1Store = class extends ComponentStore {
-  store;
+var Phase1Store = class extends OneDStore {
   constructor() {
     super();
     this.store = [];
@@ -51446,11 +51631,11 @@ var Spacetrash = class extends Game {
               }];
             },
             // draw function
-            (componentStores, reply) => {
+            (ecs, reply) => {
               return [
                 (ctx) => {
                   if (ctx.constructor.name === "WebGLRenderer") {
-                    renderDrone(componentStores, ctx);
+                    renderDrone(ecs, ctx);
                   }
                 }
               ];
@@ -51480,15 +51665,17 @@ var Spacetrash = class extends Game {
           shipmap: [
             (ecs, reply) => {
             },
-            (componentStores, reply) => {
+            (ecs, reply) => {
               const thingsToDraw = shipMapUpdateLoop(
-                componentStores,
-                reply
+                ecs
               );
               return [
-                ...Object.entries(thingsToDraw).map(([i, k]) => {
-                  return (c) => k(c);
-                }),
+                ...thingsToDraw,
+                // ...Object.entries(thingsToDraw).map(([i, k]) => {
+                //   return k;
+                //   // return (c) =>
+                //   //   k(c);
+                // }),
                 (canvas) => {
                   if (canvas.constructor.name === "OffscreenCanvasRenderingContext2D") {
                     const canvas2d = canvas;
@@ -51560,38 +51747,12 @@ var Spacetrash = class extends Game {
         LitableComponent: new LittableStore(),
         LitComponent: new LitStore(),
         CameraComponent: new CameraStore(),
-        AttackableComponent: new AttackableStore(),
+        AttackableComponent: new AttackableStore()
+      },
+      {
         Phase0: new Phase0Store(),
         Phase1: new Phase1Store()
       },
-      // [
-      //   new PhysicsSetPieceStore(),
-      //   new PhysicsActorStore(),
-      //   new LittableStore(),
-      //   new LitStore(),
-      //   new Phase0Store(),
-      //   new Phase1Store()
-      // ],
-      // {
-      //   setPieces: new PhysicsSetPieceStore(),
-      //   actors: new PhysicsActorStore(),
-      //   // setPart2: new Phase0Store(),
-      //   // actorsPart2: new Phase1Store(),
-      //   littables: new LittableStore(),
-      //   lits: new LitStore(),
-      // },
-      // new Set([
-      //   // AttackableComponent.constructor,
-      //   // CameraComponent.constructor,
-      //   // LitableComponent.constructor,
-      //   // LitComponent.constructor,
-      //   // PhysicsActorComponent.constructor,
-      //   // PhysicsSetComponent.constructor,
-      //   // PowerStoringComponent.constructor,
-      //   // VideoComponent.constructor,
-      //   // Phase0.constructor,
-      //   // new Phase1Store()
-      // ]),
       workerPostMessage
     );
     this.terminal = new SpaceTrashTerminal();

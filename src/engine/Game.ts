@@ -3,15 +3,11 @@ import * as THREE from "three";
 import { ECS } from "./ECS";
 import { StateSpace } from "./StateSpace";
 import { System } from "./System";
-import { Phase1 } from "../spacetrash/Components/phase1";
-import { ComponentStore, IStores } from "./types";
+import { IComponentsStores, IStores } from "./types";
 
-export class Game{
-  postMessage: (
-    message: any,
-    options?: WindowPostMessageOptions | undefined
-  ) => void;
+export class Game {
   state: StateSpace;
+
   canvasContexts: Record<
     string,
     {
@@ -30,7 +26,8 @@ export class Game{
   constructor(
     state: StateSpace,
     system: System,
-    components: IStores,
+    componentStore: IComponentsStores<any>,
+    stores: IStores<any>,
     postMessage: (
       message: any,
       options?: WindowPostMessageOptions | undefined
@@ -38,12 +35,17 @@ export class Game{
   ) {
     this.state = state;
 
-    this.ecs = new ECS(system, components);
+    this.ecs = new ECS(system, componentStore, stores);
 
     this.postMessage = postMessage;
     this.canvasContexts = {};
     this.changeScene = this.changeScene.bind(this);
   }
+
+  postMessage: (
+    message: any,
+    options?: WindowPostMessageOptions | undefined
+  ) => void;
 
   changeScene(to: string) {
     this.state.setCurrent(to);
@@ -76,9 +78,9 @@ export class Game{
       | undefined;
 
     if (canvasContext === "2d") {
-      drawSurface = canvas?.getContext(
-        "2d", { alpha: false }
-      ) as OffscreenCanvasRenderingContext2D;
+      drawSurface = canvas?.getContext("2d", {
+        alpha: false,
+      }) as OffscreenCanvasRenderingContext2D;
     } else if (canvasContext === "webgl2") {
       const d = canvas?.getContext("webgl2") as WebGL2RenderingContext;
 
@@ -122,13 +124,13 @@ export class Game{
       d = performance.now();
       await this.ecs.tick(d - p);
       p = d;
-    }
+    };
 
     setInterval(repeatedFunction, 1);
 
     // run the render loop at 30FPS
     while (true) {
-            let now = await new Promise(requestAnimationFrame);
+      let now = await new Promise(requestAnimationFrame);
       if (now - then < interval - delta) {
         continue;
       }
@@ -145,19 +147,17 @@ export class Game{
     const s = this.state.get(this.state.currrent);
 
     const ds = this.canvasContexts[key].drawSurface;
-    
+
     const clbk = this.canvasContexts[key].callback;
 
     if (ds) {
       const drawOps: ((
         ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
-        // opts: any,
-      ) => void)[] = s.draw(key, clbk || (() => {}), this.ecs.componentStores);
+      ) => void)[] = s.draw(key, clbk || (() => {}), this.ecs);
 
       if (this.canvasContexts[key].canvasContext === "2d") {
         const twoDimDraw = ds as OffscreenCanvasRenderingContext2D;
 
-        twoDimDraw.clearRect(0, 0, 800, 600);
         drawOps.forEach((d) => {
           d(twoDimDraw);
         });
@@ -165,12 +165,6 @@ export class Game{
 
       if (this.canvasContexts[key].canvasContext === "webgl2") {
         const threeDimDraw = ds as OffscreenCanvasRenderingContext2D;
-
-        // const gl = ctx as THREE.WebGLRenderer;
-        // gl.clear(gl.COLOR_BUFFER_BIT);
-
-        // (gl as any  ).transferControlToOffscreen()
-
         drawOps.forEach((d) => {
           d(threeDimDraw);
         });

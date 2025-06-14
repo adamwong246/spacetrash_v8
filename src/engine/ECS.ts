@@ -1,21 +1,28 @@
 import { System } from "./System";
 import { EntityComponent } from "./EntityComponent";
 
-import { ComponentStore, IEntitiesStore, IStores } from "./types";
+import { ComponentStore, IComponentsStores, IEntitiesStore, IStores } from "./types";
 import { Component } from "./Component";
 
 const EntityMax = 65535;
 
 export class ECS {
   system: System;
-  componentStores: ComponentStore[];
   entities: IEntitiesStore;
+  componentStores: IComponentsStores<any>;
+  stores: IStores<any>;
+
   paused = true;
   nextId = 0;
 
-  constructor(system: System, components: Record<string, ComponentStore>) {
+  constructor(
+    system: System,
+    componentStores: IComponentsStores<any>,
+    stores: IStores<any>
+  ) {
     this.system = system;
-    this.componentStores = [];
+    this.componentStores = componentStores;
+    this.stores = stores;
 
     // the list of all entities
     const sharedBuffer = new SharedArrayBuffer(
@@ -24,13 +31,23 @@ export class ECS {
     const sharedArray = new Int32Array(sharedBuffer);
     this.entities = sharedArray;
 
-    Object.entries(components).forEach(([k, c]: [string, ComponentStore]) => {
-      this.componentStores[k] = c;
-    });
+    // Object.entries(components).forEach(([k, c]: [string, ComponentStore<any>]) => {
+    //   this.componentStores[k] = c;
+    // });
   }
 
   addComponent(i: number, c: Component<any, any>) {
     this.componentStores[c.constructor.name].add(c, i);
+  }
+
+  getComponents(i: number): Component<any, any>[] {
+    return Object.values(this.componentStores)
+      .map((cs) => {
+        return cs.get(i);
+      })
+      .filter((x) => {
+        return x !== undefined;
+      });
   }
 
   addEntity(): number {
@@ -39,6 +56,10 @@ export class ECS {
     this.nextId++;
     return toReturn;
   }
+
+  // getEntityComponent<I extends EntityComponent>(i: number, klass: Function): I {
+  //   return klass(this.getComponents(i));
+  // }
 
   setEntitiesComponent(entityComponents: EntityComponent[]): void {
     entityComponents.forEach((e) => {
@@ -80,7 +101,7 @@ export class ECS {
 
   async tick(delta: number) {
     if (!this.paused) {
-      await this.system.tick(delta, this.componentStores, this.entities);
+      await this.system.tick(delta, this);
     }
   }
 }

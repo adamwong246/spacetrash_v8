@@ -1,16 +1,14 @@
-import {Component} from "../../engine/Component";
-
-import { SpaceTrashEntity } from "../Entities";
+import { Component } from "../../engine/Component";
 
 import { ISpaceTrashComponents } from ".";
 
-export abstract class PoweredComponent extends Component<unknown, ISpaceTrashComponents> {
-  constructor(spe: SpaceTrashEntity) {
-    super(
-      spe,
-      []
-      // [SpaceTrashSystems.power]
-    );
+export abstract class PoweredComponent extends Component<
+  unknown,
+  ISpaceTrashComponents
+> {
+  constructor() {
+    super();
+    // [SpaceTrashSystems.power]
   }
 
   getMove(): unknown {

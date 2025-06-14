@@ -1,4 +1,5 @@
-import { ComponentStore, Store } from "../../engine/types";
+
+import { EntityComponentStore } from "../../engine/types";
 import { ITiles } from "../lib/EntityComponent";
 import { PhysicsComponent } from "./physics";
 
@@ -19,7 +20,8 @@ export class PhysicsSetPieceComponent extends PhysicsComponent {
 
 }
 
-export class PhysicsSetPieceStore extends Store<PhysicsSetPieceComponent> {
+export class PhysicsSetPieceStore extends EntityComponentStore<PhysicsSetPieceComponent> {
+  
   make(
     x: number = 0,
     y: number = 0,

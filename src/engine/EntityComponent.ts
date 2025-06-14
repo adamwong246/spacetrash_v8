@@ -14,4 +14,6 @@ export abstract class EntityComponent {
   applyComponent (c: Component<any, any>) {
     this.components.push(c)
   }
+
+  
 }

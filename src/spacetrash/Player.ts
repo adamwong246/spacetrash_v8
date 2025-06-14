@@ -33,14 +33,14 @@ class SpaceTrashPlayer {
   yup() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 0.01
+        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 0.001
       }
     }
   }
   ydown() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 0.01
+        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 0.001
       }
     }
   }
@@ -49,14 +49,14 @@ class SpaceTrashPlayer {
     
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 0.01
+        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 0.001
       }
     }
   }
   xright() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 0.01
+        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 0.001
       }
     }
   }
