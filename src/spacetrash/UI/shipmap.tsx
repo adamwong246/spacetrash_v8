@@ -3,7 +3,7 @@ import React from "react";
 import { UICanvas } from "../../engine/UI/UICanvas";
 
 export const ShipMapApp = (props: {
-  worker: Worker
+  // worker: Worker
 }) => {
   return (<div
   

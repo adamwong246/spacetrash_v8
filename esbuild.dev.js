@@ -2,6 +2,7 @@ import esbuild from 'esbuild';
 import { sassPlugin } from 'esbuild-sass-plugin'
 
 esbuild.context({
+  // packages: "external",
   bundle: true,
   // outbase: 'src',
   format: "esm",
@@ -15,7 +16,7 @@ esbuild.context({
   ],
 
   outdir: "./dist",
-
+  target: ['esnext'],
   external: ["crypto"],
   loader: {
     '.css': 'file',

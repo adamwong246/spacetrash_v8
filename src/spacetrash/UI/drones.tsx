@@ -1,12 +1,12 @@
 import React from "react";
 
 export const DronesApp = (props: {
-  worker: Worker
+  // worker: Worker
 }) => {
 
-  props.worker.onmessage = (e) => {
-    debugger
-  };
+  // props.worker.onmessage = (e) => {
+  //   debugger
+  // };
 
   return (<div>
     <pre>Drones goes here</pre>

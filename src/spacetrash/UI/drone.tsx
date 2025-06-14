@@ -3,7 +3,7 @@ import React from "react";
 import { UICanvas } from "../../engine/UI/UICanvas";
 
 export const DroneApp = (props: {
-  worker: Worker
+  // worker: Worker
 }) => {
 
   document.addEventListener('keydown', function (event) {
@@ -22,7 +22,7 @@ export const DroneApp = (props: {
       event.key === '8' ||
       event.key === '9' 
     ) {
-      props.worker.postMessage(["inputEvent", event.key, "drone"])
+      // props.worker.postMessage(["inputEvent", event.key, "drone"])
     }
 
     //   props.worker.postMessage(["inputEvent", "UP", "drone"]);

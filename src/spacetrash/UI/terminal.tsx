@@ -1,25 +1,37 @@
 import React, { useEffect } from "react";
+import { SpaceTrashTerminal } from "../lib/Terminal";
+import { IState } from ".";
+import { IComStatus } from "./UiState";
 
 export type ITerminalHooks = {
   changeBuffer: (value: string) => any,
   submitBuffer: () => any,
 }
 
+export type ITerminalLine = {
+  in?: string,
+  out: string,
+  status: IComStatus
+}
+
 export type ITerminalState = {
   buffer: string;
-  history: { in: string, out: string, timeStamp: number }[],
+  history: ITerminalLine[],
+  loggedIn: boolean,
 };
 
 export const TerminalApp = (props: {
-  worker: Worker,
-  state: ITerminalState,
-  hooks: ITerminalHooks
+  terminal: SpaceTrashTerminal,
+  state: IState,
+  stateSetter: React.Dispatch<React.SetStateAction<IState>>,
 }) => {
 
   useEffect(() => {
-    props.worker.postMessage(["terminal-register"], []);
+    // props.worker.postMessage(["terminal-register"], []);
+    props.terminal.boot(props.state, props.stateSetter)
   }, []);
 
+  // console.log(props.terminal.history(props.state, props.stateSetter))
   return (<div
 
     style={{
@@ -37,17 +49,26 @@ export const TerminalApp = (props: {
         backgroundColor: "darkgreen",
         color: "lightgreen",
         position: "absolute",
+        bottom: '10px',
         height: "100%",
         width: "100%",
         margin: "0",
       }}
     >
       {
-        props.state.history.map((props2: { in, out }) => {
-          return (`
-> ${props2.in}
-${props2.out}
-          `)
+        props.terminal.history(props.state).map((tl: ITerminalLine) => {
+
+          if (tl.in) {
+            return (`
+> ${tl.in}
+              ${tl.out}
+                        `)
+          } else {
+            return (`
+${tl.out}
+                        `)
+          }
+
         })
       }
 
@@ -56,7 +77,8 @@ ${props2.out}
     <input
       type="text"
       name="terminal-input"
-      value={props.state.buffer}
+      // value={props.state.buffer}
+      value={props.terminal.getBuffer(props.state)}
 
       style={{
         position: "absolute",
@@ -67,11 +89,11 @@ ${props2.out}
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
-          props.hooks.submitBuffer();
+          props.terminal.submitBuffer(props.state, props.stateSetter);
         }
       }}
       onChange={(e) => {
-        props.hooks.changeBuffer(e.target.value);
+        props.terminal.setBuffer(props.state, props.stateSetter, e.target.value, );
       }}
     />
   </div>);

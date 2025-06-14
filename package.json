@@ -14,13 +14,7 @@
     "dev": "node esbuild.dev.js"
   },
   "dependencies": {
-    "@osjs/client": "^3.10.0",
-    "@osjs/dev-meta": "^2.3.2",
-    "@osjs/freedesktop-sounds": "^3.0.3",
-    "@osjs/gnome-icons": "^4.0.5",
-    "@osjs/gui": "^4.1.0",
-    "@osjs/panels": "^3.0.32",
-    "@osjs/standard-theme": "^4.0.9",
+    
     "@types/react": "^18.3.3",
     "@types/three": "^0.177.0",
     "esbuild": "0.25.5",
@@ -29,6 +23,8 @@
     "graphology": "^0.25.4",
     "graphology-dag": "^0.4.1",
     "graphology-types": "^0.24.7",
+    "pixi.js": "8.10.1",
+
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-pro-panels": "^1.0.2",
