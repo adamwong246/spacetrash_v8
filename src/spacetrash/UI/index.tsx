@@ -2,18 +2,34 @@ import React, { useRef, useState } from "react";
 import { flushSync } from 'react-dom';
 
 import { UIWindow } from "../../engine/UI/UIWindow";
-import { IUiDekstop } from "../../engine/UI/WM";
+// import { IUiDekstop } from "../../engine/UI/WM";
 
 import { DroneApp } from "./drone";
 import { ShipMapApp } from "./shipmap";
 import { ITerminalHooks, ITerminalState, TerminalApp } from "./terminal";
 import { ManualApp } from "./manual";
 import { DronesApp } from "./drones";
-import {SpaceTrashTerminal} from "../lib/Terminal";
+import { SpaceTrashTerminal } from "../lib/Terminal";
 import { MainView } from "./MainView";
 import { MainView3d } from "./MainView2";
+import SpacetrashGame from "../Game";
 
 export type ISpaceTrashApps = 'terminal' | `shipmap` | `manual` | `drone` | 'drones';
+
+export type IUiDekstop = {
+  windows: Record<ISpaceTrashApps, IUiWindow>,
+  stack: string[];
+};
+
+export type IUiWindow = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  visible: boolean;
+};
+
+
 
 export enum ESpaceTrashApps {
   terminal,
@@ -24,7 +40,8 @@ export enum ESpaceTrashApps {
 };
 
 export type IState = IUiDekstop & {
-  terminal: ITerminalState
+  terminal: ITerminalState,
+
 };
 
 const initialState: () => IState = () => {
@@ -38,10 +55,26 @@ const initialState: () => IState = () => {
     ],
 
     terminal: {
+      mapOrVideo: 'map',
       loggedIn: false,
       buffer: "login",
       history: [
-        { "in": "", out: "booting...", status: "niether" }
+        {
+          "in": "",
+          out: `
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                        │
+│ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
+│ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
+│ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
+│ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
+│ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
+│ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
+│                                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+          `,
+          status: "niether"
+        }
       ],
     },
     windows: {
@@ -87,7 +120,7 @@ const initialState: () => IState = () => {
 
 
 
-const termV2 = new SpaceTrashTerminal();
+// const termV2 = new SpaceTrashTerminal();
 
 export const SpaceTrashDesktop = () => {
 
@@ -97,7 +130,9 @@ export const SpaceTrashDesktop = () => {
   const stateRef = useRef<IState>();
   stateRef.current = desktopState;
 
-  
+  const spaceTrashGame = new SpacetrashGame()
+
+
 
   // props.worker.onmessage = (e) => {
   //   if (!stateRef.current) {
@@ -188,13 +223,33 @@ export const SpaceTrashDesktop = () => {
   return (
 
     <div>
-      {/* <pre>{JSON.stringify(stateRef.current, null, 2)}</pre>
-      <pre>{JSON.stringify(desktopState, null, 2)}</pre> */}
+
       <div
       >
 
-        <MainView/>
-        {/* <MainView3d/> */}
+        {
+          desktopState.terminal.mapOrVideo === 'map' && <MainView />
+        }
+
+        {
+          desktopState.terminal.mapOrVideo === 'video' && <MainView3d />
+        }
+
+        {/* {
+          !desktopState.terminal.loggedIn && <p>you need to login</p>
+        }
+
+        {
+          desktopState.terminal.loggedIn && desktopState.terminal.mapOrVideo === 'map' && <MainView />
+        }
+
+        {
+          desktopState.terminal.loggedIn && desktopState.terminal.mapOrVideo === 'video' && <MainView3d />
+        } */}
+
+
+
+
 
         {
           desktopState.windows.terminal && <UIWindow
@@ -223,11 +278,9 @@ export const SpaceTrashDesktop = () => {
             }} >
 
             <TerminalApp
-              terminal={termV2}
-              // worker={props.worker}
+              terminal={spaceTrashGame.terminal}
               state={desktopState}
               stateSetter={setDesktopState}
-              // hooks={terminalHooks}
             />
 
           </UIWindow>
@@ -251,7 +304,6 @@ export const SpaceTrashDesktop = () => {
             }} >
 
             <ShipMapApp
-              // worker={props.worker}
             />
           </UIWindow>
 
@@ -276,7 +328,7 @@ export const SpaceTrashDesktop = () => {
             }} >
 
             <ManualApp
-              // worker={props.worker}
+
             />
 
           </UIWindow>
@@ -302,7 +354,7 @@ export const SpaceTrashDesktop = () => {
             }} >
 
             <DroneApp
-              // worker={props.worker}
+
             />
 
           </UIWindow>
@@ -328,7 +380,7 @@ export const SpaceTrashDesktop = () => {
             }} >
 
             <DronesApp
-              // worker={props.worker}
+
             />
 
           </UIWindow>

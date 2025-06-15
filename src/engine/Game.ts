@@ -28,29 +28,29 @@ export class Game {
     system: System,
     componentStore: IComponentsStores<any>,
     stores: IStores<any>,
-    postMessage: (
-      message: any,
-      options?: WindowPostMessageOptions | undefined
-    ) => void
+    // postMessage: (
+    //   message: any,
+    //   options?: WindowPostMessageOptions | undefined
+    // ) => void
   ) {
     this.state = state;
 
     this.ecs = new ECS(system, componentStore, stores);
 
-    this.postMessage = postMessage;
+    // this.postMessage = postMessage;
     this.canvasContexts = {};
     this.changeScene = this.changeScene.bind(this);
   }
 
-  postMessage: (
-    message: any,
-    options?: WindowPostMessageOptions | undefined
-  ) => void;
+  // postMessage: (
+  //   message: any,
+  //   options?: WindowPostMessageOptions | undefined
+  // ) => void;
 
   changeScene(to: string) {
     this.state.setCurrent(to);
     const newScene = this.state.getCurrent();
-    newScene.boot(to, this.ecs, this.postMessage);
+    newScene.boot(this.ecs);
   }
 
   register(

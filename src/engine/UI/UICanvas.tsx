@@ -8,33 +8,33 @@ export const UICanvas = (props: {
 }) => {
   const canvasRef = useRef(null)
 
-  useEffect(() => {
-    if (canvasRef.current) {
-    const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
-      props.worker.postMessage([props.app + "-register", offscreen, props.rendering], [offscreen]);
-    }
-  }, [canvasRef]);
+  // useEffect(() => {
+  //   if (canvasRef.current) {
+  //   const offscreen = (canvasRef.current as HTMLCanvasElement).transferControlToOffscreen()
+  //     props.worker.postMessage([props.app + "-register", offscreen, props.rendering], [offscreen]);
+  //   }
+  // }, [canvasRef]);
 
   return <canvas
     tabIndex={1}
-    onKeyUp={(e) => {
-      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-    }}
-    onKeyDown={(e) => {
-      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-    }}
-    onMouseDown={(e) => {
-      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-    }}
-    onMouseUp={(e) => {
-      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-    }}
-    onMouseOver={(e) => {
-      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-    }}
-    onMouseMove={(e) => {
-      props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
-    }}
+    // onKeyUp={(e) => {
+    //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    // }}
+    // onKeyDown={(e) => {
+    //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    // }}
+    // onMouseDown={(e) => {
+    //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    // }}
+    // onMouseUp={(e) => {
+    //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    // }}
+    // onMouseOver={(e) => {
+    //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    // }}
+    // onMouseMove={(e) => {
+    //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
+    // }}
     ref={canvasRef}
     width="800"
     height="600"></canvas>

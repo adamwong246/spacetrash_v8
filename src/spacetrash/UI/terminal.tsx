@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { SpaceTrashTerminal } from "../lib/Terminal";
 import { IState } from ".";
 import { IComStatus } from "./UiState";
@@ -18,6 +18,7 @@ export type ITerminalState = {
   buffer: string;
   history: ITerminalLine[],
   loggedIn: boolean,
+  mapOrVideo: 'map' | 'video'
 };
 
 export const TerminalApp = (props: {
@@ -31,7 +32,14 @@ export const TerminalApp = (props: {
     props.terminal.boot(props.state, props.stateSetter)
   }, []);
 
-  // console.log(props.terminal.history(props.state, props.stateSetter))
+  // Scroll when children change
+  const containerRef = useRef(null);
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [props.terminal.history(props.state)]); 
+  
   return (<div
 
     style={{
@@ -41,38 +49,43 @@ export const TerminalApp = (props: {
     }}
   >
 
-    <pre
-      id="terminal"
-      style={{
-        overflowX: "scroll",
-        overflowY: "scroll",
-        backgroundColor: "darkgreen",
-        color: "lightgreen",
-        position: "absolute",
-        bottom: '10px',
-        height: "100%",
-        width: "100%",
-        margin: "0",
-      }}
-    >
-      {
-        props.terminal.history(props.state).map((tl: ITerminalLine) => {
+    <div >
 
-          if (tl.in) {
-            return (`
+      <pre
+        ref={containerRef} 
+        id="terminal"
+        style={{
+          overflowX: "scroll",
+          overflowY: "scroll",
+          backgroundColor: "darkgreen",
+          color: "lightgreen",
+          position: "absolute",
+          bottom: '1.5rem',
+          top: 0,
+          // height: "100%",
+          width: "100%",
+          margin: "0",
+          // height: 'inherit',
+        }}
+      >
+        {
+          props.terminal.history(props.state).map((tl: ITerminalLine) => {
+
+            if (tl.in) {
+              return (`
 > ${tl.in}
-              ${tl.out}
-                        `)
-          } else {
-            return (`
-${tl.out}
-                        `)
-          }
+${tl.out}`)
+            } else {
+              return (`
+${tl.out}`)
+            }
 
-        })
-      }
+          })
+        }
 
-    </pre>
+      </pre>
+
+    </div>
 
     <input
       type="text"
@@ -86,15 +99,19 @@ ${tl.out}
         backgroundColor: "darkgreen",
         color: "lightgreen",
         width: "100%",
+        // minHeight: "34rem",
+        // minWidth: "34rem"
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           props.terminal.submitBuffer(props.state, props.stateSetter);
+          
         }
       }}
       onChange={(e) => {
-        props.terminal.setBuffer(props.state, props.stateSetter, e.target.value, );
+        props.terminal.setBuffer(props.state, props.stateSetter, e.target.value,);
       }}
     />
+    
   </div>);
 }

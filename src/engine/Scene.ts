@@ -35,10 +35,14 @@ export class Scene<IApps extends string> extends Tree {
     this.sceneBoot = sceneBoot || (async (ecs) => {});
   }
 
-  async boot(stateKey: string, ecs: ECS, bootReplier: IReply) {
+  async boot(
+    // stateKey: string,
+    ecs: ECS,
+    // bootReplier: IReply
+  ) {
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
-      this.appLogic[k][0](ecs, bootReplier);
+      this.appLogic[k][0](ecs);
     });
   }
 

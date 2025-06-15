@@ -1,5 +1,21 @@
+import { Dispatch, SetStateAction } from "react";
+
 import { IState } from "../UI";
 import { ITerminalLine, ITerminalState } from "../UI/terminal";
+
+const videoTermLine: ITerminalLine = {
+  out: `
+Now in video mode
+  `,
+  status: `pass`,
+};
+
+const mapTermLine: ITerminalLine = {
+  out: `
+Now in map mode
+  `,
+  status: `pass`,
+};
 
 const dateTermLine: ITerminalLine = { out: `ERROR: NOT FOUND`, status: `fail` };
 
@@ -7,13 +23,12 @@ const missionTermLine: ITerminalLine = {
   out: `
 1] Find, board and salvage derelict spacecraft
 2] Record and report novel scientific findings
-3] Maximize shareholder value
-  `,
+3] Maximize shareholder value`,
   status: `niether`,
 };
 const shipTermLine: ITerminalLine = {
   out: `
-Call-sign:      "The Kestrel"
+Call-sign:      "Dulcincea"
 Make:           Muteki Heavy Ind.
 Classification: Deep salvage
 Launch date:    May, 2690
@@ -28,31 +43,20 @@ Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
 Turing class: Level II Sentient/Sapient
 Capacity:     29.5 * 10^17 qubits
 Licensed by:  Demiurge Labs. (3003)
-  `,
+`,
   status: `niether`,
 };
 
 const bootScreenTermLine: ITerminalLine = {
   status: "pass",
-  out: `
-
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                        │
-│ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
-│ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
-│ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
-│ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
-│ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
-│ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
-│                                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-`,
+  out: `boot sequence initiated...
+PegasusOS ( Oonix v457.3.2 ) by Demiurge Labs, 3003
+QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online!
+boot sequence complete`,
 };
 
-const commandNotFoundTermLine: ITerminalLine = {
-  out: `Command not found. Try "help"`,
-  status: `fail`,
+const commandNotFoundTermLine: (s: string) => ITerminalLine = (s) => {
+  return { out: `Command "${s}" not found. Try "help"`, status: `fail` };
 };
 
 const loggedInTermLine: ITerminalLine = {
@@ -96,7 +100,6 @@ ESC        bring shipmap for foreground
 1 - 9      bring drone to foreground by id
 0          bring terminal to foreground
 ⬆️⬇️⬅️➡️   drive Bot
-
 `,
   status: "niether",
 };
@@ -105,16 +108,17 @@ export class SpaceTrashTerminal {
   returnCommand(
     state: IState,
     stateSetter: React.Dispatch<React.SetStateAction<IState>>,
-    t: ITerminalLine,
-    p?: Partial<ITerminalState>
+    t: ITerminalLine
   ) {
     stateSetter({
       ...state,
       terminal: {
         ...state.terminal,
-        ...p,
         buffer: "",
-        history: [...state.terminal.history, t],
+        history: [...state.terminal.history, {
+          ...t,
+          in: state.terminal.buffer
+        }],
       },
     });
   }
@@ -154,9 +158,40 @@ export class SpaceTrashTerminal {
     state: IState,
     stateSetter: React.Dispatch<React.SetStateAction<IState>>
   ): void {
-    this.returnCommand(state, stateSetter, loggedInTermLine, {
-      loggedIn: true,
-    });
+    this.returnCommand(
+      {
+        ...state,
+        terminal: {
+          ...state.terminal,
+          loggedIn: true,
+        },
+
+        windows: {
+          terminal: {
+            ...state.windows.terminal,
+            visible: true,
+          },
+          shipmap: {
+            ...state.windows.shipmap,
+            visible: true,
+          },
+          manual: {
+            ...state.windows.manual,
+            visible: true,
+          },
+          drone: {
+            ...state.windows.drone,
+            visible: true,
+          },
+          drones: {
+            ...state.windows.drones,
+            visible: true,
+          },
+        },
+      },
+      stateSetter,
+      loggedInTermLine
+    );
   }
 
   alreadyLoggedIn(
@@ -208,6 +243,34 @@ export class SpaceTrashTerminal {
     this.returnCommand(state, stateSetter, dateTermLine);
   }
 
+  map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+    this.returnCommand(
+      {
+        ...state,
+        terminal: {
+          ...state.terminal,
+          mapOrVideo: "map",
+        },
+      },
+      stateSetter,
+      mapTermLine
+    );
+  }
+
+  video(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+    this.returnCommand(
+      {
+        ...state,
+        terminal: {
+          ...state.terminal,
+          mapOrVideo: "video",
+        },
+      },
+      stateSetter,
+      videoTermLine
+    );
+  }
+
   //////////////////////////////////////////
 
   boot(
@@ -225,9 +288,14 @@ export class SpaceTrashTerminal {
 
   commandNotFound(
     state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
+    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
+    unknownCommand: string
   ) {
-    this.returnCommand(state, stateSetter, commandNotFoundTermLine);
+    this.returnCommand(
+      state,
+      stateSetter,
+      commandNotFoundTermLine(unknownCommand)
+    );
   }
 
   processCommand(
@@ -277,6 +345,16 @@ export class SpaceTrashTerminal {
       return;
     }
 
+    if (command === "map") {
+      this.map(state, stateSetter);
+      return;
+    }
+
+    if (command === "video") {
+      this.video(state, stateSetter);
+      return;
+    }
+
     // const matchForBot = (/b ([1-9])*/gm).exec(command);
 
     // if (matchForBot && matchForBot?.length > 0) {
@@ -296,6 +374,6 @@ export class SpaceTrashTerminal {
     //     status: 'pass'
     //   }
     // }
-    this.commandNotFound(state, stateSetter);
+    this.commandNotFound(state, stateSetter, command);
   }
 }
