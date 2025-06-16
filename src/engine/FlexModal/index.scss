@@ -145,9 +145,13 @@
 }
 .flexible-modal-header{
   background-color: grey;
-  height: 3rem;
+  // border: 1px solid black ;
+  // height: 1.5rem;
   // position: absolute;
   // width: 100%
+  > *{
+    margin: 0;
+  }
 }
 .fade-scale-exit {
   solidity: 1;

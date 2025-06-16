@@ -1,65 +1,57 @@
-import { PhysicsActorComponent } from "./Components/physics";
-import { SpaceTrashDrone } from "./Entities";
+import SpacetrashGame from "./Game";
 
-class SpaceTrashPlayer {
-  videoFeed: number = 1;
-  bots: {
-    1: PhysicsActorComponent,
-    2: PhysicsActorComponent,
-    3: PhysicsActorComponent,
-    4: PhysicsActorComponent,
-    5: PhysicsActorComponent,
-    6: PhysicsActorComponent,
-    7: PhysicsActorComponent,
-    8: PhysicsActorComponent,
-    9: PhysicsActorComponent
+export default class SpaceTrashPlayer {
+  public static videoFeed: number = 1;
+
+  public static bots: {
+    1: [number, string];
+    2: [number, string];
+    3: [number, string];
+    4: [number, string];
+    5: [number, string];
+    6: [number, string];
+    7: [number, string];
+    8: [number, string];
+    9: [number, string];
   };
 
-  setBots(bots: SpaceTrashDrone[]) {
-    this.bots = {
-      1: bots[0].physicsActorComponent,
-      2: bots[1].physicsActorComponent,
-      3: bots[2].physicsActorComponent,
-      4: bots[3].physicsActorComponent,
-      5: bots[4].physicsActorComponent,
-      6: bots[5].physicsActorComponent,
-      7: bots[6].physicsActorComponent,
-      8: bots[7].physicsActorComponent,
-      9: bots[8].physicsActorComponent,
-    }
+  public static videoFeedPosition(): { x: number; y: number } {
+    return SpacetrashGame.positionOfEntity(
+      (SpaceTrashPlayer.bots[SpaceTrashPlayer.videoFeed] as [number, string])[0]
+    );
   }
 
-
-  yup() {
+  public static yup() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 0.001
+        SpaceTrashPlayer.bots[this.videoFeed].dy =
+          SpaceTrashPlayer.bots[this.videoFeed].dy - 0.001;
       }
     }
   }
-  ydown() {
+  public static ydown() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 0.001
+        SpaceTrashPlayer.bots[this.videoFeed].dy =
+          SpaceTrashPlayer.bots[this.videoFeed].dy + 0.001;
       }
     }
   }
 
-  xleft() {
-    
+  public static xleft() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 0.001
+        SpaceTrashPlayer.bots[this.videoFeed].dx =
+          SpaceTrashPlayer.bots[this.videoFeed].dx - 0.001;
       }
     }
   }
-  xright() {
+  public static xright() {
     for (let ndx = 1; ndx <= 9; ndx++) {
       if (this.videoFeed === ndx) {
-        this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 0.001
+        SpaceTrashPlayer.bots[this.videoFeed].dx =
+          SpaceTrashPlayer.bots[this.videoFeed].dx + 0.001;
       }
     }
   }
 }
-
-export default new SpaceTrashPlayer();

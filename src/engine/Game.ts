@@ -1,51 +1,45 @@
-import * as THREE from "three";
+import { ISpaceTrashApps } from "../spacetrash/UI";
 
 import { ECS } from "./ECS";
 import { StateSpace } from "./StateSpace";
 import { System } from "./System";
 import { IComponentsStores, IStores } from "./types";
 
-export class Game {
+export const FPS = 10;
+
+const Debug = {
+  PerformanceLogging: false,
+};
+
+export abstract class Game<IRenderings> {
   state: StateSpace;
 
   canvasContexts: Record<
-    string,
+    ISpaceTrashApps | any,
     {
       run: boolean;
-      canvas?: OffscreenCanvas;
-      drawSurface?:
-        | THREE.WebGLRenderer
-        | OffscreenCanvasRenderingContext2D
-        | undefined;
+      canvas?: HTMLCanvasElement;
       callback?: (a: any) => void;
-      canvasContext: "2d" | "webgl2";
+      canvasContext?: IRenderings;
+      parentComponent?: HTMLElement;
     }
   >;
   ecs: ECS;
+  renderings: Set<IRenderings>;
 
   constructor(
     state: StateSpace,
     system: System,
     componentStore: IComponentsStores<any>,
     stores: IStores<any>,
-    // postMessage: (
-    //   message: any,
-    //   options?: WindowPostMessageOptions | undefined
-    // ) => void
+    renderings: Set<IRenderings>
   ) {
     this.state = state;
-
     this.ecs = new ECS(system, componentStore, stores);
-
-    // this.postMessage = postMessage;
     this.canvasContexts = {};
     this.changeScene = this.changeScene.bind(this);
+    this.renderings = renderings;
   }
-
-  // postMessage: (
-  //   message: any,
-  //   options?: WindowPostMessageOptions | undefined
-  // ) => void;
 
   changeScene(to: string) {
     this.state.setCurrent(to);
@@ -54,81 +48,55 @@ export class Game {
   }
 
   register(
-    key: string,
+    key: ISpaceTrashApps,
     run: boolean,
-    canvas?: OffscreenCanvas,
+    canvas?: HTMLCanvasElement,
     callback?: (data: any) => void,
-    canvasContext?: "2d" | "webgl2"
+    canvasContext?: IRenderings,
+    parentComponent?: HTMLElement,
+
   ) {
     if ((canvasContext === undefined) !== (canvasContext === undefined)) {
-      throw `you must pass both canvas and context, or neither. ctx, canvasContext: ${canvasContext}, ${canvasContext}`;
+      throw `you must pass both canvas and context, or neither. canvas, canvasContext: ${canvas}, ${canvasContext}`;
     }
 
-    if (
-      canvasContext !== "2d" &&
-      canvasContext !== "webgl2" &&
-      canvasContext !== undefined
-    ) {
-      throw `you passed an illegal context: ${canvasContext}`;
-    }
-
-    let drawSurface:
-      | THREE.WebGLRenderer
-      | OffscreenCanvasRenderingContext2D
-      | undefined;
-
-    if (canvasContext === "2d") {
-      drawSurface = canvas?.getContext("2d", {
-        alpha: false,
-      }) as OffscreenCanvasRenderingContext2D;
-    } else if (canvasContext === "webgl2") {
-      const d = canvas?.getContext("webgl2") as WebGL2RenderingContext;
-
-      drawSurface = new THREE.WebGLRenderer({
-        canvas: d.canvas,
-        context: d,
-        antialias: true,
-      });
-
-      drawSurface.setSize(600, 400, false);
-
-      drawSurface.setPixelRatio(1);
-      drawSurface.setClearColor("#2220111");
-      // drawSurface.``
-    } else if (canvasContext === undefined) {
-      // no-opt
-      // no canvas necessary
+    if (canvasContext !== undefined && !this.renderings.has(canvasContext)) {
+      throw `you passed an illegal context: ${canvasContext}. I expected ${this.renderings.entries}`;
     }
 
     this.canvasContexts[key] = {
       run,
       canvas,
-      drawSurface,
       callback,
-      canvasContext: this.state.getCurrent().appLogic[key][3],
+      canvasContext,
+      parentComponent
     };
     this.canvasContexts[key].callback &&
       this.canvasContexts[key].callback(false);
   }
 
   async start() {
-    var fps = 30;
+    // var fps = FPS;
     let then = performance.now();
-    const interval = 1000 / fps;
+    const interval = 1000 / FPS;
     let delta = 0;
 
     // run the logic loop as fast as possible
     let d;
-    let p;
+    let p = performance.now();
     const repeatedFunction = async () => {
       d = performance.now();
-      await this.ecs.tick(d - p);
+      const timeDelta = d - p;
+      await this.ecs.tick(timeDelta);
+      if (Debug.PerformanceLogging) {
+        console.debug("ECS tick time delta", timeDelta);
+      }
       p = d;
     };
 
     setInterval(repeatedFunction, 1);
 
-    // run the render loop at 30FPS
+    // run the render loop at FPS
     while (true) {
       let now = await new Promise(requestAnimationFrame);
       if (now - then < interval - delta) {
@@ -137,40 +105,49 @@ export class Game {
       delta = Math.min(interval, delta + now - then - interval);
       then = now;
 
+      if (Debug.PerformanceLogging) {
+        console.debug("Draw time delta, total", delta);
+      }
+
       for (const canvaskey in this.canvasContexts) {
-        this.draw(canvaskey);
+        let p;
+        if (Debug.PerformanceLogging) {
+          p = performance.now();
+        }
+
+        await this.drawAll(canvaskey);
+
+        if (Debug.PerformanceLogging) {
+          let d = performance.now();
+          console.debug("Draw time delta for canvas", canvaskey, d - p);
+        }
       }
     }
   }
 
-  draw(key: string) {
+  drawAll(key: string): Promise<any> {
     const s = this.state.get(this.state.currrent);
-
-    const ds = this.canvasContexts[key].drawSurface;
-
+    const canvas = this.canvasContexts[key].canvas;
     const clbk = this.canvasContexts[key].callback;
+    const drawOps: ((canvas: any) => Promise<any>)[] = s.draw(
+      key,
+      clbk || (() => {}),
+      this.ecs
+    );
 
-    if (ds) {
-      const drawOps: ((
-        ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
-      ) => void)[] = s.draw(key, clbk || (() => {}), this.ecs);
+    return Promise.all(
+      drawOps.map(async (d) => {
+        if (canvas === null) {
+          console.error(this.canvasContexts[key].toString())
+          throw `could not find a mapping of ${canvas} to ${key}`;
+        }
 
-      if (this.canvasContexts[key].canvasContext === "2d") {
-        const twoDimDraw = ds as OffscreenCanvasRenderingContext2D;
-
-        drawOps.forEach((d) => {
-          d(twoDimDraw);
-        });
-      }
-
-      if (this.canvasContexts[key].canvasContext === "webgl2") {
-        const threeDimDraw = ds as OffscreenCanvasRenderingContext2D;
-        drawOps.forEach((d) => {
-          d(threeDimDraw);
-        });
-      }
-    }
+        await d(canvas);
+      })
+    );
   }
+
+  // abstract drawSurface(canvas: HTMLCanvasElement | undefined, key: string, parent?: HTMLElement);
 
   inputEvent(event: Event | string, appKey: string) {
     this.state.getCurrent().inputEvent(event, appKey, this.ecs);

@@ -11,9 +11,9 @@ type IUpdate = (
   ecs: ECS,
   update: any
 ) => ((
-  ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer,
+  ctx: any,
   opts?
-) => void)[];
+) => Promise<any>)[];
 
 type IEvents = (ecs: ECS, event: Event) => void;
 
@@ -36,9 +36,7 @@ export class Scene<IApps extends string> extends Tree {
   }
 
   async boot(
-    // stateKey: string,
     ecs: ECS,
-    // bootReplier: IReply
   ) {
     await this.sceneBoot(ecs);
     Object.keys(this.appLogic).forEach((k) => {
@@ -52,7 +50,7 @@ export class Scene<IApps extends string> extends Tree {
     ecs: ECS
   ): ((
     ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
-  ) => void)[] {
+    ) => Promise<any>)[] {
     return this.appLogic[app][1](ecs, bootReplier);
   }
 

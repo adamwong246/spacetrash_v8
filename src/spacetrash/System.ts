@@ -1,3 +1,4 @@
+import { RGBA_ASTC_10x10_Format } from "three";
 import { ECS } from "../engine/ECS";
 import { System } from "../engine/System";
 import { PhysicsActorComponent, PhysicsActorStore } from "./Components/actor";
@@ -5,34 +6,117 @@ import { PhysicsActorComponent, PhysicsActorStore } from "./Components/actor";
 import { LitableComponent, LittableStore } from "./Components/casting/in";
 import { LitComponent, LitStore } from "./Components/casting/out";
 import { Phase0, Phase0Store } from "./Components/phase0";
-import { Phase1Store } from "./Components/phase1";
+import { Phase1, Phase1Store } from "./Components/phase1";
 import {} from "./Components/physics";
 import {
   PhysicsSetPieceComponent,
   PhysicsSetPieceStore,
 } from "./Components/setPiece";
+import { BotSlots } from "./Constants";
 
-export type ISpaceTrashSystems = `physical` | "casting"; //| `physical` | `casting`; // | `upgradeable` | `power` | `atmosphere` | `fluids` | `doors` | `hack`;
-export const MapSize = 48; // >= 21
-export const NumberOfActors = 10; // >=10
-export const BotSlots = 9;
-export const TileSize = 8;
-export const ActorSize = TileSize / 3;
-export const ShadowLimit = 100;
+const shipSize = 50;
+const numberOfShips = 5;
+const numberOfRooms = 50;
+export const ShadowLimit = 1000;
 
-const distanceBetweenActors = (
+export const NumberOfActors =
+  BotSlots * numberOfShips + numberOfRooms * numberOfShips;
+export const TileSize = 25;
+export const ActorSize = TileSize / 1;
+
+export type ISpaceTrashSystems = `physical` | "casting";
+export const MapSize = Math.floor(
+  Math.sqrt(shipSize * shipSize * numberOfShips)
+);
+
+console.log("MapSize", MapSize);
+console.log("NumberOfActors", NumberOfActors);
+console.log("ShadowLimit", ShadowLimit);
+
+const illuminate = (xFloat: number, yFloat: number): any => {
+  const x = Math.round(xFloat);
+  const y = Math.round(yFloat);
+  const mSize = MapSize;
+  // console.log("illuminate", x, y, mSize);
+  // if (!spaces[Math.round(y)]) {
+  //   return null;
+  // }
+  if (x < 0) {
+    return null;
+  }
+  if (x > mSize - 1) {
+    return null;
+  }
+  if (y < 0) {
+    return null;
+  }
+  if (y > mSize - 1) {
+    return null;
+  }
+  // const litableComponent = lightableEntitiesStore[eid];
+
+  const space = phaseZero[y][x];
+  const lightableIdOfSpace = space.littableId;
+  const litable = lightableEntitiesStore.store[lightableIdOfSpace]; //(lightableEntitiesStore.find((a) => a[0] === lightableIdOfSpace) as [string, LitableComponent]);
+
+  if (!litable) {
+    console.error("litable not found");
+    return;
+  }
+  const [eid3, litableComponent] = litable;
+  litableComponent.luminance = 2;
+
+  if (phaseZero[y][x].luminance !== litableComponent.luminance) {
+    phaseZero[y][x].luminance = litableComponent.luminance;
+    phaseZero[y][x].culledWebgl = false;
+
+    if (phaseZero[y][x].rendered2d !== "fresh") {
+      phaseZero[y][x].rendered2d = "changed";
+      phaseZero[y][x].renderedWebgl = "changed";
+    }
+  }
+};
+
+const di3 = Math.sqrt(ActorSize / 2);
+
+const distanceBetweenActorsV0 = (
   a: PhysicsActorComponent,
   b: PhysicsActorComponent
 ) => {
-  const toReturn = Math.hypot(b.x - a.x, b.y - a.y);
-
-  return toReturn;
+  return Math.hypot(b.x - a.x, b.y - a.y);
 };
 
-const actorsCollide = (a: PhysicsActorComponent, b: PhysicsActorComponent) =>
-  distanceBetweenActors(a, b) < Math.sqrt(ActorSize / 2);
+// this implementation is faster and uses less memory, causing fewer GCs
+function distanceBetweenActorsV1(x, y, x0, y0) {
+  const squaredDist = (x - x0) * (x - x0) + (y - y0) * (y - y0);
+  return squaredDist <= di3;
+}
+
+function distanceBetweenActorsV2(x, y, x0, y0) {
+  return false;
+}
+
+const actorsCollide = (a: PhysicsActorComponent, b: PhysicsActorComponent) => {
+  return distanceBetweenActorsV1(a.x, a.y, b.x, b.y);
+  // return distanceBetweenActorsV0(a, b);
+};
 
 let firstTick = true;
+let phaseZero: Phase0[][];
+let phaseOne: Phase1[];
+let lightableEntitiesStore: LittableStore;
+let lightingEntitiesStore: LitStore;
+let magX: number;
+let magY: number;
+let tempVx: number = -1;
+let tempVy: number = -1;
+let temps: [number, number] = [-1, -1];
+let roundX: number;
+let roundY: number;
+let next: Phase1;
+
+const low = 0;
+const high = MapSize - 1;
 
 class MainSystem extends System {
   mapSize: number;
@@ -44,11 +128,9 @@ class MainSystem extends System {
   }
 
   tick(delta, ecs: ECS): Promise<boolean> {
-    // console.log("tick", delta);
-
     return new Promise((res, rej) => {
-      const phaseZero = (ecs.stores["Phase0"] as Phase0Store).store;
-      const phaseOne = (ecs.stores["Phase1"] as Phase1Store).store;
+      phaseZero = (ecs.stores["Phase0"] as Phase0Store).store;
+      phaseOne = (ecs.stores["Phase1"] as Phase1Store).store;
 
       const actorsStore = ecs.componentStores[
         "PhysicsActorComponent"
@@ -56,9 +138,13 @@ class MainSystem extends System {
       const setPieces = ecs.componentStores[
         "PhysicsSetPieceComponent"
       ] as PhysicsSetPieceStore;
-      const lightableEntitiesStore = ecs.componentStores[
+      lightableEntitiesStore = ecs.componentStores[
         "LitableComponent"
       ] as LittableStore;
+
+      lightingEntitiesStore = ecs.componentStores[
+        LitComponent.name
+      ] as LitStore;
 
       if (firstTick) {
         firstTick = false;
@@ -80,8 +166,6 @@ class MainSystem extends System {
             lightableEntitiesStore.store.findIndex(
               ([eid, b]: [string, LitableComponent]) => eid == i
             );
-          
-          
         });
 
         for (let y = 0; y < actorsStore.store.length; y++) {
@@ -111,61 +195,6 @@ class MainSystem extends System {
           }
         }
 
-        // map the entity id to the [lightId, actorId]
-        // const entity2LightAndActor: Record<
-        //   string,
-        //   { lightingNdx: number; actorNdx: number }
-        // > = {};
-
-        const lightingEntitiesStore = ecs.componentStores[
-          LitComponent.name
-        ] as LitStore;
-
-        const illuminate = (xFloat: number, yFloat: number): any => {
-          const x = Math.round(xFloat);
-          const y = Math.round(yFloat);
-          const mSize = this.mapSize;
-          // console.log("illuminate", x, y, mSize);
-          // if (!spaces[Math.round(y)]) {
-          //   return null;
-          // }
-          if (x < 0) {
-            return null;
-          }
-          if (x > mSize - 1) {
-            return null;
-          }
-          if (y < 0) {
-            return null;
-          }
-          if (y > mSize - 1) {
-            return null;
-          }
-          // const litableComponent = lightableEntitiesStore[eid];
-
-          const space = phaseZero[y][x];
-          const lightableIdOfSpace = space.littableId;
-          const litable = lightableEntitiesStore.store[lightableIdOfSpace]; //(lightableEntitiesStore.find((a) => a[0] === lightableIdOfSpace) as [string, LitableComponent]);
-
-          if (!litable) {
-            console.error("litable not found");
-            return;
-          }
-          const [eid3, litableComponent] = litable;
-          litableComponent.luminance = 2;
-
-          if (phaseZero[y][x].luminance !== litableComponent.luminance) {
-            phaseZero[y][x].luminance = litableComponent.luminance;
-            phaseZero[y][x].culledWebgl = false;
-
-            if (phaseZero[y][x].rendered2d !== "fresh"){
-              phaseZero[y][x].rendered2d = "changed";
-              phaseZero[y][x].renderedWebgl = "changed";  
-            }
-            
-          }
-        };
-
         lightingEntitiesStore.store.forEach(([eid, lightingComponent], ndx) => {
           const [eid2, actor] = actorsStore.store.find(
             (a) => a[0] === eid
@@ -176,10 +205,18 @@ class MainSystem extends System {
             //   phaseZero[Math.round(actor.y)] = [];
             // }
             // find the floor underneath and any entities on top
-            let x = Math.round(actor.x);
-            let y = Math.round(actor.y);
-            if (x >= MapSize) x = 0;
-            if (y >= MapSize) y = 0;
+            // let x = Math.round(actor.x);
+            // let y = Math.round(actor.y);
+            // if (x >= MapSize) x = 0;
+            // if (y >= MapSize) y = 0;
+
+            let x = Math.round(actor.x + actor.dx);
+            if (x >= this.mapSize - 1) x = 0;
+            if (x < 0) x = this.mapSize - 1;
+
+            let y = Math.round(actor.y + actor.dy);
+            if (y >= this.mapSize - 1) y = 0;
+            if (y < 0) y = this.mapSize - 1;
 
             if (phaseZero[y][x]) {
               // illuminate the space upon which we stand
@@ -240,28 +277,21 @@ class MainSystem extends System {
         });
 
         actorsStore.store.forEach(([i, a], n) => {
+          
           // x and y are the "look ahead" pointer
           let x = Math.round(a.x + a.dx);
           if (x >= this.mapSize - 1) x = 0;
           if (x < 0) x = this.mapSize - 1;
-
           let y = Math.round(a.y + a.dy);
           if (y >= this.mapSize - 1) y = 0;
           if (y < 0) y = this.mapSize - 1;
 
-          // <this.mapSize ? Math.round(a.x + a.dx) : 0;
-          // const y = Math.round(a.y + a.dy) < this.mapSize ? Math.round(a.y + a.dy) : 0;
 
-          const spaceToCheck = phaseZero[y][x];
-          // console.log("spaceToCheck", spaceToCheck);
-          // const setPiece = setPieces[spaceToCheck.setId]
-          // console.log("setPiece", setPiece);
 
           // collision check with set-pieces
+          if (!phaseZero[y][x]) debugger;
 
-          if (!spaceToCheck) debugger;
-
-          if (spaceToCheck.setId === -1) {
+          if (phaseZero[y][x].setId === -1) {
             console.error(
               "Spaces should not be empty! X and Y",
               x,
@@ -269,25 +299,25 @@ class MainSystem extends System {
               " were NOT found"
             );
             console.error(phaseZero);
-            debugger;
           }
-          const tileType = (
-            setPieces.store[spaceToCheck.setId][1] as PhysicsSetPieceComponent
-          ).tileType;
 
-          if (tileType !== "FloorTile") {
-            const magX = Math.abs(a.dx);
-            const magY = Math.abs(a.dy);
+          if (
+            setPieces.store[phaseZero[y][x].setId][1].tileType !== "FloorTile"
+          ) {
+            magX = Math.abs(a.dx);
+            magY = Math.abs(a.dy);
+            roundX = Math.round(a.x);
+            roundY = Math.round(a.y);
 
-            if (x < Math.round(a.x)) {
-              if (y < Math.round(a.y)) {
+            if (x < roundX) {
+              if (y < roundY) {
                 // NorthWest
                 if (magX < magY) {
                   a.dy = a.dy * -1;
                 } else {
                   a.dx = a.dx * -1;
                 }
-              } else if (y > Math.round(a.y)) {
+              } else if (y > roundY) {
                 // SouthWest
                 if (magX > magY) {
                   a.dx = a.dx * -1;
@@ -298,15 +328,15 @@ class MainSystem extends System {
                 // West
                 a.dx = a.dx * -1;
               }
-            } else if (x > Math.round(a.x)) {
-              if (y < Math.round(a.y)) {
+            } else if (x > roundX) {
+              if (y < roundY) {
                 // NorthEast
                 if (magX > magY) {
                   a.dx = a.dx * -1;
                 } else {
                   a.dy = a.dy * -1;
                 }
-              } else if (y > Math.round(a.y)) {
+              } else if (roundY) {
                 // SouthEast
 
                 if (magX > magY) {
@@ -319,7 +349,7 @@ class MainSystem extends System {
                 a.dx = a.dx * -1;
               }
             } else {
-              if (y < Math.round(a.y)) {
+              if (y < roundY) {
                 // North
                 a.dy = a.dy * -1;
               } else {
@@ -332,28 +362,52 @@ class MainSystem extends System {
           }
 
           // collision check with other actors
+          // this causes GC but there's nothing I can do about it
           actorsStore.store.forEach(([i2, a2], n2) => {
             // don't check against self
             if (n !== n2) {
               if (actorsCollide(a, a2)) {
+                // a.x = a.x - a.dx;
+                // a.y = a.y - a.dy;
+                // a2.x = a2.x - a2.dx;
+                // a2.y = a2.y - a2.dy;
+                // tempVx = a.dx;
+                // tempVy = a.dy;
+                // a.dx = a2.dx;
+                // a.dy = a2.dy;
+                // a2.dx = tempVx;
+                // a2.dy = tempVy;
+
+                // a = {
+                //   ...a,
+                //   x: a.x - a.dx,
+                //   y: a.y - a.dy,
+                //   dx: a2.dx,
+                //   dy: a2.dy,
+                // };
+                // a2 = {
+                //   ...a2,
+                //   x: a2.x - a2.dx,
+                //   y: a2.y - a2.dy,
+                //   dx: a.dx,
+                //   dy: a.dy,
+                // }
+
                 a.x = a.x - a.dx;
                 a.y = a.y - a.dy;
                 a2.x = a2.x - a2.dx;
                 a2.y = a2.y - a2.dy;
-
-                const tempVx = a.dx;
-                const tempVy = a.dy;
+                temps[0] = a.dx;
+                temps[1] = a.dy;
                 a.dx = a2.dx;
                 a.dy = a2.dy;
-                a2.dx = tempVx;
-                a2.dy = tempVy;
+                a2.dx = temps[0];
+                a2.dy = temps[1];
               }
             }
           });
 
           // boundary check against level map
-          const low = 0;
-          const high = this.mapSize - 1;
           if (a.x < low) {
             a.x = high;
           }
@@ -375,29 +429,45 @@ class MainSystem extends System {
           a.dx = a.dx * 0.999;
           a.dy = a.dy * 0.999;
 
-          const prev = phaseOne[n];
-          const next = {
-            ...phaseOne[n],
+          // this causes GC but there's nothing I can do about it
 
-            actorId: n,
-            actorX: actorsStore.store[n][1].x,
-            actorY: actorsStore.store[n][1].y,
-          };
-
-          if (prev.actorX === next.actorX && prev.actorY === prev.actorY) {
-            next.rendered2d = "unchanged";
-            next.renderedWebgl = "unchanged";
+          if (
+            phaseOne[n].actorX === actorsStore.store[n][1].x &&
+            phaseOne[n].actorY === actorsStore.store[n][1].y
+          ) {
+            // next.rendered2d = "unchanged";
+            // next.renderedWebgl = "unchanged";
+            phaseOne[n] = {
+              ...phaseOne[n],
+              actorId: n,
+              actorX: actorsStore.store[n][1].x,
+              actorY: actorsStore.store[n][1].y,
+              rendered2d: "unchanged",
+              renderedWebgl: "unchanged",
+            };
           } else {
-            if (next.renderedWebgl !== "fresh") {
-              next.renderedWebgl = "changed";
+            if (phaseOne[n].renderedWebgl !== "fresh") {
+              // next.renderedWebgl = "changed";
+              phaseOne[n] = {
+                ...phaseOne[n],
+                actorId: n,
+                actorX: actorsStore.store[n][1].x,
+                actorY: actorsStore.store[n][1].y,
+                renderedWebgl: "changed",
+              };
             }
 
-            if (next.rendered2d !== "fresh") {
-              next.rendered2d = "changed";
+            if (phaseOne[n].rendered2d !== "fresh") {
+              // next.rendered2d = "changed";
+              phaseOne[n] = {
+                ...phaseOne[n],
+                actorId: n,
+                actorX: actorsStore.store[n][1].x,
+                actorY: actorsStore.store[n][1].y,
+                rendered2d: "changed",
+              };
             }
           }
-
-          phaseOne[n] = next;
         });
       }
 

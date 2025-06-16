@@ -1,4 +1,4 @@
-import * as THREE from "three";
+// import * as THREE from "three";
 
 import { ISpaceTrashComponents } from ".";
 import { Component, TwoDOneD_Component } from "../../engine/Component";

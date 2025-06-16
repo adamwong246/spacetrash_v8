@@ -2,18 +2,45 @@ import { Dispatch, SetStateAction } from "react";
 
 import { IState } from "../UI";
 import { ITerminalLine, ITerminalState } from "../UI/terminal";
+import SpacetrashGame from "../Game";
+import SpaceTrashPlayer from "../Player";
 
-const videoTermLine: ITerminalLine = {
+
+const errorTermLine: ITerminalLine = {
+  out: `Log in to use this command`,
+  status: `fail`,
+};
+
+const settingsTermLine: ITerminalLine = {
   out: `
-Now in video mode
+- SETTINGS -
+
+"settings crt <on | off>" Turn the crt effect on and off. Disabling this feature improves performance at the cost of a purely cosmetic effect.
+  "settings crt on" Enables the effect
+  "settings crt off" disables the effect
+
+"settings fps <number>" Sets the Frames Per Second. By default, the FPS is set to 30.
+  "settings fps 60" Set the FPS to 30 frame per second"
   `,
   status: `pass`,
 };
 
+const botsTermLine = (s: IState): ITerminalLine => {
+  const lines: string = Object.keys((SpaceTrashPlayer.bots)).reduce((mm, v) => {
+    mm.push(`${v} ${ SpaceTrashPlayer.bots[(v)][1] }`)
+    return mm;
+  }, [] as string[]).join('\n')
+
+  return { out: lines, status: `pass` };
+};
+
+const videoTermLine: ITerminalLine = {
+  out: `Now in video mode`,
+  status: `pass`,
+};
+
 const mapTermLine: ITerminalLine = {
-  out: `
-Now in map mode
-  `,
+  out: `Now in map mode`,
   status: `pass`,
 };
 
@@ -23,7 +50,8 @@ const missionTermLine: ITerminalLine = {
   out: `
 1] Find, board and salvage derelict spacecraft
 2] Record and report novel scientific findings
-3] Maximize shareholder value`,
+3] Maximize shareholder value
+`,
   status: `niether`,
 };
 const shipTermLine: ITerminalLine = {
@@ -50,9 +78,10 @@ Licensed by:  Demiurge Labs. (3003)
 const bootScreenTermLine: ITerminalLine = {
   status: "pass",
   out: `boot sequence initiated...
-PegasusOS ( Oonix v457.3.2 ) by Demiurge Labs, 3003
-QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online!
-boot sequence complete`,
+Oonix v457.3.2 by Demiurge Labs, 3003
+QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
+boot sequence complete!
+`,
 };
 
 const commandNotFoundTermLine: (s: string) => ITerminalLine = (s) => {
@@ -65,28 +94,26 @@ const loggedInTermLine: ITerminalLine = {
 };
 
 const alreadyLoggedInTermLine: ITerminalLine = {
-  out: `You are already loggedin`,
+  out: `You are already logged in`,
   status: "fail",
 };
 
+const basicCommands = `
+"settings"  edit settings
+"whoami"    display user information
+"ship"      display ship information
+"mission"   display the mission
+"date"      display the current date
+"login"     log into the system
+`;
+
 const helpLoggedOutTermLine: ITerminalLine = {
-  out: `
-"whoami"  display user information
-"ship"    display ship information
-"mission" display the mission
-"date"    display the current date
-"login"   log into the SpaceTrash network
-`,
+  out: basicCommands,
   status: "niether",
 };
 
 const helpLoggedInTermLine: ITerminalLine = {
-  out: `
-"whoami"  display user information
-"ship"    display ship information
-"mission" display the mission
-"date"    display the current date
-"login"   log into the SpaceTrash network
+  out: `${basicCommands}
 
 - ADVANCED COMMANDS -
 
@@ -94,11 +121,16 @@ const helpLoggedInTermLine: ITerminalLine = {
 "d <door door id>"                toggle open or close door by id
 "m <bot id | bot name> <room id>" auto-pilot Bot by id to room by id
 
+"bots" list your bots
+
+"bots rename <bot id> <new name>" rename a bot 
+ Ex: "bots rename 1 george"
+
 - SHORTCUTS -
 
-ESC        bring shipmap for foreground
-1 - 9      bring drone to foreground by id
-0          bring terminal to foreground
+ESC       bring shipmap for foreground
+1 - 9     bring drone to foreground by id
+\~         bring terminal to foreground
 ⬆️⬇️⬅️➡️   drive Bot
 `,
   status: "niether",
@@ -115,10 +147,13 @@ export class SpaceTrashTerminal {
       terminal: {
         ...state.terminal,
         buffer: "",
-        history: [...state.terminal.history, {
-          ...t,
-          in: state.terminal.buffer
-        }],
+        history: [
+          ...state.terminal.history,
+          {
+            ...t,
+            in: state.terminal.buffer,
+          },
+        ],
       },
     });
   }
@@ -143,7 +178,8 @@ export class SpaceTrashTerminal {
 
   submitBuffer(
     state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
+    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
+
   ) {
     this.processCommand(state, stateSetter);
   }
@@ -156,7 +192,7 @@ export class SpaceTrashTerminal {
 
   login(
     state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
+    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
   ): void {
     this.returnCommand(
       {
@@ -173,11 +209,11 @@ export class SpaceTrashTerminal {
           },
           shipmap: {
             ...state.windows.shipmap,
-            visible: true,
+            visible: false,
           },
           manual: {
             ...state.windows.manual,
-            visible: true,
+            visible: false,
           },
           drone: {
             ...state.windows.drone,
@@ -187,11 +223,21 @@ export class SpaceTrashTerminal {
             ...state.windows.drones,
             visible: true,
           },
+          shipmapV2: {
+            ...state.windows.shipmapV2,
+            visible: true,
+          },
+          droneV2: {
+            ...state.windows.droneV2,
+            visible: false,
+          },
         },
       },
       stateSetter,
       loggedInTermLine
     );
+    SpacetrashGame.changeScene("mainloop");
+    SpacetrashGame.ecs.unpause();
   }
 
   alreadyLoggedIn(
@@ -271,6 +317,46 @@ export class SpaceTrashTerminal {
     );
   }
 
+  bots(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+    this.returnCommand(
+      {
+        ...state,
+        terminal: {
+          ...state.terminal,
+          // mapOrVideo: "video",
+        },
+      },
+      stateSetter,
+      botsTermLine(state)
+    );
+  }
+
+  settings(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+    this.returnCommand(
+      {
+        ...state,
+        terminal: {
+          ...state.terminal,
+        },
+      },
+      stateSetter,
+      settingsTermLine
+    );
+  }
+
+  error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+    this.returnCommand(
+      {
+        ...state,
+        terminal: {
+          ...state.terminal,
+        },
+      },
+      stateSetter,
+      errorTermLine
+    );
+  }
+
   //////////////////////////////////////////
 
   boot(
@@ -300,7 +386,8 @@ export class SpaceTrashTerminal {
 
   processCommand(
     state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
+    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
+
   ): void {
     const command = state.terminal.buffer;
     const loggedIn = state.terminal.loggedIn;
@@ -311,6 +398,16 @@ export class SpaceTrashTerminal {
         return;
       } else {
         this.alreadyLoggedIn(state, stateSetter);
+        return;
+      }
+    }
+
+    if (command === "bots") {
+      if (!loggedIn) {
+        this.error(state, stateSetter);
+        return;
+      } else {
+        this.bots(state, stateSetter);
         return;
       }
     }
@@ -345,15 +442,20 @@ export class SpaceTrashTerminal {
       return;
     }
 
-    if (command === "map") {
-      this.map(state, stateSetter);
+    if (command === "settings") {
+      this.settings(state, stateSetter);
       return;
     }
 
-    if (command === "video") {
-      this.video(state, stateSetter);
-      return;
-    }
+    // if (command === "map") {
+    //   this.map(state, stateSetter);
+    //   return;
+    // }
+
+    // if (command === "video") {
+    //   this.video(state, stateSetter);
+    //   return;
+    // }
 
     // const matchForBot = (/b ([1-9])*/gm).exec(command);
 

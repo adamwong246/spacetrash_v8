@@ -2,15 +2,17 @@ import React from "react";
 
 import FlexibleModal from "../FlexModal";
 
-import { IUiDekstop, IUiWindow } from "./WM";
+// import { IUiDekstop, IUiWindow } from "./WM";
+import { ISpaceTrashApps, IUiDekstop, IUiWindow } from "../../spacetrash/UI";
 
 export const UIWindow = (props: {
-  app: string;
+  app: ISpaceTrashApps;
   pushToTop: (k: string) => void;
   desktopState: IUiDekstop;
   uiwindow: IUiWindow;
   layer: number;
   children?: React.ReactNode;
+  onResize: (...a) => void;
 }) => {
   return <>
 
@@ -21,7 +23,7 @@ export const UIWindow = (props: {
       initHeight={props.uiwindow.height}
       layer={props.layer}
 
-      title={`${props.app}, ${props.layer}`}
+      title={`${props.app}`}
       visible={true}
       onClose={() => { }}
       onOk={() => { }}
@@ -30,9 +32,11 @@ export const UIWindow = (props: {
       maskClosable={undefined}
       className={undefined}
       onDrag={undefined}
-      onResize={undefined}
+
       footer={undefined}
       pushToTop={props.pushToTop}
+      onResize={props.onResize}
+
     >
       {props.children}
     </FlexibleModal>

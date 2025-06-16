@@ -14,7 +14,6 @@
     "dev": "node esbuild.dev.js"
   },
   "dependencies": {
-    
     "@pixi/assets": "6.5.8",
     "@pixi/basis": "6.5.8",
     "@pixi/compressed-textures": "6.5.8",
@@ -29,10 +28,12 @@
     "@pixi/settings": "6.5.8",
     "@pixi/sprite": "6.5.8",
     "@pixi/spritesheet": "6.5.8",
-    "@pixi/text-bitmap": "6.5.8",
     "@pixi/text": "6.5.8",
+    "@pixi/text-bitmap": "6.5.8",
     "@pixi/ticker": "6.5.8",
     "@pixi/utils": "6.5.8",
+    "@stdlib/datasets-female-first-names-en": "^0.2.2",
+    "@stdlib/datasets-male-first-names-en": "^0.2.2",
     "@types/react": "^18.3.3",
     "@types/three": "^0.177.0",
     "esbuild": "0.25.5",
@@ -41,6 +42,8 @@
     "graphology": "^0.25.4",
     "graphology-dag": "^0.4.1",
     "graphology-types": "^0.24.7",
+    "install": "^0.13.0",
+    "npm": "^11.4.2",
     "pixi.js": "6.5.8",
     "pixi3d": "^2.0.1",
     "react": "^18.3.1",

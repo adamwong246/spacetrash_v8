@@ -11,7 +11,7 @@ export default function Header({
 }) {
   return (
     <div className='flexible-modal-header'>
-      <h5>{title}</h5>
+      <pre>{title}</pre>
 
       {
         draggable &&

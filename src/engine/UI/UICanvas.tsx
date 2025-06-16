@@ -2,7 +2,7 @@ import React, { useContext, useRef, useEffect } from "react";
 import stringifyEvent from "../Event";
 
 export const UICanvas = (props: {
-  worker: Worker;
+
   app: string;
   rendering: "2d" | "webgl2"
 }) => {
@@ -36,6 +36,6 @@ export const UICanvas = (props: {
     //   props.worker.postMessage(["inputEvent", stringifyEvent(e), props.app]);
     // }}
     ref={canvasRef}
-    width="800"
-    height="600"></canvas>
+    width="900"
+    height="300"></canvas>
 };

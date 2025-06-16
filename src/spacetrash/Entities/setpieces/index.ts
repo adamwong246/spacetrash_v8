@@ -19,9 +19,9 @@ export class Tile extends SpaceTrashEntityComponent {
     this.tiletype = tiletype;
   }
 
-  validate() {
-    console.log("validate tile!");
-  }
+  // validate() {
+  //   // console.log("validate tile!");
+  // }
 
   erase2d(draw2d: CanvasRenderingContext2D) {
     draw2d.arc(10, 10, 3, 0, 90);

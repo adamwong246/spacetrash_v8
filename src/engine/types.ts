@@ -30,7 +30,7 @@ export abstract class EntityComponentStore<
 
     if (!toReturn) return undefined;
     if (!toReturn[1]) throw "not found!"
-
+    
     return toReturn[1];
   }
 }

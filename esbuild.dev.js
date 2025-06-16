@@ -21,8 +21,8 @@ esbuild.context({
   loader: {
     '.css': 'file',
     '.html': 'copy',
-    '.png': `copy`,
-    '.json': `file`,
+    '.png': `file`,
+    '.json': `json`,
     '.mp3': `copy`,
   },
   "assetNames": "[name]",

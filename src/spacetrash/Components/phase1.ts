@@ -1,4 +1,4 @@
-import * as THREE from "three";
+// import * as THREE from "three";
 
 import { TwoD_Component, TwoDOneD_Component } from "../../engine/Component";
 import { OneDStore } from "../../engine/types";

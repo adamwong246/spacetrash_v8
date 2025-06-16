@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { SpaceTrashTerminal } from "../lib/Terminal";
 import { IState } from ".";
 import { IComStatus } from "./UiState";
+import SpacetrashGame from "../Game";
 
 export type ITerminalHooks = {
   changeBuffer: (value: string) => any,
@@ -22,14 +23,14 @@ export type ITerminalState = {
 };
 
 export const TerminalApp = (props: {
-  terminal: SpaceTrashTerminal,
+
   state: IState,
   stateSetter: React.Dispatch<React.SetStateAction<IState>>,
+
 }) => {
 
   useEffect(() => {
-    // props.worker.postMessage(["terminal-register"], []);
-    props.terminal.boot(props.state, props.stateSetter)
+    SpacetrashGame.terminal.boot(props.state, props.stateSetter)
   }, []);
 
   // Scroll when children change
@@ -38,8 +39,8 @@ export const TerminalApp = (props: {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [props.terminal.history(props.state)]); 
-  
+  }, [SpacetrashGame.terminal.history(props.state)]);
+
   return (<div
 
     style={{
@@ -52,7 +53,7 @@ export const TerminalApp = (props: {
     <div >
 
       <pre
-        ref={containerRef} 
+        ref={containerRef}
         id="terminal"
         style={{
           overflowX: "scroll",
@@ -69,7 +70,7 @@ export const TerminalApp = (props: {
         }}
       >
         {
-          props.terminal.history(props.state).map((tl: ITerminalLine) => {
+          SpacetrashGame.terminal.history(props.state).map((tl: ITerminalLine) => {
 
             if (tl.in) {
               return (`
@@ -91,7 +92,7 @@ ${tl.out}`)
       type="text"
       name="terminal-input"
       // value={props.state.buffer}
-      value={props.terminal.getBuffer(props.state)}
+      value={SpacetrashGame.terminal.getBuffer(props.state)}
 
       style={{
         position: "absolute",
@@ -104,14 +105,14 @@ ${tl.out}`)
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
-          props.terminal.submitBuffer(props.state, props.stateSetter);
-          
+          SpacetrashGame.terminal.submitBuffer(props.state, props.stateSetter);
+
         }
       }}
       onChange={(e) => {
-        props.terminal.setBuffer(props.state, props.stateSetter, e.target.value,);
+        SpacetrashGame.terminal.setBuffer(props.state, props.stateSetter, e.target.value,);
       }}
     />
-    
+
   </div>);
 }

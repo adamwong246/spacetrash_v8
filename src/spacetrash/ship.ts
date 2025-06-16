@@ -52,11 +52,10 @@ export class SpaceTrashShip extends EntityComponent {
 
     if (y >= this.shipSize) {
       console.error("out of bounds")!
-      debugger
-      return 
+
     }
     if (!this.map[y]) {
-      debugger
+      console.error("idk")!
     }
     const z = this.map[y][x];
 
@@ -224,7 +223,6 @@ export class SpaceTrashShip extends EntityComponent {
       for (let x = 0; x < this.shipSize; x++) {
         if (this.map[y][x] === null) {
           console.error("Cannot leave blank spaces!");
-          debugger
         }
         t.push(this.map[y][x]);
         // this.map[y][x]?.components.forEach((c) => {

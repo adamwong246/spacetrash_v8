@@ -18,10 +18,9 @@ export enum ETiles {
 }
 
 export abstract class SpaceTrashEntityComponent extends EntityComponent {
-
-  x: number;
-  dx: number;
-  y: number;
-  dy: number;
+  // x: number;
+  // dx: number;
+  // y: number;
+  // dy: number;
 }
 

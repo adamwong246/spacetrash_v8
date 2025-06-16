@@ -1,30 +1,32 @@
 import React from "react";
+import SpaceTrashPlayer from "../Player";
 
+const TableCell = (props: { name: string }) => {
+  return <td>{props.name}</td>
+}
 export const DronesApp = (props: {
-  // worker: Worker
+
 }) => {
 
-  // props.worker.onmessage = (e) => {
-  //   debugger
-  // };
+  const s = SpaceTrashPlayer.bots;
 
   return (<div>
-    <pre>Drones goes here</pre>
-    <table>
+    <table
+    >
       <tr>
-        <td>Data 4</td>
-        <td>Data 5</td>
-        <td>Data 6</td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[1][1]} /> </td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[2][1]} /> </td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[3][1]} /> </td>
       </tr>
       <tr>
-        <td>Data 1</td>
-        <td>Data 2</td>
-        <td>Data 3</td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[4][1]} /> </td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[5][1]} /> </td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[6][1]} /> </td>
       </tr>
       <tr>
-        <td>Data 4</td>
-        <td>Data 5</td>
-        <td>Data 6</td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[7][1]} /> </td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[9][1]} /> </td>
+        <td> <TableCell name={SpaceTrashPlayer.bots[2][1]} /> </td>
       </tr>
     </table>
 
