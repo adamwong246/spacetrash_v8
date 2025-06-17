@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { SpaceTrashTerminal } from "../lib/Terminal";
-import { IState } from ".";
+
 import { IComStatus } from "./UiState";
-import SpacetrashGame from "../Game";
+import {SpacetrashGameClass, SpaceTrashGameSingleton} from "../Game";
+import { IState } from "./State";
+import { IDockviewPanelProps } from "dockview";
 
 export type ITerminalHooks = {
   changeBuffer: (value: string) => any,
@@ -22,24 +24,25 @@ export type ITerminalState = {
   mapOrVideo: 'map' | 'video'
 };
 
-export const TerminalApp = (props: {
+export const TerminalApp = (
 
-  state: IState,
-  stateSetter: React.Dispatch<React.SetStateAction<IState>>,
+  props: IDockviewPanelProps<IState>
 
-}) => {
+) => {
+
+  console.log("TerminalApp", props.params)
 
   useEffect(() => {
-    SpacetrashGame.terminal.boot(props.state, props.stateSetter)
+    SpaceTrashGameSingleton.terminal.boot(props)
   }, []);
 
-  // Scroll when children change
-  const containerRef = useRef(null);
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [SpacetrashGame.terminal.history(props.state)]);
+  // // Scroll when children change
+  // const containerRef = useRef(null);
+  // useEffect(() => {
+  //   if (containerRef.current) {
+  //     containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  //   }
+  // }, [SpacetrashGame.terminal.history(props.state)]);
 
   return (<div
 
@@ -53,7 +56,7 @@ export const TerminalApp = (props: {
     <div >
 
       <pre
-        ref={containerRef}
+        // ref={containerRef}
         id="terminal"
         style={{
           overflowX: "scroll",
@@ -69,8 +72,9 @@ export const TerminalApp = (props: {
           // height: 'inherit',
         }}
       >
+
         {
-          SpacetrashGame.terminal.history(props.state).map((tl: ITerminalLine) => {
+          props.params.state.terminal.history.map((tl: ITerminalLine) => {
 
             if (tl.in) {
               return (`
@@ -92,7 +96,7 @@ ${tl.out}`)
       type="text"
       name="terminal-input"
       // value={props.state.buffer}
-      value={SpacetrashGame.terminal.getBuffer(props.state)}
+      value={props.params.state.terminal.buffer}
 
       style={{
         position: "absolute",
@@ -105,13 +109,14 @@ ${tl.out}`)
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
-          SpacetrashGame.terminal.submitBuffer(props.state, props.stateSetter);
+          SpaceTrashGameSingleton.terminal.submitBuffer(props);
 
         }
       }}
       onChange={(e) => {
-        SpacetrashGame.terminal.setBuffer(props.state, props.stateSetter, e.target.value,);
-      }}
+        SpaceTrashGameSingleton.terminal.setBuffer(props, e.target.value);
+      }
+      }
     />
 
   </div>);

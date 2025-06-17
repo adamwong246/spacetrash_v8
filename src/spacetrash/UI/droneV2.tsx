@@ -4,11 +4,12 @@ import React, { useEffect, useRef } from "react";
 // import { Application } from "pixi.js";
 // import { Mesh3D, Light, LightingEnvironment } from "pixi3d";
 
-import SpacetrashGame from "../Game";
 
-export const DroneAppV2 = (props: {
-  spaceTrashGame: SpacetrashGame;
-}) => {
+import { IDockviewPanelProps } from "dockview";
+import { IState } from "./State";
+import { SpaceTrashGameSingleton } from "../Game";
+
+export const DroneAppV2 = (props: IDockviewPanelProps<IState>) => {
 
   // document.addEventListener('keydown', function (event) {
 
@@ -93,7 +94,7 @@ export const DroneAppV2 = (props: {
 
           const registree = canvasRef.current
 
-          props.spaceTrashGame.register("droneV2", false, registree, () => {}, "webgl2")
+          SpaceTrashGameSingleton.register("droneV2", false, registree, () => {}, "webgl2")
         }
       }, [canvasRef]);
     
@@ -107,6 +108,7 @@ export const DroneAppV2 = (props: {
           position: "relative",
         }}
       >
+
         <canvas
           tabIndex={1}
           ref={canvasRef}

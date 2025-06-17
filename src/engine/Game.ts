@@ -1,11 +1,11 @@
-import { ISpaceTrashApps } from "../spacetrash/UI";
+import { ISpaceTrashApps } from "../spacetrash/UI/State";
 
 import { ECS } from "./ECS";
 import { StateSpace } from "./StateSpace";
 import { System } from "./System";
 import { IComponentsStores, IStores } from "./types";
 
-export const FPS = 10;
+export const FPS = 50;
 
 const Debug = {
   PerformanceLogging: false,
@@ -53,9 +53,9 @@ export abstract class Game<IRenderings> {
     canvas?: HTMLCanvasElement,
     callback?: (data: any) => void,
     canvasContext?: IRenderings,
-    parentComponent?: HTMLElement,
-
+    parentComponent?: HTMLElement
   ) {
+    console.log("register", key, canvas);
     if ((canvasContext === undefined) !== (canvasContext === undefined)) {
       throw `you must pass both canvas and context, or neither. canvas, canvasContext: ${canvas}, ${canvasContext}`;
     }
@@ -69,7 +69,7 @@ export abstract class Game<IRenderings> {
       canvas,
       callback,
       canvasContext,
-      parentComponent
+      parentComponent,
     };
     this.canvasContexts[key].callback &&
       this.canvasContexts[key].callback(false);
@@ -138,7 +138,7 @@ export abstract class Game<IRenderings> {
     return Promise.all(
       drawOps.map(async (d) => {
         if (canvas === null) {
-          console.error(this.canvasContexts[key].toString())
+          console.error(this.canvasContexts[key].toString());
           throw `could not find a mapping of ${canvas} to ${key}`;
         }
 

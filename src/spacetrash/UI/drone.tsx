@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import SpacetrashGame from "../Game";
+import {SpaceTrashGameSingleton} from "../Game";
 
 export const DroneApp = () => {
 
@@ -9,7 +9,7 @@ export const DroneApp = () => {
 
     useEffect(() => {
       if (canvasRef.current && parentRef.current) {
-        SpacetrashGame.register("drone", false, canvasRef.current, () => {}, "threejs", parentRef.current)
+        SpaceTrashGameSingleton.register("drone", false, canvasRef.current, () => {}, "threejs", parentRef.current)
       }
     }, [canvasRef, parentRef]);
     

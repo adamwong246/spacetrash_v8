@@ -161,7 +161,6 @@ export const Pixi2dShipMap = async (
         pixi2dApp.stage.addChild(actors[i]);
       });
 
-      // console.log("Pixi2dShipMap gooodbye A", tick);
       res(true);
     } else {
       oneD.forEach((actor, i) => {
@@ -169,7 +168,6 @@ export const Pixi2dShipMap = async (
           actors[i].x = actor.actorX * TileSize;
           actors[i].y = actor.actorY * TileSize;
         } else {
-          debugger;
           throw "no actor?";
         }
       });

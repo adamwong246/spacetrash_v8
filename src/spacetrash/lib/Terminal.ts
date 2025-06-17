@@ -1,10 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { IState } from "../UI";
-import { ITerminalLine, ITerminalState } from "../UI/terminal";
-import SpacetrashGame from "../Game";
-import SpaceTrashPlayer from "../Player";
 
+import { ITerminalLine, ITerminalState } from "../UI/terminal";
+
+import SpaceTrashPlayer from "../Player";
+import { IDockviewPanelProps } from "dockview";
+import { IState } from "../UI/State";
+import { SpaceTrashGameSingleton } from "../Game";
 
 const errorTermLine: ITerminalLine = {
   out: `Log in to use this command`,
@@ -26,10 +28,12 @@ const settingsTermLine: ITerminalLine = {
 };
 
 const botsTermLine = (s: IState): ITerminalLine => {
-  const lines: string = Object.keys((SpaceTrashPlayer.bots)).reduce((mm, v) => {
-    mm.push(`${v} ${ SpaceTrashPlayer.bots[(v)][1] }`)
-    return mm;
-  }, [] as string[]).join('\n')
+  const lines: string = Object.keys(SpaceTrashPlayer.bots)
+    .reduce((mm, v) => {
+      mm.push(`${v} ${SpaceTrashPlayer.bots[v][1]}`);
+      return mm;
+    }, [] as string[])
+    .join("\n");
 
   return { out: lines, status: `pass` };
 };
@@ -137,23 +141,33 @@ ESC       bring shipmap for foreground
 };
 
 export class SpaceTrashTerminal {
-  returnCommand(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
-    t: ITerminalLine
-  ) {
-    stateSetter({
-      ...state,
-      terminal: {
-        ...state.terminal,
-        buffer: "",
-        history: [
-          ...state.terminal.history,
-          {
-            ...t,
-            in: state.terminal.buffer,
-          },
-        ],
+  returnCommand(props: IDockviewPanelProps<IState>, t: ITerminalLine) {
+    props.api.updateParameters({
+      state: {
+        ...props.params.state,
+        terminal: {
+          ...props.params.state.terminal,
+          buffer: "",
+          history: [
+            ...props.params.state.terminal.history,
+            {
+              ...t,
+              in: props.params.state.terminal.buffer,
+            },
+          ],
+        },
+
+        // ...state,
+        // terminal: {
+        //   ...state.terminal,
+        //   buffer: "",
+        //   history: [
+        //     ...state.terminal.history,
+        //     {
+        //       ...t,
+        //       in: state.terminal.buffer,
+        //     },
+        //   ],
       },
     });
   }
@@ -163,289 +177,259 @@ export class SpaceTrashTerminal {
   }
 
   setBuffer(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
+    props: any,
+    // stateSetter: React.Dispatch<React.SetStateAction<IState>>,
     b: string
   ) {
-    stateSetter({
-      ...state,
-      terminal: {
-        ...state.terminal,
-        buffer: b,
+    // props.api.updateParameters({ myValue: Date.now() });
+
+    const x = {
+      state: {
+        ...props.params.state,
+        terminal: {
+          ...props.params.state.terminal,
+          buffer: b,
+        },
       },
-    });
+    };
+    // debugger
+    props.api.updateParameters(x);
   }
 
-  submitBuffer(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
-
-  ) {
-    this.processCommand(state, stateSetter);
-  }
-
-  history(state: IState) {
-    return state.terminal.history;
+  submitBuffer(props: IDockviewPanelProps<IState>) {
+    this.processCommand(props);
   }
 
   ///////////////////////////////////////////////////////
 
-  login(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
-  ): void {
+  login(props: IDockviewPanelProps<IState>): void {
     this.returnCommand(
+      // props,
       {
-        ...state,
-        terminal: {
-          ...state.terminal,
-          loggedIn: true,
-        },
+        ...props,
+        params: {
+          ...props.params,
+          state: {
+            ...props.params.state,
+            terminal: {
+              ...props.params.state.terminal,
+              loggedIn: true,
+            },
+          },
+        }
+        
+        // state: {
+        //   ...props.params.state,
+        //   terminal: {
+        //     ...props.params.state.terminal,
+        //     loggedIn: true,
+        //   },
+        // },
+        
+        // ...state,
+        
 
-        windows: {
-          terminal: {
-            ...state.windows.terminal,
-            visible: true,
-          },
-          shipmap: {
-            ...state.windows.shipmap,
-            visible: false,
-          },
-          manual: {
-            ...state.windows.manual,
-            visible: false,
-          },
-          drone: {
-            ...state.windows.drone,
-            visible: true,
-          },
-          drones: {
-            ...state.windows.drones,
-            visible: true,
-          },
-          shipmapV2: {
-            ...state.windows.shipmapV2,
-            visible: true,
-          },
-          droneV2: {
-            ...state.windows.droneV2,
-            visible: false,
-          },
-        },
+        
       },
-      stateSetter,
+
       loggedInTermLine
     );
-    SpacetrashGame.changeScene("mainloop");
-    SpacetrashGame.ecs.unpause();
+    SpaceTrashGameSingleton.changeScene("mainloop");
+    SpaceTrashGameSingleton.ecs.unpause();
   }
 
-  alreadyLoggedIn(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ): void {
-    this.returnCommand(state, stateSetter, alreadyLoggedInTermLine);
+  alreadyLoggedIn(props: IDockviewPanelProps<IState>): void {
+    this.returnCommand(props, alreadyLoggedInTermLine);
   }
 
-  helpLoggedIn(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    this.returnCommand(state, stateSetter, helpLoggedInTermLine);
-  }
+  // helpLoggedIn(
+  //   state: IState,
+  //   stateSetter: React.Dispatch<React.SetStateAction<IState>>
+  // ) {
+  //   this.returnCommand(state, stateSetter, helpLoggedInTermLine);
+  // }
 
-  helpLoggedOut(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    this.returnCommand(state, stateSetter, helpLoggedOutTermLine);
-  }
+  // helpLoggedOut(
+  //   state: IState,
+  //   stateSetter: React.Dispatch<React.SetStateAction<IState>>
+  // ) {
+  //   this.returnCommand(state, stateSetter, helpLoggedOutTermLine);
+  // }
 
-  whoAmI(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    this.returnCommand(state, stateSetter, whoAmITermLine);
-  }
+  // whoAmI(
+  //   state: IState,
+  //   stateSetter: React.Dispatch<React.SetStateAction<IState>>
+  // ) {
+  //   this.returnCommand(state, stateSetter, whoAmITermLine);
+  // }
 
-  ship(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    this.returnCommand(state, stateSetter, shipTermLine);
-  }
+  // ship(
+  //   state: IState,
+  //   stateSetter: React.Dispatch<React.SetStateAction<IState>>
+  // ) {
+  //   this.returnCommand(state, stateSetter, shipTermLine);
+  // }
 
-  mission(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    this.returnCommand(state, stateSetter, missionTermLine);
-  }
+  // mission(
+  //   state: IState,
+  //   stateSetter: React.Dispatch<React.SetStateAction<IState>>
+  // ) {
+  //   this.returnCommand(state, stateSetter, missionTermLine);
+  // }
 
-  date(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    this.returnCommand(state, stateSetter, dateTermLine);
-  }
+  // date(
+  //   state: IState,
+  //   stateSetter: React.Dispatch<React.SetStateAction<IState>>
+  // ) {
+  //   this.returnCommand(state, stateSetter, dateTermLine);
+  // }
 
-  map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-    this.returnCommand(
-      {
-        ...state,
-        terminal: {
-          ...state.terminal,
-          mapOrVideo: "map",
-        },
-      },
-      stateSetter,
-      mapTermLine
-    );
-  }
+  // map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //         mapOrVideo: "map",
+  //       },
+  //     },
+  //     stateSetter,
+  //     mapTermLine
+  //   );
+  // }
 
-  video(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-    this.returnCommand(
-      {
-        ...state,
-        terminal: {
-          ...state.terminal,
-          mapOrVideo: "video",
-        },
-      },
-      stateSetter,
-      videoTermLine
-    );
-  }
+  // video(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //         mapOrVideo: "video",
+  //       },
+  //     },
+  //     stateSetter,
+  //     videoTermLine
+  //   );
+  // }
 
-  bots(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-    this.returnCommand(
-      {
-        ...state,
-        terminal: {
-          ...state.terminal,
-          // mapOrVideo: "video",
-        },
-      },
-      stateSetter,
-      botsTermLine(state)
-    );
-  }
+  // bots(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //         // mapOrVideo: "video",
+  //       },
+  //     },
+  //     stateSetter,
+  //     botsTermLine(state)
+  //   );
+  // }
 
-  settings(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-    this.returnCommand(
-      {
-        ...state,
-        terminal: {
-          ...state.terminal,
-        },
-      },
-      stateSetter,
-      settingsTermLine
-    );
-  }
+  // settings(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //       },
+  //     },
+  //     stateSetter,
+  //     settingsTermLine
+  //   );
+  // }
 
-  error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-    this.returnCommand(
-      {
-        ...state,
-        terminal: {
-          ...state.terminal,
-        },
-      },
-      stateSetter,
-      errorTermLine
-    );
-  }
+  // error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //       },
+  //     },
+  //     stateSetter,
+  //     errorTermLine
+  //   );
+  // }
 
   //////////////////////////////////////////
 
-  boot(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>
-  ) {
-    stateSetter({
-      ...state,
-      terminal: {
-        ...state.terminal,
-        history: [...state.terminal.history, bootScreenTermLine],
+  boot(props: IDockviewPanelProps<IState>) {
+    console.log("booting", props);
+    props.api.updateParameters({
+      state: {
+        ...props.params.state,
+        terminal: {
+          ...props.params.state.terminal,
+          history: [...props.params.state.terminal.history, bootScreenTermLine],
+        },
       },
     });
   }
 
-  commandNotFound(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
-    unknownCommand: string
-  ) {
-    this.returnCommand(
-      state,
-      stateSetter,
-      commandNotFoundTermLine(unknownCommand)
-    );
+  commandNotFound(props: IDockviewPanelProps<IState>, unknownCommand: string) {
+    this.returnCommand(props, commandNotFoundTermLine(unknownCommand));
   }
 
-  processCommand(
-    state: IState,
-    stateSetter: React.Dispatch<React.SetStateAction<IState>>,
-
-  ): void {
+  processCommand(props: IDockviewPanelProps<IState>): void {
+    const state = props.params.state;
     const command = state.terminal.buffer;
     const loggedIn = state.terminal.loggedIn;
 
     if (command === "login") {
       if (!loggedIn) {
-        this.login(state, stateSetter);
+        this.login(props);
         return;
       } else {
-        this.alreadyLoggedIn(state, stateSetter);
+        this.alreadyLoggedIn(props);
         return;
       }
     }
 
-    if (command === "bots") {
-      if (!loggedIn) {
-        this.error(state, stateSetter);
-        return;
-      } else {
-        this.bots(state, stateSetter);
-        return;
-      }
-    }
+    // if (command === "bots") {
+    //   if (!loggedIn) {
+    //     this.error(props);
+    //     return;
+    //   } else {
+    //     this.bots(props);
+    //     return;
+    //   }
+    // }
 
-    if (command === "help") {
-      if (!loggedIn) {
-        this.helpLoggedOut(state, stateSetter);
-        return;
-      } else {
-        this.helpLoggedIn(state, stateSetter);
-        return;
-      }
-    }
+    // if (command === "help") {
+    //   if (!loggedIn) {
+    //     this.helpLoggedOut(props);
+    //     return;
+    //   } else {
+    //     this.helpLoggedIn(props);
+    //     return;
+    //   }
+    // }
 
-    if (command === "whoami") {
-      this.whoAmI(state, stateSetter);
-      return;
-    }
+    // if (command === "whoami") {
+    //   this.whoAmI(props);
+    //   return;
+    // }
 
-    if (command === "ship") {
-      this.ship(state, stateSetter);
-      return;
-    }
+    // if (command === "ship") {
+    //   this.ship(props);
+    //   return;
+    // }
 
-    if (command === "mission") {
-      this.mission(state, stateSetter);
-      return;
-    }
+    // if (command === "mission") {
+    //   this.mission(props);
+    //   return;
+    // }
 
-    if (command === "date") {
-      this.date(state, stateSetter);
-      return;
-    }
+    // if (command === "date") {
+    //   this.date(sprops);
+    //   return;
+    // }
 
-    if (command === "settings") {
-      this.settings(state, stateSetter);
-      return;
-    }
+    // if (command === "settings") {
+    //   this.settings(props);
+    //   return;
+    // }
 
     // if (command === "map") {
     //   this.map(state, stateSetter);
@@ -476,6 +460,6 @@ export class SpaceTrashTerminal {
     //     status: 'pass'
     //   }
     // }
-    this.commandNotFound(state, stateSetter, command);
+    return this.commandNotFound(props, command);
   }
 }

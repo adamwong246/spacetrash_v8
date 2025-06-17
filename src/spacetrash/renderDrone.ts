@@ -62,6 +62,7 @@ export const renderDrone = async (
 
   return new Promise((res, rej) => {
     if (firstTick) {
+      console.log("renderDrone")
       firstTick = false
 
       renderer = new THREE.WebGLRenderer({

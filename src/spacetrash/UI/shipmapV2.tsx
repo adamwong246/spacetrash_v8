@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from "react";
+import { IDockviewPanelProps } from "dockview";
 
+import { SpaceTrashGameSingleton } from "../Game";
 
+import { IState } from "./State";
 
-import SpacetrashGame from "../Game";
-
-export const ShipMapAppV2 = (props: {
-}) => {
+export const ShipMapAppV2 = (props: IDockviewPanelProps<IState>) => {
   console.log('ShipMapAppV2.tsx')
   const parentRef = useRef(null);
   const canvasRef = useRef(null);
 
   useEffect(() => {
     if (canvasRef.current && parentRef.current) {
-      SpacetrashGame.register("shipmapV2", false, canvasRef.current, () => { }, "pixi2d", parentRef.current)
+      SpaceTrashGameSingleton.register("shipmapV2", false, canvasRef.current, () => { }, "pixi2d", parentRef.current)
     }
   }, [canvasRef, parentRef]);
 
@@ -26,11 +26,24 @@ export const ShipMapAppV2 = (props: {
       position: "relative",
     }}
   >
-    <canvas
-      tabIndex={1}
-      ref={canvasRef}
+    <div
+      style={{
+        height: '100%',
+        color: 'white',
+        overflow: 'auto',
+      }}
+    >
+      <canvas
+        tabIndex={1}
+        ref={canvasRef}
+        height={'100%'}
+        color={'white'}
 
-    ></canvas>
+
+      ></canvas>
+    </div>
+
+
 
 
   </div>);

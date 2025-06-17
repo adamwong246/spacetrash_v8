@@ -1,4 +1,4 @@
-import SpacetrashGame from "./Game";
+import {SpaceTrashGameSingleton} from "./Game";
 
 export default class SpaceTrashPlayer {
   public static videoFeed: number = 1;
@@ -16,7 +16,7 @@ export default class SpaceTrashPlayer {
   };
 
   public static videoFeedPosition(): { x: number; y: number } {
-    return SpacetrashGame.positionOfEntity(
+    return SpaceTrashGameSingleton.positionOfEntity(
       (SpaceTrashPlayer.bots[SpaceTrashPlayer.videoFeed] as [number, string])[0]
     );
   }

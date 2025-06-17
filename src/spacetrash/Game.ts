@@ -1,12 +1,10 @@
-import * as THREE from "three";
-
 import { Game } from "../engine/Game";
 import { Scene } from "../engine/Scene";
 import { StateSpace } from "../engine/StateSpace";
 
 import SpaceTrashPlayer from "./Player";
 import {} from "./Components/physics";
-import { ISpaceTrashApps, IState } from "./UI";
+
 import { SpaceTrashShip } from "./ship";
 import {
   ActorSize,
@@ -32,13 +30,14 @@ import { renderDroneV2 } from "./renderDronev2";
 import { SpaceTrashBot } from "./Entities/SpaceTrashBot";
 import { Pixi2dShipMap } from "./Renderings/Pixi2dShipMap";
 import { BotSlots } from "./Constants";
+import { IState, ISpaceTrashApps } from "./UI/State";
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
 
 export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | null;
 
-class SpacetrashGame extends Game<IRenderings> {
+export class SpacetrashGameClass extends Game<IRenderings> {
   terminal: SpaceTrashTerminal;
   uiState: IState;
 
@@ -173,6 +172,7 @@ class SpacetrashGame extends Game<IRenderings> {
             (ecs, reply) => {
               return [
                 async (ctx) => {
+                  debugger
                   renderDrone(ecs, ctx);
                 },
               ];
@@ -494,4 +494,4 @@ class SpacetrashGame extends Game<IRenderings> {
   // }
 }
 
-export default new SpacetrashGame();
+export const SpaceTrashGameSingleton =  new SpacetrashGameClass();
