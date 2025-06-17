@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import { MapSize, TileSize } from "./System";
+import { MapSize, TileSize } from "../spacetrash/System";
 import { ECS } from "../engine/ECS";
-import { Phase0Store } from "./Components/phase0";
-import { Phase1Store } from "./Components/phase1";
+import { Phase0Store } from "../spacetrash/Components/phase0";
+import { Phase1Store } from "../spacetrash/Components/phase1";
 
 import { Application, DRAW_MODES } from "pixi.js";
 import {

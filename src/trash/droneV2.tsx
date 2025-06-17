@@ -6,8 +6,8 @@ import React, { useEffect, useRef } from "react";
 
 
 import { IDockviewPanelProps } from "dockview";
-import { IState } from "./State";
-import { SpaceTrashGameSingleton } from "../Game";
+import { IState } from "../spacetrash/UI/State";
+import { SpaceTrashGameSingleton } from "../spacetrash/Game";
 
 export const DroneAppV2 = (props: IDockviewPanelProps<IState>) => {
 

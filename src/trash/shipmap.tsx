@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import SpacetrashGame from "../Game";
+import SpacetrashGame from "../spacetrash/Game";
 
 export const ShipMapApp = (props: {
   spaceTrashGame: SpacetrashGame;

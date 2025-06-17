@@ -20,17 +20,18 @@ import {
 } from "./Components/casting/in";
 import { LitStore } from "./Components/casting/out";
 
-import { renderDrone } from "./renderDrone";
+
 import { Phase0Store } from "./Components/phase0";
 import { Phase1Store } from "./Components/phase1";
 import { PhysicsActorStore } from "./Components/actor";
 import { PhysicsSetPieceStore } from "./Components/setPiece";
 import { SpaceTrashTerminal } from "./lib/Terminal";
-import { renderDroneV2 } from "./renderDronev2";
+
 import { SpaceTrashBot } from "./Entities/SpaceTrashBot";
 import { Pixi2dShipMap } from "./Renderings/Pixi2dShipMap";
 import { BotSlots } from "./Constants";
 import { IState, ISpaceTrashApps } from "./UI/State";
+import { renderDrone } from "./Renderings/renderDrone";
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
@@ -163,20 +164,19 @@ export class SpacetrashGameClass extends Game<IRenderings> {
           ],
 
           drone: [
-            // boot function
+
             (ecs, reply) => {
               return [(ctx) => {}];
             },
 
-            //   function
             (ecs, reply) => {
               return [
                 async (ctx) => {
-                  debugger
                   renderDrone(ecs, ctx);
                 },
               ];
             },
+            
             (ecs, event: any) => {
               if (event === "1") {
                 SpaceTrashPlayer.videoFeed = 1;
@@ -255,7 +255,7 @@ export class SpacetrashGameClass extends Game<IRenderings> {
               return [
                 async (ctx) => {
                   if (ctx.constructor.name === "WebGLRenderer") {
-                    await renderDroneV2(ecs, ctx);
+                    // await renderDroneV2(ecs, ctx);
                   }
                 },
               ];

@@ -1,11 +1,11 @@
 import * as THREE from "three";
 
-import { MapSize, TileSize } from "./System";
-import SpaceTrashPlayer from "./Player";
-import { PhysicsActorComponent } from "./Components/actor";
-import { ECS } from "../engine/ECS";
-import { Phase0Store } from "./Components/phase0";
-import { Phase1Store } from "./Components/phase1";
+import { MapSize, TileSize } from "../System";
+import SpaceTrashPlayer from "../Player";
+import { PhysicsActorComponent } from "../Components/actor";
+import { ECS } from "../../engine/ECS";
+import { Phase0Store } from "../Components/phase0";
+import { Phase1Store } from "../Components/phase1";
 
 var scene = new THREE.Scene();
 

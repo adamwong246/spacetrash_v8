@@ -13,7 +13,7 @@ import { TerminalApp } from "./terminal";
 import { IState } from "./State";
 import { initialState } from "./InitState";
 import { ShipMapAppV2 } from "./shipmapV2";
-import { DroneAppV2 } from "./droneV2";
+// import { DroneAppV2 } from "./droneV2";
 import { SpaceTrashGameSingleton } from "../Game";
 import { DroneApp } from "./drone";
 
