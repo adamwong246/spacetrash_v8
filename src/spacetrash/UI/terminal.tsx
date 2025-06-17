@@ -30,19 +30,20 @@ export const TerminalApp = (
 
 ) => {
 
-  console.log("TerminalApp", props.params)
+  console.log("TerminalApp", props.params.state.terminal.history)
 
   useEffect(() => {
     SpaceTrashGameSingleton.terminal.boot(props)
   }, []);
 
-  // // Scroll when children change
-  // const containerRef = useRef(null);
-  // useEffect(() => {
-  //   if (containerRef.current) {
-  //     containerRef.current.scrollTop = containerRef.current.scrollHeight;
-  //   }
-  // }, [SpacetrashGame.terminal.history(props.state)]);
+  // Scroll when children change
+  const containerRef = useRef(null);
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+
+    }
+  }, [props.params.state.terminal.history]);
 
   return (<div
 
@@ -56,7 +57,7 @@ export const TerminalApp = (
     <div >
 
       <pre
-        // ref={containerRef}
+        ref={containerRef}
         id="terminal"
         style={{
           overflowX: "scroll",

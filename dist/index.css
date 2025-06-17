@@ -1172,3 +1172,9 @@
 }
 
 /* src/index.scss */
+body {
+  overflow: hidden;
+}
+td {
+  border: 1px solid black;
+}

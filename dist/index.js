@@ -94975,10 +94975,16 @@ var SpaceTrashGameSingleton = new SpacetrashGameClass();
 
 // src/spacetrash/UI/terminal.tsx
 var TerminalApp = (props) => {
-  console.log("TerminalApp", props.params);
+  console.log("TerminalApp", props.params.state.terminal.history);
   (0, import_react19.useEffect)(() => {
     SpaceTrashGameSingleton.terminal.boot(props);
   }, []);
+  const containerRef = (0, import_react19.useRef)(null);
+  (0, import_react19.useEffect)(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [props.params.state.terminal.history]);
   return /* @__PURE__ */ import_react19.default.createElement(
     "div",
     {
@@ -94991,6 +94997,7 @@ var TerminalApp = (props) => {
     /* @__PURE__ */ import_react19.default.createElement("div", null, /* @__PURE__ */ import_react19.default.createElement(
       "pre",
       {
+        ref: containerRef,
         id: "terminal",
         style: {
           overflowX: "scroll",
