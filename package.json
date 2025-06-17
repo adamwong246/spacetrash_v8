@@ -36,6 +36,7 @@
     "@stdlib/datasets-male-first-names-en": "^0.2.2",
     "@types/react": "^18.3.3",
     "@types/three": "^0.177.0",
+    "dockview": "^4.3.1",
     "esbuild": "0.25.5",
     "esbuild-sass-plugin": "^3.3.1",
     "gl-matrix": "^3.4.3",

@@ -1222,6 +1222,18 @@ diff@^7.0.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-7.0.0.tgz#3fb34d387cd76d803f6eebea67b921dab0182a9a"
   integrity sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==
 
+dockview-core@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/dockview-core/-/dockview-core-4.3.1.tgz#c9bf33e50c4b38fde87795d8fa1fbc9e127638be"
+  integrity sha512-cjGIXKc1wtHHkeKisuDLNt3HSHCVzvabxm1K9Auna27A9T3QR7ISOiTJyEUKUPllkcztFYBut0vwnnvwLnPAuQ==
+
+dockview@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/dockview/-/dockview-4.3.1.tgz#59334d6fb467e005d5d80a44c98aad01b361cb55"
+  integrity sha512-D4SvZPs1GJxGUBPkrehlKNGsWlSDaBiPuSYI+IEXnZ7b2bCUs1/h954sVs7xyykqEW3r6TkPKLWdTR/47Q7/QQ==
+  dependencies:
+    dockview-core "^4.3.1"
+
 dom-helpers@^5.0.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-5.2.1.tgz#d9400536b2bf8225ad98fe052e029451ac40e902"
