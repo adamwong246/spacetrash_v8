@@ -6294,7 +6294,7 @@ var require_react_dom_development = __commonJS({
         var HostPortal = 4;
         var HostComponent = 5;
         var HostText = 6;
-        var Fragment = 7;
+        var Fragment2 = 7;
         var Mode = 8;
         var ContextConsumer = 9;
         var ContextProvider = 10;
@@ -7451,7 +7451,7 @@ var require_react_dom_development = __commonJS({
               return "DehydratedFragment";
             case ForwardRef:
               return getWrappedName$1(type, type.render, "ForwardRef");
-            case Fragment:
+            case Fragment2:
               return "Fragment";
             case HostComponent:
               return type;
@@ -15880,7 +15880,7 @@ var require_react_dom_development = __commonJS({
             }
           }
           function updateFragment2(returnFiber, current2, fragment10, lanes, key) {
-            if (current2 === null || current2.tag !== Fragment) {
+            if (current2 === null || current2.tag !== Fragment2) {
               var created = createFiberFromFragment(fragment10, returnFiber.mode, lanes, key);
               created.return = returnFiber;
               return created;
@@ -16283,7 +16283,7 @@ var require_react_dom_development = __commonJS({
               if (child.key === key) {
                 var elementType = element.type;
                 if (elementType === REACT_FRAGMENT_TYPE) {
-                  if (child.tag === Fragment) {
+                  if (child.tag === Fragment2) {
                     deleteRemainingChildren(returnFiber, child.sibling);
                     var existing = useFiber(child, element.props.children);
                     existing.return = returnFiber;
@@ -21759,7 +21759,7 @@ var require_react_dom_development = __commonJS({
               var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
               return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
             }
-            case Fragment:
+            case Fragment2:
               return updateFragment(current2, workInProgress2, renderLanes2);
             case Mode:
               return updateMode(current2, workInProgress2, renderLanes2);
@@ -22031,7 +22031,7 @@ var require_react_dom_development = __commonJS({
             case SimpleMemoComponent:
             case FunctionComponent2:
             case ForwardRef:
-            case Fragment:
+            case Fragment2:
             case Mode:
             case Profiler:
             case ContextConsumer:
@@ -26292,7 +26292,7 @@ var require_react_dom_development = __commonJS({
           return fiber;
         }
         function createFiberFromFragment(elements, mode, lanes, key) {
-          var fiber = createFiber(Fragment, elements, key, mode);
+          var fiber = createFiber(Fragment2, elements, key, mode);
           fiber.lanes = lanes;
           return fiber;
         }
@@ -57415,15 +57415,11 @@ var Phase0Store = class extends TwoDStore {
   }
 };
 
-// src/spacetrash/Constants.ts
-var BotSlots = 9;
-
 // src/spacetrash/ECS/System.ts
-var shipSize = 30;
+var shipSize = 20;
 var numberOfShips = 1;
-var numberOfRooms = 10;
-var ShadowLimit = 100;
-var NumberOfActors = BotSlots * numberOfShips + numberOfRooms * numberOfShips;
+var ShadowLimit = 10;
+var NumberOfActors = 11;
 var TileSize = 25;
 var ActorSize = TileSize / 1;
 var MapSize = Math.floor(
@@ -57490,14 +57486,14 @@ var MainSystem = class extends System2 {
     super();
     this.mapSize = mapSize2;
   }
-  tick(delta, ecs) {
+  tick(delta, game) {
     return new Promise((res, rej) => {
-      phaseZero = ecs.stores["Phase0"].store;
-      phaseOne = ecs.stores["Phase1"].store;
-      const actorsStore = ecs.componentStores["PhysicsActorComponent"];
-      const setPieces = ecs.componentStores["PhysicsSetPieceComponent"];
-      lightableEntitiesStore = ecs.componentStores["LitableComponent"];
-      lightingEntitiesStore = ecs.componentStores[LitComponent.name];
+      phaseZero = game.stores["Phase0"].store;
+      phaseOne = game.stores["Phase1"].store;
+      const actorsStore = game.componentStores["PhysicsActorComponent"];
+      const setPieces = game.componentStores["PhysicsSetPieceComponent"];
+      lightableEntitiesStore = game.componentStores["LitableComponent"];
+      lightingEntitiesStore = game.componentStores[LitComponent.name];
       if (firstTick) {
         firstTick = false;
         for (let y = 0; y < MapSize; y++) {
@@ -57517,6 +57513,7 @@ var MainSystem = class extends System2 {
           );
         });
         for (let y = 0; y < actorsStore.store.length; y++) {
+          const aeid = actorsStore.store[y][0];
           phaseOne[y] = {
             actorId: y,
             actorX: actorsStore.store[y][1].x,
@@ -57524,7 +57521,9 @@ var MainSystem = class extends System2 {
             rendered2d: "fresh",
             renderedWebgl: "fresh",
             culled2d: false,
-            culledWebgl: false
+            culledWebgl: false,
+            friendly: game.isFriendly(aeid)
+            // friendly: Math.random() > 0.5,
           };
         }
         res(true);
@@ -57722,7 +57721,6 @@ var stoneTexture;
 var bunnyTexture;
 var tiles = [[]];
 var render = (game, canvas) => new Promise(async (res, rej) => {
-  const twoD = game.stores["Phase0"].store;
   const oneD = game.stores["Phase1"].store;
   if (firstRender) {
     firstRender = false;
@@ -57746,10 +57744,7 @@ var render = (game, canvas) => new Promise(async (res, rej) => {
     for (let y = 0; y < MapSize; y++) {
       tiles[y] = [];
       for (let x = 0; x < MapSize; x++) {
-        const t = game.stores["Phase0"].get(
-          x,
-          y
-        ).tileType;
+        const t = game.stores["Phase0"].get(x, y).tileType;
         let s;
         if (t === "FloorTile") {
           s = Sprite.from(stoneTexture);
@@ -57773,6 +57768,12 @@ var render = (game, canvas) => new Promise(async (res, rej) => {
       actors[i].height = ActorSize;
       actors[i].x = actor.actorX * TileSize;
       actors[i].y = actor.actorY * TileSize;
+      console.log(actor.friendly);
+      if (!actor.friendly) {
+        actors[i].tint = 170;
+      } else {
+        actors[i].tint = 696320;
+      }
       pixi2dApp.stage.addChild(actors[i]);
     });
     res(true);
@@ -93466,6 +93467,7 @@ var Phase1 = class extends TwoDOneD_Component {
   actorX;
   actorY;
   mesh;
+  friendly;
   constructor() {
     super();
   }
@@ -93988,6 +93990,9 @@ var BootScene = class extends SpaceTrashScene {
 };
 var Boot_default = new BootScene();
 
+// src/spacetrash/Constants.ts
+var BotSlots = 9;
+
 // src/engine/VECS.ts/Entity.ts
 var Entity = class {
   eid;
@@ -94214,8 +94219,8 @@ var MainScene = class extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 5,
-        (Math.random() - 0.5) / 5
+        (Math.random() - 0.5) / 10,
+        (Math.random() - 0.5) / 10
       );
     });
     const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
@@ -94223,8 +94228,8 @@ var MainScene = class extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 5,
-        (Math.random() - 0.5) / 5
+        (Math.random() - 0.5) / 15,
+        (Math.random() - 0.5) / 15
       );
     });
     const ship = new SpaceTrashShip();
@@ -94576,19 +94581,36 @@ var MultiSurfaceGame = class extends Game {
 };
 
 // src/WindowedGame.tsx
-var WindowManager = (props) => {
-  console.log("WindowManager", props);
-  return /* @__PURE__ */ React9.createElement(
-    DockviewReact,
-    {
-      className: "dockview-theme-abyss",
-      onReady: (e) => {
-        props.onDockviewReadyEvent(e);
-      },
-      components: props.dockViewComponentFactory()
+var MenuBar = (props) => /* @__PURE__ */ React9.createElement(React9.Fragment, null, /* @__PURE__ */ React9.createElement(
+  "div",
+  {
+    style: {
+      display: "block"
     }
-  );
-};
+  },
+  /* @__PURE__ */ React9.createElement("button", null, "map"),
+  /* @__PURE__ */ React9.createElement("button", null, "term"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 1"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 2"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 3"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 4"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 5"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 6"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 7"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 8"),
+  /* @__PURE__ */ React9.createElement("button", null, "bot 9"),
+  /* @__PURE__ */ React9.createElement("button", null, "QPU")
+));
+var WindowManager = (props) => /* @__PURE__ */ React9.createElement(React9.Fragment, null, /* @__PURE__ */ React9.createElement(MenuBar, null), /* @__PURE__ */ React9.createElement(
+  DockviewReact,
+  {
+    className: "dockview-theme-abyss",
+    onReady: (e) => {
+      props.onDockviewReadyEvent(e);
+    },
+    components: props.dockViewComponentFactory()
+  }
+));
 var WindowedGame = class extends MultiSurfaceGame {
   reactRoot;
   initialUiState;
@@ -94981,6 +95003,19 @@ var SpaceTrash = class extends WindowedGame {
   }
   fireBotsHook() {
     this.botsHook(this.bots);
+  }
+  isFriendly(aeid) {
+    let isFriend = false;
+    if (!this.bots) throw "no bots?!";
+    return Object.keys(this.bots).find((b) => {
+      const bot = this.bots[b];
+      const bid = bot[0];
+      if (bot && aeid === bid) {
+        return true;
+      } else {
+        return false;
+      }
+    }) !== void 0 || false;
   }
   // public yup() {
   //   for (let ndx = 1; ndx <= 9; ndx++) {

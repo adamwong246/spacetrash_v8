@@ -85,7 +85,7 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
   Phase0: Phase0Store,
   Phase1: Phase1Store
 }, number> {
-  
+
 
 
   uiHooks = {
@@ -329,6 +329,26 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
   }
   fireBotsHook() {
     this.botsHook(this.bots)
+  }
+
+  isFriendly(aeid: number): boolean {
+    // return Math.random() > 0.5
+    let isFriend: boolean = false;
+
+    if (!this.bots) throw "no bots?!";
+      
+    return Object.keys(this.bots).find((b) => {
+
+      const bot: [number, string] = this.bots[b];
+      const bid: number = bot[0]
+
+      if (bot && aeid === bid) {
+        return true;
+      } else {
+        return false;
+      }
+    }) !== undefined || false
+    // throw new Error("Method not implemented.");
   }
 
 

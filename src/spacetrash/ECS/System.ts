@@ -12,14 +12,15 @@ import {
 } from "./Components/setPiece";
 import { BotSlots } from "../Constants";
 import { ECS } from "../../engine/VECS.ts/ECS.ts";
+import { SpaceTrash } from "../index.tsx";
 
-const shipSize = 30;
+const shipSize = 20;
 const numberOfShips = 1;
-const numberOfRooms = 10;
-export const ShadowLimit = 100;
+const numberOfRooms = 13;
+export const ShadowLimit = 10;
 
-export const NumberOfActors =
-  BotSlots * numberOfShips + numberOfRooms * numberOfShips;
+export const NumberOfActors = 11
+  // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 25;
 export const ActorSize = TileSize / 1;
 
@@ -96,6 +97,10 @@ const actorsCollide = (a: PhysicsActorComponent, b: PhysicsActorComponent) => {
   // return distanceBetweenActorsV0(a, b);
 };
 
+const isFriendly = (n: number) => {
+  
+}
+
 let firstTick = true;
 let phaseZero: Phase0[][];
 let phaseOne: Phase1[];
@@ -122,22 +127,22 @@ class MainSystem extends System {
     this.mapSize = mapSize;
   }
 
-  tick(delta, ecs: ECS): Promise<boolean> {
+  tick(delta: number, game: SpaceTrash): Promise<boolean> {
     return new Promise((res, rej) => {
-      phaseZero = (ecs.stores["Phase0"] as Phase0Store).store;
-      phaseOne = (ecs.stores["Phase1"] as Phase1Store).store;
+      phaseZero = (game.stores["Phase0"] as Phase0Store).store;
+      phaseOne = (game.stores["Phase1"] as Phase1Store).store;
 
-      const actorsStore = ecs.componentStores[
+      const actorsStore = game.componentStores[
         "PhysicsActorComponent"
       ] as PhysicsActorStore;
-      const setPieces = ecs.componentStores[
+      const setPieces = game.componentStores[
         "PhysicsSetPieceComponent"
       ] as PhysicsSetPieceStore;
-      lightableEntitiesStore = ecs.componentStores[
+      lightableEntitiesStore = game.componentStores[
         "LitableComponent"
       ] as LittableStore;
 
-      lightingEntitiesStore = ecs.componentStores[
+      lightingEntitiesStore = game.componentStores[
         LitComponent.name
       ] as LitStore;
 
@@ -164,6 +169,8 @@ class MainSystem extends System {
         });
 
         for (let y = 0; y < actorsStore.store.length; y++) {
+          const aeid = actorsStore.store[y][0];
+          
           phaseOne[y] = {
             actorId: y,
             actorX: actorsStore.store[y][1].x,
@@ -172,6 +179,8 @@ class MainSystem extends System {
             renderedWebgl: "fresh",
             culled2d: false,
             culledWebgl: false,
+            friendly: game.isFriendly(aeid)
+            // friendly: Math.random() > 0.5,
           };
         }
 

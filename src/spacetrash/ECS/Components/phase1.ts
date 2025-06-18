@@ -10,6 +10,7 @@ export class Phase1 extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
   actorX: number;
   actorY: number;
   mesh?: THREE.Mesh;
+  friendly: boolean;
 
   constructor() {
     super();

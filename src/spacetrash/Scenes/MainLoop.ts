@@ -15,8 +15,8 @@ class MainScene extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 5,
-        (Math.random() - 0.5) / 5
+        (Math.random() - 0.5) / 10,
+        (Math.random() - 0.5) / 10
       );
     });
 
@@ -25,8 +25,8 @@ class MainScene extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 5,
-        (Math.random() - 0.5) / 5
+        (Math.random() - 0.5) / 15,
+        (Math.random() - 0.5) / 15
       );
     });
 
@@ -37,7 +37,7 @@ class MainScene extends SpaceTrashScene {
       ...ship.toTiles(),
       ...moreBots,
     ]);
-    // debugger;
+
     const myDoneIds = game.setEntitiesComponent([...drones]);
 
     game.bots = {
@@ -52,17 +52,7 @@ class MainScene extends SpaceTrashScene {
       9: [myDoneIds[8], "obiwan"],
     };
 
-    game.openAllWindows()
-    // const x = game.dockviewAPI.addPanel({
-    //   id: "bot",
-    //   component: "bot",
-    //   floating: {
-    //     position: { left: 50, top: 50 },
-    //     width: 600,
-    //     height: 400,
-    //   },
-    // });
-    
+    game.openAllWindows()    
     game.unpause();
   }
 
@@ -91,8 +81,6 @@ class MainScene extends SpaceTrashScene {
 }
 
 const scene = new MainScene(
-
-
   {
     terminal: [
       (ecs, reply) => {

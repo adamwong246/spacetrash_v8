@@ -12,48 +12,51 @@ import { System } from "./engine/VECS.ts/System";
 import { IComponentsStores, IStores } from "./engine/VECS.ts/types";
 import { MultiSurfaceGame } from "./MultiSurfaceGame";
 
+const MenuBar: (p: {
+  // initialUiState,
+  // game: WindowedGame<any, any, any>,
+  // onDockviewReadyEvent,
+  // dockViewComponentFactory,
+  // headerComponents
+
+}) => any = (props) => <>
+  <div
+    style={{
+      display: 'block',
+    }}
+  >
+    <button>map</button>
+    <button>term</button>
+    <button>bot 1</button>
+    <button>bot 2</button>
+    <button>bot 3</button>
+    <button>bot 4</button>
+    <button>bot 5</button>
+    <button>bot 6</button>
+    <button>bot 7</button>
+    <button>bot 8</button>
+    <button>bot 9</button>
+    <button>QPU</button>
+  </div>
+</>
+
 const WindowManager: (p: {
   initialUiState,
   game: WindowedGame<any, any, any>,
   onDockviewReadyEvent,
   dockViewComponentFactory,
   headerComponents
-  // uiHooks
-}) => any = (props) => {
 
-  console.log("WindowManager", props)
-  // const [state, stateSetter] = React.useState(props.initialUiState);
-
-  // useEffect(() => {
-  //   debugger
-  //   // props.game.registerUiHooks(props.uiHooks, props)
-  //   // props.game.registerUiHook((s) => {
-  //   //   debugger
-  //   //   return stateSetter(s)
-  //   // });
-  // }, []);
-
-
-
-  return (
-
-    <DockviewReact
-      className={'dockview-theme-abyss'}
-      onReady={(e) => {
-        // props.game.registerUiHooks(
-        //   props.uiHooks,
-          
-        //   props
-        // )
-        props.onDockviewReadyEvent(e)
-      }}
-      
-      
-      components={props.dockViewComponentFactory()}
-      // defaultTabComponent={props.headerComponents.default}
-    />
-  );
-}
+}) => any = (props) => <>
+  <MenuBar/>
+  <DockviewReact
+    className={'dockview-theme-abyss'}
+    onReady={(e) => {
+      props.onDockviewReadyEvent(e)
+    }}
+    components={props.dockViewComponentFactory()}
+  // defaultTabComponent={props.headerComponents.default}
+  /></>
 
 export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurfaceGame<IRenderings, II> {
   private reactRoot;
@@ -61,7 +64,7 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
 
   abstract gameReady: () => void;
 
-  stateSetter: (s: any) => void;  
+  stateSetter: (s: any) => void;
   abstract uiHooks: any;
 
   public dockviewAPI: DockviewApi;
@@ -93,7 +96,7 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
       onDockviewReadyEvent={onDockviewReadyEvent}
       dockViewComponentFactory={dockViewComponentFactory}
       headerComponents={headerComponents}
-      // uiHooks={ uiHooks}
+    // uiHooks={ uiHooks}
     />)
 
   }
@@ -102,7 +105,7 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
   //   console.log("draw")
   //   // throw new Error("Method not implemented.");
   // }
-  
+
   // start() {
 
   //   return super.start()
