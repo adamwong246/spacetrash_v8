@@ -1,8 +1,8 @@
-import { PhysicsActorComponent } from "../../trash/Components/actor";
-import { LitComponent } from "../../trash/Components/casting/out";
-import { SpaceTrashEntity } from "../ECS/Entity";
-import { SpaceTrashEntityComponent } from "../ECS/EntityComponents";
+import { PhysicsActorComponent } from "../Components/actor";
+import { LitComponent } from "../Components/casting/out";
+import { SpaceTrashEntity } from "../Entity";
 
+import { SpaceTrashEntityComponent } from ".";
 
 export class SpaceTrashBot extends SpaceTrashEntityComponent {
   

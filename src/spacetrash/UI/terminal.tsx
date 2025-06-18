@@ -1,40 +1,19 @@
 import React, { useEffect, useRef } from "react";
-import { SpaceTrashTerminal } from "../lib/Terminal";
 
-import { IComStatus } from "./UiState";
-import {SpacetrashGameClass, SpaceTrashGameSingleton} from "../Game";
-import { IState } from "./State";
-import { IDockviewPanelProps } from "dockview";
+import { ITerminalLine } from "../Terminal";
 
-export type ITerminalHooks = {
-  changeBuffer: (value: string) => any,
-  submitBuffer: () => any,
-}
+export const TerminalWindow = (
 
-export type ITerminalLine = {
-  in?: string,
-  out: string,
-  status: IComStatus
-}
-
-export type ITerminalState = {
-  buffer: string;
-  history: ITerminalLine[],
-  loggedIn: boolean,
-  mapOrVideo: 'map' | 'video'
-};
-
-export const TerminalApp = (
-
-  props: IDockviewPanelProps<IState>
+  props: {
+    uiState: {
+      history: ITerminalLine[];
+      buffer: string;
+      submitBuffer: any;
+      setBuffer: any;
+    }
+  },
 
 ) => {
-
-  console.log("TerminalApp", props.params.state.terminal.history)
-
-  useEffect(() => {
-    SpaceTrashGameSingleton.terminal.boot(props)
-  }, []);
 
   // Scroll when children change
   const containerRef = useRef(null);
@@ -43,7 +22,9 @@ export const TerminalApp = (
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
     }
-  }, [props.params.state.terminal.history]);
+  }, [props.uiState]);
+
+
 
   return (<div
 
@@ -75,7 +56,7 @@ export const TerminalApp = (
       >
 
         {
-          props.params.state.terminal.history.map((tl: ITerminalLine) => {
+          props.uiState.history.map((tl: ITerminalLine) => {
 
             if (tl.in) {
               return (`
@@ -96,8 +77,7 @@ ${tl.out}`)
     <input
       type="text"
       name="terminal-input"
-      // value={props.state.buffer}
-      value={props.params.state.terminal.buffer}
+      value={props.uiState.buffer}
 
       style={{
         position: "absolute",
@@ -105,17 +85,15 @@ ${tl.out}`)
         backgroundColor: "darkgreen",
         color: "lightgreen",
         width: "100%",
-        // minHeight: "34rem",
-        // minWidth: "34rem"
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
-          SpaceTrashGameSingleton.terminal.submitBuffer(props);
+          props.uiState.submitBuffer(props);
 
         }
       }}
       onChange={(e) => {
-        SpaceTrashGameSingleton.terminal.setBuffer(props, e.target.value);
+        props.uiState.setBuffer(props, e.target.value);
       }
       }
     />

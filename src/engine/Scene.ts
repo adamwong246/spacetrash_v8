@@ -1,7 +1,9 @@
 import * as THREE from "three";
 
-import { ECS } from "./ECS";
+
 import { Tree } from "./Tree";
+import { ECS } from "./VECS.ts/ECS";
+import { Game } from "./Game";
 
 type IReply = (ecs: any) => void;
 
@@ -21,44 +23,50 @@ type ILogic = [IBoot, IUpdate, IEvents, "2d" | "webgl2" | "html"];
 
 type IAppLogic<IApps extends string> = Record<IApps, ILogic>;
 
-export class Scene<IApps extends string> extends Tree {
-  appLogic: IAppLogic<IApps>;
-  sceneBoot: (ecs: ECS) => Promise<void>;
+export abstract class Scene extends Tree {
+  appLogic: IAppLogic<any>;
+  // sceneBoot: (ecs: ECS) => Promise<void>;
 
   constructor(
-    name: string,
-    appLogic: IAppLogic<IApps>,
-    sceneBoot: (ecs: ECS) => Promise<void>
+    appLogic: IAppLogic<any>,
+    // sceneBoot: (ecs: ECS) => Promise<void>
   ) {
-    super(name);
+    super();
     this.appLogic = appLogic;
-    this.sceneBoot = sceneBoot || (async (ecs) => {});
+    // this.sceneBoot = sceneBoot || (async (ecs) => {});
   }
 
-  async boot(
-    ecs: ECS,
-  ) {
-    await this.sceneBoot(ecs);
-    Object.keys(this.appLogic).forEach((k) => {
-      this.appLogic[k][0](ecs);
-    });
-  }
+  abstract boot(e: Game<any, any>);
+  abstract update(e: Game<any, any>);
+  abstract event(e: Game<any, any>);
 
   draw(
-    app: IApps,
+    app: any,
     bootReplier: IReply,
     ecs: ECS
   ): ((
-    ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
+    g: Game<any, any>, 
+    ctx: HTMLCanvasElement
     ) => Promise<any>)[] {
     return this.appLogic[app][1](ecs, bootReplier);
   }
 
-  inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
-    if (app === "document") {
-      return;
-    }
+  // async boot(
+  //   ecs: ECS,
+  // ) {
+  //   // await this.sceneBoot(ecs);
+  //   // Object.keys(this.appLogic).forEach((k) => {
+  //   //   this.appLogic[k][0](ecs);
+  //   // });
+  // }
 
-    this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
-  }
+  
+
+  // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
+  //   if (app === "document") {
+  //     return;
+  //   }
+
+  //   this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
+  // }
 }

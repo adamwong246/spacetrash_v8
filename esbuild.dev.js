@@ -2,17 +2,12 @@ import esbuild from 'esbuild';
 import { sassPlugin } from 'esbuild-sass-plugin'
 
 esbuild.context({
-  // packages: "external",
   bundle: true,
-  // outbase: 'src',
   format: "esm",
   entryPoints: [
     './src/index.tsx',
     './src/index.html',
     './src/index.scss',
-
-    './src/worker.ts',
-
   ],
 
   outdir: "./dist",
@@ -26,9 +21,9 @@ esbuild.context({
     '.mp3': `copy`,
   },
   "assetNames": "[name]",
-  
+
   plugins: [
-    sassPlugin({cssImports: true}),
+    sassPlugin({ cssImports: true }),
   ],
 
 }).then((ctx) => {

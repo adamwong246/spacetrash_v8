@@ -4,48 +4,48 @@ import { DirectedGraph } from "./DirectedGraph";
 import { Scene } from "./Scene";
 
 export abstract class Tree   {
-  name: string;
+  // name: string;
 
-  constructor(
-    name: string
-  ) {
-    this.name = name;
-  }
+  // constructor(
+  //   name: string
+  // ) {
+  //   this.name = name;
+  // }
 }
 
 export class Root extends Tree   {
   // name: string;
-  root: Scene<any>;
+  root: Scene;
 
-  constructor(
-    name: string,
-    root: Scene<any>,
-  ) {
-    super(name);
-  }
+  // constructor(
+  //   name: string,
+  //   root: Scene,
+  // ) {
+  //   super(name);
+  // }
 }
 
 export class Branch extends Tree   {
   // name: string;
   // parent: Scene;
-  children: Scene<any>;
+  children: Scene;
 
-  constructor(
-    name: string,
-    // parent: Scene,
-  ) {
-    super(name);
-  }
+  // constructor(
+  //   name: string,
+  //   // parent: Scene,
+  // ) {
+  //   super(name);
+  // }
 }
 
 export class Leaf extends Tree   {
   // name: string;
   // parent: Scene;
 
-  constructor(
-    name: string,
-    // parent: Scene,
-  ) {
-    super(name);
-  }
+  // constructor(
+  //   name: string,
+  //   // parent: Scene,
+  // ) {
+  //   super(name);
+  // }
 }
