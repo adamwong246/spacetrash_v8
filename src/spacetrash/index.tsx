@@ -30,6 +30,7 @@ import mainLoopScene from "./Scenes/MainLoop";
 import { WindowedGame } from "../WindowedGame";
 import { BotWindow } from "./UI/BotWindow";
 import { MapWindow } from "./UI/map";
+import { BotsWindow } from "./UI/BotsWindow";
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
@@ -84,6 +85,7 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
   Phase0: Phase0Store,
   Phase1: Phase1Store
 }, number> {
+  
 
 
   uiHooks = {
@@ -205,6 +207,8 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
             );
           },
 
+          bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
+
           terminal: (props: IDockviewPanelHeaderProps<IState>) => {
 
             if (!this.terminal) {
@@ -253,7 +257,6 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
       id: 'bot',
-
       component: 'bot',
       floating: {
         position: { left: 50, top: 50 },
@@ -268,6 +271,19 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     this.dockviewAPI.component.addPanel({
       id: 'shipMap',
       component: 'shipMap',
+      floating: {
+        position: { left: 100, top: 150 },
+        width: 600,
+        height: 400
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'bots',
+      component: 'bots',
       floating: {
         position: { left: 100, top: 150 },
         width: 600,
@@ -304,6 +320,15 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
 
   renderShipMap(ctx: any) {
     pixiShipMap(this, ctx);
+  }
+
+  botsHook: React.Dispatch<any>;
+  registerBotsHook(stateSetter: React.Dispatch<any>) {
+    this.botsHook = stateSetter;
+    this.fireBotsHook()
+  }
+  fireBotsHook() {
+    this.botsHook(this.bots)
   }
 
 

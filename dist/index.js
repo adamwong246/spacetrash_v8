@@ -4956,7 +4956,7 @@ var require_react_development = __commonJS({
           var dispatcher = resolveDispatcher();
           return dispatcher.useRef(initialValue);
         }
-        function useEffect4(create, deps) {
+        function useEffect5(create, deps) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useEffect(create, deps);
         }
@@ -5739,7 +5739,7 @@ var require_react_development = __commonJS({
         exports.useContext = useContext;
         exports.useDebugValue = useDebugValue;
         exports.useDeferredValue = useDeferredValue;
-        exports.useEffect = useEffect4;
+        exports.useEffect = useEffect5;
         exports.useId = useId;
         exports.useImperativeHandle = useImperativeHandle;
         exports.useInsertionEffect = useInsertionEffect;
@@ -6243,9 +6243,9 @@ var require_react_dom_development = __commonJS({
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
           __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
         }
-        var React13 = require_react();
+        var React14 = require_react();
         var Scheduler = require_scheduler();
-        var ReactSharedInternals = React13.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        var ReactSharedInternals = React14.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
         var suppressWarning = false;
         function setSuppressWarning(newSuppressWarning) {
           {
@@ -7852,7 +7852,7 @@ var require_react_dom_development = __commonJS({
           {
             if (props.value == null) {
               if (typeof props.children === "object" && props.children !== null) {
-                React13.Children.forEach(props.children, function(child) {
+                React14.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -93328,7 +93328,7 @@ var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
 PaneviewReact.displayName = "PaneviewComponent";
 
 // src/spacetrash/index.tsx
-var import_react22 = __toESM(require_react(), 1);
+var import_react23 = __toESM(require_react(), 1);
 
 // src/engine/DirectedGraph.ts
 var import_graphology = __toESM(require_graphology_umd_min(), 1);
@@ -94768,6 +94768,35 @@ var MapWindow = (props) => {
   );
 };
 
+// src/spacetrash/UI/BotsWindow.tsx
+var import_react22 = __toESM(require_react(), 1);
+var TableCell = (props) => {
+  return /* @__PURE__ */ import_react22.default.createElement("td", null, props.name);
+};
+var BotsWindow = (props) => {
+  const [state, stateSetter] = import_react22.default.useState([[]]);
+  (0, import_react22.useEffect)(() => {
+    props.game.registerBotsHook(stateSetter);
+  }, []);
+  const botNamer = (n) => {
+    const s = n.toString();
+    if (state[s]) {
+      return state[s][1];
+    }
+    return "?";
+  };
+  const asTable = [
+    [botNamer(1), botNamer(2), botNamer(3)],
+    [botNamer(4), botNamer(5), botNamer(6)],
+    [botNamer(7), botNamer(8), botNamer(9)]
+  ];
+  return /* @__PURE__ */ import_react22.default.createElement("div", null, /* @__PURE__ */ import_react22.default.createElement("table", null, ...[0, 1, 2].map((i, n) => {
+    return /* @__PURE__ */ import_react22.default.createElement("tr", null, ...[0, 1, 2].map((ii, nn) => {
+      return /* @__PURE__ */ import_react22.default.createElement("td", null, " ", /* @__PURE__ */ import_react22.default.createElement(TableCell, { name: `${asTable[nn][n]}` }), " ");
+    }));
+  })));
+};
+
 // src/spacetrash/index.tsx
 var initialState = {
   buffer: "",
@@ -94847,14 +94876,15 @@ var SpaceTrash = class extends WindowedGame {
       (s) => {
         return {
           default: (props) => {
-            return /* @__PURE__ */ import_react22.default.createElement("div", null, /* @__PURE__ */ import_react22.default.createElement("p", null, "default"));
+            return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("p", null, "default"));
           },
           shipMap: (props) => {
-            return /* @__PURE__ */ import_react22.default.createElement(MapWindow, { game: this });
+            return /* @__PURE__ */ import_react23.default.createElement(MapWindow, { game: this });
           },
           bot: (props) => {
-            return /* @__PURE__ */ import_react22.default.createElement(BotWindow, { game: this });
+            return /* @__PURE__ */ import_react23.default.createElement(BotWindow, { game: this });
           },
+          bots: (props) => /* @__PURE__ */ import_react23.default.createElement(BotsWindow, { game: this }),
           terminal: (props) => {
             if (!this.terminal) {
               this.terminal = new SpaceTrashTerminal(
@@ -94867,7 +94897,7 @@ var SpaceTrash = class extends WindowedGame {
               this.terminal.boot();
             }
             props.api.updateParameters(this.terminal.state());
-            return /* @__PURE__ */ import_react22.default.createElement(TerminalWindow, { uiState: this.terminal.state() });
+            return /* @__PURE__ */ import_react23.default.createElement(TerminalWindow, { uiState: this.terminal.state() });
           }
         };
       },
@@ -94877,7 +94907,7 @@ var SpaceTrash = class extends WindowedGame {
             event.preventDefault();
             alert("context menu");
           };
-          return /* @__PURE__ */ import_react22.default.createElement(
+          return /* @__PURE__ */ import_react23.default.createElement(
             DockviewDefaultTab,
             {
               onContextMenu,
@@ -94912,6 +94942,16 @@ var SpaceTrash = class extends WindowedGame {
       },
       params: {}
     });
+    this.dockviewAPI.component.addPanel({
+      id: "bots",
+      component: "bots",
+      floating: {
+        position: { left: 100, top: 150 },
+        width: 600,
+        height: 400
+      },
+      params: {}
+    });
   }
   gameReady = () => {
     this.start();
@@ -94934,95 +94974,14 @@ var SpaceTrash = class extends WindowedGame {
   renderShipMap(ctx) {
     pixi2d_default(this, ctx);
   }
-  // start(): Promise<void> {
-  //   this.terminal = new SpaceTrashTerminal(this.stateSetter);
-  //   return super.start()
-  // }
-  // async start() {
-  //   console.log("mark1", this.stateSetter)
-  //   await super.start()
-  //   console.log("mark2", this.stateSetter)
-  //   // needs to be called after super.start()
-  //   // this.terminal = new SpaceTrashTerminal(this.stateSetter);
-  // }
-  // dockViewComponents: Record<string, FunctionComponent<IDockviewPanelProps>> = {
-  //   // default: Default,
-  //   terminal: TerminalWindow,
-  //   // shipMap: MapWindow,
-  //   // drone: DroneWindow
-  // }
-  // onDockviewReadyEvent: (e: DockviewReadyEvent) => void = (event) => {
-  //   event.api.addPanel({
-  //     id: 'terminal',
-  //     component: 'terminal',
-  //     floating: {
-  //       position: { left: 10, top: 10 },
-  //       width: 900,
-  //       height: 600
-  //     },
-  //     params: {
-  //       // state, stateSetter
-  //     }
-  //   });
-  // }
-  // onDockviewReadyEvent: (event: DockviewReadyEvent) => {
-  // }
-  // onDockviewReadyEvent = (event: DockviewReadyEvent) => {
-  //   // event.api.addPanel({
-  //   //   id: 'drone',
-  //   //   component: 'drone',
-  //   // });
-  //   // // event.api.addPanel({
-  //   // //   id: 'panel_2',
-  //   // //   component: 'default',
-  //   // //   position: {
-  //   // //     direction: 'right',
-  //   // //     referencePanel: 'panel_1',
-  //   // //   },
-  //   // // });
-  //   // event.api.addPanel({
-  //   //   id: 'shipMap',
-  //   //   component: 'shipMap',
-  //   // });
-  //   event.api.addPanel({
-  //     id: 'terminal',
-  //     component: 'terminal',
-  //     floating: {
-  //       position: { left: 10, top: 10 },
-  //       width: 900,
-  //       height: 600
-  //     },
-  //     // params: {
-  //     //   state, stateSetter
-  //     // }
-  //   });
-  // }
-  // updateUI() {
-  //   console.log("updateUI", this.uiState)
-  //   if (!this.stateSetter) {
-  //     console.warn("You haven't called `registerUiHook` yet");
-  //   } else {
-  //     debugger
-  //     this.stateSetter({
-  //       ...this.uiState,
-  //       bots: this.bots
-  //     })
-  //   }
-  // }
-  // videoTick = -1;
-  // renderDroneVideo(canvas: HTMLCanvasElement) {
-  //   this.videoTick++;
-  //   threejs3d(this, canvas);
-  // }
-  // shipMapTick = -1;
-  // // pixi2dApp: Application;
-  // renderShipMap(canvas: HTMLCanvasElement) {
-  //   this.shipMapTick++;
-  //   pixi2d(this, canvas);
-  // }
-  // updateFromUI(s: IState) {
-  //   this.uiState = s;
-  // }
+  botsHook;
+  registerBotsHook(stateSetter) {
+    this.botsHook = stateSetter;
+    this.fireBotsHook();
+  }
+  fireBotsHook() {
+    this.botsHook(this.bots);
+  }
   // public yup() {
   //   for (let ndx = 1; ndx <= 9; ndx++) {
   //     if (this.videoFeed === ndx) {

@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from "react";
 import { SpaceTrash } from "..";
 
 export const MapWindow = (props: {game: SpaceTrash}) => {
-  // console.log('ShipMapAppV2.tsx')
   const parentRef = useRef(null);
   const canvasRef = useRef(null);
 
