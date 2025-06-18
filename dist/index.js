@@ -24,6 +24,3559 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
+// node_modules/react/cjs/react.development.js
+var require_react_development = __commonJS({
+  "node_modules/react/cjs/react.development.js"(exports, module) {
+    "use strict";
+    if (true) {
+      (function() {
+        "use strict";
+        if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
+          __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
+        }
+        var ReactVersion = "18.3.1";
+        var REACT_ELEMENT_TYPE = Symbol.for("react.element");
+        var REACT_PORTAL_TYPE = Symbol.for("react.portal");
+        var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
+        var REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode");
+        var REACT_PROFILER_TYPE = Symbol.for("react.profiler");
+        var REACT_PROVIDER_TYPE = Symbol.for("react.provider");
+        var REACT_CONTEXT_TYPE = Symbol.for("react.context");
+        var REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref");
+        var REACT_SUSPENSE_TYPE = Symbol.for("react.suspense");
+        var REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list");
+        var REACT_MEMO_TYPE = Symbol.for("react.memo");
+        var REACT_LAZY_TYPE = Symbol.for("react.lazy");
+        var REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen");
+        var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+        var FAUX_ITERATOR_SYMBOL = "@@iterator";
+        function getIteratorFn(maybeIterable) {
+          if (maybeIterable === null || typeof maybeIterable !== "object") {
+            return null;
+          }
+          var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+          if (typeof maybeIterator === "function") {
+            return maybeIterator;
+          }
+          return null;
+        }
+        var ReactCurrentDispatcher = {
+          /**
+           * @internal
+           * @type {ReactComponent}
+           */
+          current: null
+        };
+        var ReactCurrentBatchConfig = {
+          transition: null
+        };
+        var ReactCurrentActQueue = {
+          current: null,
+          // Used to reproduce behavior of `batchedUpdates` in legacy mode.
+          isBatchingLegacy: false,
+          didScheduleLegacyUpdate: false
+        };
+        var ReactCurrentOwner = {
+          /**
+           * @internal
+           * @type {ReactComponent}
+           */
+          current: null
+        };
+        var ReactDebugCurrentFrame = {};
+        var currentExtraStackFrame = null;
+        function setExtraStackFrame(stack) {
+          {
+            currentExtraStackFrame = stack;
+          }
+        }
+        {
+          ReactDebugCurrentFrame.setExtraStackFrame = function(stack) {
+            {
+              currentExtraStackFrame = stack;
+            }
+          };
+          ReactDebugCurrentFrame.getCurrentStack = null;
+          ReactDebugCurrentFrame.getStackAddendum = function() {
+            var stack = "";
+            if (currentExtraStackFrame) {
+              stack += currentExtraStackFrame;
+            }
+            var impl = ReactDebugCurrentFrame.getCurrentStack;
+            if (impl) {
+              stack += impl() || "";
+            }
+            return stack;
+          };
+        }
+        var enableScopeAPI = false;
+        var enableCacheElement = false;
+        var enableTransitionTracing = false;
+        var enableLegacyHidden = false;
+        var enableDebugTracing = false;
+        var ReactSharedInternals = {
+          ReactCurrentDispatcher,
+          ReactCurrentBatchConfig,
+          ReactCurrentOwner
+        };
+        {
+          ReactSharedInternals.ReactDebugCurrentFrame = ReactDebugCurrentFrame;
+          ReactSharedInternals.ReactCurrentActQueue = ReactCurrentActQueue;
+        }
+        function warn(format2) {
+          {
+            {
+              for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+              }
+              printWarning("warn", format2, args);
+            }
+          }
+        }
+        function error(format2) {
+          {
+            {
+              for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                args[_key2 - 1] = arguments[_key2];
+              }
+              printWarning("error", format2, args);
+            }
+          }
+        }
+        function printWarning(level, format2, args) {
+          {
+            var ReactDebugCurrentFrame2 = ReactSharedInternals.ReactDebugCurrentFrame;
+            var stack = ReactDebugCurrentFrame2.getStackAddendum();
+            if (stack !== "") {
+              format2 += "%s";
+              args = args.concat([stack]);
+            }
+            var argsWithFormat = args.map(function(item) {
+              return String(item);
+            });
+            argsWithFormat.unshift("Warning: " + format2);
+            Function.prototype.apply.call(console[level], console, argsWithFormat);
+          }
+        }
+        var didWarnStateUpdateForUnmountedComponent = {};
+        function warnNoop(publicInstance, callerName) {
+          {
+            var _constructor = publicInstance.constructor;
+            var componentName = _constructor && (_constructor.displayName || _constructor.name) || "ReactClass";
+            var warningKey = componentName + "." + callerName;
+            if (didWarnStateUpdateForUnmountedComponent[warningKey]) {
+              return;
+            }
+            error("Can't call %s on a component that is not yet mounted. This is a no-op, but it might indicate a bug in your application. Instead, assign to `this.state` directly or define a `state = {};` class property with the desired state in the %s component.", callerName, componentName);
+            didWarnStateUpdateForUnmountedComponent[warningKey] = true;
+          }
+        }
+        var ReactNoopUpdateQueue = {
+          /**
+           * Checks whether or not this composite component is mounted.
+           * @param {ReactClass} publicInstance The instance we want to test.
+           * @return {boolean} True if mounted, false otherwise.
+           * @protected
+           * @final
+           */
+          isMounted: function(publicInstance) {
+            return false;
+          },
+          /**
+           * Forces an update. This should only be invoked when it is known with
+           * certainty that we are **not** in a DOM transaction.
+           *
+           * You may want to call this when you know that some deeper aspect of the
+           * component's state has changed but `setState` was not called.
+           *
+           * This will not invoke `shouldComponentUpdate`, but it will invoke
+           * `componentWillUpdate` and `componentDidUpdate`.
+           *
+           * @param {ReactClass} publicInstance The instance that should rerender.
+           * @param {?function} callback Called after component is updated.
+           * @param {?string} callerName name of the calling function in the public API.
+           * @internal
+           */
+          enqueueForceUpdate: function(publicInstance, callback, callerName) {
+            warnNoop(publicInstance, "forceUpdate");
+          },
+          /**
+           * Replaces all of the state. Always use this or `setState` to mutate state.
+           * You should treat `this.state` as immutable.
+           *
+           * There is no guarantee that `this.state` will be immediately updated, so
+           * accessing `this.state` after calling this method may return the old value.
+           *
+           * @param {ReactClass} publicInstance The instance that should rerender.
+           * @param {object} completeState Next state.
+           * @param {?function} callback Called after component is updated.
+           * @param {?string} callerName name of the calling function in the public API.
+           * @internal
+           */
+          enqueueReplaceState: function(publicInstance, completeState, callback, callerName) {
+            warnNoop(publicInstance, "replaceState");
+          },
+          /**
+           * Sets a subset of the state. This only exists because _pendingState is
+           * internal. This provides a merging strategy that is not available to deep
+           * properties which is confusing. TODO: Expose pendingState or don't use it
+           * during the merge.
+           *
+           * @param {ReactClass} publicInstance The instance that should rerender.
+           * @param {object} partialState Next partial state to be merged with state.
+           * @param {?function} callback Called after component is updated.
+           * @param {?string} Name of the calling function in the public API.
+           * @internal
+           */
+          enqueueSetState: function(publicInstance, partialState, callback, callerName) {
+            warnNoop(publicInstance, "setState");
+          }
+        };
+        var assign = Object.assign;
+        var emptyObject = {};
+        {
+          Object.freeze(emptyObject);
+        }
+        function Component3(props, context2, updater) {
+          this.props = props;
+          this.context = context2;
+          this.refs = emptyObject;
+          this.updater = updater || ReactNoopUpdateQueue;
+        }
+        Component3.prototype.isReactComponent = {};
+        Component3.prototype.setState = function(partialState, callback) {
+          if (typeof partialState !== "object" && typeof partialState !== "function" && partialState != null) {
+            throw new Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");
+          }
+          this.updater.enqueueSetState(this, partialState, callback, "setState");
+        };
+        Component3.prototype.forceUpdate = function(callback) {
+          this.updater.enqueueForceUpdate(this, callback, "forceUpdate");
+        };
+        {
+          var deprecatedAPIs = {
+            isMounted: ["isMounted", "Instead, make sure to clean up subscriptions and pending requests in componentWillUnmount to prevent memory leaks."],
+            replaceState: ["replaceState", "Refactor your code to use setState instead (see https://github.com/facebook/react/issues/3236)."]
+          };
+          var defineDeprecationWarning = function(methodName, info) {
+            Object.defineProperty(Component3.prototype, methodName, {
+              get: function() {
+                warn("%s(...) is deprecated in plain JavaScript React classes. %s", info[0], info[1]);
+                return void 0;
+              }
+            });
+          };
+          for (var fnName in deprecatedAPIs) {
+            if (deprecatedAPIs.hasOwnProperty(fnName)) {
+              defineDeprecationWarning(fnName, deprecatedAPIs[fnName]);
+            }
+          }
+        }
+        function ComponentDummy() {
+        }
+        ComponentDummy.prototype = Component3.prototype;
+        function PureComponent(props, context2, updater) {
+          this.props = props;
+          this.context = context2;
+          this.refs = emptyObject;
+          this.updater = updater || ReactNoopUpdateQueue;
+        }
+        var pureComponentPrototype = PureComponent.prototype = new ComponentDummy();
+        pureComponentPrototype.constructor = PureComponent;
+        assign(pureComponentPrototype, Component3.prototype);
+        pureComponentPrototype.isPureReactComponent = true;
+        function createRef() {
+          var refObject = {
+            current: null
+          };
+          {
+            Object.seal(refObject);
+          }
+          return refObject;
+        }
+        var isArrayImpl = Array.isArray;
+        function isArray2(a) {
+          return isArrayImpl(a);
+        }
+        function typeName(value) {
+          {
+            var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
+            var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+            return type;
+          }
+        }
+        function willCoercionThrow(value) {
+          {
+            try {
+              testStringCoercion(value);
+              return false;
+            } catch (e) {
+              return true;
+            }
+          }
+        }
+        function testStringCoercion(value) {
+          return "" + value;
+        }
+        function checkKeyStringCoercion(value) {
+          {
+            if (willCoercionThrow(value)) {
+              error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
+              return testStringCoercion(value);
+            }
+          }
+        }
+        function getWrappedName(outerType, innerType, wrapperName) {
+          var displayName = outerType.displayName;
+          if (displayName) {
+            return displayName;
+          }
+          var functionName = innerType.displayName || innerType.name || "";
+          return functionName !== "" ? wrapperName + "(" + functionName + ")" : wrapperName;
+        }
+        function getContextName(type) {
+          return type.displayName || "Context";
+        }
+        function getComponentNameFromType(type) {
+          if (type == null) {
+            return null;
+          }
+          {
+            if (typeof type.tag === "number") {
+              error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue.");
+            }
+          }
+          if (typeof type === "function") {
+            return type.displayName || type.name || null;
+          }
+          if (typeof type === "string") {
+            return type;
+          }
+          switch (type) {
+            case REACT_FRAGMENT_TYPE:
+              return "Fragment";
+            case REACT_PORTAL_TYPE:
+              return "Portal";
+            case REACT_PROFILER_TYPE:
+              return "Profiler";
+            case REACT_STRICT_MODE_TYPE:
+              return "StrictMode";
+            case REACT_SUSPENSE_TYPE:
+              return "Suspense";
+            case REACT_SUSPENSE_LIST_TYPE:
+              return "SuspenseList";
+          }
+          if (typeof type === "object") {
+            switch (type.$$typeof) {
+              case REACT_CONTEXT_TYPE:
+                var context2 = type;
+                return getContextName(context2) + ".Consumer";
+              case REACT_PROVIDER_TYPE:
+                var provider = type;
+                return getContextName(provider._context) + ".Provider";
+              case REACT_FORWARD_REF_TYPE:
+                return getWrappedName(type, type.render, "ForwardRef");
+              case REACT_MEMO_TYPE:
+                var outerName = type.displayName || null;
+                if (outerName !== null) {
+                  return outerName;
+                }
+                return getComponentNameFromType(type.type) || "Memo";
+              case REACT_LAZY_TYPE: {
+                var lazyComponent = type;
+                var payload = lazyComponent._payload;
+                var init2 = lazyComponent._init;
+                try {
+                  return getComponentNameFromType(init2(payload));
+                } catch (x) {
+                  return null;
+                }
+              }
+            }
+          }
+          return null;
+        }
+        var hasOwnProperty = Object.prototype.hasOwnProperty;
+        var RESERVED_PROPS = {
+          key: true,
+          ref: true,
+          __self: true,
+          __source: true
+        };
+        var specialPropKeyWarningShown, specialPropRefWarningShown, didWarnAboutStringRefs;
+        {
+          didWarnAboutStringRefs = {};
+        }
+        function hasValidRef(config) {
+          {
+            if (hasOwnProperty.call(config, "ref")) {
+              var getter = Object.getOwnPropertyDescriptor(config, "ref").get;
+              if (getter && getter.isReactWarning) {
+                return false;
+              }
+            }
+          }
+          return config.ref !== void 0;
+        }
+        function hasValidKey(config) {
+          {
+            if (hasOwnProperty.call(config, "key")) {
+              var getter = Object.getOwnPropertyDescriptor(config, "key").get;
+              if (getter && getter.isReactWarning) {
+                return false;
+              }
+            }
+          }
+          return config.key !== void 0;
+        }
+        function defineKeyPropWarningGetter(props, displayName) {
+          var warnAboutAccessingKey = function() {
+            {
+              if (!specialPropKeyWarningShown) {
+                specialPropKeyWarningShown = true;
+                error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+              }
+            }
+          };
+          warnAboutAccessingKey.isReactWarning = true;
+          Object.defineProperty(props, "key", {
+            get: warnAboutAccessingKey,
+            configurable: true
+          });
+        }
+        function defineRefPropWarningGetter(props, displayName) {
+          var warnAboutAccessingRef = function() {
+            {
+              if (!specialPropRefWarningShown) {
+                specialPropRefWarningShown = true;
+                error("%s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+              }
+            }
+          };
+          warnAboutAccessingRef.isReactWarning = true;
+          Object.defineProperty(props, "ref", {
+            get: warnAboutAccessingRef,
+            configurable: true
+          });
+        }
+        function warnIfStringRefCannotBeAutoConverted(config) {
+          {
+            if (typeof config.ref === "string" && ReactCurrentOwner.current && config.__self && ReactCurrentOwner.current.stateNode !== config.__self) {
+              var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
+              if (!didWarnAboutStringRefs[componentName]) {
+                error('Component "%s" contains the string ref "%s". Support for string refs will be removed in a future major release. This case cannot be automatically converted to an arrow function. We ask you to manually fix this case by using useRef() or createRef() instead. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-string-ref', componentName, config.ref);
+                didWarnAboutStringRefs[componentName] = true;
+              }
+            }
+          }
+        }
+        var ReactElement = function(type, key, ref, self3, source, owner, props) {
+          var element = {
+            // This tag allows us to uniquely identify this as a React Element
+            $$typeof: REACT_ELEMENT_TYPE,
+            // Built-in properties that belong on the element
+            type,
+            key,
+            ref,
+            props,
+            // Record the component responsible for creating this element.
+            _owner: owner
+          };
+          {
+            element._store = {};
+            Object.defineProperty(element._store, "validated", {
+              configurable: false,
+              enumerable: false,
+              writable: true,
+              value: false
+            });
+            Object.defineProperty(element, "_self", {
+              configurable: false,
+              enumerable: false,
+              writable: false,
+              value: self3
+            });
+            Object.defineProperty(element, "_source", {
+              configurable: false,
+              enumerable: false,
+              writable: false,
+              value: source
+            });
+            if (Object.freeze) {
+              Object.freeze(element.props);
+              Object.freeze(element);
+            }
+          }
+          return element;
+        };
+        function createElement2(type, config, children) {
+          var propName;
+          var props = {};
+          var key = null;
+          var ref = null;
+          var self3 = null;
+          var source = null;
+          if (config != null) {
+            if (hasValidRef(config)) {
+              ref = config.ref;
+              {
+                warnIfStringRefCannotBeAutoConverted(config);
+              }
+            }
+            if (hasValidKey(config)) {
+              {
+                checkKeyStringCoercion(config.key);
+              }
+              key = "" + config.key;
+            }
+            self3 = config.__self === void 0 ? null : config.__self;
+            source = config.__source === void 0 ? null : config.__source;
+            for (propName in config) {
+              if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+                props[propName] = config[propName];
+              }
+            }
+          }
+          var childrenLength = arguments.length - 2;
+          if (childrenLength === 1) {
+            props.children = children;
+          } else if (childrenLength > 1) {
+            var childArray = Array(childrenLength);
+            for (var i = 0; i < childrenLength; i++) {
+              childArray[i] = arguments[i + 2];
+            }
+            {
+              if (Object.freeze) {
+                Object.freeze(childArray);
+              }
+            }
+            props.children = childArray;
+          }
+          if (type && type.defaultProps) {
+            var defaultProps = type.defaultProps;
+            for (propName in defaultProps) {
+              if (props[propName] === void 0) {
+                props[propName] = defaultProps[propName];
+              }
+            }
+          }
+          {
+            if (key || ref) {
+              var displayName = typeof type === "function" ? type.displayName || type.name || "Unknown" : type;
+              if (key) {
+                defineKeyPropWarningGetter(props, displayName);
+              }
+              if (ref) {
+                defineRefPropWarningGetter(props, displayName);
+              }
+            }
+          }
+          return ReactElement(type, key, ref, self3, source, ReactCurrentOwner.current, props);
+        }
+        function cloneAndReplaceKey(oldElement, newKey) {
+          var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
+          return newElement;
+        }
+        function cloneElement(element, config, children) {
+          if (element === null || element === void 0) {
+            throw new Error("React.cloneElement(...): The argument must be a React element, but you passed " + element + ".");
+          }
+          var propName;
+          var props = assign({}, element.props);
+          var key = element.key;
+          var ref = element.ref;
+          var self3 = element._self;
+          var source = element._source;
+          var owner = element._owner;
+          if (config != null) {
+            if (hasValidRef(config)) {
+              ref = config.ref;
+              owner = ReactCurrentOwner.current;
+            }
+            if (hasValidKey(config)) {
+              {
+                checkKeyStringCoercion(config.key);
+              }
+              key = "" + config.key;
+            }
+            var defaultProps;
+            if (element.type && element.type.defaultProps) {
+              defaultProps = element.type.defaultProps;
+            }
+            for (propName in config) {
+              if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+                if (config[propName] === void 0 && defaultProps !== void 0) {
+                  props[propName] = defaultProps[propName];
+                } else {
+                  props[propName] = config[propName];
+                }
+              }
+            }
+          }
+          var childrenLength = arguments.length - 2;
+          if (childrenLength === 1) {
+            props.children = children;
+          } else if (childrenLength > 1) {
+            var childArray = Array(childrenLength);
+            for (var i = 0; i < childrenLength; i++) {
+              childArray[i] = arguments[i + 2];
+            }
+            props.children = childArray;
+          }
+          return ReactElement(element.type, key, ref, self3, source, owner, props);
+        }
+        function isValidElement(object) {
+          return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+        }
+        var SEPARATOR = ".";
+        var SUBSEPARATOR = ":";
+        function escape2(key) {
+          var escapeRegex = /[=:]/g;
+          var escaperLookup = {
+            "=": "=0",
+            ":": "=2"
+          };
+          var escapedString = key.replace(escapeRegex, function(match) {
+            return escaperLookup[match];
+          });
+          return "$" + escapedString;
+        }
+        var didWarnAboutMaps = false;
+        var userProvidedKeyEscapeRegex = /\/+/g;
+        function escapeUserProvidedKey(text) {
+          return text.replace(userProvidedKeyEscapeRegex, "$&/");
+        }
+        function getElementKey(element, index) {
+          if (typeof element === "object" && element !== null && element.key != null) {
+            {
+              checkKeyStringCoercion(element.key);
+            }
+            return escape2("" + element.key);
+          }
+          return index.toString(36);
+        }
+        function mapIntoArray(children, array, escapedPrefix, nameSoFar, callback) {
+          var type = typeof children;
+          if (type === "undefined" || type === "boolean") {
+            children = null;
+          }
+          var invokeCallback = false;
+          if (children === null) {
+            invokeCallback = true;
+          } else {
+            switch (type) {
+              case "string":
+              case "number":
+                invokeCallback = true;
+                break;
+              case "object":
+                switch (children.$$typeof) {
+                  case REACT_ELEMENT_TYPE:
+                  case REACT_PORTAL_TYPE:
+                    invokeCallback = true;
+                }
+            }
+          }
+          if (invokeCallback) {
+            var _child = children;
+            var mappedChild = callback(_child);
+            var childKey = nameSoFar === "" ? SEPARATOR + getElementKey(_child, 0) : nameSoFar;
+            if (isArray2(mappedChild)) {
+              var escapedChildKey = "";
+              if (childKey != null) {
+                escapedChildKey = escapeUserProvidedKey(childKey) + "/";
+              }
+              mapIntoArray(mappedChild, array, escapedChildKey, "", function(c) {
+                return c;
+              });
+            } else if (mappedChild != null) {
+              if (isValidElement(mappedChild)) {
+                {
+                  if (mappedChild.key && (!_child || _child.key !== mappedChild.key)) {
+                    checkKeyStringCoercion(mappedChild.key);
+                  }
+                }
+                mappedChild = cloneAndReplaceKey(
+                  mappedChild,
+                  // Keep both the (mapped) and old keys if they differ, just as
+                  // traverseAllChildren used to do for objects as children
+                  escapedPrefix + // $FlowFixMe Flow incorrectly thinks React.Portal doesn't have a key
+                  (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? (
+                    // $FlowFixMe Flow incorrectly thinks existing element's key can be a number
+                    // eslint-disable-next-line react-internal/safe-string-coercion
+                    escapeUserProvidedKey("" + mappedChild.key) + "/"
+                  ) : "") + childKey
+                );
+              }
+              array.push(mappedChild);
+            }
+            return 1;
+          }
+          var child;
+          var nextName;
+          var subtreeCount = 0;
+          var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
+          if (isArray2(children)) {
+            for (var i = 0; i < children.length; i++) {
+              child = children[i];
+              nextName = nextNamePrefix + getElementKey(child, i);
+              subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
+            }
+          } else {
+            var iteratorFn = getIteratorFn(children);
+            if (typeof iteratorFn === "function") {
+              var iterableChildren = children;
+              {
+                if (iteratorFn === iterableChildren.entries) {
+                  if (!didWarnAboutMaps) {
+                    warn("Using Maps as children is not supported. Use an array of keyed ReactElements instead.");
+                  }
+                  didWarnAboutMaps = true;
+                }
+              }
+              var iterator = iteratorFn.call(iterableChildren);
+              var step;
+              var ii = 0;
+              while (!(step = iterator.next()).done) {
+                child = step.value;
+                nextName = nextNamePrefix + getElementKey(child, ii++);
+                subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
+              }
+            } else if (type === "object") {
+              var childrenString = String(children);
+              throw new Error("Objects are not valid as a React child (found: " + (childrenString === "[object Object]" ? "object with keys {" + Object.keys(children).join(", ") + "}" : childrenString) + "). If you meant to render a collection of children, use an array instead.");
+            }
+          }
+          return subtreeCount;
+        }
+        function mapChildren(children, func, context2) {
+          if (children == null) {
+            return children;
+          }
+          var result = [];
+          var count = 0;
+          mapIntoArray(children, result, "", "", function(child) {
+            return func.call(context2, child, count++);
+          });
+          return result;
+        }
+        function countChildren(children) {
+          var n = 0;
+          mapChildren(children, function() {
+            n++;
+          });
+          return n;
+        }
+        function forEachChildren(children, forEachFunc, forEachContext) {
+          mapChildren(children, function() {
+            forEachFunc.apply(this, arguments);
+          }, forEachContext);
+        }
+        function toArray(children) {
+          return mapChildren(children, function(child) {
+            return child;
+          }) || [];
+        }
+        function onlyChild(children) {
+          if (!isValidElement(children)) {
+            throw new Error("React.Children.only expected to receive a single React element child.");
+          }
+          return children;
+        }
+        function createContext(defaultValue2) {
+          var context2 = {
+            $$typeof: REACT_CONTEXT_TYPE,
+            // As a workaround to support multiple concurrent renderers, we categorize
+            // some renderers as primary and others as secondary. We only expect
+            // there to be two concurrent renderers at most: React Native (primary) and
+            // Fabric (secondary); React DOM (primary) and React ART (secondary).
+            // Secondary renderers store their context values on separate fields.
+            _currentValue: defaultValue2,
+            _currentValue2: defaultValue2,
+            // Used to track how many concurrent renderers this context currently
+            // supports within in a single renderer. Such as parallel server rendering.
+            _threadCount: 0,
+            // These are circular
+            Provider: null,
+            Consumer: null,
+            // Add these to use same hidden class in VM as ServerContext
+            _defaultValue: null,
+            _globalName: null
+          };
+          context2.Provider = {
+            $$typeof: REACT_PROVIDER_TYPE,
+            _context: context2
+          };
+          var hasWarnedAboutUsingNestedContextConsumers = false;
+          var hasWarnedAboutUsingConsumerProvider = false;
+          var hasWarnedAboutDisplayNameOnConsumer = false;
+          {
+            var Consumer = {
+              $$typeof: REACT_CONTEXT_TYPE,
+              _context: context2
+            };
+            Object.defineProperties(Consumer, {
+              Provider: {
+                get: function() {
+                  if (!hasWarnedAboutUsingConsumerProvider) {
+                    hasWarnedAboutUsingConsumerProvider = true;
+                    error("Rendering <Context.Consumer.Provider> is not supported and will be removed in a future major release. Did you mean to render <Context.Provider> instead?");
+                  }
+                  return context2.Provider;
+                },
+                set: function(_Provider) {
+                  context2.Provider = _Provider;
+                }
+              },
+              _currentValue: {
+                get: function() {
+                  return context2._currentValue;
+                },
+                set: function(_currentValue) {
+                  context2._currentValue = _currentValue;
+                }
+              },
+              _currentValue2: {
+                get: function() {
+                  return context2._currentValue2;
+                },
+                set: function(_currentValue2) {
+                  context2._currentValue2 = _currentValue2;
+                }
+              },
+              _threadCount: {
+                get: function() {
+                  return context2._threadCount;
+                },
+                set: function(_threadCount) {
+                  context2._threadCount = _threadCount;
+                }
+              },
+              Consumer: {
+                get: function() {
+                  if (!hasWarnedAboutUsingNestedContextConsumers) {
+                    hasWarnedAboutUsingNestedContextConsumers = true;
+                    error("Rendering <Context.Consumer.Consumer> is not supported and will be removed in a future major release. Did you mean to render <Context.Consumer> instead?");
+                  }
+                  return context2.Consumer;
+                }
+              },
+              displayName: {
+                get: function() {
+                  return context2.displayName;
+                },
+                set: function(displayName) {
+                  if (!hasWarnedAboutDisplayNameOnConsumer) {
+                    warn("Setting `displayName` on Context.Consumer has no effect. You should set it directly on the context with Context.displayName = '%s'.", displayName);
+                    hasWarnedAboutDisplayNameOnConsumer = true;
+                  }
+                }
+              }
+            });
+            context2.Consumer = Consumer;
+          }
+          {
+            context2._currentRenderer = null;
+            context2._currentRenderer2 = null;
+          }
+          return context2;
+        }
+        var Uninitialized = -1;
+        var Pending = 0;
+        var Resolved = 1;
+        var Rejected = 2;
+        function lazyInitializer(payload) {
+          if (payload._status === Uninitialized) {
+            var ctor = payload._result;
+            var thenable = ctor();
+            thenable.then(function(moduleObject2) {
+              if (payload._status === Pending || payload._status === Uninitialized) {
+                var resolved = payload;
+                resolved._status = Resolved;
+                resolved._result = moduleObject2;
+              }
+            }, function(error2) {
+              if (payload._status === Pending || payload._status === Uninitialized) {
+                var rejected = payload;
+                rejected._status = Rejected;
+                rejected._result = error2;
+              }
+            });
+            if (payload._status === Uninitialized) {
+              var pending = payload;
+              pending._status = Pending;
+              pending._result = thenable;
+            }
+          }
+          if (payload._status === Resolved) {
+            var moduleObject = payload._result;
+            {
+              if (moduleObject === void 0) {
+                error("lazy: Expected the result of a dynamic import() call. Instead received: %s\n\nYour code should look like: \n  const MyComponent = lazy(() => import('./MyComponent'))\n\nDid you accidentally put curly braces around the import?", moduleObject);
+              }
+            }
+            {
+              if (!("default" in moduleObject)) {
+                error("lazy: Expected the result of a dynamic import() call. Instead received: %s\n\nYour code should look like: \n  const MyComponent = lazy(() => import('./MyComponent'))", moduleObject);
+              }
+            }
+            return moduleObject.default;
+          } else {
+            throw payload._result;
+          }
+        }
+        function lazy(ctor) {
+          var payload = {
+            // We use these fields to store the result.
+            _status: Uninitialized,
+            _result: ctor
+          };
+          var lazyType = {
+            $$typeof: REACT_LAZY_TYPE,
+            _payload: payload,
+            _init: lazyInitializer
+          };
+          {
+            var defaultProps;
+            var propTypes;
+            Object.defineProperties(lazyType, {
+              defaultProps: {
+                configurable: true,
+                get: function() {
+                  return defaultProps;
+                },
+                set: function(newDefaultProps) {
+                  error("React.lazy(...): It is not supported to assign `defaultProps` to a lazy component import. Either specify them where the component is defined, or create a wrapping component around it.");
+                  defaultProps = newDefaultProps;
+                  Object.defineProperty(lazyType, "defaultProps", {
+                    enumerable: true
+                  });
+                }
+              },
+              propTypes: {
+                configurable: true,
+                get: function() {
+                  return propTypes;
+                },
+                set: function(newPropTypes) {
+                  error("React.lazy(...): It is not supported to assign `propTypes` to a lazy component import. Either specify them where the component is defined, or create a wrapping component around it.");
+                  propTypes = newPropTypes;
+                  Object.defineProperty(lazyType, "propTypes", {
+                    enumerable: true
+                  });
+                }
+              }
+            });
+          }
+          return lazyType;
+        }
+        function forwardRef(render3) {
+          {
+            if (render3 != null && render3.$$typeof === REACT_MEMO_TYPE) {
+              error("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
+            } else if (typeof render3 !== "function") {
+              error("forwardRef requires a render function but was given %s.", render3 === null ? "null" : typeof render3);
+            } else {
+              if (render3.length !== 0 && render3.length !== 2) {
+                error("forwardRef render functions accept exactly two parameters: props and ref. %s", render3.length === 1 ? "Did you forget to use the ref parameter?" : "Any additional parameter will be undefined.");
+              }
+            }
+            if (render3 != null) {
+              if (render3.defaultProps != null || render3.propTypes != null) {
+                error("forwardRef render functions do not support propTypes or defaultProps. Did you accidentally pass a React component?");
+              }
+            }
+          }
+          var elementType = {
+            $$typeof: REACT_FORWARD_REF_TYPE,
+            render: render3
+          };
+          {
+            var ownName;
+            Object.defineProperty(elementType, "displayName", {
+              enumerable: false,
+              configurable: true,
+              get: function() {
+                return ownName;
+              },
+              set: function(name) {
+                ownName = name;
+                if (!render3.name && !render3.displayName) {
+                  render3.displayName = name;
+                }
+              }
+            });
+          }
+          return elementType;
+        }
+        var REACT_MODULE_REFERENCE;
+        {
+          REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
+        }
+        function isValidElementType(type) {
+          if (typeof type === "string" || typeof type === "function") {
+            return true;
+          }
+          if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
+            return true;
+          }
+          if (typeof type === "object" && type !== null) {
+            if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+            // types supported by any Flight configuration anywhere since
+            // we don't know which Flight build this will end up being used
+            // with.
+            type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
+              return true;
+            }
+          }
+          return false;
+        }
+        function memo(type, compare) {
+          {
+            if (!isValidElementType(type)) {
+              error("memo: The first argument must be a component. Instead received: %s", type === null ? "null" : typeof type);
+            }
+          }
+          var elementType = {
+            $$typeof: REACT_MEMO_TYPE,
+            type,
+            compare: compare === void 0 ? null : compare
+          };
+          {
+            var ownName;
+            Object.defineProperty(elementType, "displayName", {
+              enumerable: false,
+              configurable: true,
+              get: function() {
+                return ownName;
+              },
+              set: function(name) {
+                ownName = name;
+                if (!type.name && !type.displayName) {
+                  type.displayName = name;
+                }
+              }
+            });
+          }
+          return elementType;
+        }
+        function resolveDispatcher() {
+          var dispatcher = ReactCurrentDispatcher.current;
+          {
+            if (dispatcher === null) {
+              error("Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:\n1. You might have mismatching versions of React and the renderer (such as React DOM)\n2. You might be breaking the Rules of Hooks\n3. You might have more than one copy of React in the same app\nSee https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.");
+            }
+          }
+          return dispatcher;
+        }
+        function useContext(Context) {
+          var dispatcher = resolveDispatcher();
+          {
+            if (Context._context !== void 0) {
+              var realContext = Context._context;
+              if (realContext.Consumer === Context) {
+                error("Calling useContext(Context.Consumer) is not supported, may cause bugs, and will be removed in a future major release. Did you mean to call useContext(Context) instead?");
+              } else if (realContext.Provider === Context) {
+                error("Calling useContext(Context.Provider) is not supported. Did you mean to call useContext(Context) instead?");
+              }
+            }
+          }
+          return dispatcher.useContext(Context);
+        }
+        function useState2(initialState) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useState(initialState);
+        }
+        function useReducer(reducer, initialArg, init2) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useReducer(reducer, initialArg, init2);
+        }
+        function useRef4(initialValue) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useRef(initialValue);
+        }
+        function useEffect5(create, deps) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useEffect(create, deps);
+        }
+        function useInsertionEffect(create, deps) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useInsertionEffect(create, deps);
+        }
+        function useLayoutEffect(create, deps) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useLayoutEffect(create, deps);
+        }
+        function useCallback(callback, deps) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useCallback(callback, deps);
+        }
+        function useMemo(create, deps) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useMemo(create, deps);
+        }
+        function useImperativeHandle(ref, create, deps) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useImperativeHandle(ref, create, deps);
+        }
+        function useDebugValue(value, formatterFn) {
+          {
+            var dispatcher = resolveDispatcher();
+            return dispatcher.useDebugValue(value, formatterFn);
+          }
+        }
+        function useTransition() {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useTransition();
+        }
+        function useDeferredValue(value) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useDeferredValue(value);
+        }
+        function useId() {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useId();
+        }
+        function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
+          var dispatcher = resolveDispatcher();
+          return dispatcher.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+        }
+        var disabledDepth = 0;
+        var prevLog;
+        var prevInfo;
+        var prevWarn;
+        var prevError;
+        var prevGroup;
+        var prevGroupCollapsed;
+        var prevGroupEnd;
+        function disabledLog() {
+        }
+        disabledLog.__reactDisabledLog = true;
+        function disableLogs() {
+          {
+            if (disabledDepth === 0) {
+              prevLog = console.log;
+              prevInfo = console.info;
+              prevWarn = console.warn;
+              prevError = console.error;
+              prevGroup = console.group;
+              prevGroupCollapsed = console.groupCollapsed;
+              prevGroupEnd = console.groupEnd;
+              var props = {
+                configurable: true,
+                enumerable: true,
+                value: disabledLog,
+                writable: true
+              };
+              Object.defineProperties(console, {
+                info: props,
+                log: props,
+                warn: props,
+                error: props,
+                group: props,
+                groupCollapsed: props,
+                groupEnd: props
+              });
+            }
+            disabledDepth++;
+          }
+        }
+        function reenableLogs() {
+          {
+            disabledDepth--;
+            if (disabledDepth === 0) {
+              var props = {
+                configurable: true,
+                enumerable: true,
+                writable: true
+              };
+              Object.defineProperties(console, {
+                log: assign({}, props, {
+                  value: prevLog
+                }),
+                info: assign({}, props, {
+                  value: prevInfo
+                }),
+                warn: assign({}, props, {
+                  value: prevWarn
+                }),
+                error: assign({}, props, {
+                  value: prevError
+                }),
+                group: assign({}, props, {
+                  value: prevGroup
+                }),
+                groupCollapsed: assign({}, props, {
+                  value: prevGroupCollapsed
+                }),
+                groupEnd: assign({}, props, {
+                  value: prevGroupEnd
+                })
+              });
+            }
+            if (disabledDepth < 0) {
+              error("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
+            }
+          }
+        }
+        var ReactCurrentDispatcher$1 = ReactSharedInternals.ReactCurrentDispatcher;
+        var prefix;
+        function describeBuiltInComponentFrame(name, source, ownerFn) {
+          {
+            if (prefix === void 0) {
+              try {
+                throw Error();
+              } catch (x) {
+                var match = x.stack.trim().match(/\n( *(at )?)/);
+                prefix = match && match[1] || "";
+              }
+            }
+            return "\n" + prefix + name;
+          }
+        }
+        var reentry = false;
+        var componentFrameCache;
+        {
+          var PossiblyWeakMap = typeof WeakMap === "function" ? WeakMap : Map;
+          componentFrameCache = new PossiblyWeakMap();
+        }
+        function describeNativeComponentFrame(fn, construct) {
+          if (!fn || reentry) {
+            return "";
+          }
+          {
+            var frame = componentFrameCache.get(fn);
+            if (frame !== void 0) {
+              return frame;
+            }
+          }
+          var control;
+          reentry = true;
+          var previousPrepareStackTrace = Error.prepareStackTrace;
+          Error.prepareStackTrace = void 0;
+          var previousDispatcher;
+          {
+            previousDispatcher = ReactCurrentDispatcher$1.current;
+            ReactCurrentDispatcher$1.current = null;
+            disableLogs();
+          }
+          try {
+            if (construct) {
+              var Fake = function() {
+                throw Error();
+              };
+              Object.defineProperty(Fake.prototype, "props", {
+                set: function() {
+                  throw Error();
+                }
+              });
+              if (typeof Reflect === "object" && Reflect.construct) {
+                try {
+                  Reflect.construct(Fake, []);
+                } catch (x) {
+                  control = x;
+                }
+                Reflect.construct(fn, [], Fake);
+              } else {
+                try {
+                  Fake.call();
+                } catch (x) {
+                  control = x;
+                }
+                fn.call(Fake.prototype);
+              }
+            } else {
+              try {
+                throw Error();
+              } catch (x) {
+                control = x;
+              }
+              fn();
+            }
+          } catch (sample) {
+            if (sample && control && typeof sample.stack === "string") {
+              var sampleLines = sample.stack.split("\n");
+              var controlLines = control.stack.split("\n");
+              var s = sampleLines.length - 1;
+              var c = controlLines.length - 1;
+              while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                c--;
+              }
+              for (; s >= 1 && c >= 0; s--, c--) {
+                if (sampleLines[s] !== controlLines[c]) {
+                  if (s !== 1 || c !== 1) {
+                    do {
+                      s--;
+                      c--;
+                      if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                        var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                        if (fn.displayName && _frame.includes("<anonymous>")) {
+                          _frame = _frame.replace("<anonymous>", fn.displayName);
+                        }
+                        {
+                          if (typeof fn === "function") {
+                            componentFrameCache.set(fn, _frame);
+                          }
+                        }
+                        return _frame;
+                      }
+                    } while (s >= 1 && c >= 0);
+                  }
+                  break;
+                }
+              }
+            }
+          } finally {
+            reentry = false;
+            {
+              ReactCurrentDispatcher$1.current = previousDispatcher;
+              reenableLogs();
+            }
+            Error.prepareStackTrace = previousPrepareStackTrace;
+          }
+          var name = fn ? fn.displayName || fn.name : "";
+          var syntheticFrame = name ? describeBuiltInComponentFrame(name) : "";
+          {
+            if (typeof fn === "function") {
+              componentFrameCache.set(fn, syntheticFrame);
+            }
+          }
+          return syntheticFrame;
+        }
+        function describeFunctionComponentFrame(fn, source, ownerFn) {
+          {
+            return describeNativeComponentFrame(fn, false);
+          }
+        }
+        function shouldConstruct(Component4) {
+          var prototype = Component4.prototype;
+          return !!(prototype && prototype.isReactComponent);
+        }
+        function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
+          if (type == null) {
+            return "";
+          }
+          if (typeof type === "function") {
+            {
+              return describeNativeComponentFrame(type, shouldConstruct(type));
+            }
+          }
+          if (typeof type === "string") {
+            return describeBuiltInComponentFrame(type);
+          }
+          switch (type) {
+            case REACT_SUSPENSE_TYPE:
+              return describeBuiltInComponentFrame("Suspense");
+            case REACT_SUSPENSE_LIST_TYPE:
+              return describeBuiltInComponentFrame("SuspenseList");
+          }
+          if (typeof type === "object") {
+            switch (type.$$typeof) {
+              case REACT_FORWARD_REF_TYPE:
+                return describeFunctionComponentFrame(type.render);
+              case REACT_MEMO_TYPE:
+                return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
+              case REACT_LAZY_TYPE: {
+                var lazyComponent = type;
+                var payload = lazyComponent._payload;
+                var init2 = lazyComponent._init;
+                try {
+                  return describeUnknownElementTypeFrameInDEV(init2(payload), source, ownerFn);
+                } catch (x) {
+                }
+              }
+            }
+          }
+          return "";
+        }
+        var loggedTypeFailures = {};
+        var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
+        function setCurrentlyValidatingElement(element) {
+          {
+            if (element) {
+              var owner = element._owner;
+              var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+              ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
+            } else {
+              ReactDebugCurrentFrame$1.setExtraStackFrame(null);
+            }
+          }
+        }
+        function checkPropTypes(typeSpecs, values, location, componentName, element) {
+          {
+            var has = Function.call.bind(hasOwnProperty);
+            for (var typeSpecName in typeSpecs) {
+              if (has(typeSpecs, typeSpecName)) {
+                var error$1 = void 0;
+                try {
+                  if (typeof typeSpecs[typeSpecName] !== "function") {
+                    var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                    err.name = "Invariant Violation";
+                    throw err;
+                  }
+                  error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                } catch (ex) {
+                  error$1 = ex;
+                }
+                if (error$1 && !(error$1 instanceof Error)) {
+                  setCurrentlyValidatingElement(element);
+                  error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                  setCurrentlyValidatingElement(null);
+                }
+                if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
+                  loggedTypeFailures[error$1.message] = true;
+                  setCurrentlyValidatingElement(element);
+                  error("Failed %s type: %s", location, error$1.message);
+                  setCurrentlyValidatingElement(null);
+                }
+              }
+            }
+          }
+        }
+        function setCurrentlyValidatingElement$1(element) {
+          {
+            if (element) {
+              var owner = element._owner;
+              var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+              setExtraStackFrame(stack);
+            } else {
+              setExtraStackFrame(null);
+            }
+          }
+        }
+        var propTypesMisspellWarningShown;
+        {
+          propTypesMisspellWarningShown = false;
+        }
+        function getDeclarationErrorAddendum() {
+          if (ReactCurrentOwner.current) {
+            var name = getComponentNameFromType(ReactCurrentOwner.current.type);
+            if (name) {
+              return "\n\nCheck the render method of `" + name + "`.";
+            }
+          }
+          return "";
+        }
+        function getSourceInfoErrorAddendum(source) {
+          if (source !== void 0) {
+            var fileName = source.fileName.replace(/^.*[\\\/]/, "");
+            var lineNumber = source.lineNumber;
+            return "\n\nCheck your code at " + fileName + ":" + lineNumber + ".";
+          }
+          return "";
+        }
+        function getSourceInfoErrorAddendumForProps(elementProps) {
+          if (elementProps !== null && elementProps !== void 0) {
+            return getSourceInfoErrorAddendum(elementProps.__source);
+          }
+          return "";
+        }
+        var ownerHasKeyUseWarning = {};
+        function getCurrentComponentErrorInfo(parentType) {
+          var info = getDeclarationErrorAddendum();
+          if (!info) {
+            var parentName = typeof parentType === "string" ? parentType : parentType.displayName || parentType.name;
+            if (parentName) {
+              info = "\n\nCheck the top-level render call using <" + parentName + ">.";
+            }
+          }
+          return info;
+        }
+        function validateExplicitKey(element, parentType) {
+          if (!element._store || element._store.validated || element.key != null) {
+            return;
+          }
+          element._store.validated = true;
+          var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
+          if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
+            return;
+          }
+          ownerHasKeyUseWarning[currentComponentErrorInfo] = true;
+          var childOwner = "";
+          if (element && element._owner && element._owner !== ReactCurrentOwner.current) {
+            childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
+          }
+          {
+            setCurrentlyValidatingElement$1(element);
+            error('Each child in a list should have a unique "key" prop.%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
+            setCurrentlyValidatingElement$1(null);
+          }
+        }
+        function validateChildKeys(node, parentType) {
+          if (typeof node !== "object") {
+            return;
+          }
+          if (isArray2(node)) {
+            for (var i = 0; i < node.length; i++) {
+              var child = node[i];
+              if (isValidElement(child)) {
+                validateExplicitKey(child, parentType);
+              }
+            }
+          } else if (isValidElement(node)) {
+            if (node._store) {
+              node._store.validated = true;
+            }
+          } else if (node) {
+            var iteratorFn = getIteratorFn(node);
+            if (typeof iteratorFn === "function") {
+              if (iteratorFn !== node.entries) {
+                var iterator = iteratorFn.call(node);
+                var step;
+                while (!(step = iterator.next()).done) {
+                  if (isValidElement(step.value)) {
+                    validateExplicitKey(step.value, parentType);
+                  }
+                }
+              }
+            }
+          }
+        }
+        function validatePropTypes(element) {
+          {
+            var type = element.type;
+            if (type === null || type === void 0 || typeof type === "string") {
+              return;
+            }
+            var propTypes;
+            if (typeof type === "function") {
+              propTypes = type.propTypes;
+            } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+            // Inner props are checked in the reconciler.
+            type.$$typeof === REACT_MEMO_TYPE)) {
+              propTypes = type.propTypes;
+            } else {
+              return;
+            }
+            if (propTypes) {
+              var name = getComponentNameFromType(type);
+              checkPropTypes(propTypes, element.props, "prop", name, element);
+            } else if (type.PropTypes !== void 0 && !propTypesMisspellWarningShown) {
+              propTypesMisspellWarningShown = true;
+              var _name = getComponentNameFromType(type);
+              error("Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?", _name || "Unknown");
+            }
+            if (typeof type.getDefaultProps === "function" && !type.getDefaultProps.isReactClassApproved) {
+              error("getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead.");
+            }
+          }
+        }
+        function validateFragmentProps(fragment10) {
+          {
+            var keys = Object.keys(fragment10.props);
+            for (var i = 0; i < keys.length; i++) {
+              var key = keys[i];
+              if (key !== "children" && key !== "key") {
+                setCurrentlyValidatingElement$1(fragment10);
+                error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
+                setCurrentlyValidatingElement$1(null);
+                break;
+              }
+            }
+            if (fragment10.ref !== null) {
+              setCurrentlyValidatingElement$1(fragment10);
+              error("Invalid attribute `ref` supplied to `React.Fragment`.");
+              setCurrentlyValidatingElement$1(null);
+            }
+          }
+        }
+        function createElementWithValidation(type, props, children) {
+          var validType = isValidElementType(type);
+          if (!validType) {
+            var info = "";
+            if (type === void 0 || typeof type === "object" && type !== null && Object.keys(type).length === 0) {
+              info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.";
+            }
+            var sourceInfo = getSourceInfoErrorAddendumForProps(props);
+            if (sourceInfo) {
+              info += sourceInfo;
+            } else {
+              info += getDeclarationErrorAddendum();
+            }
+            var typeString;
+            if (type === null) {
+              typeString = "null";
+            } else if (isArray2(type)) {
+              typeString = "array";
+            } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
+              typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
+              info = " Did you accidentally export a JSX literal instead of a component?";
+            } else {
+              typeString = typeof type;
+            }
+            {
+              error("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
+            }
+          }
+          var element = createElement2.apply(this, arguments);
+          if (element == null) {
+            return element;
+          }
+          if (validType) {
+            for (var i = 2; i < arguments.length; i++) {
+              validateChildKeys(arguments[i], type);
+            }
+          }
+          if (type === REACT_FRAGMENT_TYPE) {
+            validateFragmentProps(element);
+          } else {
+            validatePropTypes(element);
+          }
+          return element;
+        }
+        var didWarnAboutDeprecatedCreateFactory = false;
+        function createFactoryWithValidation(type) {
+          var validatedFactory = createElementWithValidation.bind(null, type);
+          validatedFactory.type = type;
+          {
+            if (!didWarnAboutDeprecatedCreateFactory) {
+              didWarnAboutDeprecatedCreateFactory = true;
+              warn("React.createFactory() is deprecated and will be removed in a future major release. Consider using JSX or use React.createElement() directly instead.");
+            }
+            Object.defineProperty(validatedFactory, "type", {
+              enumerable: false,
+              get: function() {
+                warn("Factory.type is deprecated. Access the class directly before passing it to createFactory.");
+                Object.defineProperty(this, "type", {
+                  value: type
+                });
+                return type;
+              }
+            });
+          }
+          return validatedFactory;
+        }
+        function cloneElementWithValidation(element, props, children) {
+          var newElement = cloneElement.apply(this, arguments);
+          for (var i = 2; i < arguments.length; i++) {
+            validateChildKeys(arguments[i], newElement.type);
+          }
+          validatePropTypes(newElement);
+          return newElement;
+        }
+        function startTransition(scope, options) {
+          var prevTransition = ReactCurrentBatchConfig.transition;
+          ReactCurrentBatchConfig.transition = {};
+          var currentTransition = ReactCurrentBatchConfig.transition;
+          {
+            ReactCurrentBatchConfig.transition._updatedFibers = /* @__PURE__ */ new Set();
+          }
+          try {
+            scope();
+          } finally {
+            ReactCurrentBatchConfig.transition = prevTransition;
+            {
+              if (prevTransition === null && currentTransition._updatedFibers) {
+                var updatedFibersCount = currentTransition._updatedFibers.size;
+                if (updatedFibersCount > 10) {
+                  warn("Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table.");
+                }
+                currentTransition._updatedFibers.clear();
+              }
+            }
+          }
+        }
+        var didWarnAboutMessageChannel = false;
+        var enqueueTaskImpl = null;
+        function enqueueTask(task) {
+          if (enqueueTaskImpl === null) {
+            try {
+              var requireString = ("require" + Math.random()).slice(0, 7);
+              var nodeRequire = module && module[requireString];
+              enqueueTaskImpl = nodeRequire.call(module, "timers").setImmediate;
+            } catch (_err) {
+              enqueueTaskImpl = function(callback) {
+                {
+                  if (didWarnAboutMessageChannel === false) {
+                    didWarnAboutMessageChannel = true;
+                    if (typeof MessageChannel === "undefined") {
+                      error("This browser does not have a MessageChannel implementation, so enqueuing tasks via await act(async () => ...) will fail. Please file an issue at https://github.com/facebook/react/issues if you encounter this warning.");
+                    }
+                  }
+                }
+                var channel = new MessageChannel();
+                channel.port1.onmessage = callback;
+                channel.port2.postMessage(void 0);
+              };
+            }
+          }
+          return enqueueTaskImpl(task);
+        }
+        var actScopeDepth = 0;
+        var didWarnNoAwaitAct = false;
+        function act(callback) {
+          {
+            var prevActScopeDepth = actScopeDepth;
+            actScopeDepth++;
+            if (ReactCurrentActQueue.current === null) {
+              ReactCurrentActQueue.current = [];
+            }
+            var prevIsBatchingLegacy = ReactCurrentActQueue.isBatchingLegacy;
+            var result;
+            try {
+              ReactCurrentActQueue.isBatchingLegacy = true;
+              result = callback();
+              if (!prevIsBatchingLegacy && ReactCurrentActQueue.didScheduleLegacyUpdate) {
+                var queue = ReactCurrentActQueue.current;
+                if (queue !== null) {
+                  ReactCurrentActQueue.didScheduleLegacyUpdate = false;
+                  flushActQueue(queue);
+                }
+              }
+            } catch (error2) {
+              popActScope(prevActScopeDepth);
+              throw error2;
+            } finally {
+              ReactCurrentActQueue.isBatchingLegacy = prevIsBatchingLegacy;
+            }
+            if (result !== null && typeof result === "object" && typeof result.then === "function") {
+              var thenableResult = result;
+              var wasAwaited = false;
+              var thenable = {
+                then: function(resolve3, reject2) {
+                  wasAwaited = true;
+                  thenableResult.then(function(returnValue2) {
+                    popActScope(prevActScopeDepth);
+                    if (actScopeDepth === 0) {
+                      recursivelyFlushAsyncActWork(returnValue2, resolve3, reject2);
+                    } else {
+                      resolve3(returnValue2);
+                    }
+                  }, function(error2) {
+                    popActScope(prevActScopeDepth);
+                    reject2(error2);
+                  });
+                }
+              };
+              {
+                if (!didWarnNoAwaitAct && typeof Promise !== "undefined") {
+                  Promise.resolve().then(function() {
+                  }).then(function() {
+                    if (!wasAwaited) {
+                      didWarnNoAwaitAct = true;
+                      error("You called act(async () => ...) without await. This could lead to unexpected testing behaviour, interleaving multiple act calls and mixing their scopes. You should - await act(async () => ...);");
+                    }
+                  });
+                }
+              }
+              return thenable;
+            } else {
+              var returnValue = result;
+              popActScope(prevActScopeDepth);
+              if (actScopeDepth === 0) {
+                var _queue = ReactCurrentActQueue.current;
+                if (_queue !== null) {
+                  flushActQueue(_queue);
+                  ReactCurrentActQueue.current = null;
+                }
+                var _thenable = {
+                  then: function(resolve3, reject2) {
+                    if (ReactCurrentActQueue.current === null) {
+                      ReactCurrentActQueue.current = [];
+                      recursivelyFlushAsyncActWork(returnValue, resolve3, reject2);
+                    } else {
+                      resolve3(returnValue);
+                    }
+                  }
+                };
+                return _thenable;
+              } else {
+                var _thenable2 = {
+                  then: function(resolve3, reject2) {
+                    resolve3(returnValue);
+                  }
+                };
+                return _thenable2;
+              }
+            }
+          }
+        }
+        function popActScope(prevActScopeDepth) {
+          {
+            if (prevActScopeDepth !== actScopeDepth - 1) {
+              error("You seem to have overlapping act() calls, this is not supported. Be sure to await previous act() calls before making a new one. ");
+            }
+            actScopeDepth = prevActScopeDepth;
+          }
+        }
+        function recursivelyFlushAsyncActWork(returnValue, resolve3, reject2) {
+          {
+            var queue = ReactCurrentActQueue.current;
+            if (queue !== null) {
+              try {
+                flushActQueue(queue);
+                enqueueTask(function() {
+                  if (queue.length === 0) {
+                    ReactCurrentActQueue.current = null;
+                    resolve3(returnValue);
+                  } else {
+                    recursivelyFlushAsyncActWork(returnValue, resolve3, reject2);
+                  }
+                });
+              } catch (error2) {
+                reject2(error2);
+              }
+            } else {
+              resolve3(returnValue);
+            }
+          }
+        }
+        var isFlushing = false;
+        function flushActQueue(queue) {
+          {
+            if (!isFlushing) {
+              isFlushing = true;
+              var i = 0;
+              try {
+                for (; i < queue.length; i++) {
+                  var callback = queue[i];
+                  do {
+                    callback = callback(true);
+                  } while (callback !== null);
+                }
+                queue.length = 0;
+              } catch (error2) {
+                queue = queue.slice(i + 1);
+                throw error2;
+              } finally {
+                isFlushing = false;
+              }
+            }
+          }
+        }
+        var createElement$1 = createElementWithValidation;
+        var cloneElement$1 = cloneElementWithValidation;
+        var createFactory = createFactoryWithValidation;
+        var Children = {
+          map: mapChildren,
+          forEach: forEachChildren,
+          count: countChildren,
+          toArray,
+          only: onlyChild
+        };
+        exports.Children = Children;
+        exports.Component = Component3;
+        exports.Fragment = REACT_FRAGMENT_TYPE;
+        exports.Profiler = REACT_PROFILER_TYPE;
+        exports.PureComponent = PureComponent;
+        exports.StrictMode = REACT_STRICT_MODE_TYPE;
+        exports.Suspense = REACT_SUSPENSE_TYPE;
+        exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
+        exports.act = act;
+        exports.cloneElement = cloneElement$1;
+        exports.createContext = createContext;
+        exports.createElement = createElement$1;
+        exports.createFactory = createFactory;
+        exports.createRef = createRef;
+        exports.forwardRef = forwardRef;
+        exports.isValidElement = isValidElement;
+        exports.lazy = lazy;
+        exports.memo = memo;
+        exports.startTransition = startTransition;
+        exports.unstable_act = act;
+        exports.useCallback = useCallback;
+        exports.useContext = useContext;
+        exports.useDebugValue = useDebugValue;
+        exports.useDeferredValue = useDeferredValue;
+        exports.useEffect = useEffect5;
+        exports.useId = useId;
+        exports.useImperativeHandle = useImperativeHandle;
+        exports.useInsertionEffect = useInsertionEffect;
+        exports.useLayoutEffect = useLayoutEffect;
+        exports.useMemo = useMemo;
+        exports.useReducer = useReducer;
+        exports.useRef = useRef4;
+        exports.useState = useState2;
+        exports.useSyncExternalStore = useSyncExternalStore;
+        exports.useTransition = useTransition;
+        exports.version = ReactVersion;
+        if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function") {
+          __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
+        }
+      })();
+    }
+  }
+});
+
+// node_modules/react/index.js
+var require_react = __commonJS({
+  "node_modules/react/index.js"(exports, module) {
+    "use strict";
+    if (false) {
+      module.exports = null;
+    } else {
+      module.exports = require_react_development();
+    }
+  }
+});
+
+// node_modules/graphology/dist/graphology.umd.min.js
+var require_graphology_umd_min = __commonJS({
+  "node_modules/graphology/dist/graphology.umd.min.js"(exports, module) {
+    !function(t, e) {
+      "object" == typeof exports && "undefined" != typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define(e) : (t = "undefined" != typeof globalThis ? globalThis : t || self).graphology = e();
+    }(exports, function() {
+      "use strict";
+      function t(e2) {
+        return t = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(t2) {
+          return typeof t2;
+        } : function(t2) {
+          return t2 && "function" == typeof Symbol && t2.constructor === Symbol && t2 !== Symbol.prototype ? "symbol" : typeof t2;
+        }, t(e2);
+      }
+      function e(t2, e2) {
+        t2.prototype = Object.create(e2.prototype), t2.prototype.constructor = t2, r(t2, e2);
+      }
+      function n(t2) {
+        return n = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function(t3) {
+          return t3.__proto__ || Object.getPrototypeOf(t3);
+        }, n(t2);
+      }
+      function r(t2, e2) {
+        return r = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(t3, e3) {
+          return t3.__proto__ = e3, t3;
+        }, r(t2, e2);
+      }
+      function i() {
+        if ("undefined" == typeof Reflect || !Reflect.construct) return false;
+        if (Reflect.construct.sham) return false;
+        if ("function" == typeof Proxy) return true;
+        try {
+          return Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+          })), true;
+        } catch (t2) {
+          return false;
+        }
+      }
+      function o(t2, e2, n2) {
+        return o = i() ? Reflect.construct.bind() : function(t3, e3, n3) {
+          var i2 = [null];
+          i2.push.apply(i2, e3);
+          var o2 = new (Function.bind.apply(t3, i2))();
+          return n3 && r(o2, n3.prototype), o2;
+        }, o.apply(null, arguments);
+      }
+      function a(t2) {
+        var e2 = "function" == typeof Map ? /* @__PURE__ */ new Map() : void 0;
+        return a = function(t3) {
+          if (null === t3 || (i2 = t3, -1 === Function.toString.call(i2).indexOf("[native code]"))) return t3;
+          var i2;
+          if ("function" != typeof t3) throw new TypeError("Super expression must either be null or a function");
+          if (void 0 !== e2) {
+            if (e2.has(t3)) return e2.get(t3);
+            e2.set(t3, a2);
+          }
+          function a2() {
+            return o(t3, arguments, n(this).constructor);
+          }
+          return a2.prototype = Object.create(t3.prototype, { constructor: { value: a2, enumerable: false, writable: true, configurable: true } }), r(a2, t3);
+        }, a(t2);
+      }
+      function c(t2) {
+        if (void 0 === t2) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        return t2;
+      }
+      var u = function() {
+        for (var t2 = arguments[0], e2 = 1, n2 = arguments.length; e2 < n2; e2++) if (arguments[e2]) for (var r2 in arguments[e2]) t2[r2] = arguments[e2][r2];
+        return t2;
+      };
+      function d(t2, e2, n2, r2) {
+        var i2 = t2._nodes.get(e2), o2 = null;
+        return i2 ? o2 = "mixed" === r2 ? i2.out && i2.out[n2] || i2.undirected && i2.undirected[n2] : "directed" === r2 ? i2.out && i2.out[n2] : i2.undirected && i2.undirected[n2] : o2;
+      }
+      function s(e2) {
+        return "object" === t(e2) && null !== e2;
+      }
+      function h(t2) {
+        var e2;
+        for (e2 in t2) return false;
+        return true;
+      }
+      function p(t2, e2, n2) {
+        Object.defineProperty(t2, e2, { enumerable: false, configurable: false, writable: true, value: n2 });
+      }
+      function f(t2, e2, n2) {
+        var r2 = { enumerable: true, configurable: true };
+        "function" == typeof n2 ? r2.get = n2 : (r2.value = n2, r2.writable = false), Object.defineProperty(t2, e2, r2);
+      }
+      function l(t2) {
+        return !!s(t2) && !(t2.attributes && !Array.isArray(t2.attributes));
+      }
+      "function" == typeof Object.assign && (u = Object.assign);
+      var g, y = { exports: {} }, w = "object" == typeof Reflect ? Reflect : null, v = w && "function" == typeof w.apply ? w.apply : function(t2, e2, n2) {
+        return Function.prototype.apply.call(t2, e2, n2);
+      };
+      g = w && "function" == typeof w.ownKeys ? w.ownKeys : Object.getOwnPropertySymbols ? function(t2) {
+        return Object.getOwnPropertyNames(t2).concat(Object.getOwnPropertySymbols(t2));
+      } : function(t2) {
+        return Object.getOwnPropertyNames(t2);
+      };
+      var b = Number.isNaN || function(t2) {
+        return t2 != t2;
+      };
+      function m() {
+        m.init.call(this);
+      }
+      y.exports = m, y.exports.once = function(t2, e2) {
+        return new Promise(function(n2, r2) {
+          function i2(n3) {
+            t2.removeListener(e2, o2), r2(n3);
+          }
+          function o2() {
+            "function" == typeof t2.removeListener && t2.removeListener("error", i2), n2([].slice.call(arguments));
+          }
+          U(t2, e2, o2, { once: true }), "error" !== e2 && function(t3, e3, n3) {
+            "function" == typeof t3.on && U(t3, "error", e3, n3);
+          }(t2, i2, { once: true });
+        });
+      }, m.EventEmitter = m, m.prototype._events = void 0, m.prototype._eventsCount = 0, m.prototype._maxListeners = void 0;
+      var k = 10;
+      function _(t2) {
+        if ("function" != typeof t2) throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof t2);
+      }
+      function G(t2) {
+        return void 0 === t2._maxListeners ? m.defaultMaxListeners : t2._maxListeners;
+      }
+      function x(t2, e2, n2, r2) {
+        var i2, o2, a2, c2;
+        if (_(n2), void 0 === (o2 = t2._events) ? (o2 = t2._events = /* @__PURE__ */ Object.create(null), t2._eventsCount = 0) : (void 0 !== o2.newListener && (t2.emit("newListener", e2, n2.listener ? n2.listener : n2), o2 = t2._events), a2 = o2[e2]), void 0 === a2) a2 = o2[e2] = n2, ++t2._eventsCount;
+        else if ("function" == typeof a2 ? a2 = o2[e2] = r2 ? [n2, a2] : [a2, n2] : r2 ? a2.unshift(n2) : a2.push(n2), (i2 = G(t2)) > 0 && a2.length > i2 && !a2.warned) {
+          a2.warned = true;
+          var u2 = new Error("Possible EventEmitter memory leak detected. " + a2.length + " " + String(e2) + " listeners added. Use emitter.setMaxListeners() to increase limit");
+          u2.name = "MaxListenersExceededWarning", u2.emitter = t2, u2.type = e2, u2.count = a2.length, c2 = u2, console && console.warn && console.warn(c2);
+        }
+        return t2;
+      }
+      function E() {
+        if (!this.fired) return this.target.removeListener(this.type, this.wrapFn), this.fired = true, 0 === arguments.length ? this.listener.call(this.target) : this.listener.apply(this.target, arguments);
+      }
+      function A(t2, e2, n2) {
+        var r2 = { fired: false, wrapFn: void 0, target: t2, type: e2, listener: n2 }, i2 = E.bind(r2);
+        return i2.listener = n2, r2.wrapFn = i2, i2;
+      }
+      function L(t2, e2, n2) {
+        var r2 = t2._events;
+        if (void 0 === r2) return [];
+        var i2 = r2[e2];
+        return void 0 === i2 ? [] : "function" == typeof i2 ? n2 ? [i2.listener || i2] : [i2] : n2 ? function(t3) {
+          for (var e3 = new Array(t3.length), n3 = 0; n3 < e3.length; ++n3) e3[n3] = t3[n3].listener || t3[n3];
+          return e3;
+        }(i2) : D(i2, i2.length);
+      }
+      function S(t2) {
+        var e2 = this._events;
+        if (void 0 !== e2) {
+          var n2 = e2[t2];
+          if ("function" == typeof n2) return 1;
+          if (void 0 !== n2) return n2.length;
+        }
+        return 0;
+      }
+      function D(t2, e2) {
+        for (var n2 = new Array(e2), r2 = 0; r2 < e2; ++r2) n2[r2] = t2[r2];
+        return n2;
+      }
+      function U(t2, e2, n2, r2) {
+        if ("function" == typeof t2.on) r2.once ? t2.once(e2, n2) : t2.on(e2, n2);
+        else {
+          if ("function" != typeof t2.addEventListener) throw new TypeError('The "emitter" argument must be of type EventEmitter. Received type ' + typeof t2);
+          t2.addEventListener(e2, function i2(o2) {
+            r2.once && t2.removeEventListener(e2, i2), n2(o2);
+          });
+        }
+      }
+      function N(t2) {
+        if ("function" != typeof t2) throw new Error("obliterator/iterator: expecting a function!");
+        this.next = t2;
+      }
+      Object.defineProperty(m, "defaultMaxListeners", { enumerable: true, get: function() {
+        return k;
+      }, set: function(t2) {
+        if ("number" != typeof t2 || t2 < 0 || b(t2)) throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + t2 + ".");
+        k = t2;
+      } }), m.init = function() {
+        void 0 !== this._events && this._events !== Object.getPrototypeOf(this)._events || (this._events = /* @__PURE__ */ Object.create(null), this._eventsCount = 0), this._maxListeners = this._maxListeners || void 0;
+      }, m.prototype.setMaxListeners = function(t2) {
+        if ("number" != typeof t2 || t2 < 0 || b(t2)) throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + t2 + ".");
+        return this._maxListeners = t2, this;
+      }, m.prototype.getMaxListeners = function() {
+        return G(this);
+      }, m.prototype.emit = function(t2) {
+        for (var e2 = [], n2 = 1; n2 < arguments.length; n2++) e2.push(arguments[n2]);
+        var r2 = "error" === t2, i2 = this._events;
+        if (void 0 !== i2) r2 = r2 && void 0 === i2.error;
+        else if (!r2) return false;
+        if (r2) {
+          var o2;
+          if (e2.length > 0 && (o2 = e2[0]), o2 instanceof Error) throw o2;
+          var a2 = new Error("Unhandled error." + (o2 ? " (" + o2.message + ")" : ""));
+          throw a2.context = o2, a2;
+        }
+        var c2 = i2[t2];
+        if (void 0 === c2) return false;
+        if ("function" == typeof c2) v(c2, this, e2);
+        else {
+          var u2 = c2.length, d2 = D(c2, u2);
+          for (n2 = 0; n2 < u2; ++n2) v(d2[n2], this, e2);
+        }
+        return true;
+      }, m.prototype.addListener = function(t2, e2) {
+        return x(this, t2, e2, false);
+      }, m.prototype.on = m.prototype.addListener, m.prototype.prependListener = function(t2, e2) {
+        return x(this, t2, e2, true);
+      }, m.prototype.once = function(t2, e2) {
+        return _(e2), this.on(t2, A(this, t2, e2)), this;
+      }, m.prototype.prependOnceListener = function(t2, e2) {
+        return _(e2), this.prependListener(t2, A(this, t2, e2)), this;
+      }, m.prototype.removeListener = function(t2, e2) {
+        var n2, r2, i2, o2, a2;
+        if (_(e2), void 0 === (r2 = this._events)) return this;
+        if (void 0 === (n2 = r2[t2])) return this;
+        if (n2 === e2 || n2.listener === e2) 0 == --this._eventsCount ? this._events = /* @__PURE__ */ Object.create(null) : (delete r2[t2], r2.removeListener && this.emit("removeListener", t2, n2.listener || e2));
+        else if ("function" != typeof n2) {
+          for (i2 = -1, o2 = n2.length - 1; o2 >= 0; o2--) if (n2[o2] === e2 || n2[o2].listener === e2) {
+            a2 = n2[o2].listener, i2 = o2;
+            break;
+          }
+          if (i2 < 0) return this;
+          0 === i2 ? n2.shift() : function(t3, e3) {
+            for (; e3 + 1 < t3.length; e3++) t3[e3] = t3[e3 + 1];
+            t3.pop();
+          }(n2, i2), 1 === n2.length && (r2[t2] = n2[0]), void 0 !== r2.removeListener && this.emit("removeListener", t2, a2 || e2);
+        }
+        return this;
+      }, m.prototype.off = m.prototype.removeListener, m.prototype.removeAllListeners = function(t2) {
+        var e2, n2, r2;
+        if (void 0 === (n2 = this._events)) return this;
+        if (void 0 === n2.removeListener) return 0 === arguments.length ? (this._events = /* @__PURE__ */ Object.create(null), this._eventsCount = 0) : void 0 !== n2[t2] && (0 == --this._eventsCount ? this._events = /* @__PURE__ */ Object.create(null) : delete n2[t2]), this;
+        if (0 === arguments.length) {
+          var i2, o2 = Object.keys(n2);
+          for (r2 = 0; r2 < o2.length; ++r2) "removeListener" !== (i2 = o2[r2]) && this.removeAllListeners(i2);
+          return this.removeAllListeners("removeListener"), this._events = /* @__PURE__ */ Object.create(null), this._eventsCount = 0, this;
+        }
+        if ("function" == typeof (e2 = n2[t2])) this.removeListener(t2, e2);
+        else if (void 0 !== e2) for (r2 = e2.length - 1; r2 >= 0; r2--) this.removeListener(t2, e2[r2]);
+        return this;
+      }, m.prototype.listeners = function(t2) {
+        return L(this, t2, true);
+      }, m.prototype.rawListeners = function(t2) {
+        return L(this, t2, false);
+      }, m.listenerCount = function(t2, e2) {
+        return "function" == typeof t2.listenerCount ? t2.listenerCount(e2) : S.call(t2, e2);
+      }, m.prototype.listenerCount = S, m.prototype.eventNames = function() {
+        return this._eventsCount > 0 ? g(this._events) : [];
+      }, "undefined" != typeof Symbol && (N.prototype[Symbol.iterator] = function() {
+        return this;
+      }), N.of = function() {
+        var t2 = arguments, e2 = t2.length, n2 = 0;
+        return new N(function() {
+          return n2 >= e2 ? { done: true } : { done: false, value: t2[n2++] };
+        });
+      }, N.empty = function() {
+        return new N(function() {
+          return { done: true };
+        });
+      }, N.fromSequence = function(t2) {
+        var e2 = 0, n2 = t2.length;
+        return new N(function() {
+          return e2 >= n2 ? { done: true } : { done: false, value: t2[e2++] };
+        });
+      }, N.is = function(t2) {
+        return t2 instanceof N || "object" == typeof t2 && null !== t2 && "function" == typeof t2.next;
+      };
+      var O = N, j = {};
+      j.ARRAY_BUFFER_SUPPORT = "undefined" != typeof ArrayBuffer, j.SYMBOL_SUPPORT = "undefined" != typeof Symbol;
+      var C = O, M = j, z = M.ARRAY_BUFFER_SUPPORT, W = M.SYMBOL_SUPPORT;
+      var P = function(t2) {
+        var e2 = function(t3) {
+          return "string" == typeof t3 || Array.isArray(t3) || z && ArrayBuffer.isView(t3) ? C.fromSequence(t3) : "object" != typeof t3 || null === t3 ? null : W && "function" == typeof t3[Symbol.iterator] ? t3[Symbol.iterator]() : "function" == typeof t3.next ? t3 : null;
+        }(t2);
+        if (!e2) throw new Error("obliterator: target is not iterable nor a valid iterator.");
+        return e2;
+      }, R = P, K = function(t2, e2) {
+        for (var n2, r2 = arguments.length > 1 ? e2 : 1 / 0, i2 = r2 !== 1 / 0 ? new Array(r2) : [], o2 = 0, a2 = R(t2); ; ) {
+          if (o2 === r2) return i2;
+          if ((n2 = a2.next()).done) return o2 !== e2 && (i2.length = o2), i2;
+          i2[o2++] = n2.value;
+        }
+      }, T = function(t2) {
+        function n2(e2) {
+          var n3;
+          return (n3 = t2.call(this) || this).name = "GraphError", n3.message = e2, n3;
+        }
+        return e(n2, t2), n2;
+      }(a(Error)), B = function(t2) {
+        function n2(e2) {
+          var r2;
+          return (r2 = t2.call(this, e2) || this).name = "InvalidArgumentsGraphError", "function" == typeof Error.captureStackTrace && Error.captureStackTrace(c(r2), n2.prototype.constructor), r2;
+        }
+        return e(n2, t2), n2;
+      }(T), F = function(t2) {
+        function n2(e2) {
+          var r2;
+          return (r2 = t2.call(this, e2) || this).name = "NotFoundGraphError", "function" == typeof Error.captureStackTrace && Error.captureStackTrace(c(r2), n2.prototype.constructor), r2;
+        }
+        return e(n2, t2), n2;
+      }(T), I = function(t2) {
+        function n2(e2) {
+          var r2;
+          return (r2 = t2.call(this, e2) || this).name = "UsageGraphError", "function" == typeof Error.captureStackTrace && Error.captureStackTrace(c(r2), n2.prototype.constructor), r2;
+        }
+        return e(n2, t2), n2;
+      }(T);
+      function Y(t2, e2) {
+        this.key = t2, this.attributes = e2, this.clear();
+      }
+      function q(t2, e2) {
+        this.key = t2, this.attributes = e2, this.clear();
+      }
+      function J(t2, e2) {
+        this.key = t2, this.attributes = e2, this.clear();
+      }
+      function V(t2, e2, n2, r2, i2) {
+        this.key = e2, this.attributes = i2, this.undirected = t2, this.source = n2, this.target = r2;
+      }
+      Y.prototype.clear = function() {
+        this.inDegree = 0, this.outDegree = 0, this.undirectedDegree = 0, this.undirectedLoops = 0, this.directedLoops = 0, this.in = {}, this.out = {}, this.undirected = {};
+      }, q.prototype.clear = function() {
+        this.inDegree = 0, this.outDegree = 0, this.directedLoops = 0, this.in = {}, this.out = {};
+      }, J.prototype.clear = function() {
+        this.undirectedDegree = 0, this.undirectedLoops = 0, this.undirected = {};
+      }, V.prototype.attach = function() {
+        var t2 = "out", e2 = "in";
+        this.undirected && (t2 = e2 = "undirected");
+        var n2 = this.source.key, r2 = this.target.key;
+        this.source[t2][r2] = this, this.undirected && n2 === r2 || (this.target[e2][n2] = this);
+      }, V.prototype.attachMulti = function() {
+        var t2 = "out", e2 = "in", n2 = this.source.key, r2 = this.target.key;
+        this.undirected && (t2 = e2 = "undirected");
+        var i2 = this.source[t2], o2 = i2[r2];
+        if (void 0 === o2) return i2[r2] = this, void (this.undirected && n2 === r2 || (this.target[e2][n2] = this));
+        o2.previous = this, this.next = o2, i2[r2] = this, this.target[e2][n2] = this;
+      }, V.prototype.detach = function() {
+        var t2 = this.source.key, e2 = this.target.key, n2 = "out", r2 = "in";
+        this.undirected && (n2 = r2 = "undirected"), delete this.source[n2][e2], delete this.target[r2][t2];
+      }, V.prototype.detachMulti = function() {
+        var t2 = this.source.key, e2 = this.target.key, n2 = "out", r2 = "in";
+        this.undirected && (n2 = r2 = "undirected"), void 0 === this.previous ? void 0 === this.next ? (delete this.source[n2][e2], delete this.target[r2][t2]) : (this.next.previous = void 0, this.source[n2][e2] = this.next, this.target[r2][t2] = this.next) : (this.previous.next = this.next, void 0 !== this.next && (this.next.previous = this.previous));
+      };
+      function H(t2, e2, n2, r2, i2, o2, a2) {
+        var c2, u2, d2, s2;
+        if (r2 = "" + r2, 0 === n2) {
+          if (!(c2 = t2._nodes.get(r2))) throw new F("Graph.".concat(e2, ': could not find the "').concat(r2, '" node in the graph.'));
+          d2 = i2, s2 = o2;
+        } else if (3 === n2) {
+          if (i2 = "" + i2, !(u2 = t2._edges.get(i2))) throw new F("Graph.".concat(e2, ': could not find the "').concat(i2, '" edge in the graph.'));
+          var h2 = u2.source.key, p2 = u2.target.key;
+          if (r2 === h2) c2 = u2.target;
+          else {
+            if (r2 !== p2) throw new F("Graph.".concat(e2, ': the "').concat(r2, '" node is not attached to the "').concat(i2, '" edge (').concat(h2, ", ").concat(p2, ")."));
+            c2 = u2.source;
+          }
+          d2 = o2, s2 = a2;
+        } else {
+          if (!(u2 = t2._edges.get(r2))) throw new F("Graph.".concat(e2, ': could not find the "').concat(r2, '" edge in the graph.'));
+          c2 = 1 === n2 ? u2.source : u2.target, d2 = i2, s2 = o2;
+        }
+        return [c2, d2, s2];
+      }
+      var Q = [{ name: function(t2) {
+        return "get".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
+          return a2.attributes[c2];
+        };
+      } }, { name: function(t2) {
+        return "get".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          return H(this, e2, n2, t3, r2)[0].attributes;
+        };
+      } }, { name: function(t2) {
+        return "has".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
+          return a2.attributes.hasOwnProperty(c2);
+        };
+      } }, { name: function(t2) {
+        return "set".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2, o2) {
+          var a2 = H(this, e2, n2, t3, r2, i2, o2), c2 = a2[0], u2 = a2[1], d2 = a2[2];
+          return c2.attributes[u2] = d2, this.emit("nodeAttributesUpdated", { key: c2.key, type: "set", attributes: c2.attributes, name: u2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "update".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2, o2) {
+          var a2 = H(this, e2, n2, t3, r2, i2, o2), c2 = a2[0], u2 = a2[1], d2 = a2[2];
+          if ("function" != typeof d2) throw new B("Graph.".concat(e2, ": updater should be a function."));
+          var s2 = c2.attributes, h2 = d2(s2[u2]);
+          return s2[u2] = h2, this.emit("nodeAttributesUpdated", { key: c2.key, type: "set", attributes: c2.attributes, name: u2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "remove".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
+          return delete a2.attributes[c2], this.emit("nodeAttributesUpdated", { key: a2.key, type: "remove", attributes: a2.attributes, name: c2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "replace".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
+          if (!s(c2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
+          return a2.attributes = c2, this.emit("nodeAttributesUpdated", { key: a2.key, type: "replace", attributes: a2.attributes }), this;
+        };
+      } }, { name: function(t2) {
+        return "merge".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
+          if (!s(c2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
+          return u(a2.attributes, c2), this.emit("nodeAttributesUpdated", { key: a2.key, type: "merge", attributes: a2.attributes, data: c2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "update".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
+          if ("function" != typeof c2) throw new B("Graph.".concat(e2, ": provided updater is not a function."));
+          return a2.attributes = c2(a2.attributes), this.emit("nodeAttributesUpdated", { key: a2.key, type: "update", attributes: a2.attributes }), this;
+        };
+      } }];
+      var X = [{ name: function(t2) {
+        return "get".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          var i2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 2) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var o2 = "" + t3, a2 = "" + r2;
+            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          return i2.attributes[r2];
+        };
+      } }, { name: function(t2) {
+        return "get".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3) {
+          var r2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 1) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var i2 = "" + t3, o2 = "" + arguments[1];
+            if (!(r2 = d(this, i2, o2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(i2, '" - "').concat(o2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(r2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          return r2.attributes;
+        };
+      } }, { name: function(t2) {
+        return "has".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          var i2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 2) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var o2 = "" + t3, a2 = "" + r2;
+            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          return i2.attributes.hasOwnProperty(r2);
+        };
+      } }, { name: function(t2) {
+        return "set".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 3) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var a2 = "" + t3, c2 = "" + r2;
+            if (r2 = arguments[2], i2 = arguments[3], !(o2 = d(this, a2, c2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(a2, '" - "').concat(c2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(o2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          return o2.attributes[r2] = i2, this.emit("edgeAttributesUpdated", { key: o2.key, type: "set", attributes: o2.attributes, name: r2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "update".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2, i2) {
+          var o2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 3) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var a2 = "" + t3, c2 = "" + r2;
+            if (r2 = arguments[2], i2 = arguments[3], !(o2 = d(this, a2, c2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(a2, '" - "').concat(c2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(o2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          if ("function" != typeof i2) throw new B("Graph.".concat(e2, ": updater should be a function."));
+          return o2.attributes[r2] = i2(o2.attributes[r2]), this.emit("edgeAttributesUpdated", { key: o2.key, type: "set", attributes: o2.attributes, name: r2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "remove".concat(t2, "Attribute");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          var i2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 2) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var o2 = "" + t3, a2 = "" + r2;
+            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          return delete i2.attributes[r2], this.emit("edgeAttributesUpdated", { key: i2.key, type: "remove", attributes: i2.attributes, name: r2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "replace".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          var i2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 2) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var o2 = "" + t3, a2 = "" + r2;
+            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          if (!s(r2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
+          return i2.attributes = r2, this.emit("edgeAttributesUpdated", { key: i2.key, type: "replace", attributes: i2.attributes }), this;
+        };
+      } }, { name: function(t2) {
+        return "merge".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          var i2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 2) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var o2 = "" + t3, a2 = "" + r2;
+            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          if (!s(r2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
+          return u(i2.attributes, r2), this.emit("edgeAttributesUpdated", { key: i2.key, type: "merge", attributes: i2.attributes, data: r2 }), this;
+        };
+      } }, { name: function(t2) {
+        return "update".concat(t2, "Attributes");
+      }, attacher: function(t2, e2, n2) {
+        t2.prototype[e2] = function(t3, r2) {
+          var i2;
+          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
+          if (arguments.length > 2) {
+            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
+            var o2 = "" + t3, a2 = "" + r2;
+            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
+          } else {
+            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
+            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
+          }
+          if ("function" != typeof r2) throw new B("Graph.".concat(e2, ": provided updater is not a function."));
+          return i2.attributes = r2(i2.attributes), this.emit("edgeAttributesUpdated", { key: i2.key, type: "update", attributes: i2.attributes }), this;
+        };
+      } }];
+      var Z = O, $ = P, tt = function() {
+        var t2 = arguments, e2 = null, n2 = -1;
+        return new Z(function() {
+          for (var r2 = null; ; ) {
+            if (null === e2) {
+              if (++n2 >= t2.length) return { done: true };
+              e2 = $(t2[n2]);
+            }
+            if (true !== (r2 = e2.next()).done) break;
+            e2 = null;
+          }
+          return r2;
+        });
+      }, et = [{ name: "edges", type: "mixed" }, { name: "inEdges", type: "directed", direction: "in" }, { name: "outEdges", type: "directed", direction: "out" }, { name: "inboundEdges", type: "mixed", direction: "in" }, { name: "outboundEdges", type: "mixed", direction: "out" }, { name: "directedEdges", type: "directed" }, { name: "undirectedEdges", type: "undirected" }];
+      function nt(t2, e2, n2, r2) {
+        var i2 = false;
+        for (var o2 in e2) if (o2 !== r2) {
+          var a2 = e2[o2];
+          if (i2 = n2(a2.key, a2.attributes, a2.source.key, a2.target.key, a2.source.attributes, a2.target.attributes, a2.undirected), t2 && i2) return a2.key;
+        }
+      }
+      function rt(t2, e2, n2, r2) {
+        var i2, o2, a2, c2 = false;
+        for (var u2 in e2) if (u2 !== r2) {
+          i2 = e2[u2];
+          do {
+            if (o2 = i2.source, a2 = i2.target, c2 = n2(i2.key, i2.attributes, o2.key, a2.key, o2.attributes, a2.attributes, i2.undirected), t2 && c2) return i2.key;
+            i2 = i2.next;
+          } while (void 0 !== i2);
+        }
+      }
+      function it(t2, e2) {
+        var n2, r2 = Object.keys(t2), i2 = r2.length, o2 = 0;
+        return new O(function() {
+          do {
+            if (n2) n2 = n2.next;
+            else {
+              if (o2 >= i2) return { done: true };
+              var a2 = r2[o2++];
+              if (a2 === e2) {
+                n2 = void 0;
+                continue;
+              }
+              n2 = t2[a2];
+            }
+          } while (!n2);
+          return { done: false, value: { edge: n2.key, attributes: n2.attributes, source: n2.source.key, target: n2.target.key, sourceAttributes: n2.source.attributes, targetAttributes: n2.target.attributes, undirected: n2.undirected } };
+        });
+      }
+      function ot(t2, e2, n2, r2) {
+        var i2 = e2[n2];
+        if (i2) {
+          var o2 = i2.source, a2 = i2.target;
+          return r2(i2.key, i2.attributes, o2.key, a2.key, o2.attributes, a2.attributes, i2.undirected) && t2 ? i2.key : void 0;
+        }
+      }
+      function at(t2, e2, n2, r2) {
+        var i2 = e2[n2];
+        if (i2) {
+          var o2 = false;
+          do {
+            if (o2 = r2(i2.key, i2.attributes, i2.source.key, i2.target.key, i2.source.attributes, i2.target.attributes, i2.undirected), t2 && o2) return i2.key;
+            i2 = i2.next;
+          } while (void 0 !== i2);
+        }
+      }
+      function ct(t2, e2) {
+        var n2 = t2[e2];
+        return void 0 !== n2.next ? new O(function() {
+          if (!n2) return { done: true };
+          var t3 = { edge: n2.key, attributes: n2.attributes, source: n2.source.key, target: n2.target.key, sourceAttributes: n2.source.attributes, targetAttributes: n2.target.attributes, undirected: n2.undirected };
+          return n2 = n2.next, { done: false, value: t3 };
+        }) : O.of({ edge: n2.key, attributes: n2.attributes, source: n2.source.key, target: n2.target.key, sourceAttributes: n2.source.attributes, targetAttributes: n2.target.attributes, undirected: n2.undirected });
+      }
+      function ut(t2, e2) {
+        if (0 === t2.size) return [];
+        if ("mixed" === e2 || e2 === t2.type) return "function" == typeof Array.from ? Array.from(t2._edges.keys()) : K(t2._edges.keys(), t2._edges.size);
+        for (var n2, r2, i2 = "undirected" === e2 ? t2.undirectedSize : t2.directedSize, o2 = new Array(i2), a2 = "undirected" === e2, c2 = t2._edges.values(), u2 = 0; true !== (n2 = c2.next()).done; ) (r2 = n2.value).undirected === a2 && (o2[u2++] = r2.key);
+        return o2;
+      }
+      function dt(t2, e2, n2, r2) {
+        if (0 !== e2.size) {
+          for (var i2, o2, a2 = "mixed" !== n2 && n2 !== e2.type, c2 = "undirected" === n2, u2 = false, d2 = e2._edges.values(); true !== (i2 = d2.next()).done; ) if (o2 = i2.value, !a2 || o2.undirected === c2) {
+            var s2 = o2, h2 = s2.key, p2 = s2.attributes, f2 = s2.source, l2 = s2.target;
+            if (u2 = r2(h2, p2, f2.key, l2.key, f2.attributes, l2.attributes, o2.undirected), t2 && u2) return h2;
+          }
+        }
+      }
+      function st(t2, e2) {
+        if (0 === t2.size) return O.empty();
+        var n2 = "mixed" !== e2 && e2 !== t2.type, r2 = "undirected" === e2, i2 = t2._edges.values();
+        return new O(function() {
+          for (var t3, e3; ; ) {
+            if ((t3 = i2.next()).done) return t3;
+            if (e3 = t3.value, !n2 || e3.undirected === r2) break;
+          }
+          return { value: { edge: e3.key, attributes: e3.attributes, source: e3.source.key, target: e3.target.key, sourceAttributes: e3.source.attributes, targetAttributes: e3.target.attributes, undirected: e3.undirected }, done: false };
+        });
+      }
+      function ht(t2, e2, n2, r2, i2, o2) {
+        var a2, c2 = e2 ? rt : nt;
+        if ("undirected" !== n2) {
+          if ("out" !== r2 && (a2 = c2(t2, i2.in, o2), t2 && a2)) return a2;
+          if ("in" !== r2 && (a2 = c2(t2, i2.out, o2, r2 ? void 0 : i2.key), t2 && a2)) return a2;
+        }
+        if ("directed" !== n2 && (a2 = c2(t2, i2.undirected, o2), t2 && a2)) return a2;
+      }
+      function pt(t2, e2, n2, r2) {
+        var i2 = [];
+        return ht(false, t2, e2, n2, r2, function(t3) {
+          i2.push(t3);
+        }), i2;
+      }
+      function ft(t2, e2, n2) {
+        var r2 = O.empty();
+        return "undirected" !== t2 && ("out" !== e2 && void 0 !== n2.in && (r2 = tt(r2, it(n2.in))), "in" !== e2 && void 0 !== n2.out && (r2 = tt(r2, it(n2.out, e2 ? void 0 : n2.key)))), "directed" !== t2 && void 0 !== n2.undirected && (r2 = tt(r2, it(n2.undirected))), r2;
+      }
+      function lt(t2, e2, n2, r2, i2, o2, a2) {
+        var c2, u2 = n2 ? at : ot;
+        if ("undirected" !== e2) {
+          if (void 0 !== i2.in && "out" !== r2 && (c2 = u2(t2, i2.in, o2, a2), t2 && c2)) return c2;
+          if (void 0 !== i2.out && "in" !== r2 && (r2 || i2.key !== o2) && (c2 = u2(t2, i2.out, o2, a2), t2 && c2)) return c2;
+        }
+        if ("directed" !== e2 && void 0 !== i2.undirected && (c2 = u2(t2, i2.undirected, o2, a2), t2 && c2)) return c2;
+      }
+      function gt(t2, e2, n2, r2, i2) {
+        var o2 = [];
+        return lt(false, t2, e2, n2, r2, i2, function(t3) {
+          o2.push(t3);
+        }), o2;
+      }
+      function yt(t2, e2, n2, r2) {
+        var i2 = O.empty();
+        return "undirected" !== t2 && (void 0 !== n2.in && "out" !== e2 && r2 in n2.in && (i2 = tt(i2, ct(n2.in, r2))), void 0 !== n2.out && "in" !== e2 && r2 in n2.out && (e2 || n2.key !== r2) && (i2 = tt(i2, ct(n2.out, r2)))), "directed" !== t2 && void 0 !== n2.undirected && r2 in n2.undirected && (i2 = tt(i2, ct(n2.undirected, r2))), i2;
+      }
+      var wt = [{ name: "neighbors", type: "mixed" }, { name: "inNeighbors", type: "directed", direction: "in" }, { name: "outNeighbors", type: "directed", direction: "out" }, { name: "inboundNeighbors", type: "mixed", direction: "in" }, { name: "outboundNeighbors", type: "mixed", direction: "out" }, { name: "directedNeighbors", type: "directed" }, { name: "undirectedNeighbors", type: "undirected" }];
+      function vt() {
+        this.A = null, this.B = null;
+      }
+      function bt(t2, e2, n2, r2, i2) {
+        for (var o2 in r2) {
+          var a2 = r2[o2], c2 = a2.source, u2 = a2.target, d2 = c2 === n2 ? u2 : c2;
+          if (!e2 || !e2.has(d2.key)) {
+            var s2 = i2(d2.key, d2.attributes);
+            if (t2 && s2) return d2.key;
+          }
+        }
+      }
+      function mt(t2, e2, n2, r2, i2) {
+        if ("mixed" !== e2) {
+          if ("undirected" === e2) return bt(t2, null, r2, r2.undirected, i2);
+          if ("string" == typeof n2) return bt(t2, null, r2, r2[n2], i2);
+        }
+        var o2, a2 = new vt();
+        if ("undirected" !== e2) {
+          if ("out" !== n2) {
+            if (o2 = bt(t2, null, r2, r2.in, i2), t2 && o2) return o2;
+            a2.wrap(r2.in);
+          }
+          if ("in" !== n2) {
+            if (o2 = bt(t2, a2, r2, r2.out, i2), t2 && o2) return o2;
+            a2.wrap(r2.out);
+          }
+        }
+        if ("directed" !== e2 && (o2 = bt(t2, a2, r2, r2.undirected, i2), t2 && o2)) return o2;
+      }
+      function kt(t2, e2, n2) {
+        var r2 = Object.keys(n2), i2 = r2.length, o2 = 0;
+        return new O(function() {
+          var a2 = null;
+          do {
+            if (o2 >= i2) return t2 && t2.wrap(n2), { done: true };
+            var c2 = n2[r2[o2++]], u2 = c2.source, d2 = c2.target;
+            a2 = u2 === e2 ? d2 : u2, t2 && t2.has(a2.key) && (a2 = null);
+          } while (null === a2);
+          return { done: false, value: { neighbor: a2.key, attributes: a2.attributes } };
+        });
+      }
+      function _t(t2, e2) {
+        var n2 = e2.name, r2 = e2.type, i2 = e2.direction;
+        t2.prototype[n2] = function(t3) {
+          if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return [];
+          t3 = "" + t3;
+          var e3 = this._nodes.get(t3);
+          if (void 0 === e3) throw new F("Graph.".concat(n2, ': could not find the "').concat(t3, '" node in the graph.'));
+          return function(t4, e4, n3) {
+            if ("mixed" !== t4) {
+              if ("undirected" === t4) return Object.keys(n3.undirected);
+              if ("string" == typeof e4) return Object.keys(n3[e4]);
+            }
+            var r3 = [];
+            return mt(false, t4, e4, n3, function(t5) {
+              r3.push(t5);
+            }), r3;
+          }("mixed" === r2 ? this.type : r2, i2, e3);
+        };
+      }
+      function Gt(t2, e2) {
+        var n2 = e2.name, r2 = e2.type, i2 = e2.direction, o2 = n2.slice(0, -1) + "Entries";
+        t2.prototype[o2] = function(t3) {
+          if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return O.empty();
+          t3 = "" + t3;
+          var e3 = this._nodes.get(t3);
+          if (void 0 === e3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t3, '" node in the graph.'));
+          return function(t4, e4, n3) {
+            if ("mixed" !== t4) {
+              if ("undirected" === t4) return kt(null, n3, n3.undirected);
+              if ("string" == typeof e4) return kt(null, n3, n3[e4]);
+            }
+            var r3 = O.empty(), i3 = new vt();
+            return "undirected" !== t4 && ("out" !== e4 && (r3 = tt(r3, kt(i3, n3, n3.in))), "in" !== e4 && (r3 = tt(r3, kt(i3, n3, n3.out)))), "directed" !== t4 && (r3 = tt(r3, kt(i3, n3, n3.undirected))), r3;
+          }("mixed" === r2 ? this.type : r2, i2, e3);
+        };
+      }
+      function xt(t2, e2, n2, r2, i2) {
+        for (var o2, a2, c2, u2, d2, s2, h2, p2 = r2._nodes.values(), f2 = r2.type; true !== (o2 = p2.next()).done; ) {
+          var l2 = false;
+          if (a2 = o2.value, "undirected" !== f2) for (c2 in u2 = a2.out) {
+            d2 = u2[c2];
+            do {
+              if (s2 = d2.target, l2 = true, h2 = i2(a2.key, s2.key, a2.attributes, s2.attributes, d2.key, d2.attributes, d2.undirected), t2 && h2) return d2;
+              d2 = d2.next;
+            } while (d2);
+          }
+          if ("directed" !== f2) {
+            for (c2 in u2 = a2.undirected) if (!(e2 && a2.key > c2)) {
+              d2 = u2[c2];
+              do {
+                if ((s2 = d2.target).key !== c2 && (s2 = d2.source), l2 = true, h2 = i2(a2.key, s2.key, a2.attributes, s2.attributes, d2.key, d2.attributes, d2.undirected), t2 && h2) return d2;
+                d2 = d2.next;
+              } while (d2);
+            }
+          }
+          if (n2 && !l2 && (h2 = i2(a2.key, null, a2.attributes, null, null, null, null), t2 && h2)) return null;
+        }
+      }
+      function Et(t2) {
+        if (!s(t2)) throw new B('Graph.import: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
+        if (!("key" in t2)) throw new B("Graph.import: serialized node is missing its key.");
+        if ("attributes" in t2 && (!s(t2.attributes) || null === t2.attributes)) throw new B("Graph.import: invalid attributes. Attributes should be a plain object, null or omitted.");
+      }
+      function At(t2) {
+        if (!s(t2)) throw new B('Graph.import: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
+        if (!("source" in t2)) throw new B("Graph.import: serialized edge is missing its source.");
+        if (!("target" in t2)) throw new B("Graph.import: serialized edge is missing its target.");
+        if ("attributes" in t2 && (!s(t2.attributes) || null === t2.attributes)) throw new B("Graph.import: invalid attributes. Attributes should be a plain object, null or omitted.");
+        if ("undirected" in t2 && "boolean" != typeof t2.undirected) throw new B("Graph.import: invalid undirectedness information. Undirected should be boolean or omitted.");
+      }
+      vt.prototype.wrap = function(t2) {
+        null === this.A ? this.A = t2 : null === this.B && (this.B = t2);
+      }, vt.prototype.has = function(t2) {
+        return null !== this.A && t2 in this.A || null !== this.B && t2 in this.B;
+      };
+      var Lt, St = (Lt = 255 & Math.floor(256 * Math.random()), function() {
+        return Lt++;
+      }), Dt = /* @__PURE__ */ new Set(["directed", "undirected", "mixed"]), Ut = /* @__PURE__ */ new Set(["domain", "_events", "_eventsCount", "_maxListeners"]), Nt = { allowSelfLoops: true, multi: false, type: "mixed" };
+      function Ot(t2, e2, n2) {
+        var r2 = new t2.NodeDataClass(e2, n2);
+        return t2._nodes.set(e2, r2), t2.emit("nodeAdded", { key: e2, attributes: n2 }), r2;
+      }
+      function jt(t2, e2, n2, r2, i2, o2, a2, c2) {
+        if (!r2 && "undirected" === t2.type) throw new I("Graph.".concat(e2, ": you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead."));
+        if (r2 && "directed" === t2.type) throw new I("Graph.".concat(e2, ": you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead."));
+        if (c2 && !s(c2)) throw new B("Graph.".concat(e2, ': invalid attributes. Expecting an object but got "').concat(c2, '"'));
+        if (o2 = "" + o2, a2 = "" + a2, c2 = c2 || {}, !t2.allowSelfLoops && o2 === a2) throw new I("Graph.".concat(e2, ': source & target are the same ("').concat(o2, `"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`));
+        var u2 = t2._nodes.get(o2), d2 = t2._nodes.get(a2);
+        if (!u2) throw new F("Graph.".concat(e2, ': source node "').concat(o2, '" not found.'));
+        if (!d2) throw new F("Graph.".concat(e2, ': target node "').concat(a2, '" not found.'));
+        var h2 = { key: null, undirected: r2, source: o2, target: a2, attributes: c2 };
+        if (n2) i2 = t2._edgeKeyGenerator();
+        else if (i2 = "" + i2, t2._edges.has(i2)) throw new I("Graph.".concat(e2, ': the "').concat(i2, '" edge already exists in the graph.'));
+        if (!t2.multi && (r2 ? void 0 !== u2.undirected[a2] : void 0 !== u2.out[a2])) throw new I("Graph.".concat(e2, ': an edge linking "').concat(o2, '" to "').concat(a2, `" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`));
+        var p2 = new V(r2, i2, u2, d2, c2);
+        t2._edges.set(i2, p2);
+        var f2 = o2 === a2;
+        return r2 ? (u2.undirectedDegree++, d2.undirectedDegree++, f2 && (u2.undirectedLoops++, t2._undirectedSelfLoopCount++)) : (u2.outDegree++, d2.inDegree++, f2 && (u2.directedLoops++, t2._directedSelfLoopCount++)), t2.multi ? p2.attachMulti() : p2.attach(), r2 ? t2._undirectedSize++ : t2._directedSize++, h2.key = i2, t2.emit("edgeAdded", h2), i2;
+      }
+      function Ct(t2, e2, n2, r2, i2, o2, a2, c2, d2) {
+        if (!r2 && "undirected" === t2.type) throw new I("Graph.".concat(e2, ": you cannot merge/update a directed edge to an undirected graph. Use the #.mergeEdge/#.updateEdge or #.addUndirectedEdge instead."));
+        if (r2 && "directed" === t2.type) throw new I("Graph.".concat(e2, ": you cannot merge/update an undirected edge to a directed graph. Use the #.mergeEdge/#.updateEdge or #.addDirectedEdge instead."));
+        if (c2) {
+          if (d2) {
+            if ("function" != typeof c2) throw new B("Graph.".concat(e2, ': invalid updater function. Expecting a function but got "').concat(c2, '"'));
+          } else if (!s(c2)) throw new B("Graph.".concat(e2, ': invalid attributes. Expecting an object but got "').concat(c2, '"'));
+        }
+        var h2;
+        if (o2 = "" + o2, a2 = "" + a2, d2 && (h2 = c2, c2 = void 0), !t2.allowSelfLoops && o2 === a2) throw new I("Graph.".concat(e2, ': source & target are the same ("').concat(o2, `"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`));
+        var p2, f2, l2 = t2._nodes.get(o2), g2 = t2._nodes.get(a2);
+        if (!n2 && (p2 = t2._edges.get(i2))) {
+          if (!(p2.source.key === o2 && p2.target.key === a2 || r2 && p2.source.key === a2 && p2.target.key === o2)) throw new I("Graph.".concat(e2, ': inconsistency detected when attempting to merge the "').concat(i2, '" edge with "').concat(o2, '" source & "').concat(a2, '" target vs. ("').concat(p2.source.key, '", "').concat(p2.target.key, '").'));
+          f2 = p2;
+        }
+        if (f2 || t2.multi || !l2 || (f2 = r2 ? l2.undirected[a2] : l2.out[a2]), f2) {
+          var y2 = [f2.key, false, false, false];
+          if (d2 ? !h2 : !c2) return y2;
+          if (d2) {
+            var w2 = f2.attributes;
+            f2.attributes = h2(w2), t2.emit("edgeAttributesUpdated", { type: "replace", key: f2.key, attributes: f2.attributes });
+          } else u(f2.attributes, c2), t2.emit("edgeAttributesUpdated", { type: "merge", key: f2.key, attributes: f2.attributes, data: c2 });
+          return y2;
+        }
+        c2 = c2 || {}, d2 && h2 && (c2 = h2(c2));
+        var v2 = { key: null, undirected: r2, source: o2, target: a2, attributes: c2 };
+        if (n2) i2 = t2._edgeKeyGenerator();
+        else if (i2 = "" + i2, t2._edges.has(i2)) throw new I("Graph.".concat(e2, ': the "').concat(i2, '" edge already exists in the graph.'));
+        var b2 = false, m2 = false;
+        l2 || (l2 = Ot(t2, o2, {}), b2 = true, o2 === a2 && (g2 = l2, m2 = true)), g2 || (g2 = Ot(t2, a2, {}), m2 = true), p2 = new V(r2, i2, l2, g2, c2), t2._edges.set(i2, p2);
+        var k2 = o2 === a2;
+        return r2 ? (l2.undirectedDegree++, g2.undirectedDegree++, k2 && (l2.undirectedLoops++, t2._undirectedSelfLoopCount++)) : (l2.outDegree++, g2.inDegree++, k2 && (l2.directedLoops++, t2._directedSelfLoopCount++)), t2.multi ? p2.attachMulti() : p2.attach(), r2 ? t2._undirectedSize++ : t2._directedSize++, v2.key = i2, t2.emit("edgeAdded", v2), [i2, true, b2, m2];
+      }
+      function Mt(t2, e2) {
+        t2._edges.delete(e2.key);
+        var n2 = e2.source, r2 = e2.target, i2 = e2.attributes, o2 = e2.undirected, a2 = n2 === r2;
+        o2 ? (n2.undirectedDegree--, r2.undirectedDegree--, a2 && (n2.undirectedLoops--, t2._undirectedSelfLoopCount--)) : (n2.outDegree--, r2.inDegree--, a2 && (n2.directedLoops--, t2._directedSelfLoopCount--)), t2.multi ? e2.detachMulti() : e2.detach(), o2 ? t2._undirectedSize-- : t2._directedSize--, t2.emit("edgeDropped", { key: e2.key, attributes: i2, source: n2.key, target: r2.key, undirected: o2 });
+      }
+      var zt = function(n2) {
+        function r2(t2) {
+          var e2;
+          if (e2 = n2.call(this) || this, "boolean" != typeof (t2 = u({}, Nt, t2)).multi) throw new B(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "`.concat(t2.multi, '".'));
+          if (!Dt.has(t2.type)) throw new B(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "`.concat(t2.type, '".'));
+          if ("boolean" != typeof t2.allowSelfLoops) throw new B(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "`.concat(t2.allowSelfLoops, '".'));
+          var r3 = "mixed" === t2.type ? Y : "directed" === t2.type ? q : J;
+          p(c(e2), "NodeDataClass", r3);
+          var i3 = "geid_" + St() + "_", o2 = 0;
+          return p(c(e2), "_attributes", {}), p(c(e2), "_nodes", /* @__PURE__ */ new Map()), p(c(e2), "_edges", /* @__PURE__ */ new Map()), p(c(e2), "_directedSize", 0), p(c(e2), "_undirectedSize", 0), p(c(e2), "_directedSelfLoopCount", 0), p(c(e2), "_undirectedSelfLoopCount", 0), p(c(e2), "_edgeKeyGenerator", function() {
+            var t3;
+            do {
+              t3 = i3 + o2++;
+            } while (e2._edges.has(t3));
+            return t3;
+          }), p(c(e2), "_options", t2), Ut.forEach(function(t3) {
+            return p(c(e2), t3, e2[t3]);
+          }), f(c(e2), "order", function() {
+            return e2._nodes.size;
+          }), f(c(e2), "size", function() {
+            return e2._edges.size;
+          }), f(c(e2), "directedSize", function() {
+            return e2._directedSize;
+          }), f(c(e2), "undirectedSize", function() {
+            return e2._undirectedSize;
+          }), f(c(e2), "selfLoopCount", function() {
+            return e2._directedSelfLoopCount + e2._undirectedSelfLoopCount;
+          }), f(c(e2), "directedSelfLoopCount", function() {
+            return e2._directedSelfLoopCount;
+          }), f(c(e2), "undirectedSelfLoopCount", function() {
+            return e2._undirectedSelfLoopCount;
+          }), f(c(e2), "multi", e2._options.multi), f(c(e2), "type", e2._options.type), f(c(e2), "allowSelfLoops", e2._options.allowSelfLoops), f(c(e2), "implementation", function() {
+            return "graphology";
+          }), e2;
+        }
+        e(r2, n2);
+        var i2 = r2.prototype;
+        return i2._resetInstanceCounters = function() {
+          this._directedSize = 0, this._undirectedSize = 0, this._directedSelfLoopCount = 0, this._undirectedSelfLoopCount = 0;
+        }, i2.hasNode = function(t2) {
+          return this._nodes.has("" + t2);
+        }, i2.hasDirectedEdge = function(t2, e2) {
+          if ("undirected" === this.type) return false;
+          if (1 === arguments.length) {
+            var n3 = "" + t2, r3 = this._edges.get(n3);
+            return !!r3 && !r3.undirected;
+          }
+          if (2 === arguments.length) {
+            t2 = "" + t2, e2 = "" + e2;
+            var i3 = this._nodes.get(t2);
+            return !!i3 && i3.out.hasOwnProperty(e2);
+          }
+          throw new B("Graph.hasDirectedEdge: invalid arity (".concat(arguments.length, ", instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target."));
+        }, i2.hasUndirectedEdge = function(t2, e2) {
+          if ("directed" === this.type) return false;
+          if (1 === arguments.length) {
+            var n3 = "" + t2, r3 = this._edges.get(n3);
+            return !!r3 && r3.undirected;
+          }
+          if (2 === arguments.length) {
+            t2 = "" + t2, e2 = "" + e2;
+            var i3 = this._nodes.get(t2);
+            return !!i3 && i3.undirected.hasOwnProperty(e2);
+          }
+          throw new B("Graph.hasDirectedEdge: invalid arity (".concat(arguments.length, ", instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target."));
+        }, i2.hasEdge = function(t2, e2) {
+          if (1 === arguments.length) {
+            var n3 = "" + t2;
+            return this._edges.has(n3);
+          }
+          if (2 === arguments.length) {
+            t2 = "" + t2, e2 = "" + e2;
+            var r3 = this._nodes.get(t2);
+            return !!r3 && (void 0 !== r3.out && r3.out.hasOwnProperty(e2) || void 0 !== r3.undirected && r3.undirected.hasOwnProperty(e2));
+          }
+          throw new B("Graph.hasEdge: invalid arity (".concat(arguments.length, ", instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target."));
+        }, i2.directedEdge = function(t2, e2) {
+          if ("undirected" !== this.type) {
+            if (t2 = "" + t2, e2 = "" + e2, this.multi) throw new I("Graph.directedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.directedEdges instead.");
+            var n3 = this._nodes.get(t2);
+            if (!n3) throw new F('Graph.directedEdge: could not find the "'.concat(t2, '" source node in the graph.'));
+            if (!this._nodes.has(e2)) throw new F('Graph.directedEdge: could not find the "'.concat(e2, '" target node in the graph.'));
+            var r3 = n3.out && n3.out[e2] || void 0;
+            return r3 ? r3.key : void 0;
+          }
+        }, i2.undirectedEdge = function(t2, e2) {
+          if ("directed" !== this.type) {
+            if (t2 = "" + t2, e2 = "" + e2, this.multi) throw new I("Graph.undirectedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.undirectedEdges instead.");
+            var n3 = this._nodes.get(t2);
+            if (!n3) throw new F('Graph.undirectedEdge: could not find the "'.concat(t2, '" source node in the graph.'));
+            if (!this._nodes.has(e2)) throw new F('Graph.undirectedEdge: could not find the "'.concat(e2, '" target node in the graph.'));
+            var r3 = n3.undirected && n3.undirected[e2] || void 0;
+            return r3 ? r3.key : void 0;
+          }
+        }, i2.edge = function(t2, e2) {
+          if (this.multi) throw new I("Graph.edge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.edges instead.");
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.edge: could not find the "'.concat(t2, '" source node in the graph.'));
+          if (!this._nodes.has(e2)) throw new F('Graph.edge: could not find the "'.concat(e2, '" target node in the graph.'));
+          var r3 = n3.out && n3.out[e2] || n3.undirected && n3.undirected[e2] || void 0;
+          if (r3) return r3.key;
+        }, i2.areDirectedNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areDirectedNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" !== this.type && (e2 in n3.in || e2 in n3.out);
+        }, i2.areOutNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areOutNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" !== this.type && e2 in n3.out;
+        }, i2.areInNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areInNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" !== this.type && e2 in n3.in;
+        }, i2.areUndirectedNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areUndirectedNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "directed" !== this.type && e2 in n3.undirected;
+        }, i2.areNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" !== this.type && (e2 in n3.in || e2 in n3.out) || "directed" !== this.type && e2 in n3.undirected;
+        }, i2.areInboundNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areInboundNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" !== this.type && e2 in n3.in || "directed" !== this.type && e2 in n3.undirected;
+        }, i2.areOutboundNeighbors = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.areOutboundNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" !== this.type && e2 in n3.out || "directed" !== this.type && e2 in n3.undirected;
+        }, i2.inDegree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.inDegree: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" === this.type ? 0 : e2.inDegree;
+        }, i2.outDegree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.outDegree: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" === this.type ? 0 : e2.outDegree;
+        }, i2.directedDegree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.directedDegree: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" === this.type ? 0 : e2.inDegree + e2.outDegree;
+        }, i2.undirectedDegree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.undirectedDegree: could not find the "'.concat(t2, '" node in the graph.'));
+          return "directed" === this.type ? 0 : e2.undirectedDegree;
+        }, i2.inboundDegree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.inboundDegree: could not find the "'.concat(t2, '" node in the graph.'));
+          var n3 = 0;
+          return "directed" !== this.type && (n3 += e2.undirectedDegree), "undirected" !== this.type && (n3 += e2.inDegree), n3;
+        }, i2.outboundDegree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.outboundDegree: could not find the "'.concat(t2, '" node in the graph.'));
+          var n3 = 0;
+          return "directed" !== this.type && (n3 += e2.undirectedDegree), "undirected" !== this.type && (n3 += e2.outDegree), n3;
+        }, i2.degree = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.degree: could not find the "'.concat(t2, '" node in the graph.'));
+          var n3 = 0;
+          return "directed" !== this.type && (n3 += e2.undirectedDegree), "undirected" !== this.type && (n3 += e2.inDegree + e2.outDegree), n3;
+        }, i2.inDegreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.inDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" === this.type ? 0 : e2.inDegree - e2.directedLoops;
+        }, i2.outDegreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.outDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" === this.type ? 0 : e2.outDegree - e2.directedLoops;
+        }, i2.directedDegreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.directedDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          return "undirected" === this.type ? 0 : e2.inDegree + e2.outDegree - 2 * e2.directedLoops;
+        }, i2.undirectedDegreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.undirectedDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          return "directed" === this.type ? 0 : e2.undirectedDegree - 2 * e2.undirectedLoops;
+        }, i2.inboundDegreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.inboundDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          var n3 = 0, r3 = 0;
+          return "directed" !== this.type && (n3 += e2.undirectedDegree, r3 += 2 * e2.undirectedLoops), "undirected" !== this.type && (n3 += e2.inDegree, r3 += e2.directedLoops), n3 - r3;
+        }, i2.outboundDegreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.outboundDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          var n3 = 0, r3 = 0;
+          return "directed" !== this.type && (n3 += e2.undirectedDegree, r3 += 2 * e2.undirectedLoops), "undirected" !== this.type && (n3 += e2.outDegree, r3 += e2.directedLoops), n3 - r3;
+        }, i2.degreeWithoutSelfLoops = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._nodes.get(t2);
+          if (!e2) throw new F('Graph.degreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
+          var n3 = 0, r3 = 0;
+          return "directed" !== this.type && (n3 += e2.undirectedDegree, r3 += 2 * e2.undirectedLoops), "undirected" !== this.type && (n3 += e2.inDegree + e2.outDegree, r3 += 2 * e2.directedLoops), n3 - r3;
+        }, i2.source = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._edges.get(t2);
+          if (!e2) throw new F('Graph.source: could not find the "'.concat(t2, '" edge in the graph.'));
+          return e2.source.key;
+        }, i2.target = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._edges.get(t2);
+          if (!e2) throw new F('Graph.target: could not find the "'.concat(t2, '" edge in the graph.'));
+          return e2.target.key;
+        }, i2.extremities = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._edges.get(t2);
+          if (!e2) throw new F('Graph.extremities: could not find the "'.concat(t2, '" edge in the graph.'));
+          return [e2.source.key, e2.target.key];
+        }, i2.opposite = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._edges.get(e2);
+          if (!n3) throw new F('Graph.opposite: could not find the "'.concat(e2, '" edge in the graph.'));
+          var r3 = n3.source.key, i3 = n3.target.key;
+          if (t2 === r3) return i3;
+          if (t2 === i3) return r3;
+          throw new F('Graph.opposite: the "'.concat(t2, '" node is not attached to the "').concat(e2, '" edge (').concat(r3, ", ").concat(i3, ")."));
+        }, i2.hasExtremity = function(t2, e2) {
+          t2 = "" + t2, e2 = "" + e2;
+          var n3 = this._edges.get(t2);
+          if (!n3) throw new F('Graph.hasExtremity: could not find the "'.concat(t2, '" edge in the graph.'));
+          return n3.source.key === e2 || n3.target.key === e2;
+        }, i2.isUndirected = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._edges.get(t2);
+          if (!e2) throw new F('Graph.isUndirected: could not find the "'.concat(t2, '" edge in the graph.'));
+          return e2.undirected;
+        }, i2.isDirected = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._edges.get(t2);
+          if (!e2) throw new F('Graph.isDirected: could not find the "'.concat(t2, '" edge in the graph.'));
+          return !e2.undirected;
+        }, i2.isSelfLoop = function(t2) {
+          t2 = "" + t2;
+          var e2 = this._edges.get(t2);
+          if (!e2) throw new F('Graph.isSelfLoop: could not find the "'.concat(t2, '" edge in the graph.'));
+          return e2.source === e2.target;
+        }, i2.addNode = function(t2, e2) {
+          var n3 = function(t3, e3, n4) {
+            if (n4 && !s(n4)) throw new B('Graph.addNode: invalid attributes. Expecting an object but got "'.concat(n4, '"'));
+            if (e3 = "" + e3, n4 = n4 || {}, t3._nodes.has(e3)) throw new I('Graph.addNode: the "'.concat(e3, '" node already exist in the graph.'));
+            var r3 = new t3.NodeDataClass(e3, n4);
+            return t3._nodes.set(e3, r3), t3.emit("nodeAdded", { key: e3, attributes: n4 }), r3;
+          }(this, t2, e2);
+          return n3.key;
+        }, i2.mergeNode = function(t2, e2) {
+          if (e2 && !s(e2)) throw new B('Graph.mergeNode: invalid attributes. Expecting an object but got "'.concat(e2, '"'));
+          t2 = "" + t2, e2 = e2 || {};
+          var n3 = this._nodes.get(t2);
+          return n3 ? (e2 && (u(n3.attributes, e2), this.emit("nodeAttributesUpdated", { type: "merge", key: t2, attributes: n3.attributes, data: e2 })), [t2, false]) : (n3 = new this.NodeDataClass(t2, e2), this._nodes.set(t2, n3), this.emit("nodeAdded", { key: t2, attributes: e2 }), [t2, true]);
+        }, i2.updateNode = function(t2, e2) {
+          if (e2 && "function" != typeof e2) throw new B('Graph.updateNode: invalid updater function. Expecting a function but got "'.concat(e2, '"'));
+          t2 = "" + t2;
+          var n3 = this._nodes.get(t2);
+          if (n3) {
+            if (e2) {
+              var r3 = n3.attributes;
+              n3.attributes = e2(r3), this.emit("nodeAttributesUpdated", { type: "replace", key: t2, attributes: n3.attributes });
+            }
+            return [t2, false];
+          }
+          var i3 = e2 ? e2({}) : {};
+          return n3 = new this.NodeDataClass(t2, i3), this._nodes.set(t2, n3), this.emit("nodeAdded", { key: t2, attributes: i3 }), [t2, true];
+        }, i2.dropNode = function(t2) {
+          t2 = "" + t2;
+          var e2, n3 = this._nodes.get(t2);
+          if (!n3) throw new F('Graph.dropNode: could not find the "'.concat(t2, '" node in the graph.'));
+          if ("undirected" !== this.type) {
+            for (var r3 in n3.out) {
+              e2 = n3.out[r3];
+              do {
+                Mt(this, e2), e2 = e2.next;
+              } while (e2);
+            }
+            for (var i3 in n3.in) {
+              e2 = n3.in[i3];
+              do {
+                Mt(this, e2), e2 = e2.next;
+              } while (e2);
+            }
+          }
+          if ("directed" !== this.type) for (var o2 in n3.undirected) {
+            e2 = n3.undirected[o2];
+            do {
+              Mt(this, e2), e2 = e2.next;
+            } while (e2);
+          }
+          this._nodes.delete(t2), this.emit("nodeDropped", { key: t2, attributes: n3.attributes });
+        }, i2.dropEdge = function(t2) {
+          var e2;
+          if (arguments.length > 1) {
+            var n3 = "" + arguments[0], r3 = "" + arguments[1];
+            if (!(e2 = d(this, n3, r3, this.type))) throw new F('Graph.dropEdge: could not find the "'.concat(n3, '" -> "').concat(r3, '" edge in the graph.'));
+          } else if (t2 = "" + t2, !(e2 = this._edges.get(t2))) throw new F('Graph.dropEdge: could not find the "'.concat(t2, '" edge in the graph.'));
+          return Mt(this, e2), this;
+        }, i2.dropDirectedEdge = function(t2, e2) {
+          if (arguments.length < 2) throw new I("Graph.dropDirectedEdge: it does not make sense to try and drop a directed edge by key. What if the edge with this key is undirected? Use #.dropEdge for this purpose instead.");
+          if (this.multi) throw new I("Graph.dropDirectedEdge: cannot use a {source,target} combo when dropping an edge in a MultiGraph since we cannot infer the one you want to delete as there could be multiple ones.");
+          var n3 = d(this, t2 = "" + t2, e2 = "" + e2, "directed");
+          if (!n3) throw new F('Graph.dropDirectedEdge: could not find a "'.concat(t2, '" -> "').concat(e2, '" edge in the graph.'));
+          return Mt(this, n3), this;
+        }, i2.dropUndirectedEdge = function(t2, e2) {
+          if (arguments.length < 2) throw new I("Graph.dropUndirectedEdge: it does not make sense to drop a directed edge by key. What if the edge with this key is undirected? Use #.dropEdge for this purpose instead.");
+          if (this.multi) throw new I("Graph.dropUndirectedEdge: cannot use a {source,target} combo when dropping an edge in a MultiGraph since we cannot infer the one you want to delete as there could be multiple ones.");
+          var n3 = d(this, t2, e2, "undirected");
+          if (!n3) throw new F('Graph.dropUndirectedEdge: could not find a "'.concat(t2, '" -> "').concat(e2, '" edge in the graph.'));
+          return Mt(this, n3), this;
+        }, i2.clear = function() {
+          this._edges.clear(), this._nodes.clear(), this._resetInstanceCounters(), this.emit("cleared");
+        }, i2.clearEdges = function() {
+          for (var t2, e2 = this._nodes.values(); true !== (t2 = e2.next()).done; ) t2.value.clear();
+          this._edges.clear(), this._resetInstanceCounters(), this.emit("edgesCleared");
+        }, i2.getAttribute = function(t2) {
+          return this._attributes[t2];
+        }, i2.getAttributes = function() {
+          return this._attributes;
+        }, i2.hasAttribute = function(t2) {
+          return this._attributes.hasOwnProperty(t2);
+        }, i2.setAttribute = function(t2, e2) {
+          return this._attributes[t2] = e2, this.emit("attributesUpdated", { type: "set", attributes: this._attributes, name: t2 }), this;
+        }, i2.updateAttribute = function(t2, e2) {
+          if ("function" != typeof e2) throw new B("Graph.updateAttribute: updater should be a function.");
+          var n3 = this._attributes[t2];
+          return this._attributes[t2] = e2(n3), this.emit("attributesUpdated", { type: "set", attributes: this._attributes, name: t2 }), this;
+        }, i2.removeAttribute = function(t2) {
+          return delete this._attributes[t2], this.emit("attributesUpdated", { type: "remove", attributes: this._attributes, name: t2 }), this;
+        }, i2.replaceAttributes = function(t2) {
+          if (!s(t2)) throw new B("Graph.replaceAttributes: provided attributes are not a plain object.");
+          return this._attributes = t2, this.emit("attributesUpdated", { type: "replace", attributes: this._attributes }), this;
+        }, i2.mergeAttributes = function(t2) {
+          if (!s(t2)) throw new B("Graph.mergeAttributes: provided attributes are not a plain object.");
+          return u(this._attributes, t2), this.emit("attributesUpdated", { type: "merge", attributes: this._attributes, data: t2 }), this;
+        }, i2.updateAttributes = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.updateAttributes: provided updater is not a function.");
+          return this._attributes = t2(this._attributes), this.emit("attributesUpdated", { type: "update", attributes: this._attributes }), this;
+        }, i2.updateEachNodeAttributes = function(t2, e2) {
+          if ("function" != typeof t2) throw new B("Graph.updateEachNodeAttributes: expecting an updater function.");
+          if (e2 && !l(e2)) throw new B("Graph.updateEachNodeAttributes: invalid hints. Expecting an object having the following shape: {attributes?: [string]}");
+          for (var n3, r3, i3 = this._nodes.values(); true !== (n3 = i3.next()).done; ) (r3 = n3.value).attributes = t2(r3.key, r3.attributes);
+          this.emit("eachNodeAttributesUpdated", { hints: e2 || null });
+        }, i2.updateEachEdgeAttributes = function(t2, e2) {
+          if ("function" != typeof t2) throw new B("Graph.updateEachEdgeAttributes: expecting an updater function.");
+          if (e2 && !l(e2)) throw new B("Graph.updateEachEdgeAttributes: invalid hints. Expecting an object having the following shape: {attributes?: [string]}");
+          for (var n3, r3, i3, o2, a2 = this._edges.values(); true !== (n3 = a2.next()).done; ) i3 = (r3 = n3.value).source, o2 = r3.target, r3.attributes = t2(r3.key, r3.attributes, i3.key, o2.key, i3.attributes, o2.attributes, r3.undirected);
+          this.emit("eachEdgeAttributesUpdated", { hints: e2 || null });
+        }, i2.forEachAdjacencyEntry = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.forEachAdjacencyEntry: expecting a callback.");
+          xt(false, false, false, this, t2);
+        }, i2.forEachAdjacencyEntryWithOrphans = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.forEachAdjacencyEntryWithOrphans: expecting a callback.");
+          xt(false, false, true, this, t2);
+        }, i2.forEachAssymetricAdjacencyEntry = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.forEachAssymetricAdjacencyEntry: expecting a callback.");
+          xt(false, true, false, this, t2);
+        }, i2.forEachAssymetricAdjacencyEntryWithOrphans = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.forEachAssymetricAdjacencyEntryWithOrphans: expecting a callback.");
+          xt(false, true, true, this, t2);
+        }, i2.nodes = function() {
+          return "function" == typeof Array.from ? Array.from(this._nodes.keys()) : K(this._nodes.keys(), this._nodes.size);
+        }, i2.forEachNode = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.forEachNode: expecting a callback.");
+          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) t2((n3 = e2.value).key, n3.attributes);
+        }, i2.findNode = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.findNode: expecting a callback.");
+          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) if (t2((n3 = e2.value).key, n3.attributes)) return n3.key;
+        }, i2.mapNodes = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.mapNode: expecting a callback.");
+          for (var e2, n3, r3 = this._nodes.values(), i3 = new Array(this.order), o2 = 0; true !== (e2 = r3.next()).done; ) n3 = e2.value, i3[o2++] = t2(n3.key, n3.attributes);
+          return i3;
+        }, i2.someNode = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.someNode: expecting a callback.");
+          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) if (t2((n3 = e2.value).key, n3.attributes)) return true;
+          return false;
+        }, i2.everyNode = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.everyNode: expecting a callback.");
+          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) if (!t2((n3 = e2.value).key, n3.attributes)) return false;
+          return true;
+        }, i2.filterNodes = function(t2) {
+          if ("function" != typeof t2) throw new B("Graph.filterNodes: expecting a callback.");
+          for (var e2, n3, r3 = this._nodes.values(), i3 = []; true !== (e2 = r3.next()).done; ) t2((n3 = e2.value).key, n3.attributes) && i3.push(n3.key);
+          return i3;
+        }, i2.reduceNodes = function(t2, e2) {
+          if ("function" != typeof t2) throw new B("Graph.reduceNodes: expecting a callback.");
+          if (arguments.length < 2) throw new B("Graph.reduceNodes: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.");
+          for (var n3, r3, i3 = e2, o2 = this._nodes.values(); true !== (n3 = o2.next()).done; ) i3 = t2(i3, (r3 = n3.value).key, r3.attributes);
+          return i3;
+        }, i2.nodeEntries = function() {
+          var t2 = this._nodes.values();
+          return new O(function() {
+            var e2 = t2.next();
+            if (e2.done) return e2;
+            var n3 = e2.value;
+            return { value: { node: n3.key, attributes: n3.attributes }, done: false };
+          });
+        }, i2.export = function() {
+          var t2 = this, e2 = new Array(this._nodes.size), n3 = 0;
+          this._nodes.forEach(function(t3, r4) {
+            e2[n3++] = function(t4, e3) {
+              var n4 = { key: t4 };
+              return h(e3.attributes) || (n4.attributes = u({}, e3.attributes)), n4;
+            }(r4, t3);
+          });
+          var r3 = new Array(this._edges.size);
+          return n3 = 0, this._edges.forEach(function(e3, i3) {
+            r3[n3++] = function(t3, e4, n4) {
+              var r4 = { key: e4, source: n4.source.key, target: n4.target.key };
+              return h(n4.attributes) || (r4.attributes = u({}, n4.attributes)), "mixed" === t3 && n4.undirected && (r4.undirected = true), r4;
+            }(t2.type, i3, e3);
+          }), { options: { type: this.type, multi: this.multi, allowSelfLoops: this.allowSelfLoops }, attributes: this.getAttributes(), nodes: e2, edges: r3 };
+        }, i2.import = function(t2) {
+          var e2, n3, i3, o2, a2, c2 = this, u2 = arguments.length > 1 && void 0 !== arguments[1] && arguments[1];
+          if (t2 instanceof r2) return t2.forEachNode(function(t3, e3) {
+            u2 ? c2.mergeNode(t3, e3) : c2.addNode(t3, e3);
+          }), t2.forEachEdge(function(t3, e3, n4, r3, i4, o3, a3) {
+            u2 ? a3 ? c2.mergeUndirectedEdgeWithKey(t3, n4, r3, e3) : c2.mergeDirectedEdgeWithKey(t3, n4, r3, e3) : a3 ? c2.addUndirectedEdgeWithKey(t3, n4, r3, e3) : c2.addDirectedEdgeWithKey(t3, n4, r3, e3);
+          }), this;
+          if (!s(t2)) throw new B("Graph.import: invalid argument. Expecting a serialized graph or, alternatively, a Graph instance.");
+          if (t2.attributes) {
+            if (!s(t2.attributes)) throw new B("Graph.import: invalid attributes. Expecting a plain object.");
+            u2 ? this.mergeAttributes(t2.attributes) : this.replaceAttributes(t2.attributes);
+          }
+          if (t2.nodes) {
+            if (i3 = t2.nodes, !Array.isArray(i3)) throw new B("Graph.import: invalid nodes. Expecting an array.");
+            for (e2 = 0, n3 = i3.length; e2 < n3; e2++) {
+              Et(o2 = i3[e2]);
+              var d2 = o2, h2 = d2.key, p2 = d2.attributes;
+              u2 ? this.mergeNode(h2, p2) : this.addNode(h2, p2);
+            }
+          }
+          if (t2.edges) {
+            var f2 = false;
+            if ("undirected" === this.type && (f2 = true), i3 = t2.edges, !Array.isArray(i3)) throw new B("Graph.import: invalid edges. Expecting an array.");
+            for (e2 = 0, n3 = i3.length; e2 < n3; e2++) {
+              At(a2 = i3[e2]);
+              var l2 = a2, g2 = l2.source, y2 = l2.target, w2 = l2.attributes, v2 = l2.undirected, b2 = void 0 === v2 ? f2 : v2;
+              "key" in a2 ? (u2 ? b2 ? this.mergeUndirectedEdgeWithKey : this.mergeDirectedEdgeWithKey : b2 ? this.addUndirectedEdgeWithKey : this.addDirectedEdgeWithKey).call(this, a2.key, g2, y2, w2) : (u2 ? b2 ? this.mergeUndirectedEdge : this.mergeDirectedEdge : b2 ? this.addUndirectedEdge : this.addDirectedEdge).call(this, g2, y2, w2);
+            }
+          }
+          return this;
+        }, i2.nullCopy = function(t2) {
+          var e2 = new r2(u({}, this._options, t2));
+          return e2.replaceAttributes(u({}, this.getAttributes())), e2;
+        }, i2.emptyCopy = function(t2) {
+          var e2 = this.nullCopy(t2);
+          return this._nodes.forEach(function(t3, n3) {
+            var r3 = u({}, t3.attributes);
+            t3 = new e2.NodeDataClass(n3, r3), e2._nodes.set(n3, t3);
+          }), e2;
+        }, i2.copy = function(t2) {
+          if ("string" == typeof (t2 = t2 || {}).type && t2.type !== this.type && "mixed" !== t2.type) throw new I('Graph.copy: cannot create an incompatible copy from "'.concat(this.type, '" type to "').concat(t2.type, '" because this would mean losing information about the current graph.'));
+          if ("boolean" == typeof t2.multi && t2.multi !== this.multi && true !== t2.multi) throw new I("Graph.copy: cannot create an incompatible copy by downgrading a multi graph to a simple one because this would mean losing information about the current graph.");
+          if ("boolean" == typeof t2.allowSelfLoops && t2.allowSelfLoops !== this.allowSelfLoops && true !== t2.allowSelfLoops) throw new I("Graph.copy: cannot create an incompatible copy from a graph allowing self loops to one that does not because this would mean losing information about the current graph.");
+          for (var e2, n3, r3 = this.emptyCopy(t2), i3 = this._edges.values(); true !== (e2 = i3.next()).done; ) jt(r3, "copy", false, (n3 = e2.value).undirected, n3.key, n3.source.key, n3.target.key, u({}, n3.attributes));
+          return r3;
+        }, i2.toJSON = function() {
+          return this.export();
+        }, i2.toString = function() {
+          return "[object Graph]";
+        }, i2.inspect = function() {
+          var e2 = this, n3 = {};
+          this._nodes.forEach(function(t2, e3) {
+            n3[e3] = t2.attributes;
+          });
+          var r3 = {}, i3 = {};
+          this._edges.forEach(function(t2, n4) {
+            var o3, a3 = t2.undirected ? "--" : "->", c2 = "", u2 = t2.source.key, d2 = t2.target.key;
+            t2.undirected && u2 > d2 && (o3 = u2, u2 = d2, d2 = o3);
+            var s2 = "(".concat(u2, ")").concat(a3, "(").concat(d2, ")");
+            n4.startsWith("geid_") ? e2.multi && (void 0 === i3[s2] ? i3[s2] = 0 : i3[s2]++, c2 += "".concat(i3[s2], ". ")) : c2 += "[".concat(n4, "]: "), r3[c2 += s2] = t2.attributes;
+          });
+          var o2 = {};
+          for (var a2 in this) this.hasOwnProperty(a2) && !Ut.has(a2) && "function" != typeof this[a2] && "symbol" !== t(a2) && (o2[a2] = this[a2]);
+          return o2.attributes = this._attributes, o2.nodes = n3, o2.edges = r3, p(o2, "constructor", this.constructor), o2;
+        }, r2;
+      }(y.exports.EventEmitter);
+      "undefined" != typeof Symbol && (zt.prototype[Symbol.for("nodejs.util.inspect.custom")] = zt.prototype.inspect), [{ name: function(t2) {
+        return "".concat(t2, "Edge");
+      }, generateKey: true }, { name: function(t2) {
+        return "".concat(t2, "DirectedEdge");
+      }, generateKey: true, type: "directed" }, { name: function(t2) {
+        return "".concat(t2, "UndirectedEdge");
+      }, generateKey: true, type: "undirected" }, { name: function(t2) {
+        return "".concat(t2, "EdgeWithKey");
+      } }, { name: function(t2) {
+        return "".concat(t2, "DirectedEdgeWithKey");
+      }, type: "directed" }, { name: function(t2) {
+        return "".concat(t2, "UndirectedEdgeWithKey");
+      }, type: "undirected" }].forEach(function(t2) {
+        ["add", "merge", "update"].forEach(function(e2) {
+          var n2 = t2.name(e2), r2 = "add" === e2 ? jt : Ct;
+          t2.generateKey ? zt.prototype[n2] = function(i2, o2, a2) {
+            return r2(this, n2, true, "undirected" === (t2.type || this.type), null, i2, o2, a2, "update" === e2);
+          } : zt.prototype[n2] = function(i2, o2, a2, c2) {
+            return r2(this, n2, false, "undirected" === (t2.type || this.type), i2, o2, a2, c2, "update" === e2);
+          };
+        });
+      }), function(t2) {
+        Q.forEach(function(e2) {
+          var n2 = e2.name, r2 = e2.attacher;
+          r2(t2, n2("Node"), 0), r2(t2, n2("Source"), 1), r2(t2, n2("Target"), 2), r2(t2, n2("Opposite"), 3);
+        });
+      }(zt), function(t2) {
+        X.forEach(function(e2) {
+          var n2 = e2.name, r2 = e2.attacher;
+          r2(t2, n2("Edge"), "mixed"), r2(t2, n2("DirectedEdge"), "directed"), r2(t2, n2("UndirectedEdge"), "undirected");
+        });
+      }(zt), function(t2) {
+        et.forEach(function(e2) {
+          !function(t3, e3) {
+            var n2 = e3.name, r2 = e3.type, i2 = e3.direction;
+            t3.prototype[n2] = function(t4, e4) {
+              if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return [];
+              if (!arguments.length) return ut(this, r2);
+              if (1 === arguments.length) {
+                t4 = "" + t4;
+                var o2 = this._nodes.get(t4);
+                if (void 0 === o2) throw new F("Graph.".concat(n2, ': could not find the "').concat(t4, '" node in the graph.'));
+                return pt(this.multi, "mixed" === r2 ? this.type : r2, i2, o2);
+              }
+              if (2 === arguments.length) {
+                t4 = "" + t4, e4 = "" + e4;
+                var a2 = this._nodes.get(t4);
+                if (!a2) throw new F("Graph.".concat(n2, ':  could not find the "').concat(t4, '" source node in the graph.'));
+                if (!this._nodes.has(e4)) throw new F("Graph.".concat(n2, ':  could not find the "').concat(e4, '" target node in the graph.'));
+                return gt(r2, this.multi, i2, a2, e4);
+              }
+              throw new B("Graph.".concat(n2, ": too many arguments (expecting 0, 1 or 2 and got ").concat(arguments.length, ")."));
+            };
+          }(t2, e2), function(t3, e3) {
+            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = "forEach" + n2[0].toUpperCase() + n2.slice(1, -1);
+            t3.prototype[o2] = function(t4, e4, n3) {
+              if ("mixed" === r2 || "mixed" === this.type || r2 === this.type) {
+                if (1 === arguments.length) return dt(false, this, r2, n3 = t4);
+                if (2 === arguments.length) {
+                  t4 = "" + t4, n3 = e4;
+                  var a3 = this._nodes.get(t4);
+                  if (void 0 === a3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
+                  return ht(false, this.multi, "mixed" === r2 ? this.type : r2, i2, a3, n3);
+                }
+                if (3 === arguments.length) {
+                  t4 = "" + t4, e4 = "" + e4;
+                  var c3 = this._nodes.get(t4);
+                  if (!c3) throw new F("Graph.".concat(o2, ':  could not find the "').concat(t4, '" source node in the graph.'));
+                  if (!this._nodes.has(e4)) throw new F("Graph.".concat(o2, ':  could not find the "').concat(e4, '" target node in the graph.'));
+                  return lt(false, r2, this.multi, i2, c3, e4, n3);
+                }
+                throw new B("Graph.".concat(o2, ": too many arguments (expecting 1, 2 or 3 and got ").concat(arguments.length, ")."));
+              }
+            };
+            var a2 = "map" + n2[0].toUpperCase() + n2.slice(1);
+            t3.prototype[a2] = function() {
+              var t4, e4 = Array.prototype.slice.call(arguments), n3 = e4.pop();
+              if (0 === e4.length) {
+                var i3 = 0;
+                "directed" !== r2 && (i3 += this.undirectedSize), "undirected" !== r2 && (i3 += this.directedSize), t4 = new Array(i3);
+                var a3 = 0;
+                e4.push(function(e5, r3, i4, o3, c3, u3, d2) {
+                  t4[a3++] = n3(e5, r3, i4, o3, c3, u3, d2);
+                });
+              } else t4 = [], e4.push(function(e5, r3, i4, o3, a4, c3, u3) {
+                t4.push(n3(e5, r3, i4, o3, a4, c3, u3));
+              });
+              return this[o2].apply(this, e4), t4;
+            };
+            var c2 = "filter" + n2[0].toUpperCase() + n2.slice(1);
+            t3.prototype[c2] = function() {
+              var t4 = Array.prototype.slice.call(arguments), e4 = t4.pop(), n3 = [];
+              return t4.push(function(t5, r3, i3, o3, a3, c3, u3) {
+                e4(t5, r3, i3, o3, a3, c3, u3) && n3.push(t5);
+              }), this[o2].apply(this, t4), n3;
+            };
+            var u2 = "reduce" + n2[0].toUpperCase() + n2.slice(1);
+            t3.prototype[u2] = function() {
+              var t4, e4, n3 = Array.prototype.slice.call(arguments);
+              if (n3.length < 2 || n3.length > 4) throw new B("Graph.".concat(u2, ": invalid number of arguments (expecting 2, 3 or 4 and got ").concat(n3.length, ")."));
+              if ("function" == typeof n3[n3.length - 1] && "function" != typeof n3[n3.length - 2]) throw new B("Graph.".concat(u2, ": missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array."));
+              2 === n3.length ? (t4 = n3[0], e4 = n3[1], n3 = []) : 3 === n3.length ? (t4 = n3[1], e4 = n3[2], n3 = [n3[0]]) : 4 === n3.length && (t4 = n3[2], e4 = n3[3], n3 = [n3[0], n3[1]]);
+              var r3 = e4;
+              return n3.push(function(e5, n4, i3, o3, a3, c3, u3) {
+                r3 = t4(r3, e5, n4, i3, o3, a3, c3, u3);
+              }), this[o2].apply(this, n3), r3;
+            };
+          }(t2, e2), function(t3, e3) {
+            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = "find" + n2[0].toUpperCase() + n2.slice(1, -1);
+            t3.prototype[o2] = function(t4, e4, n3) {
+              if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return false;
+              if (1 === arguments.length) return dt(true, this, r2, n3 = t4);
+              if (2 === arguments.length) {
+                t4 = "" + t4, n3 = e4;
+                var a3 = this._nodes.get(t4);
+                if (void 0 === a3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
+                return ht(true, this.multi, "mixed" === r2 ? this.type : r2, i2, a3, n3);
+              }
+              if (3 === arguments.length) {
+                t4 = "" + t4, e4 = "" + e4;
+                var c3 = this._nodes.get(t4);
+                if (!c3) throw new F("Graph.".concat(o2, ':  could not find the "').concat(t4, '" source node in the graph.'));
+                if (!this._nodes.has(e4)) throw new F("Graph.".concat(o2, ':  could not find the "').concat(e4, '" target node in the graph.'));
+                return lt(true, r2, this.multi, i2, c3, e4, n3);
+              }
+              throw new B("Graph.".concat(o2, ": too many arguments (expecting 1, 2 or 3 and got ").concat(arguments.length, ")."));
+            };
+            var a2 = "some" + n2[0].toUpperCase() + n2.slice(1, -1);
+            t3.prototype[a2] = function() {
+              var t4 = Array.prototype.slice.call(arguments), e4 = t4.pop();
+              return t4.push(function(t5, n3, r3, i3, o3, a3, c3) {
+                return e4(t5, n3, r3, i3, o3, a3, c3);
+              }), !!this[o2].apply(this, t4);
+            };
+            var c2 = "every" + n2[0].toUpperCase() + n2.slice(1, -1);
+            t3.prototype[c2] = function() {
+              var t4 = Array.prototype.slice.call(arguments), e4 = t4.pop();
+              return t4.push(function(t5, n3, r3, i3, o3, a3, c3) {
+                return !e4(t5, n3, r3, i3, o3, a3, c3);
+              }), !this[o2].apply(this, t4);
+            };
+          }(t2, e2), function(t3, e3) {
+            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = n2.slice(0, -1) + "Entries";
+            t3.prototype[o2] = function(t4, e4) {
+              if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return O.empty();
+              if (!arguments.length) return st(this, r2);
+              if (1 === arguments.length) {
+                t4 = "" + t4;
+                var n3 = this._nodes.get(t4);
+                if (!n3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
+                return ft(r2, i2, n3);
+              }
+              if (2 === arguments.length) {
+                t4 = "" + t4, e4 = "" + e4;
+                var a2 = this._nodes.get(t4);
+                if (!a2) throw new F("Graph.".concat(o2, ':  could not find the "').concat(t4, '" source node in the graph.'));
+                if (!this._nodes.has(e4)) throw new F("Graph.".concat(o2, ':  could not find the "').concat(e4, '" target node in the graph.'));
+                return yt(r2, i2, a2, e4);
+              }
+              throw new B("Graph.".concat(o2, ": too many arguments (expecting 0, 1 or 2 and got ").concat(arguments.length, ")."));
+            };
+          }(t2, e2);
+        });
+      }(zt), function(t2) {
+        wt.forEach(function(e2) {
+          _t(t2, e2), function(t3, e3) {
+            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = "forEach" + n2[0].toUpperCase() + n2.slice(1, -1);
+            t3.prototype[o2] = function(t4, e4) {
+              if ("mixed" === r2 || "mixed" === this.type || r2 === this.type) {
+                t4 = "" + t4;
+                var n3 = this._nodes.get(t4);
+                if (void 0 === n3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
+                mt(false, "mixed" === r2 ? this.type : r2, i2, n3, e4);
+              }
+            };
+            var a2 = "map" + n2[0].toUpperCase() + n2.slice(1);
+            t3.prototype[a2] = function(t4, e4) {
+              var n3 = [];
+              return this[o2](t4, function(t5, r3) {
+                n3.push(e4(t5, r3));
+              }), n3;
+            };
+            var c2 = "filter" + n2[0].toUpperCase() + n2.slice(1);
+            t3.prototype[c2] = function(t4, e4) {
+              var n3 = [];
+              return this[o2](t4, function(t5, r3) {
+                e4(t5, r3) && n3.push(t5);
+              }), n3;
+            };
+            var u2 = "reduce" + n2[0].toUpperCase() + n2.slice(1);
+            t3.prototype[u2] = function(t4, e4, n3) {
+              if (arguments.length < 3) throw new B("Graph.".concat(u2, ": missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array."));
+              var r3 = n3;
+              return this[o2](t4, function(t5, n4) {
+                r3 = e4(r3, t5, n4);
+              }), r3;
+            };
+          }(t2, e2), function(t3, e3) {
+            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = n2[0].toUpperCase() + n2.slice(1, -1), a2 = "find" + o2;
+            t3.prototype[a2] = function(t4, e4) {
+              if ("mixed" === r2 || "mixed" === this.type || r2 === this.type) {
+                t4 = "" + t4;
+                var n3 = this._nodes.get(t4);
+                if (void 0 === n3) throw new F("Graph.".concat(a2, ': could not find the "').concat(t4, '" node in the graph.'));
+                return mt(true, "mixed" === r2 ? this.type : r2, i2, n3, e4);
+              }
+            };
+            var c2 = "some" + o2;
+            t3.prototype[c2] = function(t4, e4) {
+              return !!this[a2](t4, e4);
+            };
+            var u2 = "every" + o2;
+            t3.prototype[u2] = function(t4, e4) {
+              return !this[a2](t4, function(t5, n3) {
+                return !e4(t5, n3);
+              });
+            };
+          }(t2, e2), Gt(t2, e2);
+        });
+      }(zt);
+      var Wt = function(t2) {
+        function n2(e2) {
+          var n3 = u({ type: "directed" }, e2);
+          if ("multi" in n3 && false !== n3.multi) throw new B("DirectedGraph.from: inconsistent indication that the graph should be multi in given options!");
+          if ("directed" !== n3.type) throw new B('DirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
+          return t2.call(this, n3) || this;
+        }
+        return e(n2, t2), n2;
+      }(zt), Pt = function(t2) {
+        function n2(e2) {
+          var n3 = u({ type: "undirected" }, e2);
+          if ("multi" in n3 && false !== n3.multi) throw new B("UndirectedGraph.from: inconsistent indication that the graph should be multi in given options!");
+          if ("undirected" !== n3.type) throw new B('UndirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
+          return t2.call(this, n3) || this;
+        }
+        return e(n2, t2), n2;
+      }(zt), Rt = function(t2) {
+        function n2(e2) {
+          var n3 = u({ multi: true }, e2);
+          if ("multi" in n3 && true !== n3.multi) throw new B("MultiGraph.from: inconsistent indication that the graph should be simple in given options!");
+          return t2.call(this, n3) || this;
+        }
+        return e(n2, t2), n2;
+      }(zt), Kt = function(t2) {
+        function n2(e2) {
+          var n3 = u({ type: "directed", multi: true }, e2);
+          if ("multi" in n3 && true !== n3.multi) throw new B("MultiDirectedGraph.from: inconsistent indication that the graph should be simple in given options!");
+          if ("directed" !== n3.type) throw new B('MultiDirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
+          return t2.call(this, n3) || this;
+        }
+        return e(n2, t2), n2;
+      }(zt), Tt = function(t2) {
+        function n2(e2) {
+          var n3 = u({ type: "undirected", multi: true }, e2);
+          if ("multi" in n3 && true !== n3.multi) throw new B("MultiUndirectedGraph.from: inconsistent indication that the graph should be simple in given options!");
+          if ("undirected" !== n3.type) throw new B('MultiUndirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
+          return t2.call(this, n3) || this;
+        }
+        return e(n2, t2), n2;
+      }(zt);
+      function Bt(t2) {
+        t2.from = function(e2, n2) {
+          var r2 = u({}, e2.options, n2), i2 = new t2(r2);
+          return i2.import(e2), i2;
+        };
+      }
+      return Bt(zt), Bt(Wt), Bt(Pt), Bt(Rt), Bt(Kt), Bt(Tt), zt.Graph = zt, zt.DirectedGraph = Wt, zt.UndirectedGraph = Pt, zt.MultiGraph = Rt, zt.MultiDirectedGraph = Kt, zt.MultiUndirectedGraph = Tt, zt.InvalidArgumentsGraphError = B, zt.NotFoundGraphError = F, zt.UsageGraphError = I, zt;
+    });
+  }
+});
+
 // node_modules/eventemitter3/index.js
 var require_eventemitter3 = __commonJS({
   "node_modules/eventemitter3/index.js"(exports, module) {
@@ -3885,1892 +7438,6 @@ var require_object_assign = __commonJS({
   }
 });
 
-// node_modules/react/cjs/react.development.js
-var require_react_development = __commonJS({
-  "node_modules/react/cjs/react.development.js"(exports, module) {
-    "use strict";
-    if (true) {
-      (function() {
-        "use strict";
-        if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
-          __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
-        }
-        var ReactVersion = "18.3.1";
-        var REACT_ELEMENT_TYPE = Symbol.for("react.element");
-        var REACT_PORTAL_TYPE = Symbol.for("react.portal");
-        var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
-        var REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode");
-        var REACT_PROFILER_TYPE = Symbol.for("react.profiler");
-        var REACT_PROVIDER_TYPE = Symbol.for("react.provider");
-        var REACT_CONTEXT_TYPE = Symbol.for("react.context");
-        var REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref");
-        var REACT_SUSPENSE_TYPE = Symbol.for("react.suspense");
-        var REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list");
-        var REACT_MEMO_TYPE = Symbol.for("react.memo");
-        var REACT_LAZY_TYPE = Symbol.for("react.lazy");
-        var REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen");
-        var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
-        var FAUX_ITERATOR_SYMBOL = "@@iterator";
-        function getIteratorFn(maybeIterable) {
-          if (maybeIterable === null || typeof maybeIterable !== "object") {
-            return null;
-          }
-          var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
-          if (typeof maybeIterator === "function") {
-            return maybeIterator;
-          }
-          return null;
-        }
-        var ReactCurrentDispatcher = {
-          /**
-           * @internal
-           * @type {ReactComponent}
-           */
-          current: null
-        };
-        var ReactCurrentBatchConfig = {
-          transition: null
-        };
-        var ReactCurrentActQueue = {
-          current: null,
-          // Used to reproduce behavior of `batchedUpdates` in legacy mode.
-          isBatchingLegacy: false,
-          didScheduleLegacyUpdate: false
-        };
-        var ReactCurrentOwner = {
-          /**
-           * @internal
-           * @type {ReactComponent}
-           */
-          current: null
-        };
-        var ReactDebugCurrentFrame = {};
-        var currentExtraStackFrame = null;
-        function setExtraStackFrame(stack) {
-          {
-            currentExtraStackFrame = stack;
-          }
-        }
-        {
-          ReactDebugCurrentFrame.setExtraStackFrame = function(stack) {
-            {
-              currentExtraStackFrame = stack;
-            }
-          };
-          ReactDebugCurrentFrame.getCurrentStack = null;
-          ReactDebugCurrentFrame.getStackAddendum = function() {
-            var stack = "";
-            if (currentExtraStackFrame) {
-              stack += currentExtraStackFrame;
-            }
-            var impl = ReactDebugCurrentFrame.getCurrentStack;
-            if (impl) {
-              stack += impl() || "";
-            }
-            return stack;
-          };
-        }
-        var enableScopeAPI = false;
-        var enableCacheElement = false;
-        var enableTransitionTracing = false;
-        var enableLegacyHidden = false;
-        var enableDebugTracing = false;
-        var ReactSharedInternals = {
-          ReactCurrentDispatcher,
-          ReactCurrentBatchConfig,
-          ReactCurrentOwner
-        };
-        {
-          ReactSharedInternals.ReactDebugCurrentFrame = ReactDebugCurrentFrame;
-          ReactSharedInternals.ReactCurrentActQueue = ReactCurrentActQueue;
-        }
-        function warn(format2) {
-          {
-            {
-              for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                args[_key - 1] = arguments[_key];
-              }
-              printWarning("warn", format2, args);
-            }
-          }
-        }
-        function error(format2) {
-          {
-            {
-              for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-                args[_key2 - 1] = arguments[_key2];
-              }
-              printWarning("error", format2, args);
-            }
-          }
-        }
-        function printWarning(level, format2, args) {
-          {
-            var ReactDebugCurrentFrame2 = ReactSharedInternals.ReactDebugCurrentFrame;
-            var stack = ReactDebugCurrentFrame2.getStackAddendum();
-            if (stack !== "") {
-              format2 += "%s";
-              args = args.concat([stack]);
-            }
-            var argsWithFormat = args.map(function(item) {
-              return String(item);
-            });
-            argsWithFormat.unshift("Warning: " + format2);
-            Function.prototype.apply.call(console[level], console, argsWithFormat);
-          }
-        }
-        var didWarnStateUpdateForUnmountedComponent = {};
-        function warnNoop(publicInstance, callerName) {
-          {
-            var _constructor = publicInstance.constructor;
-            var componentName = _constructor && (_constructor.displayName || _constructor.name) || "ReactClass";
-            var warningKey = componentName + "." + callerName;
-            if (didWarnStateUpdateForUnmountedComponent[warningKey]) {
-              return;
-            }
-            error("Can't call %s on a component that is not yet mounted. This is a no-op, but it might indicate a bug in your application. Instead, assign to `this.state` directly or define a `state = {};` class property with the desired state in the %s component.", callerName, componentName);
-            didWarnStateUpdateForUnmountedComponent[warningKey] = true;
-          }
-        }
-        var ReactNoopUpdateQueue = {
-          /**
-           * Checks whether or not this composite component is mounted.
-           * @param {ReactClass} publicInstance The instance we want to test.
-           * @return {boolean} True if mounted, false otherwise.
-           * @protected
-           * @final
-           */
-          isMounted: function(publicInstance) {
-            return false;
-          },
-          /**
-           * Forces an update. This should only be invoked when it is known with
-           * certainty that we are **not** in a DOM transaction.
-           *
-           * You may want to call this when you know that some deeper aspect of the
-           * component's state has changed but `setState` was not called.
-           *
-           * This will not invoke `shouldComponentUpdate`, but it will invoke
-           * `componentWillUpdate` and `componentDidUpdate`.
-           *
-           * @param {ReactClass} publicInstance The instance that should rerender.
-           * @param {?function} callback Called after component is updated.
-           * @param {?string} callerName name of the calling function in the public API.
-           * @internal
-           */
-          enqueueForceUpdate: function(publicInstance, callback, callerName) {
-            warnNoop(publicInstance, "forceUpdate");
-          },
-          /**
-           * Replaces all of the state. Always use this or `setState` to mutate state.
-           * You should treat `this.state` as immutable.
-           *
-           * There is no guarantee that `this.state` will be immediately updated, so
-           * accessing `this.state` after calling this method may return the old value.
-           *
-           * @param {ReactClass} publicInstance The instance that should rerender.
-           * @param {object} completeState Next state.
-           * @param {?function} callback Called after component is updated.
-           * @param {?string} callerName name of the calling function in the public API.
-           * @internal
-           */
-          enqueueReplaceState: function(publicInstance, completeState, callback, callerName) {
-            warnNoop(publicInstance, "replaceState");
-          },
-          /**
-           * Sets a subset of the state. This only exists because _pendingState is
-           * internal. This provides a merging strategy that is not available to deep
-           * properties which is confusing. TODO: Expose pendingState or don't use it
-           * during the merge.
-           *
-           * @param {ReactClass} publicInstance The instance that should rerender.
-           * @param {object} partialState Next partial state to be merged with state.
-           * @param {?function} callback Called after component is updated.
-           * @param {?string} Name of the calling function in the public API.
-           * @internal
-           */
-          enqueueSetState: function(publicInstance, partialState, callback, callerName) {
-            warnNoop(publicInstance, "setState");
-          }
-        };
-        var assign = Object.assign;
-        var emptyObject = {};
-        {
-          Object.freeze(emptyObject);
-        }
-        function Component3(props, context2, updater) {
-          this.props = props;
-          this.context = context2;
-          this.refs = emptyObject;
-          this.updater = updater || ReactNoopUpdateQueue;
-        }
-        Component3.prototype.isReactComponent = {};
-        Component3.prototype.setState = function(partialState, callback) {
-          if (typeof partialState !== "object" && typeof partialState !== "function" && partialState != null) {
-            throw new Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");
-          }
-          this.updater.enqueueSetState(this, partialState, callback, "setState");
-        };
-        Component3.prototype.forceUpdate = function(callback) {
-          this.updater.enqueueForceUpdate(this, callback, "forceUpdate");
-        };
-        {
-          var deprecatedAPIs = {
-            isMounted: ["isMounted", "Instead, make sure to clean up subscriptions and pending requests in componentWillUnmount to prevent memory leaks."],
-            replaceState: ["replaceState", "Refactor your code to use setState instead (see https://github.com/facebook/react/issues/3236)."]
-          };
-          var defineDeprecationWarning = function(methodName, info) {
-            Object.defineProperty(Component3.prototype, methodName, {
-              get: function() {
-                warn("%s(...) is deprecated in plain JavaScript React classes. %s", info[0], info[1]);
-                return void 0;
-              }
-            });
-          };
-          for (var fnName in deprecatedAPIs) {
-            if (deprecatedAPIs.hasOwnProperty(fnName)) {
-              defineDeprecationWarning(fnName, deprecatedAPIs[fnName]);
-            }
-          }
-        }
-        function ComponentDummy() {
-        }
-        ComponentDummy.prototype = Component3.prototype;
-        function PureComponent(props, context2, updater) {
-          this.props = props;
-          this.context = context2;
-          this.refs = emptyObject;
-          this.updater = updater || ReactNoopUpdateQueue;
-        }
-        var pureComponentPrototype = PureComponent.prototype = new ComponentDummy();
-        pureComponentPrototype.constructor = PureComponent;
-        assign(pureComponentPrototype, Component3.prototype);
-        pureComponentPrototype.isPureReactComponent = true;
-        function createRef() {
-          var refObject = {
-            current: null
-          };
-          {
-            Object.seal(refObject);
-          }
-          return refObject;
-        }
-        var isArrayImpl = Array.isArray;
-        function isArray2(a) {
-          return isArrayImpl(a);
-        }
-        function typeName(value) {
-          {
-            var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
-            var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
-            return type;
-          }
-        }
-        function willCoercionThrow(value) {
-          {
-            try {
-              testStringCoercion(value);
-              return false;
-            } catch (e) {
-              return true;
-            }
-          }
-        }
-        function testStringCoercion(value) {
-          return "" + value;
-        }
-        function checkKeyStringCoercion(value) {
-          {
-            if (willCoercionThrow(value)) {
-              error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
-              return testStringCoercion(value);
-            }
-          }
-        }
-        function getWrappedName(outerType, innerType, wrapperName) {
-          var displayName = outerType.displayName;
-          if (displayName) {
-            return displayName;
-          }
-          var functionName = innerType.displayName || innerType.name || "";
-          return functionName !== "" ? wrapperName + "(" + functionName + ")" : wrapperName;
-        }
-        function getContextName(type) {
-          return type.displayName || "Context";
-        }
-        function getComponentNameFromType(type) {
-          if (type == null) {
-            return null;
-          }
-          {
-            if (typeof type.tag === "number") {
-              error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue.");
-            }
-          }
-          if (typeof type === "function") {
-            return type.displayName || type.name || null;
-          }
-          if (typeof type === "string") {
-            return type;
-          }
-          switch (type) {
-            case REACT_FRAGMENT_TYPE:
-              return "Fragment";
-            case REACT_PORTAL_TYPE:
-              return "Portal";
-            case REACT_PROFILER_TYPE:
-              return "Profiler";
-            case REACT_STRICT_MODE_TYPE:
-              return "StrictMode";
-            case REACT_SUSPENSE_TYPE:
-              return "Suspense";
-            case REACT_SUSPENSE_LIST_TYPE:
-              return "SuspenseList";
-          }
-          if (typeof type === "object") {
-            switch (type.$$typeof) {
-              case REACT_CONTEXT_TYPE:
-                var context2 = type;
-                return getContextName(context2) + ".Consumer";
-              case REACT_PROVIDER_TYPE:
-                var provider = type;
-                return getContextName(provider._context) + ".Provider";
-              case REACT_FORWARD_REF_TYPE:
-                return getWrappedName(type, type.render, "ForwardRef");
-              case REACT_MEMO_TYPE:
-                var outerName = type.displayName || null;
-                if (outerName !== null) {
-                  return outerName;
-                }
-                return getComponentNameFromType(type.type) || "Memo";
-              case REACT_LAZY_TYPE: {
-                var lazyComponent = type;
-                var payload = lazyComponent._payload;
-                var init2 = lazyComponent._init;
-                try {
-                  return getComponentNameFromType(init2(payload));
-                } catch (x) {
-                  return null;
-                }
-              }
-            }
-          }
-          return null;
-        }
-        var hasOwnProperty = Object.prototype.hasOwnProperty;
-        var RESERVED_PROPS = {
-          key: true,
-          ref: true,
-          __self: true,
-          __source: true
-        };
-        var specialPropKeyWarningShown, specialPropRefWarningShown, didWarnAboutStringRefs;
-        {
-          didWarnAboutStringRefs = {};
-        }
-        function hasValidRef(config) {
-          {
-            if (hasOwnProperty.call(config, "ref")) {
-              var getter = Object.getOwnPropertyDescriptor(config, "ref").get;
-              if (getter && getter.isReactWarning) {
-                return false;
-              }
-            }
-          }
-          return config.ref !== void 0;
-        }
-        function hasValidKey(config) {
-          {
-            if (hasOwnProperty.call(config, "key")) {
-              var getter = Object.getOwnPropertyDescriptor(config, "key").get;
-              if (getter && getter.isReactWarning) {
-                return false;
-              }
-            }
-          }
-          return config.key !== void 0;
-        }
-        function defineKeyPropWarningGetter(props, displayName) {
-          var warnAboutAccessingKey = function() {
-            {
-              if (!specialPropKeyWarningShown) {
-                specialPropKeyWarningShown = true;
-                error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
-              }
-            }
-          };
-          warnAboutAccessingKey.isReactWarning = true;
-          Object.defineProperty(props, "key", {
-            get: warnAboutAccessingKey,
-            configurable: true
-          });
-        }
-        function defineRefPropWarningGetter(props, displayName) {
-          var warnAboutAccessingRef = function() {
-            {
-              if (!specialPropRefWarningShown) {
-                specialPropRefWarningShown = true;
-                error("%s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
-              }
-            }
-          };
-          warnAboutAccessingRef.isReactWarning = true;
-          Object.defineProperty(props, "ref", {
-            get: warnAboutAccessingRef,
-            configurable: true
-          });
-        }
-        function warnIfStringRefCannotBeAutoConverted(config) {
-          {
-            if (typeof config.ref === "string" && ReactCurrentOwner.current && config.__self && ReactCurrentOwner.current.stateNode !== config.__self) {
-              var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
-              if (!didWarnAboutStringRefs[componentName]) {
-                error('Component "%s" contains the string ref "%s". Support for string refs will be removed in a future major release. This case cannot be automatically converted to an arrow function. We ask you to manually fix this case by using useRef() or createRef() instead. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-string-ref', componentName, config.ref);
-                didWarnAboutStringRefs[componentName] = true;
-              }
-            }
-          }
-        }
-        var ReactElement = function(type, key, ref, self2, source, owner, props) {
-          var element = {
-            // This tag allows us to uniquely identify this as a React Element
-            $$typeof: REACT_ELEMENT_TYPE,
-            // Built-in properties that belong on the element
-            type,
-            key,
-            ref,
-            props,
-            // Record the component responsible for creating this element.
-            _owner: owner
-          };
-          {
-            element._store = {};
-            Object.defineProperty(element._store, "validated", {
-              configurable: false,
-              enumerable: false,
-              writable: true,
-              value: false
-            });
-            Object.defineProperty(element, "_self", {
-              configurable: false,
-              enumerable: false,
-              writable: false,
-              value: self2
-            });
-            Object.defineProperty(element, "_source", {
-              configurable: false,
-              enumerable: false,
-              writable: false,
-              value: source
-            });
-            if (Object.freeze) {
-              Object.freeze(element.props);
-              Object.freeze(element);
-            }
-          }
-          return element;
-        };
-        function createElement2(type, config, children) {
-          var propName;
-          var props = {};
-          var key = null;
-          var ref = null;
-          var self2 = null;
-          var source = null;
-          if (config != null) {
-            if (hasValidRef(config)) {
-              ref = config.ref;
-              {
-                warnIfStringRefCannotBeAutoConverted(config);
-              }
-            }
-            if (hasValidKey(config)) {
-              {
-                checkKeyStringCoercion(config.key);
-              }
-              key = "" + config.key;
-            }
-            self2 = config.__self === void 0 ? null : config.__self;
-            source = config.__source === void 0 ? null : config.__source;
-            for (propName in config) {
-              if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-                props[propName] = config[propName];
-              }
-            }
-          }
-          var childrenLength = arguments.length - 2;
-          if (childrenLength === 1) {
-            props.children = children;
-          } else if (childrenLength > 1) {
-            var childArray = Array(childrenLength);
-            for (var i = 0; i < childrenLength; i++) {
-              childArray[i] = arguments[i + 2];
-            }
-            {
-              if (Object.freeze) {
-                Object.freeze(childArray);
-              }
-            }
-            props.children = childArray;
-          }
-          if (type && type.defaultProps) {
-            var defaultProps = type.defaultProps;
-            for (propName in defaultProps) {
-              if (props[propName] === void 0) {
-                props[propName] = defaultProps[propName];
-              }
-            }
-          }
-          {
-            if (key || ref) {
-              var displayName = typeof type === "function" ? type.displayName || type.name || "Unknown" : type;
-              if (key) {
-                defineKeyPropWarningGetter(props, displayName);
-              }
-              if (ref) {
-                defineRefPropWarningGetter(props, displayName);
-              }
-            }
-          }
-          return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
-        }
-        function cloneAndReplaceKey(oldElement, newKey) {
-          var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
-          return newElement;
-        }
-        function cloneElement(element, config, children) {
-          if (element === null || element === void 0) {
-            throw new Error("React.cloneElement(...): The argument must be a React element, but you passed " + element + ".");
-          }
-          var propName;
-          var props = assign({}, element.props);
-          var key = element.key;
-          var ref = element.ref;
-          var self2 = element._self;
-          var source = element._source;
-          var owner = element._owner;
-          if (config != null) {
-            if (hasValidRef(config)) {
-              ref = config.ref;
-              owner = ReactCurrentOwner.current;
-            }
-            if (hasValidKey(config)) {
-              {
-                checkKeyStringCoercion(config.key);
-              }
-              key = "" + config.key;
-            }
-            var defaultProps;
-            if (element.type && element.type.defaultProps) {
-              defaultProps = element.type.defaultProps;
-            }
-            for (propName in config) {
-              if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-                if (config[propName] === void 0 && defaultProps !== void 0) {
-                  props[propName] = defaultProps[propName];
-                } else {
-                  props[propName] = config[propName];
-                }
-              }
-            }
-          }
-          var childrenLength = arguments.length - 2;
-          if (childrenLength === 1) {
-            props.children = children;
-          } else if (childrenLength > 1) {
-            var childArray = Array(childrenLength);
-            for (var i = 0; i < childrenLength; i++) {
-              childArray[i] = arguments[i + 2];
-            }
-            props.children = childArray;
-          }
-          return ReactElement(element.type, key, ref, self2, source, owner, props);
-        }
-        function isValidElement(object) {
-          return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-        }
-        var SEPARATOR = ".";
-        var SUBSEPARATOR = ":";
-        function escape2(key) {
-          var escapeRegex = /[=:]/g;
-          var escaperLookup = {
-            "=": "=0",
-            ":": "=2"
-          };
-          var escapedString = key.replace(escapeRegex, function(match) {
-            return escaperLookup[match];
-          });
-          return "$" + escapedString;
-        }
-        var didWarnAboutMaps = false;
-        var userProvidedKeyEscapeRegex = /\/+/g;
-        function escapeUserProvidedKey(text) {
-          return text.replace(userProvidedKeyEscapeRegex, "$&/");
-        }
-        function getElementKey(element, index) {
-          if (typeof element === "object" && element !== null && element.key != null) {
-            {
-              checkKeyStringCoercion(element.key);
-            }
-            return escape2("" + element.key);
-          }
-          return index.toString(36);
-        }
-        function mapIntoArray(children, array, escapedPrefix, nameSoFar, callback) {
-          var type = typeof children;
-          if (type === "undefined" || type === "boolean") {
-            children = null;
-          }
-          var invokeCallback = false;
-          if (children === null) {
-            invokeCallback = true;
-          } else {
-            switch (type) {
-              case "string":
-              case "number":
-                invokeCallback = true;
-                break;
-              case "object":
-                switch (children.$$typeof) {
-                  case REACT_ELEMENT_TYPE:
-                  case REACT_PORTAL_TYPE:
-                    invokeCallback = true;
-                }
-            }
-          }
-          if (invokeCallback) {
-            var _child = children;
-            var mappedChild = callback(_child);
-            var childKey = nameSoFar === "" ? SEPARATOR + getElementKey(_child, 0) : nameSoFar;
-            if (isArray2(mappedChild)) {
-              var escapedChildKey = "";
-              if (childKey != null) {
-                escapedChildKey = escapeUserProvidedKey(childKey) + "/";
-              }
-              mapIntoArray(mappedChild, array, escapedChildKey, "", function(c) {
-                return c;
-              });
-            } else if (mappedChild != null) {
-              if (isValidElement(mappedChild)) {
-                {
-                  if (mappedChild.key && (!_child || _child.key !== mappedChild.key)) {
-                    checkKeyStringCoercion(mappedChild.key);
-                  }
-                }
-                mappedChild = cloneAndReplaceKey(
-                  mappedChild,
-                  // Keep both the (mapped) and old keys if they differ, just as
-                  // traverseAllChildren used to do for objects as children
-                  escapedPrefix + // $FlowFixMe Flow incorrectly thinks React.Portal doesn't have a key
-                  (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? (
-                    // $FlowFixMe Flow incorrectly thinks existing element's key can be a number
-                    // eslint-disable-next-line react-internal/safe-string-coercion
-                    escapeUserProvidedKey("" + mappedChild.key) + "/"
-                  ) : "") + childKey
-                );
-              }
-              array.push(mappedChild);
-            }
-            return 1;
-          }
-          var child;
-          var nextName;
-          var subtreeCount = 0;
-          var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
-          if (isArray2(children)) {
-            for (var i = 0; i < children.length; i++) {
-              child = children[i];
-              nextName = nextNamePrefix + getElementKey(child, i);
-              subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
-            }
-          } else {
-            var iteratorFn = getIteratorFn(children);
-            if (typeof iteratorFn === "function") {
-              var iterableChildren = children;
-              {
-                if (iteratorFn === iterableChildren.entries) {
-                  if (!didWarnAboutMaps) {
-                    warn("Using Maps as children is not supported. Use an array of keyed ReactElements instead.");
-                  }
-                  didWarnAboutMaps = true;
-                }
-              }
-              var iterator = iteratorFn.call(iterableChildren);
-              var step;
-              var ii = 0;
-              while (!(step = iterator.next()).done) {
-                child = step.value;
-                nextName = nextNamePrefix + getElementKey(child, ii++);
-                subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
-              }
-            } else if (type === "object") {
-              var childrenString = String(children);
-              throw new Error("Objects are not valid as a React child (found: " + (childrenString === "[object Object]" ? "object with keys {" + Object.keys(children).join(", ") + "}" : childrenString) + "). If you meant to render a collection of children, use an array instead.");
-            }
-          }
-          return subtreeCount;
-        }
-        function mapChildren(children, func, context2) {
-          if (children == null) {
-            return children;
-          }
-          var result = [];
-          var count = 0;
-          mapIntoArray(children, result, "", "", function(child) {
-            return func.call(context2, child, count++);
-          });
-          return result;
-        }
-        function countChildren(children) {
-          var n = 0;
-          mapChildren(children, function() {
-            n++;
-          });
-          return n;
-        }
-        function forEachChildren(children, forEachFunc, forEachContext) {
-          mapChildren(children, function() {
-            forEachFunc.apply(this, arguments);
-          }, forEachContext);
-        }
-        function toArray(children) {
-          return mapChildren(children, function(child) {
-            return child;
-          }) || [];
-        }
-        function onlyChild(children) {
-          if (!isValidElement(children)) {
-            throw new Error("React.Children.only expected to receive a single React element child.");
-          }
-          return children;
-        }
-        function createContext(defaultValue2) {
-          var context2 = {
-            $$typeof: REACT_CONTEXT_TYPE,
-            // As a workaround to support multiple concurrent renderers, we categorize
-            // some renderers as primary and others as secondary. We only expect
-            // there to be two concurrent renderers at most: React Native (primary) and
-            // Fabric (secondary); React DOM (primary) and React ART (secondary).
-            // Secondary renderers store their context values on separate fields.
-            _currentValue: defaultValue2,
-            _currentValue2: defaultValue2,
-            // Used to track how many concurrent renderers this context currently
-            // supports within in a single renderer. Such as parallel server rendering.
-            _threadCount: 0,
-            // These are circular
-            Provider: null,
-            Consumer: null,
-            // Add these to use same hidden class in VM as ServerContext
-            _defaultValue: null,
-            _globalName: null
-          };
-          context2.Provider = {
-            $$typeof: REACT_PROVIDER_TYPE,
-            _context: context2
-          };
-          var hasWarnedAboutUsingNestedContextConsumers = false;
-          var hasWarnedAboutUsingConsumerProvider = false;
-          var hasWarnedAboutDisplayNameOnConsumer = false;
-          {
-            var Consumer = {
-              $$typeof: REACT_CONTEXT_TYPE,
-              _context: context2
-            };
-            Object.defineProperties(Consumer, {
-              Provider: {
-                get: function() {
-                  if (!hasWarnedAboutUsingConsumerProvider) {
-                    hasWarnedAboutUsingConsumerProvider = true;
-                    error("Rendering <Context.Consumer.Provider> is not supported and will be removed in a future major release. Did you mean to render <Context.Provider> instead?");
-                  }
-                  return context2.Provider;
-                },
-                set: function(_Provider) {
-                  context2.Provider = _Provider;
-                }
-              },
-              _currentValue: {
-                get: function() {
-                  return context2._currentValue;
-                },
-                set: function(_currentValue) {
-                  context2._currentValue = _currentValue;
-                }
-              },
-              _currentValue2: {
-                get: function() {
-                  return context2._currentValue2;
-                },
-                set: function(_currentValue2) {
-                  context2._currentValue2 = _currentValue2;
-                }
-              },
-              _threadCount: {
-                get: function() {
-                  return context2._threadCount;
-                },
-                set: function(_threadCount) {
-                  context2._threadCount = _threadCount;
-                }
-              },
-              Consumer: {
-                get: function() {
-                  if (!hasWarnedAboutUsingNestedContextConsumers) {
-                    hasWarnedAboutUsingNestedContextConsumers = true;
-                    error("Rendering <Context.Consumer.Consumer> is not supported and will be removed in a future major release. Did you mean to render <Context.Consumer> instead?");
-                  }
-                  return context2.Consumer;
-                }
-              },
-              displayName: {
-                get: function() {
-                  return context2.displayName;
-                },
-                set: function(displayName) {
-                  if (!hasWarnedAboutDisplayNameOnConsumer) {
-                    warn("Setting `displayName` on Context.Consumer has no effect. You should set it directly on the context with Context.displayName = '%s'.", displayName);
-                    hasWarnedAboutDisplayNameOnConsumer = true;
-                  }
-                }
-              }
-            });
-            context2.Consumer = Consumer;
-          }
-          {
-            context2._currentRenderer = null;
-            context2._currentRenderer2 = null;
-          }
-          return context2;
-        }
-        var Uninitialized = -1;
-        var Pending = 0;
-        var Resolved = 1;
-        var Rejected = 2;
-        function lazyInitializer(payload) {
-          if (payload._status === Uninitialized) {
-            var ctor = payload._result;
-            var thenable = ctor();
-            thenable.then(function(moduleObject2) {
-              if (payload._status === Pending || payload._status === Uninitialized) {
-                var resolved = payload;
-                resolved._status = Resolved;
-                resolved._result = moduleObject2;
-              }
-            }, function(error2) {
-              if (payload._status === Pending || payload._status === Uninitialized) {
-                var rejected = payload;
-                rejected._status = Rejected;
-                rejected._result = error2;
-              }
-            });
-            if (payload._status === Uninitialized) {
-              var pending = payload;
-              pending._status = Pending;
-              pending._result = thenable;
-            }
-          }
-          if (payload._status === Resolved) {
-            var moduleObject = payload._result;
-            {
-              if (moduleObject === void 0) {
-                error("lazy: Expected the result of a dynamic import() call. Instead received: %s\n\nYour code should look like: \n  const MyComponent = lazy(() => import('./MyComponent'))\n\nDid you accidentally put curly braces around the import?", moduleObject);
-              }
-            }
-            {
-              if (!("default" in moduleObject)) {
-                error("lazy: Expected the result of a dynamic import() call. Instead received: %s\n\nYour code should look like: \n  const MyComponent = lazy(() => import('./MyComponent'))", moduleObject);
-              }
-            }
-            return moduleObject.default;
-          } else {
-            throw payload._result;
-          }
-        }
-        function lazy(ctor) {
-          var payload = {
-            // We use these fields to store the result.
-            _status: Uninitialized,
-            _result: ctor
-          };
-          var lazyType = {
-            $$typeof: REACT_LAZY_TYPE,
-            _payload: payload,
-            _init: lazyInitializer
-          };
-          {
-            var defaultProps;
-            var propTypes;
-            Object.defineProperties(lazyType, {
-              defaultProps: {
-                configurable: true,
-                get: function() {
-                  return defaultProps;
-                },
-                set: function(newDefaultProps) {
-                  error("React.lazy(...): It is not supported to assign `defaultProps` to a lazy component import. Either specify them where the component is defined, or create a wrapping component around it.");
-                  defaultProps = newDefaultProps;
-                  Object.defineProperty(lazyType, "defaultProps", {
-                    enumerable: true
-                  });
-                }
-              },
-              propTypes: {
-                configurable: true,
-                get: function() {
-                  return propTypes;
-                },
-                set: function(newPropTypes) {
-                  error("React.lazy(...): It is not supported to assign `propTypes` to a lazy component import. Either specify them where the component is defined, or create a wrapping component around it.");
-                  propTypes = newPropTypes;
-                  Object.defineProperty(lazyType, "propTypes", {
-                    enumerable: true
-                  });
-                }
-              }
-            });
-          }
-          return lazyType;
-        }
-        function forwardRef(render3) {
-          {
-            if (render3 != null && render3.$$typeof === REACT_MEMO_TYPE) {
-              error("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
-            } else if (typeof render3 !== "function") {
-              error("forwardRef requires a render function but was given %s.", render3 === null ? "null" : typeof render3);
-            } else {
-              if (render3.length !== 0 && render3.length !== 2) {
-                error("forwardRef render functions accept exactly two parameters: props and ref. %s", render3.length === 1 ? "Did you forget to use the ref parameter?" : "Any additional parameter will be undefined.");
-              }
-            }
-            if (render3 != null) {
-              if (render3.defaultProps != null || render3.propTypes != null) {
-                error("forwardRef render functions do not support propTypes or defaultProps. Did you accidentally pass a React component?");
-              }
-            }
-          }
-          var elementType = {
-            $$typeof: REACT_FORWARD_REF_TYPE,
-            render: render3
-          };
-          {
-            var ownName;
-            Object.defineProperty(elementType, "displayName", {
-              enumerable: false,
-              configurable: true,
-              get: function() {
-                return ownName;
-              },
-              set: function(name) {
-                ownName = name;
-                if (!render3.name && !render3.displayName) {
-                  render3.displayName = name;
-                }
-              }
-            });
-          }
-          return elementType;
-        }
-        var REACT_MODULE_REFERENCE;
-        {
-          REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
-        }
-        function isValidElementType(type) {
-          if (typeof type === "string" || typeof type === "function") {
-            return true;
-          }
-          if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
-            return true;
-          }
-          if (typeof type === "object" && type !== null) {
-            if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
-            // types supported by any Flight configuration anywhere since
-            // we don't know which Flight build this will end up being used
-            // with.
-            type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
-              return true;
-            }
-          }
-          return false;
-        }
-        function memo(type, compare) {
-          {
-            if (!isValidElementType(type)) {
-              error("memo: The first argument must be a component. Instead received: %s", type === null ? "null" : typeof type);
-            }
-          }
-          var elementType = {
-            $$typeof: REACT_MEMO_TYPE,
-            type,
-            compare: compare === void 0 ? null : compare
-          };
-          {
-            var ownName;
-            Object.defineProperty(elementType, "displayName", {
-              enumerable: false,
-              configurable: true,
-              get: function() {
-                return ownName;
-              },
-              set: function(name) {
-                ownName = name;
-                if (!type.name && !type.displayName) {
-                  type.displayName = name;
-                }
-              }
-            });
-          }
-          return elementType;
-        }
-        function resolveDispatcher() {
-          var dispatcher = ReactCurrentDispatcher.current;
-          {
-            if (dispatcher === null) {
-              error("Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:\n1. You might have mismatching versions of React and the renderer (such as React DOM)\n2. You might be breaking the Rules of Hooks\n3. You might have more than one copy of React in the same app\nSee https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.");
-            }
-          }
-          return dispatcher;
-        }
-        function useContext(Context) {
-          var dispatcher = resolveDispatcher();
-          {
-            if (Context._context !== void 0) {
-              var realContext = Context._context;
-              if (realContext.Consumer === Context) {
-                error("Calling useContext(Context.Consumer) is not supported, may cause bugs, and will be removed in a future major release. Did you mean to call useContext(Context) instead?");
-              } else if (realContext.Provider === Context) {
-                error("Calling useContext(Context.Provider) is not supported. Did you mean to call useContext(Context) instead?");
-              }
-            }
-          }
-          return dispatcher.useContext(Context);
-        }
-        function useState(initialState2) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useState(initialState2);
-        }
-        function useReducer(reducer, initialArg, init2) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useReducer(reducer, initialArg, init2);
-        }
-        function useRef4(initialValue) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useRef(initialValue);
-        }
-        function useEffect5(create, deps) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useEffect(create, deps);
-        }
-        function useInsertionEffect(create, deps) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useInsertionEffect(create, deps);
-        }
-        function useLayoutEffect(create, deps) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useLayoutEffect(create, deps);
-        }
-        function useCallback(callback, deps) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useCallback(callback, deps);
-        }
-        function useMemo(create, deps) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useMemo(create, deps);
-        }
-        function useImperativeHandle(ref, create, deps) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useImperativeHandle(ref, create, deps);
-        }
-        function useDebugValue(value, formatterFn) {
-          {
-            var dispatcher = resolveDispatcher();
-            return dispatcher.useDebugValue(value, formatterFn);
-          }
-        }
-        function useTransition() {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useTransition();
-        }
-        function useDeferredValue(value) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useDeferredValue(value);
-        }
-        function useId() {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useId();
-        }
-        function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-          var dispatcher = resolveDispatcher();
-          return dispatcher.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-        }
-        var disabledDepth = 0;
-        var prevLog;
-        var prevInfo;
-        var prevWarn;
-        var prevError;
-        var prevGroup;
-        var prevGroupCollapsed;
-        var prevGroupEnd;
-        function disabledLog() {
-        }
-        disabledLog.__reactDisabledLog = true;
-        function disableLogs() {
-          {
-            if (disabledDepth === 0) {
-              prevLog = console.log;
-              prevInfo = console.info;
-              prevWarn = console.warn;
-              prevError = console.error;
-              prevGroup = console.group;
-              prevGroupCollapsed = console.groupCollapsed;
-              prevGroupEnd = console.groupEnd;
-              var props = {
-                configurable: true,
-                enumerable: true,
-                value: disabledLog,
-                writable: true
-              };
-              Object.defineProperties(console, {
-                info: props,
-                log: props,
-                warn: props,
-                error: props,
-                group: props,
-                groupCollapsed: props,
-                groupEnd: props
-              });
-            }
-            disabledDepth++;
-          }
-        }
-        function reenableLogs() {
-          {
-            disabledDepth--;
-            if (disabledDepth === 0) {
-              var props = {
-                configurable: true,
-                enumerable: true,
-                writable: true
-              };
-              Object.defineProperties(console, {
-                log: assign({}, props, {
-                  value: prevLog
-                }),
-                info: assign({}, props, {
-                  value: prevInfo
-                }),
-                warn: assign({}, props, {
-                  value: prevWarn
-                }),
-                error: assign({}, props, {
-                  value: prevError
-                }),
-                group: assign({}, props, {
-                  value: prevGroup
-                }),
-                groupCollapsed: assign({}, props, {
-                  value: prevGroupCollapsed
-                }),
-                groupEnd: assign({}, props, {
-                  value: prevGroupEnd
-                })
-              });
-            }
-            if (disabledDepth < 0) {
-              error("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
-            }
-          }
-        }
-        var ReactCurrentDispatcher$1 = ReactSharedInternals.ReactCurrentDispatcher;
-        var prefix;
-        function describeBuiltInComponentFrame(name, source, ownerFn) {
-          {
-            if (prefix === void 0) {
-              try {
-                throw Error();
-              } catch (x) {
-                var match = x.stack.trim().match(/\n( *(at )?)/);
-                prefix = match && match[1] || "";
-              }
-            }
-            return "\n" + prefix + name;
-          }
-        }
-        var reentry = false;
-        var componentFrameCache;
-        {
-          var PossiblyWeakMap = typeof WeakMap === "function" ? WeakMap : Map;
-          componentFrameCache = new PossiblyWeakMap();
-        }
-        function describeNativeComponentFrame(fn, construct) {
-          if (!fn || reentry) {
-            return "";
-          }
-          {
-            var frame = componentFrameCache.get(fn);
-            if (frame !== void 0) {
-              return frame;
-            }
-          }
-          var control;
-          reentry = true;
-          var previousPrepareStackTrace = Error.prepareStackTrace;
-          Error.prepareStackTrace = void 0;
-          var previousDispatcher;
-          {
-            previousDispatcher = ReactCurrentDispatcher$1.current;
-            ReactCurrentDispatcher$1.current = null;
-            disableLogs();
-          }
-          try {
-            if (construct) {
-              var Fake = function() {
-                throw Error();
-              };
-              Object.defineProperty(Fake.prototype, "props", {
-                set: function() {
-                  throw Error();
-                }
-              });
-              if (typeof Reflect === "object" && Reflect.construct) {
-                try {
-                  Reflect.construct(Fake, []);
-                } catch (x) {
-                  control = x;
-                }
-                Reflect.construct(fn, [], Fake);
-              } else {
-                try {
-                  Fake.call();
-                } catch (x) {
-                  control = x;
-                }
-                fn.call(Fake.prototype);
-              }
-            } else {
-              try {
-                throw Error();
-              } catch (x) {
-                control = x;
-              }
-              fn();
-            }
-          } catch (sample) {
-            if (sample && control && typeof sample.stack === "string") {
-              var sampleLines = sample.stack.split("\n");
-              var controlLines = control.stack.split("\n");
-              var s = sampleLines.length - 1;
-              var c = controlLines.length - 1;
-              while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
-                c--;
-              }
-              for (; s >= 1 && c >= 0; s--, c--) {
-                if (sampleLines[s] !== controlLines[c]) {
-                  if (s !== 1 || c !== 1) {
-                    do {
-                      s--;
-                      c--;
-                      if (c < 0 || sampleLines[s] !== controlLines[c]) {
-                        var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
-                        if (fn.displayName && _frame.includes("<anonymous>")) {
-                          _frame = _frame.replace("<anonymous>", fn.displayName);
-                        }
-                        {
-                          if (typeof fn === "function") {
-                            componentFrameCache.set(fn, _frame);
-                          }
-                        }
-                        return _frame;
-                      }
-                    } while (s >= 1 && c >= 0);
-                  }
-                  break;
-                }
-              }
-            }
-          } finally {
-            reentry = false;
-            {
-              ReactCurrentDispatcher$1.current = previousDispatcher;
-              reenableLogs();
-            }
-            Error.prepareStackTrace = previousPrepareStackTrace;
-          }
-          var name = fn ? fn.displayName || fn.name : "";
-          var syntheticFrame = name ? describeBuiltInComponentFrame(name) : "";
-          {
-            if (typeof fn === "function") {
-              componentFrameCache.set(fn, syntheticFrame);
-            }
-          }
-          return syntheticFrame;
-        }
-        function describeFunctionComponentFrame(fn, source, ownerFn) {
-          {
-            return describeNativeComponentFrame(fn, false);
-          }
-        }
-        function shouldConstruct(Component4) {
-          var prototype = Component4.prototype;
-          return !!(prototype && prototype.isReactComponent);
-        }
-        function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
-          if (type == null) {
-            return "";
-          }
-          if (typeof type === "function") {
-            {
-              return describeNativeComponentFrame(type, shouldConstruct(type));
-            }
-          }
-          if (typeof type === "string") {
-            return describeBuiltInComponentFrame(type);
-          }
-          switch (type) {
-            case REACT_SUSPENSE_TYPE:
-              return describeBuiltInComponentFrame("Suspense");
-            case REACT_SUSPENSE_LIST_TYPE:
-              return describeBuiltInComponentFrame("SuspenseList");
-          }
-          if (typeof type === "object") {
-            switch (type.$$typeof) {
-              case REACT_FORWARD_REF_TYPE:
-                return describeFunctionComponentFrame(type.render);
-              case REACT_MEMO_TYPE:
-                return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
-              case REACT_LAZY_TYPE: {
-                var lazyComponent = type;
-                var payload = lazyComponent._payload;
-                var init2 = lazyComponent._init;
-                try {
-                  return describeUnknownElementTypeFrameInDEV(init2(payload), source, ownerFn);
-                } catch (x) {
-                }
-              }
-            }
-          }
-          return "";
-        }
-        var loggedTypeFailures = {};
-        var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
-        function setCurrentlyValidatingElement(element) {
-          {
-            if (element) {
-              var owner = element._owner;
-              var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
-              ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
-            } else {
-              ReactDebugCurrentFrame$1.setExtraStackFrame(null);
-            }
-          }
-        }
-        function checkPropTypes(typeSpecs, values, location, componentName, element) {
-          {
-            var has = Function.call.bind(hasOwnProperty);
-            for (var typeSpecName in typeSpecs) {
-              if (has(typeSpecs, typeSpecName)) {
-                var error$1 = void 0;
-                try {
-                  if (typeof typeSpecs[typeSpecName] !== "function") {
-                    var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
-                    err.name = "Invariant Violation";
-                    throw err;
-                  }
-                  error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
-                } catch (ex) {
-                  error$1 = ex;
-                }
-                if (error$1 && !(error$1 instanceof Error)) {
-                  setCurrentlyValidatingElement(element);
-                  error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
-                  setCurrentlyValidatingElement(null);
-                }
-                if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
-                  loggedTypeFailures[error$1.message] = true;
-                  setCurrentlyValidatingElement(element);
-                  error("Failed %s type: %s", location, error$1.message);
-                  setCurrentlyValidatingElement(null);
-                }
-              }
-            }
-          }
-        }
-        function setCurrentlyValidatingElement$1(element) {
-          {
-            if (element) {
-              var owner = element._owner;
-              var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
-              setExtraStackFrame(stack);
-            } else {
-              setExtraStackFrame(null);
-            }
-          }
-        }
-        var propTypesMisspellWarningShown;
-        {
-          propTypesMisspellWarningShown = false;
-        }
-        function getDeclarationErrorAddendum() {
-          if (ReactCurrentOwner.current) {
-            var name = getComponentNameFromType(ReactCurrentOwner.current.type);
-            if (name) {
-              return "\n\nCheck the render method of `" + name + "`.";
-            }
-          }
-          return "";
-        }
-        function getSourceInfoErrorAddendum(source) {
-          if (source !== void 0) {
-            var fileName = source.fileName.replace(/^.*[\\\/]/, "");
-            var lineNumber = source.lineNumber;
-            return "\n\nCheck your code at " + fileName + ":" + lineNumber + ".";
-          }
-          return "";
-        }
-        function getSourceInfoErrorAddendumForProps(elementProps) {
-          if (elementProps !== null && elementProps !== void 0) {
-            return getSourceInfoErrorAddendum(elementProps.__source);
-          }
-          return "";
-        }
-        var ownerHasKeyUseWarning = {};
-        function getCurrentComponentErrorInfo(parentType) {
-          var info = getDeclarationErrorAddendum();
-          if (!info) {
-            var parentName = typeof parentType === "string" ? parentType : parentType.displayName || parentType.name;
-            if (parentName) {
-              info = "\n\nCheck the top-level render call using <" + parentName + ">.";
-            }
-          }
-          return info;
-        }
-        function validateExplicitKey(element, parentType) {
-          if (!element._store || element._store.validated || element.key != null) {
-            return;
-          }
-          element._store.validated = true;
-          var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
-          if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
-            return;
-          }
-          ownerHasKeyUseWarning[currentComponentErrorInfo] = true;
-          var childOwner = "";
-          if (element && element._owner && element._owner !== ReactCurrentOwner.current) {
-            childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
-          }
-          {
-            setCurrentlyValidatingElement$1(element);
-            error('Each child in a list should have a unique "key" prop.%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
-            setCurrentlyValidatingElement$1(null);
-          }
-        }
-        function validateChildKeys(node, parentType) {
-          if (typeof node !== "object") {
-            return;
-          }
-          if (isArray2(node)) {
-            for (var i = 0; i < node.length; i++) {
-              var child = node[i];
-              if (isValidElement(child)) {
-                validateExplicitKey(child, parentType);
-              }
-            }
-          } else if (isValidElement(node)) {
-            if (node._store) {
-              node._store.validated = true;
-            }
-          } else if (node) {
-            var iteratorFn = getIteratorFn(node);
-            if (typeof iteratorFn === "function") {
-              if (iteratorFn !== node.entries) {
-                var iterator = iteratorFn.call(node);
-                var step;
-                while (!(step = iterator.next()).done) {
-                  if (isValidElement(step.value)) {
-                    validateExplicitKey(step.value, parentType);
-                  }
-                }
-              }
-            }
-          }
-        }
-        function validatePropTypes(element) {
-          {
-            var type = element.type;
-            if (type === null || type === void 0 || typeof type === "string") {
-              return;
-            }
-            var propTypes;
-            if (typeof type === "function") {
-              propTypes = type.propTypes;
-            } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
-            // Inner props are checked in the reconciler.
-            type.$$typeof === REACT_MEMO_TYPE)) {
-              propTypes = type.propTypes;
-            } else {
-              return;
-            }
-            if (propTypes) {
-              var name = getComponentNameFromType(type);
-              checkPropTypes(propTypes, element.props, "prop", name, element);
-            } else if (type.PropTypes !== void 0 && !propTypesMisspellWarningShown) {
-              propTypesMisspellWarningShown = true;
-              var _name = getComponentNameFromType(type);
-              error("Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?", _name || "Unknown");
-            }
-            if (typeof type.getDefaultProps === "function" && !type.getDefaultProps.isReactClassApproved) {
-              error("getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead.");
-            }
-          }
-        }
-        function validateFragmentProps(fragment10) {
-          {
-            var keys = Object.keys(fragment10.props);
-            for (var i = 0; i < keys.length; i++) {
-              var key = keys[i];
-              if (key !== "children" && key !== "key") {
-                setCurrentlyValidatingElement$1(fragment10);
-                error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
-                setCurrentlyValidatingElement$1(null);
-                break;
-              }
-            }
-            if (fragment10.ref !== null) {
-              setCurrentlyValidatingElement$1(fragment10);
-              error("Invalid attribute `ref` supplied to `React.Fragment`.");
-              setCurrentlyValidatingElement$1(null);
-            }
-          }
-        }
-        function createElementWithValidation(type, props, children) {
-          var validType = isValidElementType(type);
-          if (!validType) {
-            var info = "";
-            if (type === void 0 || typeof type === "object" && type !== null && Object.keys(type).length === 0) {
-              info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.";
-            }
-            var sourceInfo = getSourceInfoErrorAddendumForProps(props);
-            if (sourceInfo) {
-              info += sourceInfo;
-            } else {
-              info += getDeclarationErrorAddendum();
-            }
-            var typeString;
-            if (type === null) {
-              typeString = "null";
-            } else if (isArray2(type)) {
-              typeString = "array";
-            } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
-              typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
-              info = " Did you accidentally export a JSX literal instead of a component?";
-            } else {
-              typeString = typeof type;
-            }
-            {
-              error("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
-            }
-          }
-          var element = createElement2.apply(this, arguments);
-          if (element == null) {
-            return element;
-          }
-          if (validType) {
-            for (var i = 2; i < arguments.length; i++) {
-              validateChildKeys(arguments[i], type);
-            }
-          }
-          if (type === REACT_FRAGMENT_TYPE) {
-            validateFragmentProps(element);
-          } else {
-            validatePropTypes(element);
-          }
-          return element;
-        }
-        var didWarnAboutDeprecatedCreateFactory = false;
-        function createFactoryWithValidation(type) {
-          var validatedFactory = createElementWithValidation.bind(null, type);
-          validatedFactory.type = type;
-          {
-            if (!didWarnAboutDeprecatedCreateFactory) {
-              didWarnAboutDeprecatedCreateFactory = true;
-              warn("React.createFactory() is deprecated and will be removed in a future major release. Consider using JSX or use React.createElement() directly instead.");
-            }
-            Object.defineProperty(validatedFactory, "type", {
-              enumerable: false,
-              get: function() {
-                warn("Factory.type is deprecated. Access the class directly before passing it to createFactory.");
-                Object.defineProperty(this, "type", {
-                  value: type
-                });
-                return type;
-              }
-            });
-          }
-          return validatedFactory;
-        }
-        function cloneElementWithValidation(element, props, children) {
-          var newElement = cloneElement.apply(this, arguments);
-          for (var i = 2; i < arguments.length; i++) {
-            validateChildKeys(arguments[i], newElement.type);
-          }
-          validatePropTypes(newElement);
-          return newElement;
-        }
-        function startTransition(scope, options) {
-          var prevTransition = ReactCurrentBatchConfig.transition;
-          ReactCurrentBatchConfig.transition = {};
-          var currentTransition = ReactCurrentBatchConfig.transition;
-          {
-            ReactCurrentBatchConfig.transition._updatedFibers = /* @__PURE__ */ new Set();
-          }
-          try {
-            scope();
-          } finally {
-            ReactCurrentBatchConfig.transition = prevTransition;
-            {
-              if (prevTransition === null && currentTransition._updatedFibers) {
-                var updatedFibersCount = currentTransition._updatedFibers.size;
-                if (updatedFibersCount > 10) {
-                  warn("Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table.");
-                }
-                currentTransition._updatedFibers.clear();
-              }
-            }
-          }
-        }
-        var didWarnAboutMessageChannel = false;
-        var enqueueTaskImpl = null;
-        function enqueueTask(task) {
-          if (enqueueTaskImpl === null) {
-            try {
-              var requireString = ("require" + Math.random()).slice(0, 7);
-              var nodeRequire = module && module[requireString];
-              enqueueTaskImpl = nodeRequire.call(module, "timers").setImmediate;
-            } catch (_err) {
-              enqueueTaskImpl = function(callback) {
-                {
-                  if (didWarnAboutMessageChannel === false) {
-                    didWarnAboutMessageChannel = true;
-                    if (typeof MessageChannel === "undefined") {
-                      error("This browser does not have a MessageChannel implementation, so enqueuing tasks via await act(async () => ...) will fail. Please file an issue at https://github.com/facebook/react/issues if you encounter this warning.");
-                    }
-                  }
-                }
-                var channel = new MessageChannel();
-                channel.port1.onmessage = callback;
-                channel.port2.postMessage(void 0);
-              };
-            }
-          }
-          return enqueueTaskImpl(task);
-        }
-        var actScopeDepth = 0;
-        var didWarnNoAwaitAct = false;
-        function act(callback) {
-          {
-            var prevActScopeDepth = actScopeDepth;
-            actScopeDepth++;
-            if (ReactCurrentActQueue.current === null) {
-              ReactCurrentActQueue.current = [];
-            }
-            var prevIsBatchingLegacy = ReactCurrentActQueue.isBatchingLegacy;
-            var result;
-            try {
-              ReactCurrentActQueue.isBatchingLegacy = true;
-              result = callback();
-              if (!prevIsBatchingLegacy && ReactCurrentActQueue.didScheduleLegacyUpdate) {
-                var queue = ReactCurrentActQueue.current;
-                if (queue !== null) {
-                  ReactCurrentActQueue.didScheduleLegacyUpdate = false;
-                  flushActQueue(queue);
-                }
-              }
-            } catch (error2) {
-              popActScope(prevActScopeDepth);
-              throw error2;
-            } finally {
-              ReactCurrentActQueue.isBatchingLegacy = prevIsBatchingLegacy;
-            }
-            if (result !== null && typeof result === "object" && typeof result.then === "function") {
-              var thenableResult = result;
-              var wasAwaited = false;
-              var thenable = {
-                then: function(resolve3, reject2) {
-                  wasAwaited = true;
-                  thenableResult.then(function(returnValue2) {
-                    popActScope(prevActScopeDepth);
-                    if (actScopeDepth === 0) {
-                      recursivelyFlushAsyncActWork(returnValue2, resolve3, reject2);
-                    } else {
-                      resolve3(returnValue2);
-                    }
-                  }, function(error2) {
-                    popActScope(prevActScopeDepth);
-                    reject2(error2);
-                  });
-                }
-              };
-              {
-                if (!didWarnNoAwaitAct && typeof Promise !== "undefined") {
-                  Promise.resolve().then(function() {
-                  }).then(function() {
-                    if (!wasAwaited) {
-                      didWarnNoAwaitAct = true;
-                      error("You called act(async () => ...) without await. This could lead to unexpected testing behaviour, interleaving multiple act calls and mixing their scopes. You should - await act(async () => ...);");
-                    }
-                  });
-                }
-              }
-              return thenable;
-            } else {
-              var returnValue = result;
-              popActScope(prevActScopeDepth);
-              if (actScopeDepth === 0) {
-                var _queue = ReactCurrentActQueue.current;
-                if (_queue !== null) {
-                  flushActQueue(_queue);
-                  ReactCurrentActQueue.current = null;
-                }
-                var _thenable = {
-                  then: function(resolve3, reject2) {
-                    if (ReactCurrentActQueue.current === null) {
-                      ReactCurrentActQueue.current = [];
-                      recursivelyFlushAsyncActWork(returnValue, resolve3, reject2);
-                    } else {
-                      resolve3(returnValue);
-                    }
-                  }
-                };
-                return _thenable;
-              } else {
-                var _thenable2 = {
-                  then: function(resolve3, reject2) {
-                    resolve3(returnValue);
-                  }
-                };
-                return _thenable2;
-              }
-            }
-          }
-        }
-        function popActScope(prevActScopeDepth) {
-          {
-            if (prevActScopeDepth !== actScopeDepth - 1) {
-              error("You seem to have overlapping act() calls, this is not supported. Be sure to await previous act() calls before making a new one. ");
-            }
-            actScopeDepth = prevActScopeDepth;
-          }
-        }
-        function recursivelyFlushAsyncActWork(returnValue, resolve3, reject2) {
-          {
-            var queue = ReactCurrentActQueue.current;
-            if (queue !== null) {
-              try {
-                flushActQueue(queue);
-                enqueueTask(function() {
-                  if (queue.length === 0) {
-                    ReactCurrentActQueue.current = null;
-                    resolve3(returnValue);
-                  } else {
-                    recursivelyFlushAsyncActWork(returnValue, resolve3, reject2);
-                  }
-                });
-              } catch (error2) {
-                reject2(error2);
-              }
-            } else {
-              resolve3(returnValue);
-            }
-          }
-        }
-        var isFlushing = false;
-        function flushActQueue(queue) {
-          {
-            if (!isFlushing) {
-              isFlushing = true;
-              var i = 0;
-              try {
-                for (; i < queue.length; i++) {
-                  var callback = queue[i];
-                  do {
-                    callback = callback(true);
-                  } while (callback !== null);
-                }
-                queue.length = 0;
-              } catch (error2) {
-                queue = queue.slice(i + 1);
-                throw error2;
-              } finally {
-                isFlushing = false;
-              }
-            }
-          }
-        }
-        var createElement$1 = createElementWithValidation;
-        var cloneElement$1 = cloneElementWithValidation;
-        var createFactory = createFactoryWithValidation;
-        var Children = {
-          map: mapChildren,
-          forEach: forEachChildren,
-          count: countChildren,
-          toArray,
-          only: onlyChild
-        };
-        exports.Children = Children;
-        exports.Component = Component3;
-        exports.Fragment = REACT_FRAGMENT_TYPE;
-        exports.Profiler = REACT_PROFILER_TYPE;
-        exports.PureComponent = PureComponent;
-        exports.StrictMode = REACT_STRICT_MODE_TYPE;
-        exports.Suspense = REACT_SUSPENSE_TYPE;
-        exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
-        exports.act = act;
-        exports.cloneElement = cloneElement$1;
-        exports.createContext = createContext;
-        exports.createElement = createElement$1;
-        exports.createFactory = createFactory;
-        exports.createRef = createRef;
-        exports.forwardRef = forwardRef;
-        exports.isValidElement = isValidElement;
-        exports.lazy = lazy;
-        exports.memo = memo;
-        exports.startTransition = startTransition;
-        exports.unstable_act = act;
-        exports.useCallback = useCallback;
-        exports.useContext = useContext;
-        exports.useDebugValue = useDebugValue;
-        exports.useDeferredValue = useDeferredValue;
-        exports.useEffect = useEffect5;
-        exports.useId = useId;
-        exports.useImperativeHandle = useImperativeHandle;
-        exports.useInsertionEffect = useInsertionEffect;
-        exports.useLayoutEffect = useLayoutEffect;
-        exports.useMemo = useMemo;
-        exports.useReducer = useReducer;
-        exports.useRef = useRef4;
-        exports.useState = useState;
-        exports.useSyncExternalStore = useSyncExternalStore;
-        exports.useTransition = useTransition;
-        exports.version = ReactVersion;
-        if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function") {
-          __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
-        }
-      })();
-    }
-  }
-});
-
-// node_modules/react/index.js
-var require_react = __commonJS({
-  "node_modules/react/index.js"(exports, module) {
-    "use strict";
-    if (false) {
-      module.exports = null;
-    } else {
-      module.exports = require_react_development();
-    }
-  }
-});
-
 // node_modules/scheduler/cjs/scheduler.development.js
 var require_scheduler_development = __commonJS({
   "node_modules/scheduler/cjs/scheduler.development.js"(exports) {
@@ -6287,7 +7954,7 @@ var require_react_dom_development = __commonJS({
             Function.prototype.apply.call(console[level], console, argsWithFormat);
           }
         }
-        var FunctionComponent2 = 0;
+        var FunctionComponent = 0;
         var ClassComponent = 1;
         var IndeterminateComponent = 2;
         var HostRoot = 3;
@@ -7334,7 +9001,7 @@ var require_react_dom_development = __commonJS({
               return describeBuiltInComponentFrame("Suspense");
             case SuspenseListComponent:
               return describeBuiltInComponentFrame("SuspenseList");
-            case FunctionComponent2:
+            case FunctionComponent:
             case IndeterminateComponent:
             case SimpleMemoComponent:
               return describeFunctionComponentFrame(fiber.type);
@@ -7482,7 +9149,7 @@ var require_react_dom_development = __commonJS({
               return "TracingMarker";
             // The display name for this tags come from the user-provided type:
             case ClassComponent:
-            case FunctionComponent2:
+            case FunctionComponent:
             case IncompleteClassComponent:
             case IndeterminateComponent:
             case MemoComponent:
@@ -17518,20 +19185,20 @@ var require_react_dom_development = __commonJS({
         }
         function mountReducer(reducer, initialArg, init2) {
           var hook = mountWorkInProgressHook();
-          var initialState2;
+          var initialState;
           if (init2 !== void 0) {
-            initialState2 = init2(initialArg);
+            initialState = init2(initialArg);
           } else {
-            initialState2 = initialArg;
+            initialState = initialArg;
           }
-          hook.memoizedState = hook.baseState = initialState2;
+          hook.memoizedState = hook.baseState = initialState;
           var queue = {
             pending: null,
             interleaved: null,
             lanes: NoLanes,
             dispatch: null,
             lastRenderedReducer: reducer,
-            lastRenderedState: initialState2
+            lastRenderedState: initialState
           };
           hook.queue = queue;
           var dispatch = queue.dispatch = dispatchReducerAction.bind(null, currentlyRenderingFiber$1, queue);
@@ -17813,28 +19480,28 @@ var require_react_dom_development = __commonJS({
             scheduleUpdateOnFiber(root2, fiber, SyncLane, NoTimestamp);
           }
         }
-        function mountState(initialState2) {
+        function mountState(initialState) {
           var hook = mountWorkInProgressHook();
-          if (typeof initialState2 === "function") {
-            initialState2 = initialState2();
+          if (typeof initialState === "function") {
+            initialState = initialState();
           }
-          hook.memoizedState = hook.baseState = initialState2;
+          hook.memoizedState = hook.baseState = initialState;
           var queue = {
             pending: null,
             interleaved: null,
             lanes: NoLanes,
             dispatch: null,
             lastRenderedReducer: basicStateReducer,
-            lastRenderedState: initialState2
+            lastRenderedState: initialState
           };
           hook.queue = queue;
           var dispatch = queue.dispatch = dispatchSetState.bind(null, currentlyRenderingFiber$1, queue);
           return [hook.memoizedState, dispatch];
         }
-        function updateState(initialState2) {
+        function updateState(initialState) {
           return updateReducer(basicStateReducer);
         }
-        function rerenderState(initialState2) {
+        function rerenderState(initialState) {
           return rerenderReducer(basicStateReducer);
         }
         function pushEffect(tag, create, destroy, deps) {
@@ -18350,13 +20017,13 @@ var require_react_dom_development = __commonJS({
               mountHookTypesDev();
               return mountRef(initialValue);
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               mountHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
               try {
-                return mountState(initialState2);
+                return mountState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -18454,13 +20121,13 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return mountRef(initialValue);
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
               try {
-                return mountState(initialState2);
+                return mountState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -18558,13 +20225,13 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
               try {
-                return updateState(initialState2);
+                return updateState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -18662,13 +20329,13 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
               try {
-                return rerenderState(initialState2);
+                return rerenderState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -18776,14 +20443,14 @@ var require_react_dom_development = __commonJS({
               mountHookTypesDev();
               return mountRef(initialValue);
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               warnInvalidHookAccess();
               mountHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
               try {
-                return mountState(initialState2);
+                return mountState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -18897,14 +20564,14 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               warnInvalidHookAccess();
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
               try {
-                return updateState(initialState2);
+                return updateState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -19018,14 +20685,14 @@ var require_react_dom_development = __commonJS({
               updateHookTypesDev();
               return updateRef();
             },
-            useState: function(initialState2) {
+            useState: function(initialState) {
               currentHookNameInDev = "useState";
               warnInvalidHookAccess();
               updateHookTypesDev();
               var prevDispatcher = ReactCurrentDispatcher$1.current;
               ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
               try {
-                return rerenderState(initialState2);
+                return rerenderState(initialState);
               } finally {
                 ReactCurrentDispatcher$1.current = prevDispatcher;
               }
@@ -19946,7 +21613,7 @@ var require_react_dom_development = __commonJS({
         }
         function resetSuspendedComponent(sourceFiber, rootRenderLanes) {
           var tag = sourceFiber.tag;
-          if ((sourceFiber.mode & ConcurrentMode) === NoMode && (tag === FunctionComponent2 || tag === ForwardRef || tag === SimpleMemoComponent)) {
+          if ((sourceFiber.mode & ConcurrentMode) === NoMode && (tag === FunctionComponent || tag === ForwardRef || tag === SimpleMemoComponent)) {
             var currentSource = sourceFiber.alternate;
             if (currentSource) {
               sourceFiber.updateQueue = currentSource.updateQueue;
@@ -20639,7 +22306,7 @@ var require_react_dom_development = __commonJS({
           var resolvedProps = resolveDefaultProps(Component3, props);
           var child;
           switch (resolvedTag) {
-            case FunctionComponent2: {
+            case FunctionComponent: {
               {
                 validateFunctionComponentInDev(workInProgress2, Component3);
                 workInProgress2.type = Component3 = resolveFunctionForHotReloading(Component3);
@@ -20782,7 +22449,7 @@ var require_react_dom_development = __commonJS({
             mountClassInstance(workInProgress2, Component3, props, renderLanes2);
             return finishClassComponent(null, workInProgress2, Component3, true, hasContext, renderLanes2);
           } else {
-            workInProgress2.tag = FunctionComponent2;
+            workInProgress2.tag = FunctionComponent;
             {
               if (workInProgress2.mode & StrictLegacyMode) {
                 setIsStrictModeForDevtools(true);
@@ -21731,7 +23398,7 @@ var require_react_dom_development = __commonJS({
               var elementType = workInProgress2.elementType;
               return mountLazyComponent(current2, workInProgress2, elementType, renderLanes2);
             }
-            case FunctionComponent2: {
+            case FunctionComponent: {
               var Component3 = workInProgress2.type;
               var unresolvedProps = workInProgress2.pendingProps;
               var resolvedProps = workInProgress2.elementType === Component3 ? unresolvedProps : resolveDefaultProps(Component3, unresolvedProps);
@@ -22029,7 +23696,7 @@ var require_react_dom_development = __commonJS({
             case IndeterminateComponent:
             case LazyComponent:
             case SimpleMemoComponent:
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case Fragment2:
             case Mode:
@@ -22612,7 +24279,7 @@ var require_react_dom_development = __commonJS({
           if ((flags & Snapshot) !== NoFlags) {
             setCurrentFiber(finishedWork);
             switch (finishedWork.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case SimpleMemoComponent: {
                 break;
@@ -22806,7 +24473,7 @@ var require_react_dom_development = __commonJS({
         function commitLayoutEffectOnFiber(finishedRoot, current2, finishedWork, committedLanes) {
           if ((finishedWork.flags & LayoutMask) !== NoFlags) {
             switch (finishedWork.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case SimpleMemoComponent: {
                 if (!offscreenSubtreeWasHidden) {
@@ -22986,7 +24653,7 @@ var require_react_dom_development = __commonJS({
         }
         function reappearLayoutEffectsOnFiber(node) {
           switch (node.tag) {
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case SimpleMemoComponent: {
               if (node.mode & ProfileMode) {
@@ -23353,7 +25020,7 @@ var require_react_dom_development = __commonJS({
               }
               return;
             }
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case MemoComponent:
             case SimpleMemoComponent: {
@@ -23508,7 +25175,7 @@ var require_react_dom_development = __commonJS({
           var current2 = finishedWork.alternate;
           var flags = finishedWork.flags;
           switch (finishedWork.tag) {
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case MemoComponent:
             case SimpleMemoComponent: {
@@ -23817,7 +25484,7 @@ var require_react_dom_development = __commonJS({
             var fiber = nextEffect;
             var firstChild = fiber.child;
             switch (fiber.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case MemoComponent:
               case SimpleMemoComponent: {
@@ -23963,7 +25630,7 @@ var require_react_dom_development = __commonJS({
         }
         function commitPassiveMountOnFiber(finishedRoot, finishedWork, committedLanes, committedTransitions) {
           switch (finishedWork.tag) {
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case SimpleMemoComponent: {
               if (finishedWork.mode & ProfileMode) {
@@ -24040,7 +25707,7 @@ var require_react_dom_development = __commonJS({
         }
         function commitPassiveUnmountOnFiber(finishedWork) {
           switch (finishedWork.tag) {
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case SimpleMemoComponent: {
               if (finishedWork.mode & ProfileMode) {
@@ -24091,7 +25758,7 @@ var require_react_dom_development = __commonJS({
         }
         function commitPassiveUnmountInsideDeletedTreeOnFiber(current2, nearestMountedAncestor) {
           switch (current2.tag) {
-            case FunctionComponent2:
+            case FunctionComponent:
             case ForwardRef:
             case SimpleMemoComponent: {
               if (current2.mode & ProfileMode) {
@@ -24108,7 +25775,7 @@ var require_react_dom_development = __commonJS({
         function invokeLayoutEffectMountInDEV(fiber) {
           {
             switch (fiber.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case SimpleMemoComponent: {
                 try {
@@ -24133,7 +25800,7 @@ var require_react_dom_development = __commonJS({
         function invokePassiveEffectMountInDEV(fiber) {
           {
             switch (fiber.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case SimpleMemoComponent: {
                 try {
@@ -24149,7 +25816,7 @@ var require_react_dom_development = __commonJS({
         function invokeLayoutEffectUnmountInDEV(fiber) {
           {
             switch (fiber.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case SimpleMemoComponent: {
                 try {
@@ -24172,7 +25839,7 @@ var require_react_dom_development = __commonJS({
         function invokePassiveEffectUnmountInDEV(fiber) {
           {
             switch (fiber.tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case ForwardRef:
               case SimpleMemoComponent: {
                 try {
@@ -25538,7 +27205,7 @@ var require_react_dom_development = __commonJS({
               return;
             }
             var tag = fiber.tag;
-            if (tag !== IndeterminateComponent && tag !== HostRoot && tag !== ClassComponent && tag !== FunctionComponent2 && tag !== ForwardRef && tag !== MemoComponent && tag !== SimpleMemoComponent) {
+            if (tag !== IndeterminateComponent && tag !== HostRoot && tag !== ClassComponent && tag !== FunctionComponent && tag !== ForwardRef && tag !== MemoComponent && tag !== SimpleMemoComponent) {
               return;
             }
             var componentName = getComponentNameFromFiber(fiber) || "ReactComponent";
@@ -25601,7 +27268,7 @@ var require_react_dom_development = __commonJS({
           {
             if (isRendering && !getIsUpdatingOpaqueValueInRenderPhaseInDEV()) {
               switch (fiber.tag) {
-                case FunctionComponent2:
+                case FunctionComponent:
                 case ForwardRef:
                 case SimpleMemoComponent: {
                   var renderingComponentName = workInProgress && getComponentNameFromFiber(workInProgress) || "Unknown";
@@ -25668,7 +27335,7 @@ var require_react_dom_development = __commonJS({
               if (executionContext !== NoContext) {
                 return;
               }
-              if (fiber.tag !== FunctionComponent2 && fiber.tag !== ForwardRef && fiber.tag !== SimpleMemoComponent) {
+              if (fiber.tag !== FunctionComponent && fiber.tag !== ForwardRef && fiber.tag !== SimpleMemoComponent) {
                 return;
               }
             }
@@ -25762,7 +27429,7 @@ var require_react_dom_development = __commonJS({
                 }
                 break;
               }
-              case FunctionComponent2: {
+              case FunctionComponent: {
                 if (typeof nextType === "function") {
                   needsCompareFamilies = true;
                 } else if ($$typeofNextType === REACT_LAZY_TYPE) {
@@ -25841,7 +27508,7 @@ var require_react_dom_development = __commonJS({
             var alternate = fiber.alternate, child = fiber.child, sibling = fiber.sibling, tag = fiber.tag, type = fiber.type;
             var candidateType = null;
             switch (tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case SimpleMemoComponent:
               case ClassComponent:
                 candidateType = type;
@@ -25906,7 +27573,7 @@ var require_react_dom_development = __commonJS({
             var child = fiber.child, sibling = fiber.sibling, tag = fiber.tag, type = fiber.type;
             var candidateType = null;
             switch (tag) {
-              case FunctionComponent2:
+              case FunctionComponent:
               case SimpleMemoComponent:
               case ClassComponent:
                 candidateType = type;
@@ -26053,7 +27720,7 @@ var require_react_dom_development = __commonJS({
         }
         function resolveLazyComponentTag(Component3) {
           if (typeof Component3 === "function") {
-            return shouldConstruct$1(Component3) ? ClassComponent : FunctionComponent2;
+            return shouldConstruct$1(Component3) ? ClassComponent : FunctionComponent;
           } else if (Component3 !== void 0 && Component3 !== null) {
             var $$typeof = Component3.$$typeof;
             if ($$typeof === REACT_FORWARD_REF_TYPE) {
@@ -26113,7 +27780,7 @@ var require_react_dom_development = __commonJS({
             workInProgress2._debugNeedsRemount = current2._debugNeedsRemount;
             switch (workInProgress2.tag) {
               case IndeterminateComponent:
-              case FunctionComponent2:
+              case FunctionComponent:
               case SimpleMemoComponent:
                 workInProgress2.type = resolveFunctionForHotReloading(current2.type);
                 break;
@@ -27410,1673 +29077,6 @@ var require_react_dom = __commonJS({
   }
 });
 
-// node_modules/graphology/dist/graphology.umd.min.js
-var require_graphology_umd_min = __commonJS({
-  "node_modules/graphology/dist/graphology.umd.min.js"(exports, module) {
-    !function(t, e) {
-      "object" == typeof exports && "undefined" != typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define(e) : (t = "undefined" != typeof globalThis ? globalThis : t || self).graphology = e();
-    }(exports, function() {
-      "use strict";
-      function t(e2) {
-        return t = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(t2) {
-          return typeof t2;
-        } : function(t2) {
-          return t2 && "function" == typeof Symbol && t2.constructor === Symbol && t2 !== Symbol.prototype ? "symbol" : typeof t2;
-        }, t(e2);
-      }
-      function e(t2, e2) {
-        t2.prototype = Object.create(e2.prototype), t2.prototype.constructor = t2, r(t2, e2);
-      }
-      function n(t2) {
-        return n = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function(t3) {
-          return t3.__proto__ || Object.getPrototypeOf(t3);
-        }, n(t2);
-      }
-      function r(t2, e2) {
-        return r = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(t3, e3) {
-          return t3.__proto__ = e3, t3;
-        }, r(t2, e2);
-      }
-      function i() {
-        if ("undefined" == typeof Reflect || !Reflect.construct) return false;
-        if (Reflect.construct.sham) return false;
-        if ("function" == typeof Proxy) return true;
-        try {
-          return Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
-          })), true;
-        } catch (t2) {
-          return false;
-        }
-      }
-      function o(t2, e2, n2) {
-        return o = i() ? Reflect.construct.bind() : function(t3, e3, n3) {
-          var i2 = [null];
-          i2.push.apply(i2, e3);
-          var o2 = new (Function.bind.apply(t3, i2))();
-          return n3 && r(o2, n3.prototype), o2;
-        }, o.apply(null, arguments);
-      }
-      function a(t2) {
-        var e2 = "function" == typeof Map ? /* @__PURE__ */ new Map() : void 0;
-        return a = function(t3) {
-          if (null === t3 || (i2 = t3, -1 === Function.toString.call(i2).indexOf("[native code]"))) return t3;
-          var i2;
-          if ("function" != typeof t3) throw new TypeError("Super expression must either be null or a function");
-          if (void 0 !== e2) {
-            if (e2.has(t3)) return e2.get(t3);
-            e2.set(t3, a2);
-          }
-          function a2() {
-            return o(t3, arguments, n(this).constructor);
-          }
-          return a2.prototype = Object.create(t3.prototype, { constructor: { value: a2, enumerable: false, writable: true, configurable: true } }), r(a2, t3);
-        }, a(t2);
-      }
-      function c(t2) {
-        if (void 0 === t2) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        return t2;
-      }
-      var u = function() {
-        for (var t2 = arguments[0], e2 = 1, n2 = arguments.length; e2 < n2; e2++) if (arguments[e2]) for (var r2 in arguments[e2]) t2[r2] = arguments[e2][r2];
-        return t2;
-      };
-      function d(t2, e2, n2, r2) {
-        var i2 = t2._nodes.get(e2), o2 = null;
-        return i2 ? o2 = "mixed" === r2 ? i2.out && i2.out[n2] || i2.undirected && i2.undirected[n2] : "directed" === r2 ? i2.out && i2.out[n2] : i2.undirected && i2.undirected[n2] : o2;
-      }
-      function s(e2) {
-        return "object" === t(e2) && null !== e2;
-      }
-      function h(t2) {
-        var e2;
-        for (e2 in t2) return false;
-        return true;
-      }
-      function p(t2, e2, n2) {
-        Object.defineProperty(t2, e2, { enumerable: false, configurable: false, writable: true, value: n2 });
-      }
-      function f(t2, e2, n2) {
-        var r2 = { enumerable: true, configurable: true };
-        "function" == typeof n2 ? r2.get = n2 : (r2.value = n2, r2.writable = false), Object.defineProperty(t2, e2, r2);
-      }
-      function l(t2) {
-        return !!s(t2) && !(t2.attributes && !Array.isArray(t2.attributes));
-      }
-      "function" == typeof Object.assign && (u = Object.assign);
-      var g, y = { exports: {} }, w = "object" == typeof Reflect ? Reflect : null, v = w && "function" == typeof w.apply ? w.apply : function(t2, e2, n2) {
-        return Function.prototype.apply.call(t2, e2, n2);
-      };
-      g = w && "function" == typeof w.ownKeys ? w.ownKeys : Object.getOwnPropertySymbols ? function(t2) {
-        return Object.getOwnPropertyNames(t2).concat(Object.getOwnPropertySymbols(t2));
-      } : function(t2) {
-        return Object.getOwnPropertyNames(t2);
-      };
-      var b = Number.isNaN || function(t2) {
-        return t2 != t2;
-      };
-      function m() {
-        m.init.call(this);
-      }
-      y.exports = m, y.exports.once = function(t2, e2) {
-        return new Promise(function(n2, r2) {
-          function i2(n3) {
-            t2.removeListener(e2, o2), r2(n3);
-          }
-          function o2() {
-            "function" == typeof t2.removeListener && t2.removeListener("error", i2), n2([].slice.call(arguments));
-          }
-          U(t2, e2, o2, { once: true }), "error" !== e2 && function(t3, e3, n3) {
-            "function" == typeof t3.on && U(t3, "error", e3, n3);
-          }(t2, i2, { once: true });
-        });
-      }, m.EventEmitter = m, m.prototype._events = void 0, m.prototype._eventsCount = 0, m.prototype._maxListeners = void 0;
-      var k = 10;
-      function _(t2) {
-        if ("function" != typeof t2) throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof t2);
-      }
-      function G(t2) {
-        return void 0 === t2._maxListeners ? m.defaultMaxListeners : t2._maxListeners;
-      }
-      function x(t2, e2, n2, r2) {
-        var i2, o2, a2, c2;
-        if (_(n2), void 0 === (o2 = t2._events) ? (o2 = t2._events = /* @__PURE__ */ Object.create(null), t2._eventsCount = 0) : (void 0 !== o2.newListener && (t2.emit("newListener", e2, n2.listener ? n2.listener : n2), o2 = t2._events), a2 = o2[e2]), void 0 === a2) a2 = o2[e2] = n2, ++t2._eventsCount;
-        else if ("function" == typeof a2 ? a2 = o2[e2] = r2 ? [n2, a2] : [a2, n2] : r2 ? a2.unshift(n2) : a2.push(n2), (i2 = G(t2)) > 0 && a2.length > i2 && !a2.warned) {
-          a2.warned = true;
-          var u2 = new Error("Possible EventEmitter memory leak detected. " + a2.length + " " + String(e2) + " listeners added. Use emitter.setMaxListeners() to increase limit");
-          u2.name = "MaxListenersExceededWarning", u2.emitter = t2, u2.type = e2, u2.count = a2.length, c2 = u2, console && console.warn && console.warn(c2);
-        }
-        return t2;
-      }
-      function E() {
-        if (!this.fired) return this.target.removeListener(this.type, this.wrapFn), this.fired = true, 0 === arguments.length ? this.listener.call(this.target) : this.listener.apply(this.target, arguments);
-      }
-      function A(t2, e2, n2) {
-        var r2 = { fired: false, wrapFn: void 0, target: t2, type: e2, listener: n2 }, i2 = E.bind(r2);
-        return i2.listener = n2, r2.wrapFn = i2, i2;
-      }
-      function L(t2, e2, n2) {
-        var r2 = t2._events;
-        if (void 0 === r2) return [];
-        var i2 = r2[e2];
-        return void 0 === i2 ? [] : "function" == typeof i2 ? n2 ? [i2.listener || i2] : [i2] : n2 ? function(t3) {
-          for (var e3 = new Array(t3.length), n3 = 0; n3 < e3.length; ++n3) e3[n3] = t3[n3].listener || t3[n3];
-          return e3;
-        }(i2) : D(i2, i2.length);
-      }
-      function S(t2) {
-        var e2 = this._events;
-        if (void 0 !== e2) {
-          var n2 = e2[t2];
-          if ("function" == typeof n2) return 1;
-          if (void 0 !== n2) return n2.length;
-        }
-        return 0;
-      }
-      function D(t2, e2) {
-        for (var n2 = new Array(e2), r2 = 0; r2 < e2; ++r2) n2[r2] = t2[r2];
-        return n2;
-      }
-      function U(t2, e2, n2, r2) {
-        if ("function" == typeof t2.on) r2.once ? t2.once(e2, n2) : t2.on(e2, n2);
-        else {
-          if ("function" != typeof t2.addEventListener) throw new TypeError('The "emitter" argument must be of type EventEmitter. Received type ' + typeof t2);
-          t2.addEventListener(e2, function i2(o2) {
-            r2.once && t2.removeEventListener(e2, i2), n2(o2);
-          });
-        }
-      }
-      function N(t2) {
-        if ("function" != typeof t2) throw new Error("obliterator/iterator: expecting a function!");
-        this.next = t2;
-      }
-      Object.defineProperty(m, "defaultMaxListeners", { enumerable: true, get: function() {
-        return k;
-      }, set: function(t2) {
-        if ("number" != typeof t2 || t2 < 0 || b(t2)) throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + t2 + ".");
-        k = t2;
-      } }), m.init = function() {
-        void 0 !== this._events && this._events !== Object.getPrototypeOf(this)._events || (this._events = /* @__PURE__ */ Object.create(null), this._eventsCount = 0), this._maxListeners = this._maxListeners || void 0;
-      }, m.prototype.setMaxListeners = function(t2) {
-        if ("number" != typeof t2 || t2 < 0 || b(t2)) throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + t2 + ".");
-        return this._maxListeners = t2, this;
-      }, m.prototype.getMaxListeners = function() {
-        return G(this);
-      }, m.prototype.emit = function(t2) {
-        for (var e2 = [], n2 = 1; n2 < arguments.length; n2++) e2.push(arguments[n2]);
-        var r2 = "error" === t2, i2 = this._events;
-        if (void 0 !== i2) r2 = r2 && void 0 === i2.error;
-        else if (!r2) return false;
-        if (r2) {
-          var o2;
-          if (e2.length > 0 && (o2 = e2[0]), o2 instanceof Error) throw o2;
-          var a2 = new Error("Unhandled error." + (o2 ? " (" + o2.message + ")" : ""));
-          throw a2.context = o2, a2;
-        }
-        var c2 = i2[t2];
-        if (void 0 === c2) return false;
-        if ("function" == typeof c2) v(c2, this, e2);
-        else {
-          var u2 = c2.length, d2 = D(c2, u2);
-          for (n2 = 0; n2 < u2; ++n2) v(d2[n2], this, e2);
-        }
-        return true;
-      }, m.prototype.addListener = function(t2, e2) {
-        return x(this, t2, e2, false);
-      }, m.prototype.on = m.prototype.addListener, m.prototype.prependListener = function(t2, e2) {
-        return x(this, t2, e2, true);
-      }, m.prototype.once = function(t2, e2) {
-        return _(e2), this.on(t2, A(this, t2, e2)), this;
-      }, m.prototype.prependOnceListener = function(t2, e2) {
-        return _(e2), this.prependListener(t2, A(this, t2, e2)), this;
-      }, m.prototype.removeListener = function(t2, e2) {
-        var n2, r2, i2, o2, a2;
-        if (_(e2), void 0 === (r2 = this._events)) return this;
-        if (void 0 === (n2 = r2[t2])) return this;
-        if (n2 === e2 || n2.listener === e2) 0 == --this._eventsCount ? this._events = /* @__PURE__ */ Object.create(null) : (delete r2[t2], r2.removeListener && this.emit("removeListener", t2, n2.listener || e2));
-        else if ("function" != typeof n2) {
-          for (i2 = -1, o2 = n2.length - 1; o2 >= 0; o2--) if (n2[o2] === e2 || n2[o2].listener === e2) {
-            a2 = n2[o2].listener, i2 = o2;
-            break;
-          }
-          if (i2 < 0) return this;
-          0 === i2 ? n2.shift() : function(t3, e3) {
-            for (; e3 + 1 < t3.length; e3++) t3[e3] = t3[e3 + 1];
-            t3.pop();
-          }(n2, i2), 1 === n2.length && (r2[t2] = n2[0]), void 0 !== r2.removeListener && this.emit("removeListener", t2, a2 || e2);
-        }
-        return this;
-      }, m.prototype.off = m.prototype.removeListener, m.prototype.removeAllListeners = function(t2) {
-        var e2, n2, r2;
-        if (void 0 === (n2 = this._events)) return this;
-        if (void 0 === n2.removeListener) return 0 === arguments.length ? (this._events = /* @__PURE__ */ Object.create(null), this._eventsCount = 0) : void 0 !== n2[t2] && (0 == --this._eventsCount ? this._events = /* @__PURE__ */ Object.create(null) : delete n2[t2]), this;
-        if (0 === arguments.length) {
-          var i2, o2 = Object.keys(n2);
-          for (r2 = 0; r2 < o2.length; ++r2) "removeListener" !== (i2 = o2[r2]) && this.removeAllListeners(i2);
-          return this.removeAllListeners("removeListener"), this._events = /* @__PURE__ */ Object.create(null), this._eventsCount = 0, this;
-        }
-        if ("function" == typeof (e2 = n2[t2])) this.removeListener(t2, e2);
-        else if (void 0 !== e2) for (r2 = e2.length - 1; r2 >= 0; r2--) this.removeListener(t2, e2[r2]);
-        return this;
-      }, m.prototype.listeners = function(t2) {
-        return L(this, t2, true);
-      }, m.prototype.rawListeners = function(t2) {
-        return L(this, t2, false);
-      }, m.listenerCount = function(t2, e2) {
-        return "function" == typeof t2.listenerCount ? t2.listenerCount(e2) : S.call(t2, e2);
-      }, m.prototype.listenerCount = S, m.prototype.eventNames = function() {
-        return this._eventsCount > 0 ? g(this._events) : [];
-      }, "undefined" != typeof Symbol && (N.prototype[Symbol.iterator] = function() {
-        return this;
-      }), N.of = function() {
-        var t2 = arguments, e2 = t2.length, n2 = 0;
-        return new N(function() {
-          return n2 >= e2 ? { done: true } : { done: false, value: t2[n2++] };
-        });
-      }, N.empty = function() {
-        return new N(function() {
-          return { done: true };
-        });
-      }, N.fromSequence = function(t2) {
-        var e2 = 0, n2 = t2.length;
-        return new N(function() {
-          return e2 >= n2 ? { done: true } : { done: false, value: t2[e2++] };
-        });
-      }, N.is = function(t2) {
-        return t2 instanceof N || "object" == typeof t2 && null !== t2 && "function" == typeof t2.next;
-      };
-      var O = N, j = {};
-      j.ARRAY_BUFFER_SUPPORT = "undefined" != typeof ArrayBuffer, j.SYMBOL_SUPPORT = "undefined" != typeof Symbol;
-      var C = O, M = j, z = M.ARRAY_BUFFER_SUPPORT, W = M.SYMBOL_SUPPORT;
-      var P = function(t2) {
-        var e2 = function(t3) {
-          return "string" == typeof t3 || Array.isArray(t3) || z && ArrayBuffer.isView(t3) ? C.fromSequence(t3) : "object" != typeof t3 || null === t3 ? null : W && "function" == typeof t3[Symbol.iterator] ? t3[Symbol.iterator]() : "function" == typeof t3.next ? t3 : null;
-        }(t2);
-        if (!e2) throw new Error("obliterator: target is not iterable nor a valid iterator.");
-        return e2;
-      }, R = P, K = function(t2, e2) {
-        for (var n2, r2 = arguments.length > 1 ? e2 : 1 / 0, i2 = r2 !== 1 / 0 ? new Array(r2) : [], o2 = 0, a2 = R(t2); ; ) {
-          if (o2 === r2) return i2;
-          if ((n2 = a2.next()).done) return o2 !== e2 && (i2.length = o2), i2;
-          i2[o2++] = n2.value;
-        }
-      }, T = function(t2) {
-        function n2(e2) {
-          var n3;
-          return (n3 = t2.call(this) || this).name = "GraphError", n3.message = e2, n3;
-        }
-        return e(n2, t2), n2;
-      }(a(Error)), B = function(t2) {
-        function n2(e2) {
-          var r2;
-          return (r2 = t2.call(this, e2) || this).name = "InvalidArgumentsGraphError", "function" == typeof Error.captureStackTrace && Error.captureStackTrace(c(r2), n2.prototype.constructor), r2;
-        }
-        return e(n2, t2), n2;
-      }(T), F = function(t2) {
-        function n2(e2) {
-          var r2;
-          return (r2 = t2.call(this, e2) || this).name = "NotFoundGraphError", "function" == typeof Error.captureStackTrace && Error.captureStackTrace(c(r2), n2.prototype.constructor), r2;
-        }
-        return e(n2, t2), n2;
-      }(T), I = function(t2) {
-        function n2(e2) {
-          var r2;
-          return (r2 = t2.call(this, e2) || this).name = "UsageGraphError", "function" == typeof Error.captureStackTrace && Error.captureStackTrace(c(r2), n2.prototype.constructor), r2;
-        }
-        return e(n2, t2), n2;
-      }(T);
-      function Y(t2, e2) {
-        this.key = t2, this.attributes = e2, this.clear();
-      }
-      function q(t2, e2) {
-        this.key = t2, this.attributes = e2, this.clear();
-      }
-      function J(t2, e2) {
-        this.key = t2, this.attributes = e2, this.clear();
-      }
-      function V(t2, e2, n2, r2, i2) {
-        this.key = e2, this.attributes = i2, this.undirected = t2, this.source = n2, this.target = r2;
-      }
-      Y.prototype.clear = function() {
-        this.inDegree = 0, this.outDegree = 0, this.undirectedDegree = 0, this.undirectedLoops = 0, this.directedLoops = 0, this.in = {}, this.out = {}, this.undirected = {};
-      }, q.prototype.clear = function() {
-        this.inDegree = 0, this.outDegree = 0, this.directedLoops = 0, this.in = {}, this.out = {};
-      }, J.prototype.clear = function() {
-        this.undirectedDegree = 0, this.undirectedLoops = 0, this.undirected = {};
-      }, V.prototype.attach = function() {
-        var t2 = "out", e2 = "in";
-        this.undirected && (t2 = e2 = "undirected");
-        var n2 = this.source.key, r2 = this.target.key;
-        this.source[t2][r2] = this, this.undirected && n2 === r2 || (this.target[e2][n2] = this);
-      }, V.prototype.attachMulti = function() {
-        var t2 = "out", e2 = "in", n2 = this.source.key, r2 = this.target.key;
-        this.undirected && (t2 = e2 = "undirected");
-        var i2 = this.source[t2], o2 = i2[r2];
-        if (void 0 === o2) return i2[r2] = this, void (this.undirected && n2 === r2 || (this.target[e2][n2] = this));
-        o2.previous = this, this.next = o2, i2[r2] = this, this.target[e2][n2] = this;
-      }, V.prototype.detach = function() {
-        var t2 = this.source.key, e2 = this.target.key, n2 = "out", r2 = "in";
-        this.undirected && (n2 = r2 = "undirected"), delete this.source[n2][e2], delete this.target[r2][t2];
-      }, V.prototype.detachMulti = function() {
-        var t2 = this.source.key, e2 = this.target.key, n2 = "out", r2 = "in";
-        this.undirected && (n2 = r2 = "undirected"), void 0 === this.previous ? void 0 === this.next ? (delete this.source[n2][e2], delete this.target[r2][t2]) : (this.next.previous = void 0, this.source[n2][e2] = this.next, this.target[r2][t2] = this.next) : (this.previous.next = this.next, void 0 !== this.next && (this.next.previous = this.previous));
-      };
-      function H(t2, e2, n2, r2, i2, o2, a2) {
-        var c2, u2, d2, s2;
-        if (r2 = "" + r2, 0 === n2) {
-          if (!(c2 = t2._nodes.get(r2))) throw new F("Graph.".concat(e2, ': could not find the "').concat(r2, '" node in the graph.'));
-          d2 = i2, s2 = o2;
-        } else if (3 === n2) {
-          if (i2 = "" + i2, !(u2 = t2._edges.get(i2))) throw new F("Graph.".concat(e2, ': could not find the "').concat(i2, '" edge in the graph.'));
-          var h2 = u2.source.key, p2 = u2.target.key;
-          if (r2 === h2) c2 = u2.target;
-          else {
-            if (r2 !== p2) throw new F("Graph.".concat(e2, ': the "').concat(r2, '" node is not attached to the "').concat(i2, '" edge (').concat(h2, ", ").concat(p2, ")."));
-            c2 = u2.source;
-          }
-          d2 = o2, s2 = a2;
-        } else {
-          if (!(u2 = t2._edges.get(r2))) throw new F("Graph.".concat(e2, ': could not find the "').concat(r2, '" edge in the graph.'));
-          c2 = 1 === n2 ? u2.source : u2.target, d2 = i2, s2 = o2;
-        }
-        return [c2, d2, s2];
-      }
-      var Q = [{ name: function(t2) {
-        return "get".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
-          return a2.attributes[c2];
-        };
-      } }, { name: function(t2) {
-        return "get".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          return H(this, e2, n2, t3, r2)[0].attributes;
-        };
-      } }, { name: function(t2) {
-        return "has".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
-          return a2.attributes.hasOwnProperty(c2);
-        };
-      } }, { name: function(t2) {
-        return "set".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2, o2) {
-          var a2 = H(this, e2, n2, t3, r2, i2, o2), c2 = a2[0], u2 = a2[1], d2 = a2[2];
-          return c2.attributes[u2] = d2, this.emit("nodeAttributesUpdated", { key: c2.key, type: "set", attributes: c2.attributes, name: u2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "update".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2, o2) {
-          var a2 = H(this, e2, n2, t3, r2, i2, o2), c2 = a2[0], u2 = a2[1], d2 = a2[2];
-          if ("function" != typeof d2) throw new B("Graph.".concat(e2, ": updater should be a function."));
-          var s2 = c2.attributes, h2 = d2(s2[u2]);
-          return s2[u2] = h2, this.emit("nodeAttributesUpdated", { key: c2.key, type: "set", attributes: c2.attributes, name: u2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "remove".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
-          return delete a2.attributes[c2], this.emit("nodeAttributesUpdated", { key: a2.key, type: "remove", attributes: a2.attributes, name: c2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "replace".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
-          if (!s(c2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
-          return a2.attributes = c2, this.emit("nodeAttributesUpdated", { key: a2.key, type: "replace", attributes: a2.attributes }), this;
-        };
-      } }, { name: function(t2) {
-        return "merge".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
-          if (!s(c2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
-          return u(a2.attributes, c2), this.emit("nodeAttributesUpdated", { key: a2.key, type: "merge", attributes: a2.attributes, data: c2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "update".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2 = H(this, e2, n2, t3, r2, i2), a2 = o2[0], c2 = o2[1];
-          if ("function" != typeof c2) throw new B("Graph.".concat(e2, ": provided updater is not a function."));
-          return a2.attributes = c2(a2.attributes), this.emit("nodeAttributesUpdated", { key: a2.key, type: "update", attributes: a2.attributes }), this;
-        };
-      } }];
-      var X = [{ name: function(t2) {
-        return "get".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          var i2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 2) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var o2 = "" + t3, a2 = "" + r2;
-            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          return i2.attributes[r2];
-        };
-      } }, { name: function(t2) {
-        return "get".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3) {
-          var r2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 1) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var i2 = "" + t3, o2 = "" + arguments[1];
-            if (!(r2 = d(this, i2, o2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(i2, '" - "').concat(o2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(r2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          return r2.attributes;
-        };
-      } }, { name: function(t2) {
-        return "has".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          var i2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 2) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var o2 = "" + t3, a2 = "" + r2;
-            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          return i2.attributes.hasOwnProperty(r2);
-        };
-      } }, { name: function(t2) {
-        return "set".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 3) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var a2 = "" + t3, c2 = "" + r2;
-            if (r2 = arguments[2], i2 = arguments[3], !(o2 = d(this, a2, c2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(a2, '" - "').concat(c2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(o2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          return o2.attributes[r2] = i2, this.emit("edgeAttributesUpdated", { key: o2.key, type: "set", attributes: o2.attributes, name: r2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "update".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2, i2) {
-          var o2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 3) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var a2 = "" + t3, c2 = "" + r2;
-            if (r2 = arguments[2], i2 = arguments[3], !(o2 = d(this, a2, c2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(a2, '" - "').concat(c2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(o2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          if ("function" != typeof i2) throw new B("Graph.".concat(e2, ": updater should be a function."));
-          return o2.attributes[r2] = i2(o2.attributes[r2]), this.emit("edgeAttributesUpdated", { key: o2.key, type: "set", attributes: o2.attributes, name: r2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "remove".concat(t2, "Attribute");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          var i2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 2) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var o2 = "" + t3, a2 = "" + r2;
-            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          return delete i2.attributes[r2], this.emit("edgeAttributesUpdated", { key: i2.key, type: "remove", attributes: i2.attributes, name: r2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "replace".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          var i2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 2) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var o2 = "" + t3, a2 = "" + r2;
-            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          if (!s(r2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
-          return i2.attributes = r2, this.emit("edgeAttributesUpdated", { key: i2.key, type: "replace", attributes: i2.attributes }), this;
-        };
-      } }, { name: function(t2) {
-        return "merge".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          var i2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 2) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var o2 = "" + t3, a2 = "" + r2;
-            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          if (!s(r2)) throw new B("Graph.".concat(e2, ": provided attributes are not a plain object."));
-          return u(i2.attributes, r2), this.emit("edgeAttributesUpdated", { key: i2.key, type: "merge", attributes: i2.attributes, data: r2 }), this;
-        };
-      } }, { name: function(t2) {
-        return "update".concat(t2, "Attributes");
-      }, attacher: function(t2, e2, n2) {
-        t2.prototype[e2] = function(t3, r2) {
-          var i2;
-          if ("mixed" !== this.type && "mixed" !== n2 && n2 !== this.type) throw new I("Graph.".concat(e2, ": cannot find this type of edges in your ").concat(this.type, " graph."));
-          if (arguments.length > 2) {
-            if (this.multi) throw new I("Graph.".concat(e2, ": cannot use a {source,target} combo when asking about an edge's attributes in a MultiGraph since we cannot infer the one you want information about."));
-            var o2 = "" + t3, a2 = "" + r2;
-            if (r2 = arguments[2], !(i2 = d(this, o2, a2, n2))) throw new F("Graph.".concat(e2, ': could not find an edge for the given path ("').concat(o2, '" - "').concat(a2, '").'));
-          } else {
-            if ("mixed" !== n2) throw new I("Graph.".concat(e2, ": calling this method with only a key (vs. a source and target) does not make sense since an edge with this key could have the other type."));
-            if (t3 = "" + t3, !(i2 = this._edges.get(t3))) throw new F("Graph.".concat(e2, ': could not find the "').concat(t3, '" edge in the graph.'));
-          }
-          if ("function" != typeof r2) throw new B("Graph.".concat(e2, ": provided updater is not a function."));
-          return i2.attributes = r2(i2.attributes), this.emit("edgeAttributesUpdated", { key: i2.key, type: "update", attributes: i2.attributes }), this;
-        };
-      } }];
-      var Z = O, $ = P, tt = function() {
-        var t2 = arguments, e2 = null, n2 = -1;
-        return new Z(function() {
-          for (var r2 = null; ; ) {
-            if (null === e2) {
-              if (++n2 >= t2.length) return { done: true };
-              e2 = $(t2[n2]);
-            }
-            if (true !== (r2 = e2.next()).done) break;
-            e2 = null;
-          }
-          return r2;
-        });
-      }, et = [{ name: "edges", type: "mixed" }, { name: "inEdges", type: "directed", direction: "in" }, { name: "outEdges", type: "directed", direction: "out" }, { name: "inboundEdges", type: "mixed", direction: "in" }, { name: "outboundEdges", type: "mixed", direction: "out" }, { name: "directedEdges", type: "directed" }, { name: "undirectedEdges", type: "undirected" }];
-      function nt(t2, e2, n2, r2) {
-        var i2 = false;
-        for (var o2 in e2) if (o2 !== r2) {
-          var a2 = e2[o2];
-          if (i2 = n2(a2.key, a2.attributes, a2.source.key, a2.target.key, a2.source.attributes, a2.target.attributes, a2.undirected), t2 && i2) return a2.key;
-        }
-      }
-      function rt(t2, e2, n2, r2) {
-        var i2, o2, a2, c2 = false;
-        for (var u2 in e2) if (u2 !== r2) {
-          i2 = e2[u2];
-          do {
-            if (o2 = i2.source, a2 = i2.target, c2 = n2(i2.key, i2.attributes, o2.key, a2.key, o2.attributes, a2.attributes, i2.undirected), t2 && c2) return i2.key;
-            i2 = i2.next;
-          } while (void 0 !== i2);
-        }
-      }
-      function it(t2, e2) {
-        var n2, r2 = Object.keys(t2), i2 = r2.length, o2 = 0;
-        return new O(function() {
-          do {
-            if (n2) n2 = n2.next;
-            else {
-              if (o2 >= i2) return { done: true };
-              var a2 = r2[o2++];
-              if (a2 === e2) {
-                n2 = void 0;
-                continue;
-              }
-              n2 = t2[a2];
-            }
-          } while (!n2);
-          return { done: false, value: { edge: n2.key, attributes: n2.attributes, source: n2.source.key, target: n2.target.key, sourceAttributes: n2.source.attributes, targetAttributes: n2.target.attributes, undirected: n2.undirected } };
-        });
-      }
-      function ot(t2, e2, n2, r2) {
-        var i2 = e2[n2];
-        if (i2) {
-          var o2 = i2.source, a2 = i2.target;
-          return r2(i2.key, i2.attributes, o2.key, a2.key, o2.attributes, a2.attributes, i2.undirected) && t2 ? i2.key : void 0;
-        }
-      }
-      function at(t2, e2, n2, r2) {
-        var i2 = e2[n2];
-        if (i2) {
-          var o2 = false;
-          do {
-            if (o2 = r2(i2.key, i2.attributes, i2.source.key, i2.target.key, i2.source.attributes, i2.target.attributes, i2.undirected), t2 && o2) return i2.key;
-            i2 = i2.next;
-          } while (void 0 !== i2);
-        }
-      }
-      function ct(t2, e2) {
-        var n2 = t2[e2];
-        return void 0 !== n2.next ? new O(function() {
-          if (!n2) return { done: true };
-          var t3 = { edge: n2.key, attributes: n2.attributes, source: n2.source.key, target: n2.target.key, sourceAttributes: n2.source.attributes, targetAttributes: n2.target.attributes, undirected: n2.undirected };
-          return n2 = n2.next, { done: false, value: t3 };
-        }) : O.of({ edge: n2.key, attributes: n2.attributes, source: n2.source.key, target: n2.target.key, sourceAttributes: n2.source.attributes, targetAttributes: n2.target.attributes, undirected: n2.undirected });
-      }
-      function ut(t2, e2) {
-        if (0 === t2.size) return [];
-        if ("mixed" === e2 || e2 === t2.type) return "function" == typeof Array.from ? Array.from(t2._edges.keys()) : K(t2._edges.keys(), t2._edges.size);
-        for (var n2, r2, i2 = "undirected" === e2 ? t2.undirectedSize : t2.directedSize, o2 = new Array(i2), a2 = "undirected" === e2, c2 = t2._edges.values(), u2 = 0; true !== (n2 = c2.next()).done; ) (r2 = n2.value).undirected === a2 && (o2[u2++] = r2.key);
-        return o2;
-      }
-      function dt(t2, e2, n2, r2) {
-        if (0 !== e2.size) {
-          for (var i2, o2, a2 = "mixed" !== n2 && n2 !== e2.type, c2 = "undirected" === n2, u2 = false, d2 = e2._edges.values(); true !== (i2 = d2.next()).done; ) if (o2 = i2.value, !a2 || o2.undirected === c2) {
-            var s2 = o2, h2 = s2.key, p2 = s2.attributes, f2 = s2.source, l2 = s2.target;
-            if (u2 = r2(h2, p2, f2.key, l2.key, f2.attributes, l2.attributes, o2.undirected), t2 && u2) return h2;
-          }
-        }
-      }
-      function st(t2, e2) {
-        if (0 === t2.size) return O.empty();
-        var n2 = "mixed" !== e2 && e2 !== t2.type, r2 = "undirected" === e2, i2 = t2._edges.values();
-        return new O(function() {
-          for (var t3, e3; ; ) {
-            if ((t3 = i2.next()).done) return t3;
-            if (e3 = t3.value, !n2 || e3.undirected === r2) break;
-          }
-          return { value: { edge: e3.key, attributes: e3.attributes, source: e3.source.key, target: e3.target.key, sourceAttributes: e3.source.attributes, targetAttributes: e3.target.attributes, undirected: e3.undirected }, done: false };
-        });
-      }
-      function ht(t2, e2, n2, r2, i2, o2) {
-        var a2, c2 = e2 ? rt : nt;
-        if ("undirected" !== n2) {
-          if ("out" !== r2 && (a2 = c2(t2, i2.in, o2), t2 && a2)) return a2;
-          if ("in" !== r2 && (a2 = c2(t2, i2.out, o2, r2 ? void 0 : i2.key), t2 && a2)) return a2;
-        }
-        if ("directed" !== n2 && (a2 = c2(t2, i2.undirected, o2), t2 && a2)) return a2;
-      }
-      function pt(t2, e2, n2, r2) {
-        var i2 = [];
-        return ht(false, t2, e2, n2, r2, function(t3) {
-          i2.push(t3);
-        }), i2;
-      }
-      function ft(t2, e2, n2) {
-        var r2 = O.empty();
-        return "undirected" !== t2 && ("out" !== e2 && void 0 !== n2.in && (r2 = tt(r2, it(n2.in))), "in" !== e2 && void 0 !== n2.out && (r2 = tt(r2, it(n2.out, e2 ? void 0 : n2.key)))), "directed" !== t2 && void 0 !== n2.undirected && (r2 = tt(r2, it(n2.undirected))), r2;
-      }
-      function lt(t2, e2, n2, r2, i2, o2, a2) {
-        var c2, u2 = n2 ? at : ot;
-        if ("undirected" !== e2) {
-          if (void 0 !== i2.in && "out" !== r2 && (c2 = u2(t2, i2.in, o2, a2), t2 && c2)) return c2;
-          if (void 0 !== i2.out && "in" !== r2 && (r2 || i2.key !== o2) && (c2 = u2(t2, i2.out, o2, a2), t2 && c2)) return c2;
-        }
-        if ("directed" !== e2 && void 0 !== i2.undirected && (c2 = u2(t2, i2.undirected, o2, a2), t2 && c2)) return c2;
-      }
-      function gt(t2, e2, n2, r2, i2) {
-        var o2 = [];
-        return lt(false, t2, e2, n2, r2, i2, function(t3) {
-          o2.push(t3);
-        }), o2;
-      }
-      function yt(t2, e2, n2, r2) {
-        var i2 = O.empty();
-        return "undirected" !== t2 && (void 0 !== n2.in && "out" !== e2 && r2 in n2.in && (i2 = tt(i2, ct(n2.in, r2))), void 0 !== n2.out && "in" !== e2 && r2 in n2.out && (e2 || n2.key !== r2) && (i2 = tt(i2, ct(n2.out, r2)))), "directed" !== t2 && void 0 !== n2.undirected && r2 in n2.undirected && (i2 = tt(i2, ct(n2.undirected, r2))), i2;
-      }
-      var wt = [{ name: "neighbors", type: "mixed" }, { name: "inNeighbors", type: "directed", direction: "in" }, { name: "outNeighbors", type: "directed", direction: "out" }, { name: "inboundNeighbors", type: "mixed", direction: "in" }, { name: "outboundNeighbors", type: "mixed", direction: "out" }, { name: "directedNeighbors", type: "directed" }, { name: "undirectedNeighbors", type: "undirected" }];
-      function vt() {
-        this.A = null, this.B = null;
-      }
-      function bt(t2, e2, n2, r2, i2) {
-        for (var o2 in r2) {
-          var a2 = r2[o2], c2 = a2.source, u2 = a2.target, d2 = c2 === n2 ? u2 : c2;
-          if (!e2 || !e2.has(d2.key)) {
-            var s2 = i2(d2.key, d2.attributes);
-            if (t2 && s2) return d2.key;
-          }
-        }
-      }
-      function mt(t2, e2, n2, r2, i2) {
-        if ("mixed" !== e2) {
-          if ("undirected" === e2) return bt(t2, null, r2, r2.undirected, i2);
-          if ("string" == typeof n2) return bt(t2, null, r2, r2[n2], i2);
-        }
-        var o2, a2 = new vt();
-        if ("undirected" !== e2) {
-          if ("out" !== n2) {
-            if (o2 = bt(t2, null, r2, r2.in, i2), t2 && o2) return o2;
-            a2.wrap(r2.in);
-          }
-          if ("in" !== n2) {
-            if (o2 = bt(t2, a2, r2, r2.out, i2), t2 && o2) return o2;
-            a2.wrap(r2.out);
-          }
-        }
-        if ("directed" !== e2 && (o2 = bt(t2, a2, r2, r2.undirected, i2), t2 && o2)) return o2;
-      }
-      function kt(t2, e2, n2) {
-        var r2 = Object.keys(n2), i2 = r2.length, o2 = 0;
-        return new O(function() {
-          var a2 = null;
-          do {
-            if (o2 >= i2) return t2 && t2.wrap(n2), { done: true };
-            var c2 = n2[r2[o2++]], u2 = c2.source, d2 = c2.target;
-            a2 = u2 === e2 ? d2 : u2, t2 && t2.has(a2.key) && (a2 = null);
-          } while (null === a2);
-          return { done: false, value: { neighbor: a2.key, attributes: a2.attributes } };
-        });
-      }
-      function _t(t2, e2) {
-        var n2 = e2.name, r2 = e2.type, i2 = e2.direction;
-        t2.prototype[n2] = function(t3) {
-          if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return [];
-          t3 = "" + t3;
-          var e3 = this._nodes.get(t3);
-          if (void 0 === e3) throw new F("Graph.".concat(n2, ': could not find the "').concat(t3, '" node in the graph.'));
-          return function(t4, e4, n3) {
-            if ("mixed" !== t4) {
-              if ("undirected" === t4) return Object.keys(n3.undirected);
-              if ("string" == typeof e4) return Object.keys(n3[e4]);
-            }
-            var r3 = [];
-            return mt(false, t4, e4, n3, function(t5) {
-              r3.push(t5);
-            }), r3;
-          }("mixed" === r2 ? this.type : r2, i2, e3);
-        };
-      }
-      function Gt(t2, e2) {
-        var n2 = e2.name, r2 = e2.type, i2 = e2.direction, o2 = n2.slice(0, -1) + "Entries";
-        t2.prototype[o2] = function(t3) {
-          if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return O.empty();
-          t3 = "" + t3;
-          var e3 = this._nodes.get(t3);
-          if (void 0 === e3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t3, '" node in the graph.'));
-          return function(t4, e4, n3) {
-            if ("mixed" !== t4) {
-              if ("undirected" === t4) return kt(null, n3, n3.undirected);
-              if ("string" == typeof e4) return kt(null, n3, n3[e4]);
-            }
-            var r3 = O.empty(), i3 = new vt();
-            return "undirected" !== t4 && ("out" !== e4 && (r3 = tt(r3, kt(i3, n3, n3.in))), "in" !== e4 && (r3 = tt(r3, kt(i3, n3, n3.out)))), "directed" !== t4 && (r3 = tt(r3, kt(i3, n3, n3.undirected))), r3;
-          }("mixed" === r2 ? this.type : r2, i2, e3);
-        };
-      }
-      function xt(t2, e2, n2, r2, i2) {
-        for (var o2, a2, c2, u2, d2, s2, h2, p2 = r2._nodes.values(), f2 = r2.type; true !== (o2 = p2.next()).done; ) {
-          var l2 = false;
-          if (a2 = o2.value, "undirected" !== f2) for (c2 in u2 = a2.out) {
-            d2 = u2[c2];
-            do {
-              if (s2 = d2.target, l2 = true, h2 = i2(a2.key, s2.key, a2.attributes, s2.attributes, d2.key, d2.attributes, d2.undirected), t2 && h2) return d2;
-              d2 = d2.next;
-            } while (d2);
-          }
-          if ("directed" !== f2) {
-            for (c2 in u2 = a2.undirected) if (!(e2 && a2.key > c2)) {
-              d2 = u2[c2];
-              do {
-                if ((s2 = d2.target).key !== c2 && (s2 = d2.source), l2 = true, h2 = i2(a2.key, s2.key, a2.attributes, s2.attributes, d2.key, d2.attributes, d2.undirected), t2 && h2) return d2;
-                d2 = d2.next;
-              } while (d2);
-            }
-          }
-          if (n2 && !l2 && (h2 = i2(a2.key, null, a2.attributes, null, null, null, null), t2 && h2)) return null;
-        }
-      }
-      function Et(t2) {
-        if (!s(t2)) throw new B('Graph.import: invalid serialized node. A serialized node should be a plain object with at least a "key" property.');
-        if (!("key" in t2)) throw new B("Graph.import: serialized node is missing its key.");
-        if ("attributes" in t2 && (!s(t2.attributes) || null === t2.attributes)) throw new B("Graph.import: invalid attributes. Attributes should be a plain object, null or omitted.");
-      }
-      function At(t2) {
-        if (!s(t2)) throw new B('Graph.import: invalid serialized edge. A serialized edge should be a plain object with at least a "source" & "target" property.');
-        if (!("source" in t2)) throw new B("Graph.import: serialized edge is missing its source.");
-        if (!("target" in t2)) throw new B("Graph.import: serialized edge is missing its target.");
-        if ("attributes" in t2 && (!s(t2.attributes) || null === t2.attributes)) throw new B("Graph.import: invalid attributes. Attributes should be a plain object, null or omitted.");
-        if ("undirected" in t2 && "boolean" != typeof t2.undirected) throw new B("Graph.import: invalid undirectedness information. Undirected should be boolean or omitted.");
-      }
-      vt.prototype.wrap = function(t2) {
-        null === this.A ? this.A = t2 : null === this.B && (this.B = t2);
-      }, vt.prototype.has = function(t2) {
-        return null !== this.A && t2 in this.A || null !== this.B && t2 in this.B;
-      };
-      var Lt, St = (Lt = 255 & Math.floor(256 * Math.random()), function() {
-        return Lt++;
-      }), Dt = /* @__PURE__ */ new Set(["directed", "undirected", "mixed"]), Ut = /* @__PURE__ */ new Set(["domain", "_events", "_eventsCount", "_maxListeners"]), Nt = { allowSelfLoops: true, multi: false, type: "mixed" };
-      function Ot(t2, e2, n2) {
-        var r2 = new t2.NodeDataClass(e2, n2);
-        return t2._nodes.set(e2, r2), t2.emit("nodeAdded", { key: e2, attributes: n2 }), r2;
-      }
-      function jt(t2, e2, n2, r2, i2, o2, a2, c2) {
-        if (!r2 && "undirected" === t2.type) throw new I("Graph.".concat(e2, ": you cannot add a directed edge to an undirected graph. Use the #.addEdge or #.addUndirectedEdge instead."));
-        if (r2 && "directed" === t2.type) throw new I("Graph.".concat(e2, ": you cannot add an undirected edge to a directed graph. Use the #.addEdge or #.addDirectedEdge instead."));
-        if (c2 && !s(c2)) throw new B("Graph.".concat(e2, ': invalid attributes. Expecting an object but got "').concat(c2, '"'));
-        if (o2 = "" + o2, a2 = "" + a2, c2 = c2 || {}, !t2.allowSelfLoops && o2 === a2) throw new I("Graph.".concat(e2, ': source & target are the same ("').concat(o2, `"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`));
-        var u2 = t2._nodes.get(o2), d2 = t2._nodes.get(a2);
-        if (!u2) throw new F("Graph.".concat(e2, ': source node "').concat(o2, '" not found.'));
-        if (!d2) throw new F("Graph.".concat(e2, ': target node "').concat(a2, '" not found.'));
-        var h2 = { key: null, undirected: r2, source: o2, target: a2, attributes: c2 };
-        if (n2) i2 = t2._edgeKeyGenerator();
-        else if (i2 = "" + i2, t2._edges.has(i2)) throw new I("Graph.".concat(e2, ': the "').concat(i2, '" edge already exists in the graph.'));
-        if (!t2.multi && (r2 ? void 0 !== u2.undirected[a2] : void 0 !== u2.out[a2])) throw new I("Graph.".concat(e2, ': an edge linking "').concat(o2, '" to "').concat(a2, `" already exists. If you really want to add multiple edges linking those nodes, you should create a multi graph by using the 'multi' option.`));
-        var p2 = new V(r2, i2, u2, d2, c2);
-        t2._edges.set(i2, p2);
-        var f2 = o2 === a2;
-        return r2 ? (u2.undirectedDegree++, d2.undirectedDegree++, f2 && (u2.undirectedLoops++, t2._undirectedSelfLoopCount++)) : (u2.outDegree++, d2.inDegree++, f2 && (u2.directedLoops++, t2._directedSelfLoopCount++)), t2.multi ? p2.attachMulti() : p2.attach(), r2 ? t2._undirectedSize++ : t2._directedSize++, h2.key = i2, t2.emit("edgeAdded", h2), i2;
-      }
-      function Ct(t2, e2, n2, r2, i2, o2, a2, c2, d2) {
-        if (!r2 && "undirected" === t2.type) throw new I("Graph.".concat(e2, ": you cannot merge/update a directed edge to an undirected graph. Use the #.mergeEdge/#.updateEdge or #.addUndirectedEdge instead."));
-        if (r2 && "directed" === t2.type) throw new I("Graph.".concat(e2, ": you cannot merge/update an undirected edge to a directed graph. Use the #.mergeEdge/#.updateEdge or #.addDirectedEdge instead."));
-        if (c2) {
-          if (d2) {
-            if ("function" != typeof c2) throw new B("Graph.".concat(e2, ': invalid updater function. Expecting a function but got "').concat(c2, '"'));
-          } else if (!s(c2)) throw new B("Graph.".concat(e2, ': invalid attributes. Expecting an object but got "').concat(c2, '"'));
-        }
-        var h2;
-        if (o2 = "" + o2, a2 = "" + a2, d2 && (h2 = c2, c2 = void 0), !t2.allowSelfLoops && o2 === a2) throw new I("Graph.".concat(e2, ': source & target are the same ("').concat(o2, `"), thus creating a loop explicitly forbidden by this graph 'allowSelfLoops' option set to false.`));
-        var p2, f2, l2 = t2._nodes.get(o2), g2 = t2._nodes.get(a2);
-        if (!n2 && (p2 = t2._edges.get(i2))) {
-          if (!(p2.source.key === o2 && p2.target.key === a2 || r2 && p2.source.key === a2 && p2.target.key === o2)) throw new I("Graph.".concat(e2, ': inconsistency detected when attempting to merge the "').concat(i2, '" edge with "').concat(o2, '" source & "').concat(a2, '" target vs. ("').concat(p2.source.key, '", "').concat(p2.target.key, '").'));
-          f2 = p2;
-        }
-        if (f2 || t2.multi || !l2 || (f2 = r2 ? l2.undirected[a2] : l2.out[a2]), f2) {
-          var y2 = [f2.key, false, false, false];
-          if (d2 ? !h2 : !c2) return y2;
-          if (d2) {
-            var w2 = f2.attributes;
-            f2.attributes = h2(w2), t2.emit("edgeAttributesUpdated", { type: "replace", key: f2.key, attributes: f2.attributes });
-          } else u(f2.attributes, c2), t2.emit("edgeAttributesUpdated", { type: "merge", key: f2.key, attributes: f2.attributes, data: c2 });
-          return y2;
-        }
-        c2 = c2 || {}, d2 && h2 && (c2 = h2(c2));
-        var v2 = { key: null, undirected: r2, source: o2, target: a2, attributes: c2 };
-        if (n2) i2 = t2._edgeKeyGenerator();
-        else if (i2 = "" + i2, t2._edges.has(i2)) throw new I("Graph.".concat(e2, ': the "').concat(i2, '" edge already exists in the graph.'));
-        var b2 = false, m2 = false;
-        l2 || (l2 = Ot(t2, o2, {}), b2 = true, o2 === a2 && (g2 = l2, m2 = true)), g2 || (g2 = Ot(t2, a2, {}), m2 = true), p2 = new V(r2, i2, l2, g2, c2), t2._edges.set(i2, p2);
-        var k2 = o2 === a2;
-        return r2 ? (l2.undirectedDegree++, g2.undirectedDegree++, k2 && (l2.undirectedLoops++, t2._undirectedSelfLoopCount++)) : (l2.outDegree++, g2.inDegree++, k2 && (l2.directedLoops++, t2._directedSelfLoopCount++)), t2.multi ? p2.attachMulti() : p2.attach(), r2 ? t2._undirectedSize++ : t2._directedSize++, v2.key = i2, t2.emit("edgeAdded", v2), [i2, true, b2, m2];
-      }
-      function Mt(t2, e2) {
-        t2._edges.delete(e2.key);
-        var n2 = e2.source, r2 = e2.target, i2 = e2.attributes, o2 = e2.undirected, a2 = n2 === r2;
-        o2 ? (n2.undirectedDegree--, r2.undirectedDegree--, a2 && (n2.undirectedLoops--, t2._undirectedSelfLoopCount--)) : (n2.outDegree--, r2.inDegree--, a2 && (n2.directedLoops--, t2._directedSelfLoopCount--)), t2.multi ? e2.detachMulti() : e2.detach(), o2 ? t2._undirectedSize-- : t2._directedSize--, t2.emit("edgeDropped", { key: e2.key, attributes: i2, source: n2.key, target: r2.key, undirected: o2 });
-      }
-      var zt = function(n2) {
-        function r2(t2) {
-          var e2;
-          if (e2 = n2.call(this) || this, "boolean" != typeof (t2 = u({}, Nt, t2)).multi) throw new B(`Graph.constructor: invalid 'multi' option. Expecting a boolean but got "`.concat(t2.multi, '".'));
-          if (!Dt.has(t2.type)) throw new B(`Graph.constructor: invalid 'type' option. Should be one of "mixed", "directed" or "undirected" but got "`.concat(t2.type, '".'));
-          if ("boolean" != typeof t2.allowSelfLoops) throw new B(`Graph.constructor: invalid 'allowSelfLoops' option. Expecting a boolean but got "`.concat(t2.allowSelfLoops, '".'));
-          var r3 = "mixed" === t2.type ? Y : "directed" === t2.type ? q : J;
-          p(c(e2), "NodeDataClass", r3);
-          var i3 = "geid_" + St() + "_", o2 = 0;
-          return p(c(e2), "_attributes", {}), p(c(e2), "_nodes", /* @__PURE__ */ new Map()), p(c(e2), "_edges", /* @__PURE__ */ new Map()), p(c(e2), "_directedSize", 0), p(c(e2), "_undirectedSize", 0), p(c(e2), "_directedSelfLoopCount", 0), p(c(e2), "_undirectedSelfLoopCount", 0), p(c(e2), "_edgeKeyGenerator", function() {
-            var t3;
-            do {
-              t3 = i3 + o2++;
-            } while (e2._edges.has(t3));
-            return t3;
-          }), p(c(e2), "_options", t2), Ut.forEach(function(t3) {
-            return p(c(e2), t3, e2[t3]);
-          }), f(c(e2), "order", function() {
-            return e2._nodes.size;
-          }), f(c(e2), "size", function() {
-            return e2._edges.size;
-          }), f(c(e2), "directedSize", function() {
-            return e2._directedSize;
-          }), f(c(e2), "undirectedSize", function() {
-            return e2._undirectedSize;
-          }), f(c(e2), "selfLoopCount", function() {
-            return e2._directedSelfLoopCount + e2._undirectedSelfLoopCount;
-          }), f(c(e2), "directedSelfLoopCount", function() {
-            return e2._directedSelfLoopCount;
-          }), f(c(e2), "undirectedSelfLoopCount", function() {
-            return e2._undirectedSelfLoopCount;
-          }), f(c(e2), "multi", e2._options.multi), f(c(e2), "type", e2._options.type), f(c(e2), "allowSelfLoops", e2._options.allowSelfLoops), f(c(e2), "implementation", function() {
-            return "graphology";
-          }), e2;
-        }
-        e(r2, n2);
-        var i2 = r2.prototype;
-        return i2._resetInstanceCounters = function() {
-          this._directedSize = 0, this._undirectedSize = 0, this._directedSelfLoopCount = 0, this._undirectedSelfLoopCount = 0;
-        }, i2.hasNode = function(t2) {
-          return this._nodes.has("" + t2);
-        }, i2.hasDirectedEdge = function(t2, e2) {
-          if ("undirected" === this.type) return false;
-          if (1 === arguments.length) {
-            var n3 = "" + t2, r3 = this._edges.get(n3);
-            return !!r3 && !r3.undirected;
-          }
-          if (2 === arguments.length) {
-            t2 = "" + t2, e2 = "" + e2;
-            var i3 = this._nodes.get(t2);
-            return !!i3 && i3.out.hasOwnProperty(e2);
-          }
-          throw new B("Graph.hasDirectedEdge: invalid arity (".concat(arguments.length, ", instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target."));
-        }, i2.hasUndirectedEdge = function(t2, e2) {
-          if ("directed" === this.type) return false;
-          if (1 === arguments.length) {
-            var n3 = "" + t2, r3 = this._edges.get(n3);
-            return !!r3 && r3.undirected;
-          }
-          if (2 === arguments.length) {
-            t2 = "" + t2, e2 = "" + e2;
-            var i3 = this._nodes.get(t2);
-            return !!i3 && i3.undirected.hasOwnProperty(e2);
-          }
-          throw new B("Graph.hasDirectedEdge: invalid arity (".concat(arguments.length, ", instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target."));
-        }, i2.hasEdge = function(t2, e2) {
-          if (1 === arguments.length) {
-            var n3 = "" + t2;
-            return this._edges.has(n3);
-          }
-          if (2 === arguments.length) {
-            t2 = "" + t2, e2 = "" + e2;
-            var r3 = this._nodes.get(t2);
-            return !!r3 && (void 0 !== r3.out && r3.out.hasOwnProperty(e2) || void 0 !== r3.undirected && r3.undirected.hasOwnProperty(e2));
-          }
-          throw new B("Graph.hasEdge: invalid arity (".concat(arguments.length, ", instead of 1 or 2). You can either ask for an edge id or for the existence of an edge between a source & a target."));
-        }, i2.directedEdge = function(t2, e2) {
-          if ("undirected" !== this.type) {
-            if (t2 = "" + t2, e2 = "" + e2, this.multi) throw new I("Graph.directedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.directedEdges instead.");
-            var n3 = this._nodes.get(t2);
-            if (!n3) throw new F('Graph.directedEdge: could not find the "'.concat(t2, '" source node in the graph.'));
-            if (!this._nodes.has(e2)) throw new F('Graph.directedEdge: could not find the "'.concat(e2, '" target node in the graph.'));
-            var r3 = n3.out && n3.out[e2] || void 0;
-            return r3 ? r3.key : void 0;
-          }
-        }, i2.undirectedEdge = function(t2, e2) {
-          if ("directed" !== this.type) {
-            if (t2 = "" + t2, e2 = "" + e2, this.multi) throw new I("Graph.undirectedEdge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.undirectedEdges instead.");
-            var n3 = this._nodes.get(t2);
-            if (!n3) throw new F('Graph.undirectedEdge: could not find the "'.concat(t2, '" source node in the graph.'));
-            if (!this._nodes.has(e2)) throw new F('Graph.undirectedEdge: could not find the "'.concat(e2, '" target node in the graph.'));
-            var r3 = n3.undirected && n3.undirected[e2] || void 0;
-            return r3 ? r3.key : void 0;
-          }
-        }, i2.edge = function(t2, e2) {
-          if (this.multi) throw new I("Graph.edge: this method is irrelevant with multigraphs since there might be multiple edges between source & target. See #.edges instead.");
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.edge: could not find the "'.concat(t2, '" source node in the graph.'));
-          if (!this._nodes.has(e2)) throw new F('Graph.edge: could not find the "'.concat(e2, '" target node in the graph.'));
-          var r3 = n3.out && n3.out[e2] || n3.undirected && n3.undirected[e2] || void 0;
-          if (r3) return r3.key;
-        }, i2.areDirectedNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areDirectedNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" !== this.type && (e2 in n3.in || e2 in n3.out);
-        }, i2.areOutNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areOutNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" !== this.type && e2 in n3.out;
-        }, i2.areInNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areInNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" !== this.type && e2 in n3.in;
-        }, i2.areUndirectedNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areUndirectedNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "directed" !== this.type && e2 in n3.undirected;
-        }, i2.areNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" !== this.type && (e2 in n3.in || e2 in n3.out) || "directed" !== this.type && e2 in n3.undirected;
-        }, i2.areInboundNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areInboundNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" !== this.type && e2 in n3.in || "directed" !== this.type && e2 in n3.undirected;
-        }, i2.areOutboundNeighbors = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.areOutboundNeighbors: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" !== this.type && e2 in n3.out || "directed" !== this.type && e2 in n3.undirected;
-        }, i2.inDegree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.inDegree: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" === this.type ? 0 : e2.inDegree;
-        }, i2.outDegree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.outDegree: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" === this.type ? 0 : e2.outDegree;
-        }, i2.directedDegree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.directedDegree: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" === this.type ? 0 : e2.inDegree + e2.outDegree;
-        }, i2.undirectedDegree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.undirectedDegree: could not find the "'.concat(t2, '" node in the graph.'));
-          return "directed" === this.type ? 0 : e2.undirectedDegree;
-        }, i2.inboundDegree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.inboundDegree: could not find the "'.concat(t2, '" node in the graph.'));
-          var n3 = 0;
-          return "directed" !== this.type && (n3 += e2.undirectedDegree), "undirected" !== this.type && (n3 += e2.inDegree), n3;
-        }, i2.outboundDegree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.outboundDegree: could not find the "'.concat(t2, '" node in the graph.'));
-          var n3 = 0;
-          return "directed" !== this.type && (n3 += e2.undirectedDegree), "undirected" !== this.type && (n3 += e2.outDegree), n3;
-        }, i2.degree = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.degree: could not find the "'.concat(t2, '" node in the graph.'));
-          var n3 = 0;
-          return "directed" !== this.type && (n3 += e2.undirectedDegree), "undirected" !== this.type && (n3 += e2.inDegree + e2.outDegree), n3;
-        }, i2.inDegreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.inDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" === this.type ? 0 : e2.inDegree - e2.directedLoops;
-        }, i2.outDegreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.outDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" === this.type ? 0 : e2.outDegree - e2.directedLoops;
-        }, i2.directedDegreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.directedDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          return "undirected" === this.type ? 0 : e2.inDegree + e2.outDegree - 2 * e2.directedLoops;
-        }, i2.undirectedDegreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.undirectedDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          return "directed" === this.type ? 0 : e2.undirectedDegree - 2 * e2.undirectedLoops;
-        }, i2.inboundDegreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.inboundDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          var n3 = 0, r3 = 0;
-          return "directed" !== this.type && (n3 += e2.undirectedDegree, r3 += 2 * e2.undirectedLoops), "undirected" !== this.type && (n3 += e2.inDegree, r3 += e2.directedLoops), n3 - r3;
-        }, i2.outboundDegreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.outboundDegreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          var n3 = 0, r3 = 0;
-          return "directed" !== this.type && (n3 += e2.undirectedDegree, r3 += 2 * e2.undirectedLoops), "undirected" !== this.type && (n3 += e2.outDegree, r3 += e2.directedLoops), n3 - r3;
-        }, i2.degreeWithoutSelfLoops = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._nodes.get(t2);
-          if (!e2) throw new F('Graph.degreeWithoutSelfLoops: could not find the "'.concat(t2, '" node in the graph.'));
-          var n3 = 0, r3 = 0;
-          return "directed" !== this.type && (n3 += e2.undirectedDegree, r3 += 2 * e2.undirectedLoops), "undirected" !== this.type && (n3 += e2.inDegree + e2.outDegree, r3 += 2 * e2.directedLoops), n3 - r3;
-        }, i2.source = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._edges.get(t2);
-          if (!e2) throw new F('Graph.source: could not find the "'.concat(t2, '" edge in the graph.'));
-          return e2.source.key;
-        }, i2.target = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._edges.get(t2);
-          if (!e2) throw new F('Graph.target: could not find the "'.concat(t2, '" edge in the graph.'));
-          return e2.target.key;
-        }, i2.extremities = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._edges.get(t2);
-          if (!e2) throw new F('Graph.extremities: could not find the "'.concat(t2, '" edge in the graph.'));
-          return [e2.source.key, e2.target.key];
-        }, i2.opposite = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._edges.get(e2);
-          if (!n3) throw new F('Graph.opposite: could not find the "'.concat(e2, '" edge in the graph.'));
-          var r3 = n3.source.key, i3 = n3.target.key;
-          if (t2 === r3) return i3;
-          if (t2 === i3) return r3;
-          throw new F('Graph.opposite: the "'.concat(t2, '" node is not attached to the "').concat(e2, '" edge (').concat(r3, ", ").concat(i3, ")."));
-        }, i2.hasExtremity = function(t2, e2) {
-          t2 = "" + t2, e2 = "" + e2;
-          var n3 = this._edges.get(t2);
-          if (!n3) throw new F('Graph.hasExtremity: could not find the "'.concat(t2, '" edge in the graph.'));
-          return n3.source.key === e2 || n3.target.key === e2;
-        }, i2.isUndirected = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._edges.get(t2);
-          if (!e2) throw new F('Graph.isUndirected: could not find the "'.concat(t2, '" edge in the graph.'));
-          return e2.undirected;
-        }, i2.isDirected = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._edges.get(t2);
-          if (!e2) throw new F('Graph.isDirected: could not find the "'.concat(t2, '" edge in the graph.'));
-          return !e2.undirected;
-        }, i2.isSelfLoop = function(t2) {
-          t2 = "" + t2;
-          var e2 = this._edges.get(t2);
-          if (!e2) throw new F('Graph.isSelfLoop: could not find the "'.concat(t2, '" edge in the graph.'));
-          return e2.source === e2.target;
-        }, i2.addNode = function(t2, e2) {
-          var n3 = function(t3, e3, n4) {
-            if (n4 && !s(n4)) throw new B('Graph.addNode: invalid attributes. Expecting an object but got "'.concat(n4, '"'));
-            if (e3 = "" + e3, n4 = n4 || {}, t3._nodes.has(e3)) throw new I('Graph.addNode: the "'.concat(e3, '" node already exist in the graph.'));
-            var r3 = new t3.NodeDataClass(e3, n4);
-            return t3._nodes.set(e3, r3), t3.emit("nodeAdded", { key: e3, attributes: n4 }), r3;
-          }(this, t2, e2);
-          return n3.key;
-        }, i2.mergeNode = function(t2, e2) {
-          if (e2 && !s(e2)) throw new B('Graph.mergeNode: invalid attributes. Expecting an object but got "'.concat(e2, '"'));
-          t2 = "" + t2, e2 = e2 || {};
-          var n3 = this._nodes.get(t2);
-          return n3 ? (e2 && (u(n3.attributes, e2), this.emit("nodeAttributesUpdated", { type: "merge", key: t2, attributes: n3.attributes, data: e2 })), [t2, false]) : (n3 = new this.NodeDataClass(t2, e2), this._nodes.set(t2, n3), this.emit("nodeAdded", { key: t2, attributes: e2 }), [t2, true]);
-        }, i2.updateNode = function(t2, e2) {
-          if (e2 && "function" != typeof e2) throw new B('Graph.updateNode: invalid updater function. Expecting a function but got "'.concat(e2, '"'));
-          t2 = "" + t2;
-          var n3 = this._nodes.get(t2);
-          if (n3) {
-            if (e2) {
-              var r3 = n3.attributes;
-              n3.attributes = e2(r3), this.emit("nodeAttributesUpdated", { type: "replace", key: t2, attributes: n3.attributes });
-            }
-            return [t2, false];
-          }
-          var i3 = e2 ? e2({}) : {};
-          return n3 = new this.NodeDataClass(t2, i3), this._nodes.set(t2, n3), this.emit("nodeAdded", { key: t2, attributes: i3 }), [t2, true];
-        }, i2.dropNode = function(t2) {
-          t2 = "" + t2;
-          var e2, n3 = this._nodes.get(t2);
-          if (!n3) throw new F('Graph.dropNode: could not find the "'.concat(t2, '" node in the graph.'));
-          if ("undirected" !== this.type) {
-            for (var r3 in n3.out) {
-              e2 = n3.out[r3];
-              do {
-                Mt(this, e2), e2 = e2.next;
-              } while (e2);
-            }
-            for (var i3 in n3.in) {
-              e2 = n3.in[i3];
-              do {
-                Mt(this, e2), e2 = e2.next;
-              } while (e2);
-            }
-          }
-          if ("directed" !== this.type) for (var o2 in n3.undirected) {
-            e2 = n3.undirected[o2];
-            do {
-              Mt(this, e2), e2 = e2.next;
-            } while (e2);
-          }
-          this._nodes.delete(t2), this.emit("nodeDropped", { key: t2, attributes: n3.attributes });
-        }, i2.dropEdge = function(t2) {
-          var e2;
-          if (arguments.length > 1) {
-            var n3 = "" + arguments[0], r3 = "" + arguments[1];
-            if (!(e2 = d(this, n3, r3, this.type))) throw new F('Graph.dropEdge: could not find the "'.concat(n3, '" -> "').concat(r3, '" edge in the graph.'));
-          } else if (t2 = "" + t2, !(e2 = this._edges.get(t2))) throw new F('Graph.dropEdge: could not find the "'.concat(t2, '" edge in the graph.'));
-          return Mt(this, e2), this;
-        }, i2.dropDirectedEdge = function(t2, e2) {
-          if (arguments.length < 2) throw new I("Graph.dropDirectedEdge: it does not make sense to try and drop a directed edge by key. What if the edge with this key is undirected? Use #.dropEdge for this purpose instead.");
-          if (this.multi) throw new I("Graph.dropDirectedEdge: cannot use a {source,target} combo when dropping an edge in a MultiGraph since we cannot infer the one you want to delete as there could be multiple ones.");
-          var n3 = d(this, t2 = "" + t2, e2 = "" + e2, "directed");
-          if (!n3) throw new F('Graph.dropDirectedEdge: could not find a "'.concat(t2, '" -> "').concat(e2, '" edge in the graph.'));
-          return Mt(this, n3), this;
-        }, i2.dropUndirectedEdge = function(t2, e2) {
-          if (arguments.length < 2) throw new I("Graph.dropUndirectedEdge: it does not make sense to drop a directed edge by key. What if the edge with this key is undirected? Use #.dropEdge for this purpose instead.");
-          if (this.multi) throw new I("Graph.dropUndirectedEdge: cannot use a {source,target} combo when dropping an edge in a MultiGraph since we cannot infer the one you want to delete as there could be multiple ones.");
-          var n3 = d(this, t2, e2, "undirected");
-          if (!n3) throw new F('Graph.dropUndirectedEdge: could not find a "'.concat(t2, '" -> "').concat(e2, '" edge in the graph.'));
-          return Mt(this, n3), this;
-        }, i2.clear = function() {
-          this._edges.clear(), this._nodes.clear(), this._resetInstanceCounters(), this.emit("cleared");
-        }, i2.clearEdges = function() {
-          for (var t2, e2 = this._nodes.values(); true !== (t2 = e2.next()).done; ) t2.value.clear();
-          this._edges.clear(), this._resetInstanceCounters(), this.emit("edgesCleared");
-        }, i2.getAttribute = function(t2) {
-          return this._attributes[t2];
-        }, i2.getAttributes = function() {
-          return this._attributes;
-        }, i2.hasAttribute = function(t2) {
-          return this._attributes.hasOwnProperty(t2);
-        }, i2.setAttribute = function(t2, e2) {
-          return this._attributes[t2] = e2, this.emit("attributesUpdated", { type: "set", attributes: this._attributes, name: t2 }), this;
-        }, i2.updateAttribute = function(t2, e2) {
-          if ("function" != typeof e2) throw new B("Graph.updateAttribute: updater should be a function.");
-          var n3 = this._attributes[t2];
-          return this._attributes[t2] = e2(n3), this.emit("attributesUpdated", { type: "set", attributes: this._attributes, name: t2 }), this;
-        }, i2.removeAttribute = function(t2) {
-          return delete this._attributes[t2], this.emit("attributesUpdated", { type: "remove", attributes: this._attributes, name: t2 }), this;
-        }, i2.replaceAttributes = function(t2) {
-          if (!s(t2)) throw new B("Graph.replaceAttributes: provided attributes are not a plain object.");
-          return this._attributes = t2, this.emit("attributesUpdated", { type: "replace", attributes: this._attributes }), this;
-        }, i2.mergeAttributes = function(t2) {
-          if (!s(t2)) throw new B("Graph.mergeAttributes: provided attributes are not a plain object.");
-          return u(this._attributes, t2), this.emit("attributesUpdated", { type: "merge", attributes: this._attributes, data: t2 }), this;
-        }, i2.updateAttributes = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.updateAttributes: provided updater is not a function.");
-          return this._attributes = t2(this._attributes), this.emit("attributesUpdated", { type: "update", attributes: this._attributes }), this;
-        }, i2.updateEachNodeAttributes = function(t2, e2) {
-          if ("function" != typeof t2) throw new B("Graph.updateEachNodeAttributes: expecting an updater function.");
-          if (e2 && !l(e2)) throw new B("Graph.updateEachNodeAttributes: invalid hints. Expecting an object having the following shape: {attributes?: [string]}");
-          for (var n3, r3, i3 = this._nodes.values(); true !== (n3 = i3.next()).done; ) (r3 = n3.value).attributes = t2(r3.key, r3.attributes);
-          this.emit("eachNodeAttributesUpdated", { hints: e2 || null });
-        }, i2.updateEachEdgeAttributes = function(t2, e2) {
-          if ("function" != typeof t2) throw new B("Graph.updateEachEdgeAttributes: expecting an updater function.");
-          if (e2 && !l(e2)) throw new B("Graph.updateEachEdgeAttributes: invalid hints. Expecting an object having the following shape: {attributes?: [string]}");
-          for (var n3, r3, i3, o2, a2 = this._edges.values(); true !== (n3 = a2.next()).done; ) i3 = (r3 = n3.value).source, o2 = r3.target, r3.attributes = t2(r3.key, r3.attributes, i3.key, o2.key, i3.attributes, o2.attributes, r3.undirected);
-          this.emit("eachEdgeAttributesUpdated", { hints: e2 || null });
-        }, i2.forEachAdjacencyEntry = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.forEachAdjacencyEntry: expecting a callback.");
-          xt(false, false, false, this, t2);
-        }, i2.forEachAdjacencyEntryWithOrphans = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.forEachAdjacencyEntryWithOrphans: expecting a callback.");
-          xt(false, false, true, this, t2);
-        }, i2.forEachAssymetricAdjacencyEntry = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.forEachAssymetricAdjacencyEntry: expecting a callback.");
-          xt(false, true, false, this, t2);
-        }, i2.forEachAssymetricAdjacencyEntryWithOrphans = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.forEachAssymetricAdjacencyEntryWithOrphans: expecting a callback.");
-          xt(false, true, true, this, t2);
-        }, i2.nodes = function() {
-          return "function" == typeof Array.from ? Array.from(this._nodes.keys()) : K(this._nodes.keys(), this._nodes.size);
-        }, i2.forEachNode = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.forEachNode: expecting a callback.");
-          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) t2((n3 = e2.value).key, n3.attributes);
-        }, i2.findNode = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.findNode: expecting a callback.");
-          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) if (t2((n3 = e2.value).key, n3.attributes)) return n3.key;
-        }, i2.mapNodes = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.mapNode: expecting a callback.");
-          for (var e2, n3, r3 = this._nodes.values(), i3 = new Array(this.order), o2 = 0; true !== (e2 = r3.next()).done; ) n3 = e2.value, i3[o2++] = t2(n3.key, n3.attributes);
-          return i3;
-        }, i2.someNode = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.someNode: expecting a callback.");
-          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) if (t2((n3 = e2.value).key, n3.attributes)) return true;
-          return false;
-        }, i2.everyNode = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.everyNode: expecting a callback.");
-          for (var e2, n3, r3 = this._nodes.values(); true !== (e2 = r3.next()).done; ) if (!t2((n3 = e2.value).key, n3.attributes)) return false;
-          return true;
-        }, i2.filterNodes = function(t2) {
-          if ("function" != typeof t2) throw new B("Graph.filterNodes: expecting a callback.");
-          for (var e2, n3, r3 = this._nodes.values(), i3 = []; true !== (e2 = r3.next()).done; ) t2((n3 = e2.value).key, n3.attributes) && i3.push(n3.key);
-          return i3;
-        }, i2.reduceNodes = function(t2, e2) {
-          if ("function" != typeof t2) throw new B("Graph.reduceNodes: expecting a callback.");
-          if (arguments.length < 2) throw new B("Graph.reduceNodes: missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array.");
-          for (var n3, r3, i3 = e2, o2 = this._nodes.values(); true !== (n3 = o2.next()).done; ) i3 = t2(i3, (r3 = n3.value).key, r3.attributes);
-          return i3;
-        }, i2.nodeEntries = function() {
-          var t2 = this._nodes.values();
-          return new O(function() {
-            var e2 = t2.next();
-            if (e2.done) return e2;
-            var n3 = e2.value;
-            return { value: { node: n3.key, attributes: n3.attributes }, done: false };
-          });
-        }, i2.export = function() {
-          var t2 = this, e2 = new Array(this._nodes.size), n3 = 0;
-          this._nodes.forEach(function(t3, r4) {
-            e2[n3++] = function(t4, e3) {
-              var n4 = { key: t4 };
-              return h(e3.attributes) || (n4.attributes = u({}, e3.attributes)), n4;
-            }(r4, t3);
-          });
-          var r3 = new Array(this._edges.size);
-          return n3 = 0, this._edges.forEach(function(e3, i3) {
-            r3[n3++] = function(t3, e4, n4) {
-              var r4 = { key: e4, source: n4.source.key, target: n4.target.key };
-              return h(n4.attributes) || (r4.attributes = u({}, n4.attributes)), "mixed" === t3 && n4.undirected && (r4.undirected = true), r4;
-            }(t2.type, i3, e3);
-          }), { options: { type: this.type, multi: this.multi, allowSelfLoops: this.allowSelfLoops }, attributes: this.getAttributes(), nodes: e2, edges: r3 };
-        }, i2.import = function(t2) {
-          var e2, n3, i3, o2, a2, c2 = this, u2 = arguments.length > 1 && void 0 !== arguments[1] && arguments[1];
-          if (t2 instanceof r2) return t2.forEachNode(function(t3, e3) {
-            u2 ? c2.mergeNode(t3, e3) : c2.addNode(t3, e3);
-          }), t2.forEachEdge(function(t3, e3, n4, r3, i4, o3, a3) {
-            u2 ? a3 ? c2.mergeUndirectedEdgeWithKey(t3, n4, r3, e3) : c2.mergeDirectedEdgeWithKey(t3, n4, r3, e3) : a3 ? c2.addUndirectedEdgeWithKey(t3, n4, r3, e3) : c2.addDirectedEdgeWithKey(t3, n4, r3, e3);
-          }), this;
-          if (!s(t2)) throw new B("Graph.import: invalid argument. Expecting a serialized graph or, alternatively, a Graph instance.");
-          if (t2.attributes) {
-            if (!s(t2.attributes)) throw new B("Graph.import: invalid attributes. Expecting a plain object.");
-            u2 ? this.mergeAttributes(t2.attributes) : this.replaceAttributes(t2.attributes);
-          }
-          if (t2.nodes) {
-            if (i3 = t2.nodes, !Array.isArray(i3)) throw new B("Graph.import: invalid nodes. Expecting an array.");
-            for (e2 = 0, n3 = i3.length; e2 < n3; e2++) {
-              Et(o2 = i3[e2]);
-              var d2 = o2, h2 = d2.key, p2 = d2.attributes;
-              u2 ? this.mergeNode(h2, p2) : this.addNode(h2, p2);
-            }
-          }
-          if (t2.edges) {
-            var f2 = false;
-            if ("undirected" === this.type && (f2 = true), i3 = t2.edges, !Array.isArray(i3)) throw new B("Graph.import: invalid edges. Expecting an array.");
-            for (e2 = 0, n3 = i3.length; e2 < n3; e2++) {
-              At(a2 = i3[e2]);
-              var l2 = a2, g2 = l2.source, y2 = l2.target, w2 = l2.attributes, v2 = l2.undirected, b2 = void 0 === v2 ? f2 : v2;
-              "key" in a2 ? (u2 ? b2 ? this.mergeUndirectedEdgeWithKey : this.mergeDirectedEdgeWithKey : b2 ? this.addUndirectedEdgeWithKey : this.addDirectedEdgeWithKey).call(this, a2.key, g2, y2, w2) : (u2 ? b2 ? this.mergeUndirectedEdge : this.mergeDirectedEdge : b2 ? this.addUndirectedEdge : this.addDirectedEdge).call(this, g2, y2, w2);
-            }
-          }
-          return this;
-        }, i2.nullCopy = function(t2) {
-          var e2 = new r2(u({}, this._options, t2));
-          return e2.replaceAttributes(u({}, this.getAttributes())), e2;
-        }, i2.emptyCopy = function(t2) {
-          var e2 = this.nullCopy(t2);
-          return this._nodes.forEach(function(t3, n3) {
-            var r3 = u({}, t3.attributes);
-            t3 = new e2.NodeDataClass(n3, r3), e2._nodes.set(n3, t3);
-          }), e2;
-        }, i2.copy = function(t2) {
-          if ("string" == typeof (t2 = t2 || {}).type && t2.type !== this.type && "mixed" !== t2.type) throw new I('Graph.copy: cannot create an incompatible copy from "'.concat(this.type, '" type to "').concat(t2.type, '" because this would mean losing information about the current graph.'));
-          if ("boolean" == typeof t2.multi && t2.multi !== this.multi && true !== t2.multi) throw new I("Graph.copy: cannot create an incompatible copy by downgrading a multi graph to a simple one because this would mean losing information about the current graph.");
-          if ("boolean" == typeof t2.allowSelfLoops && t2.allowSelfLoops !== this.allowSelfLoops && true !== t2.allowSelfLoops) throw new I("Graph.copy: cannot create an incompatible copy from a graph allowing self loops to one that does not because this would mean losing information about the current graph.");
-          for (var e2, n3, r3 = this.emptyCopy(t2), i3 = this._edges.values(); true !== (e2 = i3.next()).done; ) jt(r3, "copy", false, (n3 = e2.value).undirected, n3.key, n3.source.key, n3.target.key, u({}, n3.attributes));
-          return r3;
-        }, i2.toJSON = function() {
-          return this.export();
-        }, i2.toString = function() {
-          return "[object Graph]";
-        }, i2.inspect = function() {
-          var e2 = this, n3 = {};
-          this._nodes.forEach(function(t2, e3) {
-            n3[e3] = t2.attributes;
-          });
-          var r3 = {}, i3 = {};
-          this._edges.forEach(function(t2, n4) {
-            var o3, a3 = t2.undirected ? "--" : "->", c2 = "", u2 = t2.source.key, d2 = t2.target.key;
-            t2.undirected && u2 > d2 && (o3 = u2, u2 = d2, d2 = o3);
-            var s2 = "(".concat(u2, ")").concat(a3, "(").concat(d2, ")");
-            n4.startsWith("geid_") ? e2.multi && (void 0 === i3[s2] ? i3[s2] = 0 : i3[s2]++, c2 += "".concat(i3[s2], ". ")) : c2 += "[".concat(n4, "]: "), r3[c2 += s2] = t2.attributes;
-          });
-          var o2 = {};
-          for (var a2 in this) this.hasOwnProperty(a2) && !Ut.has(a2) && "function" != typeof this[a2] && "symbol" !== t(a2) && (o2[a2] = this[a2]);
-          return o2.attributes = this._attributes, o2.nodes = n3, o2.edges = r3, p(o2, "constructor", this.constructor), o2;
-        }, r2;
-      }(y.exports.EventEmitter);
-      "undefined" != typeof Symbol && (zt.prototype[Symbol.for("nodejs.util.inspect.custom")] = zt.prototype.inspect), [{ name: function(t2) {
-        return "".concat(t2, "Edge");
-      }, generateKey: true }, { name: function(t2) {
-        return "".concat(t2, "DirectedEdge");
-      }, generateKey: true, type: "directed" }, { name: function(t2) {
-        return "".concat(t2, "UndirectedEdge");
-      }, generateKey: true, type: "undirected" }, { name: function(t2) {
-        return "".concat(t2, "EdgeWithKey");
-      } }, { name: function(t2) {
-        return "".concat(t2, "DirectedEdgeWithKey");
-      }, type: "directed" }, { name: function(t2) {
-        return "".concat(t2, "UndirectedEdgeWithKey");
-      }, type: "undirected" }].forEach(function(t2) {
-        ["add", "merge", "update"].forEach(function(e2) {
-          var n2 = t2.name(e2), r2 = "add" === e2 ? jt : Ct;
-          t2.generateKey ? zt.prototype[n2] = function(i2, o2, a2) {
-            return r2(this, n2, true, "undirected" === (t2.type || this.type), null, i2, o2, a2, "update" === e2);
-          } : zt.prototype[n2] = function(i2, o2, a2, c2) {
-            return r2(this, n2, false, "undirected" === (t2.type || this.type), i2, o2, a2, c2, "update" === e2);
-          };
-        });
-      }), function(t2) {
-        Q.forEach(function(e2) {
-          var n2 = e2.name, r2 = e2.attacher;
-          r2(t2, n2("Node"), 0), r2(t2, n2("Source"), 1), r2(t2, n2("Target"), 2), r2(t2, n2("Opposite"), 3);
-        });
-      }(zt), function(t2) {
-        X.forEach(function(e2) {
-          var n2 = e2.name, r2 = e2.attacher;
-          r2(t2, n2("Edge"), "mixed"), r2(t2, n2("DirectedEdge"), "directed"), r2(t2, n2("UndirectedEdge"), "undirected");
-        });
-      }(zt), function(t2) {
-        et.forEach(function(e2) {
-          !function(t3, e3) {
-            var n2 = e3.name, r2 = e3.type, i2 = e3.direction;
-            t3.prototype[n2] = function(t4, e4) {
-              if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return [];
-              if (!arguments.length) return ut(this, r2);
-              if (1 === arguments.length) {
-                t4 = "" + t4;
-                var o2 = this._nodes.get(t4);
-                if (void 0 === o2) throw new F("Graph.".concat(n2, ': could not find the "').concat(t4, '" node in the graph.'));
-                return pt(this.multi, "mixed" === r2 ? this.type : r2, i2, o2);
-              }
-              if (2 === arguments.length) {
-                t4 = "" + t4, e4 = "" + e4;
-                var a2 = this._nodes.get(t4);
-                if (!a2) throw new F("Graph.".concat(n2, ':  could not find the "').concat(t4, '" source node in the graph.'));
-                if (!this._nodes.has(e4)) throw new F("Graph.".concat(n2, ':  could not find the "').concat(e4, '" target node in the graph.'));
-                return gt(r2, this.multi, i2, a2, e4);
-              }
-              throw new B("Graph.".concat(n2, ": too many arguments (expecting 0, 1 or 2 and got ").concat(arguments.length, ")."));
-            };
-          }(t2, e2), function(t3, e3) {
-            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = "forEach" + n2[0].toUpperCase() + n2.slice(1, -1);
-            t3.prototype[o2] = function(t4, e4, n3) {
-              if ("mixed" === r2 || "mixed" === this.type || r2 === this.type) {
-                if (1 === arguments.length) return dt(false, this, r2, n3 = t4);
-                if (2 === arguments.length) {
-                  t4 = "" + t4, n3 = e4;
-                  var a3 = this._nodes.get(t4);
-                  if (void 0 === a3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
-                  return ht(false, this.multi, "mixed" === r2 ? this.type : r2, i2, a3, n3);
-                }
-                if (3 === arguments.length) {
-                  t4 = "" + t4, e4 = "" + e4;
-                  var c3 = this._nodes.get(t4);
-                  if (!c3) throw new F("Graph.".concat(o2, ':  could not find the "').concat(t4, '" source node in the graph.'));
-                  if (!this._nodes.has(e4)) throw new F("Graph.".concat(o2, ':  could not find the "').concat(e4, '" target node in the graph.'));
-                  return lt(false, r2, this.multi, i2, c3, e4, n3);
-                }
-                throw new B("Graph.".concat(o2, ": too many arguments (expecting 1, 2 or 3 and got ").concat(arguments.length, ")."));
-              }
-            };
-            var a2 = "map" + n2[0].toUpperCase() + n2.slice(1);
-            t3.prototype[a2] = function() {
-              var t4, e4 = Array.prototype.slice.call(arguments), n3 = e4.pop();
-              if (0 === e4.length) {
-                var i3 = 0;
-                "directed" !== r2 && (i3 += this.undirectedSize), "undirected" !== r2 && (i3 += this.directedSize), t4 = new Array(i3);
-                var a3 = 0;
-                e4.push(function(e5, r3, i4, o3, c3, u3, d2) {
-                  t4[a3++] = n3(e5, r3, i4, o3, c3, u3, d2);
-                });
-              } else t4 = [], e4.push(function(e5, r3, i4, o3, a4, c3, u3) {
-                t4.push(n3(e5, r3, i4, o3, a4, c3, u3));
-              });
-              return this[o2].apply(this, e4), t4;
-            };
-            var c2 = "filter" + n2[0].toUpperCase() + n2.slice(1);
-            t3.prototype[c2] = function() {
-              var t4 = Array.prototype.slice.call(arguments), e4 = t4.pop(), n3 = [];
-              return t4.push(function(t5, r3, i3, o3, a3, c3, u3) {
-                e4(t5, r3, i3, o3, a3, c3, u3) && n3.push(t5);
-              }), this[o2].apply(this, t4), n3;
-            };
-            var u2 = "reduce" + n2[0].toUpperCase() + n2.slice(1);
-            t3.prototype[u2] = function() {
-              var t4, e4, n3 = Array.prototype.slice.call(arguments);
-              if (n3.length < 2 || n3.length > 4) throw new B("Graph.".concat(u2, ": invalid number of arguments (expecting 2, 3 or 4 and got ").concat(n3.length, ")."));
-              if ("function" == typeof n3[n3.length - 1] && "function" != typeof n3[n3.length - 2]) throw new B("Graph.".concat(u2, ": missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array."));
-              2 === n3.length ? (t4 = n3[0], e4 = n3[1], n3 = []) : 3 === n3.length ? (t4 = n3[1], e4 = n3[2], n3 = [n3[0]]) : 4 === n3.length && (t4 = n3[2], e4 = n3[3], n3 = [n3[0], n3[1]]);
-              var r3 = e4;
-              return n3.push(function(e5, n4, i3, o3, a3, c3, u3) {
-                r3 = t4(r3, e5, n4, i3, o3, a3, c3, u3);
-              }), this[o2].apply(this, n3), r3;
-            };
-          }(t2, e2), function(t3, e3) {
-            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = "find" + n2[0].toUpperCase() + n2.slice(1, -1);
-            t3.prototype[o2] = function(t4, e4, n3) {
-              if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return false;
-              if (1 === arguments.length) return dt(true, this, r2, n3 = t4);
-              if (2 === arguments.length) {
-                t4 = "" + t4, n3 = e4;
-                var a3 = this._nodes.get(t4);
-                if (void 0 === a3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
-                return ht(true, this.multi, "mixed" === r2 ? this.type : r2, i2, a3, n3);
-              }
-              if (3 === arguments.length) {
-                t4 = "" + t4, e4 = "" + e4;
-                var c3 = this._nodes.get(t4);
-                if (!c3) throw new F("Graph.".concat(o2, ':  could not find the "').concat(t4, '" source node in the graph.'));
-                if (!this._nodes.has(e4)) throw new F("Graph.".concat(o2, ':  could not find the "').concat(e4, '" target node in the graph.'));
-                return lt(true, r2, this.multi, i2, c3, e4, n3);
-              }
-              throw new B("Graph.".concat(o2, ": too many arguments (expecting 1, 2 or 3 and got ").concat(arguments.length, ")."));
-            };
-            var a2 = "some" + n2[0].toUpperCase() + n2.slice(1, -1);
-            t3.prototype[a2] = function() {
-              var t4 = Array.prototype.slice.call(arguments), e4 = t4.pop();
-              return t4.push(function(t5, n3, r3, i3, o3, a3, c3) {
-                return e4(t5, n3, r3, i3, o3, a3, c3);
-              }), !!this[o2].apply(this, t4);
-            };
-            var c2 = "every" + n2[0].toUpperCase() + n2.slice(1, -1);
-            t3.prototype[c2] = function() {
-              var t4 = Array.prototype.slice.call(arguments), e4 = t4.pop();
-              return t4.push(function(t5, n3, r3, i3, o3, a3, c3) {
-                return !e4(t5, n3, r3, i3, o3, a3, c3);
-              }), !this[o2].apply(this, t4);
-            };
-          }(t2, e2), function(t3, e3) {
-            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = n2.slice(0, -1) + "Entries";
-            t3.prototype[o2] = function(t4, e4) {
-              if ("mixed" !== r2 && "mixed" !== this.type && r2 !== this.type) return O.empty();
-              if (!arguments.length) return st(this, r2);
-              if (1 === arguments.length) {
-                t4 = "" + t4;
-                var n3 = this._nodes.get(t4);
-                if (!n3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
-                return ft(r2, i2, n3);
-              }
-              if (2 === arguments.length) {
-                t4 = "" + t4, e4 = "" + e4;
-                var a2 = this._nodes.get(t4);
-                if (!a2) throw new F("Graph.".concat(o2, ':  could not find the "').concat(t4, '" source node in the graph.'));
-                if (!this._nodes.has(e4)) throw new F("Graph.".concat(o2, ':  could not find the "').concat(e4, '" target node in the graph.'));
-                return yt(r2, i2, a2, e4);
-              }
-              throw new B("Graph.".concat(o2, ": too many arguments (expecting 0, 1 or 2 and got ").concat(arguments.length, ")."));
-            };
-          }(t2, e2);
-        });
-      }(zt), function(t2) {
-        wt.forEach(function(e2) {
-          _t(t2, e2), function(t3, e3) {
-            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = "forEach" + n2[0].toUpperCase() + n2.slice(1, -1);
-            t3.prototype[o2] = function(t4, e4) {
-              if ("mixed" === r2 || "mixed" === this.type || r2 === this.type) {
-                t4 = "" + t4;
-                var n3 = this._nodes.get(t4);
-                if (void 0 === n3) throw new F("Graph.".concat(o2, ': could not find the "').concat(t4, '" node in the graph.'));
-                mt(false, "mixed" === r2 ? this.type : r2, i2, n3, e4);
-              }
-            };
-            var a2 = "map" + n2[0].toUpperCase() + n2.slice(1);
-            t3.prototype[a2] = function(t4, e4) {
-              var n3 = [];
-              return this[o2](t4, function(t5, r3) {
-                n3.push(e4(t5, r3));
-              }), n3;
-            };
-            var c2 = "filter" + n2[0].toUpperCase() + n2.slice(1);
-            t3.prototype[c2] = function(t4, e4) {
-              var n3 = [];
-              return this[o2](t4, function(t5, r3) {
-                e4(t5, r3) && n3.push(t5);
-              }), n3;
-            };
-            var u2 = "reduce" + n2[0].toUpperCase() + n2.slice(1);
-            t3.prototype[u2] = function(t4, e4, n3) {
-              if (arguments.length < 3) throw new B("Graph.".concat(u2, ": missing initial value. You must provide it because the callback takes more than one argument and we cannot infer the initial value from the first iteration, as you could with a simple array."));
-              var r3 = n3;
-              return this[o2](t4, function(t5, n4) {
-                r3 = e4(r3, t5, n4);
-              }), r3;
-            };
-          }(t2, e2), function(t3, e3) {
-            var n2 = e3.name, r2 = e3.type, i2 = e3.direction, o2 = n2[0].toUpperCase() + n2.slice(1, -1), a2 = "find" + o2;
-            t3.prototype[a2] = function(t4, e4) {
-              if ("mixed" === r2 || "mixed" === this.type || r2 === this.type) {
-                t4 = "" + t4;
-                var n3 = this._nodes.get(t4);
-                if (void 0 === n3) throw new F("Graph.".concat(a2, ': could not find the "').concat(t4, '" node in the graph.'));
-                return mt(true, "mixed" === r2 ? this.type : r2, i2, n3, e4);
-              }
-            };
-            var c2 = "some" + o2;
-            t3.prototype[c2] = function(t4, e4) {
-              return !!this[a2](t4, e4);
-            };
-            var u2 = "every" + o2;
-            t3.prototype[u2] = function(t4, e4) {
-              return !this[a2](t4, function(t5, n3) {
-                return !e4(t5, n3);
-              });
-            };
-          }(t2, e2), Gt(t2, e2);
-        });
-      }(zt);
-      var Wt = function(t2) {
-        function n2(e2) {
-          var n3 = u({ type: "directed" }, e2);
-          if ("multi" in n3 && false !== n3.multi) throw new B("DirectedGraph.from: inconsistent indication that the graph should be multi in given options!");
-          if ("directed" !== n3.type) throw new B('DirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
-          return t2.call(this, n3) || this;
-        }
-        return e(n2, t2), n2;
-      }(zt), Pt = function(t2) {
-        function n2(e2) {
-          var n3 = u({ type: "undirected" }, e2);
-          if ("multi" in n3 && false !== n3.multi) throw new B("UndirectedGraph.from: inconsistent indication that the graph should be multi in given options!");
-          if ("undirected" !== n3.type) throw new B('UndirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
-          return t2.call(this, n3) || this;
-        }
-        return e(n2, t2), n2;
-      }(zt), Rt = function(t2) {
-        function n2(e2) {
-          var n3 = u({ multi: true }, e2);
-          if ("multi" in n3 && true !== n3.multi) throw new B("MultiGraph.from: inconsistent indication that the graph should be simple in given options!");
-          return t2.call(this, n3) || this;
-        }
-        return e(n2, t2), n2;
-      }(zt), Kt = function(t2) {
-        function n2(e2) {
-          var n3 = u({ type: "directed", multi: true }, e2);
-          if ("multi" in n3 && true !== n3.multi) throw new B("MultiDirectedGraph.from: inconsistent indication that the graph should be simple in given options!");
-          if ("directed" !== n3.type) throw new B('MultiDirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
-          return t2.call(this, n3) || this;
-        }
-        return e(n2, t2), n2;
-      }(zt), Tt = function(t2) {
-        function n2(e2) {
-          var n3 = u({ type: "undirected", multi: true }, e2);
-          if ("multi" in n3 && true !== n3.multi) throw new B("MultiUndirectedGraph.from: inconsistent indication that the graph should be simple in given options!");
-          if ("undirected" !== n3.type) throw new B('MultiUndirectedGraph.from: inconsistent "' + n3.type + '" type in given options!');
-          return t2.call(this, n3) || this;
-        }
-        return e(n2, t2), n2;
-      }(zt);
-      function Bt(t2) {
-        t2.from = function(e2, n2) {
-          var r2 = u({}, e2.options, n2), i2 = new t2(r2);
-          return i2.import(e2), i2;
-        };
-      }
-      return Bt(zt), Bt(Wt), Bt(Pt), Bt(Rt), Bt(Kt), Bt(Tt), zt.Graph = zt, zt.DirectedGraph = Wt, zt.UndirectedGraph = Pt, zt.MultiGraph = Rt, zt.MultiDirectedGraph = Kt, zt.MultiUndirectedGraph = Tt, zt.InvalidArgumentsGraphError = B, zt.NotFoundGraphError = F, zt.UsageGraphError = I, zt;
-    });
-  }
-});
-
 // node_modules/react-dom/client.js
 var require_client = __commonJS({
   "node_modules/react-dom/client.js"(exports) {
@@ -29107,6 +29107,51 @@ var require_client = __commonJS({
     var i;
   }
 });
+
+// src/spacetrash/index.tsx
+var import_react23 = __toESM(require_react(), 1);
+
+// src/engine/DirectedGraph.ts
+var import_graphology = __toESM(require_graphology_umd_min(), 1);
+var DirectedGraph = class {
+  name;
+  graph;
+  constructor(name) {
+    this.name = name;
+    this.graph = new import_graphology.DirectedGraph();
+  }
+  connect(to, from, relation) {
+    this.graph.mergeEdge(to, from, { type: relation });
+  }
+};
+
+// src/engine/StateSpace.ts
+var StateSpace = class extends DirectedGraph {
+  start;
+  end;
+  currrent;
+  constructor(name, start, end) {
+    super(name);
+    this.start = start;
+    this.end = end;
+    this.currrent = start;
+  }
+  setCurrent(key) {
+    return this.currrent = key;
+  }
+  getCurrent() {
+    return this.graph.getNodeAttribute(this.currrent, "Scene");
+  }
+  get(key) {
+    return this.graph.getNodeAttribute(key, "Scene");
+  }
+  set(key, scene3) {
+    this.graph.setNodeAttribute(key, "Scene", scene3);
+  }
+  inputEvent(inputEvent, appKey, ecs, ECS2) {
+    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey, ecs);
+  }
+};
 
 // node_modules/@pixi/constants/dist/esm/constants.mjs
 var ENV;
@@ -39836,16 +39881,16 @@ var SignalBinding = (
     return SignalBinding2;
   }()
 );
-function _addSignalBinding(self2, node) {
-  if (!self2._head) {
-    self2._head = node;
-    self2._tail = node;
+function _addSignalBinding(self3, node) {
+  if (!self3._head) {
+    self3._head = node;
+    self3._tail = node;
   } else {
-    self2._tail._next = node;
-    node._prev = self2._tail;
-    self2._tail = node;
+    self3._tail._next = node;
+    node._prev = self3._tail;
+    self3._tail = node;
   }
-  node._owner = self2;
+  node._owner = self3;
   return node;
 }
 var Signal = (
@@ -49856,24 +49901,24 @@ function Promise2(fn) {
   this._deferreds = [];
   doResolve(fn, this);
 }
-function handle(self2, deferred) {
-  while (self2._state === 3) {
-    self2 = self2._value;
+function handle(self3, deferred) {
+  while (self3._state === 3) {
+    self3 = self3._value;
   }
-  if (self2._state === 0) {
-    self2._deferreds.push(deferred);
+  if (self3._state === 0) {
+    self3._deferreds.push(deferred);
     return;
   }
-  self2._handled = true;
+  self3._handled = true;
   Promise2._immediateFn(function() {
-    var cb = self2._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+    var cb = self3._state === 1 ? deferred.onFulfilled : deferred.onRejected;
     if (cb === null) {
-      (self2._state === 1 ? resolve2 : reject)(deferred.promise, self2._value);
+      (self3._state === 1 ? resolve2 : reject)(deferred.promise, self3._value);
       return;
     }
     var ret;
     try {
-      ret = cb(self2._value);
+      ret = cb(self3._value);
     } catch (e) {
       reject(deferred.promise, e);
       return;
@@ -49881,71 +49926,71 @@ function handle(self2, deferred) {
     resolve2(deferred.promise, ret);
   });
 }
-function resolve2(self2, newValue) {
+function resolve2(self3, newValue) {
   try {
-    if (newValue === self2)
+    if (newValue === self3)
       throw new TypeError("A promise cannot be resolved with itself.");
     if (newValue && (typeof newValue === "object" || typeof newValue === "function")) {
       var then = newValue.then;
       if (newValue instanceof Promise2) {
-        self2._state = 3;
-        self2._value = newValue;
-        finale(self2);
+        self3._state = 3;
+        self3._value = newValue;
+        finale(self3);
         return;
       } else if (typeof then === "function") {
-        doResolve(bind(then, newValue), self2);
+        doResolve(bind(then, newValue), self3);
         return;
       }
     }
-    self2._state = 1;
-    self2._value = newValue;
-    finale(self2);
+    self3._state = 1;
+    self3._value = newValue;
+    finale(self3);
   } catch (e) {
-    reject(self2, e);
+    reject(self3, e);
   }
 }
-function reject(self2, newValue) {
-  self2._state = 2;
-  self2._value = newValue;
-  finale(self2);
+function reject(self3, newValue) {
+  self3._state = 2;
+  self3._value = newValue;
+  finale(self3);
 }
-function finale(self2) {
-  if (self2._state === 2 && self2._deferreds.length === 0) {
+function finale(self3) {
+  if (self3._state === 2 && self3._deferreds.length === 0) {
     Promise2._immediateFn(function() {
-      if (!self2._handled) {
-        Promise2._unhandledRejectionFn(self2._value);
+      if (!self3._handled) {
+        Promise2._unhandledRejectionFn(self3._value);
       }
     });
   }
-  for (var i = 0, len = self2._deferreds.length; i < len; i++) {
-    handle(self2, self2._deferreds[i]);
+  for (var i = 0, len = self3._deferreds.length; i < len; i++) {
+    handle(self3, self3._deferreds[i]);
   }
-  self2._deferreds = null;
+  self3._deferreds = null;
 }
 function Handler(onFulfilled, onRejected, promise) {
   this.onFulfilled = typeof onFulfilled === "function" ? onFulfilled : null;
   this.onRejected = typeof onRejected === "function" ? onRejected : null;
   this.promise = promise;
 }
-function doResolve(fn, self2) {
+function doResolve(fn, self3) {
   var done = false;
   try {
     fn(
       function(value) {
         if (done) return;
         done = true;
-        resolve2(self2, value);
+        resolve2(self3, value);
       },
       function(reason) {
         if (done) return;
         done = true;
-        reject(self2, reason);
+        reject(self3, reason);
       }
     );
   } catch (ex) {
     if (done) return;
     done = true;
-    reject(self2, ex);
+    reject(self3, ex);
   }
 }
 Promise2.prototype["catch"] = function(onRejected) {
@@ -76349,7 +76394,7 @@ function WebGLProgram(renderer, cacheKey, parameters, bindingStates) {
     gl.bindAttribLocation(program, 0, "position");
   }
   gl.linkProgram(program);
-  function onFirstUse(self2) {
+  function onFirstUse(self3) {
     if (renderer.debug.checkShaderErrors) {
       const programLog = gl.getProgramInfoLog(program).trim();
       const vertexLog = gl.getShaderInfoLog(glVertexShader).trim();
@@ -76364,7 +76409,7 @@ function WebGLProgram(renderer, cacheKey, parameters, bindingStates) {
           const vertexErrors = getShaderErrors(gl, glVertexShader, "vertex");
           const fragmentErrors = getShaderErrors(gl, glFragmentShader, "fragment");
           console.error(
-            "THREE.WebGLProgram: Shader Error " + gl.getError() + " - VALIDATE_STATUS " + gl.getProgramParameter(program, gl.VALIDATE_STATUS) + "\n\nMaterial Name: " + self2.name + "\nMaterial Type: " + self2.type + "\n\nProgram Info Log: " + programLog + "\n" + vertexErrors + "\n" + fragmentErrors
+            "THREE.WebGLProgram: Shader Error " + gl.getError() + " - VALIDATE_STATUS " + gl.getProgramParameter(program, gl.VALIDATE_STATUS) + "\n\nMaterial Name: " + self3.name + "\nMaterial Type: " + self3.type + "\n\nProgram Info Log: " + programLog + "\n" + vertexErrors + "\n" + fragmentErrors
           );
         }
       } else if (programLog !== "") {
@@ -76373,7 +76418,7 @@ function WebGLProgram(renderer, cacheKey, parameters, bindingStates) {
         haveDiagnostics = false;
       }
       if (haveDiagnostics) {
-        self2.diagnostics = {
+        self3.diagnostics = {
           runnable,
           programLog,
           vertexShader: {
@@ -82559,6 +82604,821 @@ var render2 = (game, canvas) => new Promise((res, rej) => {
   res(true);
 });
 var threejs3d_default = render2;
+
+// src/spacetrash/ECS/Components/physics.ts
+var PhysicsComponent = class extends Component {
+  x;
+  y;
+  constructor(x = 0, y = 0) {
+    super();
+    this.x = x;
+    this.y = y;
+  }
+};
+
+// src/spacetrash/ECS/Components/actor.ts
+var PhysicsActorComponent = class extends PhysicsComponent {
+  dx;
+  dy;
+  r;
+  constructor(x = 0, y = 0, r = 0, dx, dy) {
+    super(x, y);
+    this.dx = dx;
+    this.dy = dy;
+    this.r = r;
+  }
+};
+var PhysicsActorStore = class extends EntityComponentStore {
+  constructor() {
+    super();
+  }
+  make(x = 0, y = 0, r = 0, dx, dy) {
+    return new PhysicsActorComponent(x, y, r, dx, dy);
+  }
+};
+
+// src/spacetrash/ECS/Components/setPiece.ts
+var PhysicsSetPieceComponent = class extends PhysicsComponent {
+  solid;
+  tileType;
+  constructor(x = 0, y = 0, solid, tileType) {
+    super(x, y);
+    this.tileType = tileType;
+    this.solid = solid;
+  }
+};
+var PhysicsSetPieceStore = class extends EntityComponentStore {
+  make(x = 0, y = 0, solid, tileType) {
+    return new PhysicsSetPieceComponent(x, y, solid, tileType);
+  }
+};
+
+// src/spacetrash/ECS/Components/index.ts
+var SpaceTrashComponent = class extends Component {
+};
+
+// src/spacetrash/ECS/Components/casting/in.ts
+var InCastingComponent = class extends SpaceTrashComponent {
+  constructor() {
+    super();
+  }
+  payload() {
+    return {};
+  }
+};
+var AttackableComponent = class extends InCastingComponent {
+};
+var AttackableStore = class extends EntityComponentStore {
+  make(...a) {
+    return new AttackableComponent();
+  }
+};
+var CameraComponent = class extends InCastingComponent {
+};
+var CameraStore = class extends EntityComponentStore {
+  make(...a) {
+    return new CameraComponent();
+  }
+};
+var LitableComponent = class extends InCastingComponent {
+  luminance;
+  constructor(luminance = -1) {
+    super();
+    this.luminance = luminance;
+  }
+};
+var LittableStore = class extends EntityComponentStore {
+  make(...a) {
+    return new LitableComponent();
+  }
+};
+
+// src/spacetrash/ECS/Components/phase1.ts
+var Phase1 = class extends TwoDOneD_Component {
+  actorId;
+  actorX;
+  actorY;
+  mesh;
+  friendly;
+  constructor() {
+    super();
+  }
+};
+var Phase1Store = class extends OneDStore {
+  constructor() {
+    super();
+    this.store = [];
+  }
+  add(a) {
+    throw new Error("Method not implemented.");
+  }
+  make() {
+    return new Phase1();
+  }
+};
+
+// src/spacetrash/UI/terminal.tsx
+var import_react = __toESM(require_react(), 1);
+var TerminalWindow = (props) => {
+  const [state, updateState] = (0, import_react.useState)(props.game.initalTerminalState());
+  (0, import_react.useEffect)(() => {
+    props.game.registerTerminal(updateState);
+  }, []);
+  const containerRef = (0, import_react.useRef)(null);
+  (0, import_react.useEffect)(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [state]);
+  const inputRef = (0, import_react.useRef)(null);
+  if (!state) return /* @__PURE__ */ import_react.default.createElement("pre", null, "loading...");
+  return /* @__PURE__ */ import_react.default.createElement(
+    "div",
+    {
+      id: "terminal-window",
+      style: {
+        backgroundColor: "darkgreen",
+        height: "100%",
+        width: "100%",
+        position: "relative",
+        overflowY: "scroll"
+      }
+    },
+    /* @__PURE__ */ import_react.default.createElement(
+      "pre",
+      {
+        ref: containerRef,
+        id: "terminal",
+        onClick: () => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        },
+        style: {
+          overflowY: "scroll",
+          backgroundColor: "darkgreen",
+          color: "lightgreen",
+          position: "absolute",
+          bottom: "1.5rem",
+          textWrap: "auto",
+          top: 0,
+          // height: "100%",
+          width: "100%",
+          margin: "0"
+          // height: 'inherit',
+        }
+      },
+      state.history.map((tl) => {
+        if (tl.in) {
+          return `
+> ${tl.in}
+${tl.out}`;
+        } else {
+          return `
+${tl.out}`;
+        }
+      })
+    ),
+    /* @__PURE__ */ import_react.default.createElement(
+      "input",
+      {
+        id: "terminal-input",
+        spellCheck: "false",
+        type: "text",
+        name: "terminal-input",
+        value: state.buffer,
+        autoFocus: true,
+        ref: inputRef,
+        style: {
+          fontFamily: "monospace",
+          position: "absolute",
+          bottom: 0,
+          backgroundColor: "black",
+          color: "lightgreen",
+          width: "100%",
+          border: "none"
+        },
+        onKeyDown: async (e) => {
+          if (e.key === "Enter") {
+            props.game.submitBuffer();
+          }
+        },
+        onChange: (e) => {
+          props.game.setBuffer(e.target.value);
+        }
+      }
+    )
+  );
+};
+
+// src/engine/Tree.ts
+var Tree = class {
+  // name: string;
+  // constructor(
+  //   name: string
+  // ) {
+  //   this.name = name;
+  // }
+};
+
+// src/engine/Scene.ts
+var Scene2 = class extends Tree {
+  appLogic;
+  // sceneBoot: (ecs: ECS) => Promise<void>;
+  constructor(appLogic) {
+    super();
+    this.appLogic = appLogic;
+  }
+  draw(app, bootReplier, ecs) {
+    return this.appLogic[app][1](ecs, bootReplier);
+  }
+  // async boot(
+  //   ecs: ECS,
+  // ) {
+  //   // await this.sceneBoot(ecs);
+  //   // Object.keys(this.appLogic).forEach((k) => {
+  //   //   this.appLogic[k][0](ecs);
+  //   // });
+  // }
+  // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
+  //   if (app === "document") {
+  //     return;
+  //   }
+  //   this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
+  // }
+};
+
+// src/spacetrash/Scenes/index.ts
+var SpaceTrashScene = class extends Scene2 {
+  // appLogic: IAppLogic<IApps>;
+  // sceneBoot: (ecs: ECS) => Promise<void>;
+  // constructor(
+  //   name: string,
+  //   appLogic: IAppLogic<IApps>,
+  //   sceneBoot: (ecs: ECS) => Promise<void>
+  // ) {
+  //   super(name);
+  //   this.appLogic = appLogic;
+  //   this.sceneBoot = sceneBoot || (async (ecs) => {});
+  // }
+  // async boot(
+  //   ecs: ECS,
+  // ) {
+  //   await this.sceneBoot(ecs);
+  //   Object.keys(this.appLogic).forEach((k) => {
+  //     this.appLogic[k][0](ecs);
+  //   });
+  // }
+  // draw(
+  //   app: IApps,
+  //   bootReplier: IReply,
+  //   ecs: ECS
+  // ): ((
+  //   ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
+  //   ) => Promise<any>)[] {
+  //   return this.appLogic[app][1](ecs, bootReplier);
+  // }
+  // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
+  //   if (app === "document") {
+  //     return;
+  //   }
+  //   this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
+  // }
+};
+
+// src/spacetrash/Scenes/Boot.ts
+var BootScene = class extends SpaceTrashScene {
+  boot(e) {
+  }
+  update(e) {
+    throw new Error("Method not implemented.");
+  }
+  event(e) {
+    throw new Error("Method not implemented.");
+  }
+  drone(s) {
+    return s.renderDroneVideo;
+  }
+  shipMap() {
+    throw new Error("Method not implemented.");
+  }
+  drones() {
+    throw new Error("Method not implemented.");
+  }
+};
+var Boot_default = new BootScene();
+
+// src/spacetrash/Constants.ts
+var BotSlots = 9;
+
+// src/engine/VECS.ts/Entity.ts
+var Entity = class {
+  eid;
+};
+
+// src/engine/VECS.ts/EntityComponent.ts
+var EntityComponent = class {
+  entity;
+  components;
+  constructor(entity, components) {
+    this.entity = entity;
+    this.components = components;
+  }
+  applyComponent(c) {
+    this.components.push(c);
+  }
+};
+
+// src/spacetrash/ECS/EntityComponents/index.ts
+var SpaceTrashEntityComponent = class extends EntityComponent {
+};
+
+// src/spacetrash/ECS/Entity.ts
+var SpaceTrashEntity = class extends Entity {
+  constructor() {
+    super();
+  }
+};
+
+// src/spacetrash/ECS/EntityComponents/tiles.ts
+var Tile = class extends SpaceTrashEntityComponent {
+  tiletype;
+  constructor(x, y, tiletype) {
+    const spe = new SpaceTrashEntity();
+    super(spe, [
+      new PhysicsSetPieceComponent(x, y, true, tiletype),
+      new LitableComponent()
+    ]);
+    this.tiletype = tiletype;
+  }
+  // validate() {
+  //   // console.log("validate tile!");
+  // }
+  erase2d(draw2d) {
+    draw2d.arc(10, 10, 3, 0, 90);
+  }
+  draw2d(draw2d) {
+    draw2d.clearRect(1, 2, 3, 4);
+  }
+  static draw2d(setPieceAndId, p) {
+    const setPiece = setPieceAndId[1];
+    return (ctx) => {
+      ctx.beginPath();
+      if (setPiece.tileType === "FloorTile") {
+        if (p.luminance > 0) {
+          ctx.fillStyle = "yellow";
+        } else {
+          ctx.fillStyle = "white";
+        }
+        ctx.rect(
+          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
+          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
+          TileSize - 1,
+          TileSize - 1
+        );
+      }
+      if (setPiece.tileType === "WallTile") {
+        ctx.fillStyle = "darkgrey";
+        ctx.rect(
+          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
+          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
+          TileSize - 1,
+          TileSize - 1
+        );
+      }
+      ctx.fill();
+      ctx.stroke();
+    };
+  }
+  static erase2d(draw2d) {
+  }
+};
+var FloorTile = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "FloorTile");
+  }
+};
+var WallTile = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "WallTile");
+  }
+};
+
+// src/spacetrash/ECS/EntityComponents/ship.ts
+var SpaceTrashShip = class extends SpaceTrashEntityComponent {
+  map;
+  shipSize = MapSize;
+  subComponents = [];
+  addToMap(t) {
+    if (t.x >= this.shipSize) {
+      console.error("Cannot add tile beyond the upper bound of 32");
+      return;
+    }
+    if (t.x < 0) {
+      console.error("Cannot add tile beyond the lower bound of 0");
+      return;
+    }
+    if (t.y >= this.shipSize) {
+      console.error("Cannot add tile beyond the upper bound of 32");
+      return;
+    }
+    if (t.y < 0) {
+      console.error("Cannot add tile beyond the lower bound of 0");
+      return;
+    }
+    const p = t.components.find((c) => {
+      return c.constructor.name === "PhysicsSetPieceComponent";
+    });
+    const x = p.x;
+    const y = p.y;
+    if (y >= this.shipSize) {
+      console.error("out of bounds");
+    }
+    if (!this.map[y]) {
+      console.error("idk");
+    }
+    const z = this.map[y][x];
+    this.map[y][x] = t;
+  }
+  make() {
+    for (let y = 0; y < this.shipSize; y++) {
+      for (let x = 0; x < this.shipSize; x++) {
+        this.addToMap(new FloorTile(x, y));
+      }
+    }
+    for (let z = 0; z < this.shipSize - 1; z++) {
+      this.addToMap(new WallTile(z, 0));
+      this.addToMap(new WallTile(this.shipSize - 1, z));
+      this.addToMap(new WallTile(z + 1, this.shipSize - 1));
+      this.addToMap(new WallTile(0, z));
+    }
+    return;
+  }
+  constructor() {
+    super(new Entity(), []);
+    this.map = [[]];
+    for (let y = 0; y < this.shipSize; y++) {
+      this.map[y] = [];
+      for (let x = 0; x < this.shipSize; x++) {
+        this.map[y][x] = null;
+      }
+    }
+    this.make();
+  }
+  validate() {
+  }
+  toTiles() {
+    const t = [];
+    for (let y = 0; y < this.shipSize; y++) {
+      for (let x = 0; x < this.shipSize; x++) {
+        if (this.map[y][x] === null) {
+          console.error("Cannot leave blank spaces!");
+        }
+        t.push(this.map[y][x]);
+      }
+    }
+    return t;
+  }
+};
+
+// src/spacetrash/ECS/EntityComponents/SpaceTrashBot.ts
+var SpaceTrashBot = class extends SpaceTrashEntityComponent {
+  physicsActorComponent;
+  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, name) {
+    const spe = new SpaceTrashEntity();
+    const physicsActorComponent = new PhysicsActorComponent(x, y, r, dx, dy);
+    super(spe, [
+      physicsActorComponent,
+      new LitComponent()
+    ]);
+    this.physicsActorComponent = physicsActorComponent;
+  }
+  static name(bots, eidOfBot) {
+    return eidOfBot;
+  }
+  // static draw2d(
+  //   s: PhysicsActorComponent
+  // ): (draw2d: CanvasRenderingContext2D) => void {
+  //   return (ctx) => {
+  //     // ctx.beginPath();
+  //     // ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+  //     // ctx.strokeStyle = "red";
+  //     // ctx.stroke();
+  //     ctx.beginPath();
+  //     ctx.arc(s[1].x * TileSize, s[1].y * TileSize, TileSize / 2, 0, 2 * Math.PI);
+  //     // ctx.fillStyle = "orange";
+  //     // ctx.fill();
+  //     ctx.stroke();
+  //   };
+  // }
+  // // draw2d(draw2d: CanvasRenderingContext2D) {
+  // //   draw2d.beginPath();
+  // //   draw2d.arc(
+  // //     this.physicsActorComponent.x * TileSize,
+  // //     this.physicsActorComponent.y * TileSize,
+  // //     TileSize / 2,
+  // //     0,
+  // //     2 * Math.PI
+  // //   );
+  // //   draw2d.fillStyle = "orange";
+  // //   draw2d.fill();
+  // //   draw2d.stroke();
+  // // }
+  // // erase2d(draw2d: CanvasRenderingContext2D) {
+  // //   // draw2d.clearRect(1, 2, 3, 4);
+  // // }
+};
+
+// src/spacetrash/Scenes/MainLoop.ts
+var MainScene = class extends SpaceTrashScene {
+  boot(game) {
+    const drones = [...new Array(BotSlots)].map((n) => {
+      return new SpaceTrashBot(
+        Math.random() * MapSize,
+        Math.random() * MapSize,
+        ActorSize,
+        (Math.random() - 0.5) / 10,
+        (Math.random() - 0.5) / 10
+      );
+    });
+    const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
+      return new SpaceTrashBot(
+        Math.random() * MapSize,
+        Math.random() * MapSize,
+        ActorSize,
+        (Math.random() - 0.5) / 15,
+        (Math.random() - 0.5) / 15
+      );
+    });
+    const ship = new SpaceTrashShip();
+    game.setEntitiesComponent([
+      ship,
+      ...ship.toTiles(),
+      ...moreBots
+    ]);
+    const myDoneIds = game.setEntitiesComponent([...drones]);
+    game.bots = {
+      1: [myDoneIds[0], "larry"],
+      2: [myDoneIds[1], "curly"],
+      3: [myDoneIds[2], "moe"],
+      4: [myDoneIds[3], "kirk"],
+      5: [myDoneIds[4], "spock"],
+      6: [myDoneIds[5], "bones"],
+      7: [myDoneIds[6], "han"],
+      8: [myDoneIds[7], "luke"],
+      9: [myDoneIds[8], "obiwan"]
+    };
+    game.openAllWindows();
+    game.unpause();
+  }
+  update(e) {
+    throw new Error("Method not implemented.");
+  }
+  event(e) {
+    throw new Error("Method not implemented.");
+  }
+  terminal(s) {
+  }
+  drone(s, ctx) {
+    debugger;
+    console.log(s);
+    return s.renderDroneVideo(s, ctx);
+  }
+  shipMap() {
+    throw new Error("Method not implemented.");
+  }
+  drones() {
+    throw new Error("Method not implemented.");
+  }
+};
+var scene2 = new MainScene(
+  {
+    terminal: [
+      (ecs, reply) => {
+      },
+      (ecs, reply) => {
+        return [];
+      },
+      (ecs, events) => {
+      },
+      "2d"
+    ],
+    manual: [
+      (ecs, reply) => {
+      },
+      (ecs, reply) => {
+        return [];
+      },
+      (ecs, events) => {
+      },
+      "2d"
+    ],
+    drone: [
+      (ecs, reply) => {
+        return [(ctx) => {
+        }];
+      },
+      (ecs, reply) => {
+        return [
+          async (game, canvas) => {
+            game.renderDroneVideo(canvas);
+          }
+        ];
+      },
+      (ecs, event) => {
+        console.log(event);
+      },
+      "webgl2"
+    ],
+    shipmap: [
+      (ecs, reply) => {
+        return [];
+      },
+      (ecs, reply) => {
+        return [];
+      },
+      (ecs, event) => {
+        if (event.type === "mousemove") {
+          var rect = event.boundingClient;
+          var x = event.clientX - rect.left;
+          var y = event.clientY - rect.top;
+          shipMapMouseX = x;
+          shipMapMouseY = y;
+        }
+      },
+      "2d"
+    ],
+    droneV2: [
+      (ecs, reply) => {
+        return [(ctx) => {
+        }];
+      },
+      (ecs, reply) => {
+        return [
+          async (ctx) => {
+            if (ctx.constructor.name === "WebGLRenderer") {
+            }
+          }
+        ];
+      },
+      (ecs, event) => {
+        if (event === "1") {
+          (void 0).videoFeed = 1;
+        }
+        if (event === "2") {
+          (void 0).videoFeed = 2;
+        }
+        if (event.key === "ArrowUp") {
+          (void 0).yup();
+        }
+        if (event.key === "ArrowDown") {
+          (void 0).ydown();
+        }
+        if (event.key === "ArrowLeft") {
+          (void 0).xleft();
+        }
+        if (event.key === "ArrowRight") {
+          (void 0).xright();
+        }
+      },
+      "webgl2"
+    ],
+    shipmapV2: [
+      (ecs, reply) => {
+        return [];
+      },
+      (ecs, reply) => {
+        return [
+          async (game, ctx) => {
+            await game.renderShipMap(ctx);
+          }
+        ];
+      },
+      (ecs, event) => {
+      },
+      "2d"
+    ],
+    drones: [
+      (ecs, reply) => {
+      },
+      (ecs, reply) => {
+        return [];
+      },
+      (ecs, events) => {
+      },
+      "html"
+    ]
+  }
+);
+var MainLoop_default = scene2;
+
+// src/spacetrash/UI/BotWindow.tsx
+var import_react2 = __toESM(require_react(), 1);
+var BotWindow = (props) => {
+  const canvasRef = (0, import_react2.useRef)(null);
+  const parentRef = (0, import_react2.useRef)(null);
+  (0, import_react2.useEffect)(() => {
+    if (canvasRef.current && parentRef.current) {
+      props.game.registerCanvas("drone", false, canvasRef.current, () => {
+      }, "threejs", parentRef.current);
+    }
+  }, [canvasRef, parentRef]);
+  return /* @__PURE__ */ import_react2.default.createElement(
+    "div",
+    {
+      ref: parentRef,
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
+      }
+    },
+    /* @__PURE__ */ import_react2.default.createElement(
+      "canvas",
+      {
+        tabIndex: 1,
+        ref: canvasRef
+      }
+    )
+  );
+};
+
+// src/spacetrash/UI/map.tsx
+var import_react3 = __toESM(require_react(), 1);
+var MapWindow = (props) => {
+  const parentRef = (0, import_react3.useRef)(null);
+  const canvasRef = (0, import_react3.useRef)(null);
+  (0, import_react3.useEffect)(() => {
+    if (canvasRef.current && parentRef.current) {
+      props.game.registerCanvas("shipmapV2", false, canvasRef.current, () => {
+      }, "pixi2d", parentRef.current);
+    }
+  }, [canvasRef, parentRef]);
+  return /* @__PURE__ */ import_react3.default.createElement(
+    "div",
+    {
+      ref: parentRef,
+      style: {
+        height: "100%",
+        width: "100%",
+        position: "relative"
+      }
+    },
+    /* @__PURE__ */ import_react3.default.createElement(
+      "div",
+      {
+        style: {
+          height: "100%",
+          color: "white",
+          overflow: "auto"
+        }
+      },
+      /* @__PURE__ */ import_react3.default.createElement(
+        "canvas",
+        {
+          tabIndex: 1,
+          ref: canvasRef,
+          height: "100%",
+          color: "white"
+        }
+      )
+    )
+  );
+};
+
+// src/spacetrash/UI/BotsWindow.tsx
+var import_react4 = __toESM(require_react(), 1);
+var TableCell = (props) => {
+  return /* @__PURE__ */ import_react4.default.createElement("td", null, props.name);
+};
+var BotsWindow = (props) => {
+  const [state, stateSetter] = import_react4.default.useState([[]]);
+  (0, import_react4.useEffect)(() => {
+    props.game.registerBotsHook(stateSetter);
+  }, []);
+  if (!state) return /* @__PURE__ */ import_react4.default.createElement("pre", null, "loading...");
+  const botNamer = (n) => {
+    const s = n.toString();
+    if (state[s]) {
+      return state[s][1];
+    }
+    return "?";
+  };
+  const asTable = [
+    [botNamer(1), botNamer(2), botNamer(3)],
+    [botNamer(4), botNamer(5), botNamer(6)],
+    [botNamer(7), botNamer(8), botNamer(9)]
+  ];
+  return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("table", null, ...[0, 1, 2].map((i, n) => {
+    return /* @__PURE__ */ import_react4.default.createElement("tr", null, ...[0, 1, 2].map((ii, nn) => {
+      return /* @__PURE__ */ import_react4.default.createElement("td", null, " ", /* @__PURE__ */ import_react4.default.createElement(TableCell, { name: `${asTable[nn][n]}` }), " ");
+    }));
+  })));
+};
+
+// src/WindowedGame.tsx
+var React12 = __toESM(require_react(), 1);
+var import_client = __toESM(require_client(), 1);
 
 // node_modules/dockview-core/dist/esm/dnd/dataTransfer.js
 var TransferObject = class {
@@ -92489,28 +93349,28 @@ function createPaneview(element, options) {
 }
 
 // node_modules/dockview/dist/esm/dockview/dockview.js
-var import_react6 = __toESM(require_react());
+var import_react10 = __toESM(require_react());
 
 // node_modules/dockview/dist/esm/react.js
-var import_react = __toESM(require_react());
+var import_react5 = __toESM(require_react());
 var import_react_dom = __toESM(require_react_dom());
 var ReactComponentBridge = (props, ref) => {
-  const [_, triggerRender] = import_react.default.useState();
-  const _props = import_react.default.useRef(props.componentProps);
-  import_react.default.useImperativeHandle(ref, () => ({
+  const [_, triggerRender] = import_react5.default.useState();
+  const _props = import_react5.default.useRef(props.componentProps);
+  import_react5.default.useImperativeHandle(ref, () => ({
     update: (componentProps) => {
       _props.current = Object.assign(Object.assign({}, _props.current), componentProps);
       triggerRender(Date.now());
     }
   }), []);
-  return import_react.default.createElement(props.component, _props.current);
+  return import_react5.default.createElement(props.component, _props.current);
 };
 ReactComponentBridge.displayName = "DockviewReactJsBridge";
 var uniquePortalKeyGenerator = /* @__PURE__ */ (() => {
   let value = 1;
   return { next: () => `dockview_react_portal_key_${(value++).toString()}` };
 })();
-var ReactPartContext = import_react.default.createContext({});
+var ReactPartContext = import_react5.default.createContext({});
 var ReactPart = class {
   constructor(parent, portalStore, component, parameters, context2) {
     this.parent = parent;
@@ -92539,7 +93399,7 @@ var ReactPart = class {
     if (!isReactComponent(this.component)) {
       throw new Error("Dockview: Only React.memo(...), React.ForwardRef(...) and functional components are accepted as components");
     }
-    const bridgeComponent = import_react.default.createElement(import_react.default.forwardRef(ReactComponentBridge), {
+    const bridgeComponent = import_react5.default.createElement(import_react5.default.forwardRef(ReactComponentBridge), {
       component: this.component,
       componentProps: this.parameters,
       ref: (element) => {
@@ -92550,7 +93410,7 @@ var ReactPart = class {
         }
       }
     });
-    const node = this.context ? import_react.default.createElement(ReactPartContext.Provider, { value: this.context }, bridgeComponent) : bridgeComponent;
+    const node = this.context ? import_react5.default.createElement(ReactPartContext.Provider, { value: this.context }, bridgeComponent) : bridgeComponent;
     const portal = import_react_dom.default.createPortal(node, this.parent, uniquePortalKeyGenerator.next());
     this.ref = {
       portal,
@@ -92564,9 +93424,9 @@ var ReactPart = class {
   }
 };
 var usePortalsLifecycle = () => {
-  const [portals, setPortals] = import_react.default.useState([]);
-  import_react.default.useDebugValue(`Portal count: ${portals.length}`);
-  const addPortal = import_react.default.useCallback((portal) => {
+  const [portals, setPortals] = import_react5.default.useState([]);
+  import_react5.default.useDebugValue(`Portal count: ${portals.length}`);
+  const addPortal = import_react5.default.useCallback((portal) => {
     setPortals((existingPortals) => [...existingPortals, portal]);
     let disposed = false;
     return Disposable.from(() => {
@@ -92778,13 +93638,13 @@ function extractCoreOptions(props) {
   }, {});
   return coreOptions;
 }
-var DockviewReact = import_react6.default.forwardRef((props, ref) => {
-  const domRef = import_react6.default.useRef(null);
-  const dockviewRef = import_react6.default.useRef();
+var DockviewReact = import_react10.default.forwardRef((props, ref) => {
+  const domRef = import_react10.default.useRef(null);
+  const dockviewRef = import_react10.default.useRef();
   const [portals, addPortal] = usePortalsLifecycle();
-  import_react6.default.useImperativeHandle(ref, () => domRef.current, []);
-  const prevProps = import_react6.default.useRef({});
-  import_react6.default.useEffect(() => {
+  import_react10.default.useImperativeHandle(ref, () => domRef.current, []);
+  const prevProps = import_react10.default.useRef({});
+  import_react10.default.useEffect(() => {
     const changes = {};
     PROPERTY_KEYS_DOCKVIEW.forEach((propKey) => {
       const key = propKey;
@@ -92799,7 +93659,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
     }
     prevProps.current = props;
   }, PROPERTY_KEYS_DOCKVIEW.map((key) => props[key]));
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     var _a4;
     if (!domRef.current) {
       return;
@@ -92841,7 +93701,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       api.dispose();
     };
   }, []);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return () => {
       };
@@ -92855,7 +93715,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       disposable.dispose();
     };
   }, [props.onDidDrop]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return () => {
       };
@@ -92869,7 +93729,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       disposable.dispose();
     };
   }, [props.onWillDrop]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return;
     }
@@ -92881,7 +93741,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       }
     });
   }, [props.components]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     var _a4;
     if (!dockviewRef.current) {
       return;
@@ -92899,7 +93759,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       }
     });
   }, [props.tabComponents, props.defaultTabComponent]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return;
     }
@@ -92911,7 +93771,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       } : void 0
     });
   }, [props.watermarkComponent]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return;
     }
@@ -92919,7 +93779,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       createRightHeaderActionComponent: createGroupControlElement(props.rightHeaderActionsComponent, { addPortal })
     });
   }, [props.rightHeaderActionsComponent]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return;
     }
@@ -92927,7 +93787,7 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       createLeftHeaderActionComponent: createGroupControlElement(props.leftHeaderActionsComponent, { addPortal })
     });
   }, [props.leftHeaderActionsComponent]);
-  import_react6.default.useEffect(() => {
+  import_react10.default.useEffect(() => {
     if (!dockviewRef.current) {
       return;
     }
@@ -92935,89 +93795,18 @@ var DockviewReact = import_react6.default.forwardRef((props, ref) => {
       createPrefixHeaderActionComponent: createGroupControlElement(props.prefixHeaderActionsComponent, { addPortal })
     });
   }, [props.prefixHeaderActionsComponent]);
-  return import_react6.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
+  return import_react10.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
 });
 DockviewReact.displayName = "DockviewComponent";
 
 // node_modules/dockview/dist/esm/dockview/defaultTab.js
-var import_react9 = __toESM(require_react());
+var import_react13 = __toESM(require_react());
 
 // node_modules/dockview/dist/esm/svg.js
-var import_react8 = __toESM(require_react());
-var CloseButton = () => import_react8.default.createElement(
-  "svg",
-  { height: "11", width: "11", viewBox: "0 0 28 28", "aria-hidden": "false", focusable: false, className: "dv-svg" },
-  import_react8.default.createElement("path", { d: "M2.1 27.3L0 25.2L11.55 13.65L0 2.1L2.1 0L13.65 11.55L25.2 0L27.3 2.1L15.75 13.65L27.3 25.2L25.2 27.3L13.65 15.75L2.1 27.3Z" })
-);
-
-// node_modules/dockview/dist/esm/dockview/defaultTab.js
-var __rest2 = function(s, e) {
-  var t = {};
-  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-    t[p] = s[p];
-  if (s != null && typeof Object.getOwnPropertySymbols === "function")
-    for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-        t[p[i]] = s[p[i]];
-    }
-  return t;
-};
-function useTitle(api) {
-  const [title, setTitle] = import_react9.default.useState(api.title);
-  import_react9.default.useEffect(() => {
-    const disposable = api.onDidTitleChange((event) => {
-      setTitle(event.title);
-    });
-    return () => {
-      disposable.dispose();
-    };
-  }, [api]);
-  return title;
-}
-var DockviewDefaultTab = (_a4) => {
-  var { api, containerApi: _containerApi, params: _params, hideClose, closeActionOverride, onPointerDown, onPointerUp, onPointerLeave, tabLocation } = _a4, rest = __rest2(_a4, ["api", "containerApi", "params", "hideClose", "closeActionOverride", "onPointerDown", "onPointerUp", "onPointerLeave", "tabLocation"]);
-  const title = useTitle(api);
-  const isMiddleMouseButton = import_react9.default.useRef(false);
-  const onClose = import_react9.default.useCallback((event) => {
-    event.preventDefault();
-    if (closeActionOverride) {
-      closeActionOverride();
-    } else {
-      api.close();
-    }
-  }, [api, closeActionOverride]);
-  const onBtnPointerDown = import_react9.default.useCallback((event) => {
-    event.preventDefault();
-  }, []);
-  const _onPointerDown = import_react9.default.useCallback((event) => {
-    isMiddleMouseButton.current = event.button === 1;
-    onPointerDown === null || onPointerDown === void 0 ? void 0 : onPointerDown(event);
-  }, [onPointerDown]);
-  const _onPointerUp = import_react9.default.useCallback((event) => {
-    if (isMiddleMouseButton && event.button === 1 && !hideClose) {
-      isMiddleMouseButton.current = false;
-      onClose(event);
-    }
-    onPointerUp === null || onPointerUp === void 0 ? void 0 : onPointerUp(event);
-  }, [onPointerUp, onClose, hideClose]);
-  const _onPointerLeave = import_react9.default.useCallback((event) => {
-    isMiddleMouseButton.current = false;
-    onPointerLeave === null || onPointerLeave === void 0 ? void 0 : onPointerLeave(event);
-  }, [onPointerLeave]);
-  return import_react9.default.createElement(
-    "div",
-    Object.assign({ "data-testid": "dockview-dv-default-tab" }, rest, { onPointerDown: _onPointerDown, onPointerUp: _onPointerUp, onPointerLeave: _onPointerLeave, className: "dv-default-tab" }),
-    import_react9.default.createElement("span", { className: "dv-default-tab-content" }, title),
-    !hideClose && tabLocation !== "headerOverflow" && import_react9.default.createElement(
-      "div",
-      { className: "dv-default-tab-action", onPointerDown: onBtnPointerDown, onClick: onClose },
-      import_react9.default.createElement(CloseButton, null)
-    )
-  );
-};
+var import_react12 = __toESM(require_react());
 
 // node_modules/dockview/dist/esm/splitview/splitview.js
-var import_react11 = __toESM(require_react());
+var import_react15 = __toESM(require_react());
 
 // node_modules/dockview/dist/esm/splitview/view.js
 var ReactPanelView = class extends SplitviewPanel {
@@ -93046,13 +93835,13 @@ function extractCoreOptions2(props) {
   }, {});
   return coreOptions;
 }
-var SplitviewReact = import_react11.default.forwardRef((props, ref) => {
-  const domRef = import_react11.default.useRef(null);
-  const splitviewRef = import_react11.default.useRef();
+var SplitviewReact = import_react15.default.forwardRef((props, ref) => {
+  const domRef = import_react15.default.useRef(null);
+  const splitviewRef = import_react15.default.useRef();
   const [portals, addPortal] = usePortalsLifecycle();
-  import_react11.default.useImperativeHandle(ref, () => domRef.current, []);
-  const prevProps = import_react11.default.useRef({});
-  import_react11.default.useEffect(() => {
+  import_react15.default.useImperativeHandle(ref, () => domRef.current, []);
+  const prevProps = import_react15.default.useRef({});
+  import_react15.default.useEffect(() => {
     const changes = {};
     PROPERTY_KEYS_SPLITVIEW.forEach((propKey) => {
       const key = propKey;
@@ -93067,7 +93856,7 @@ var SplitviewReact = import_react11.default.forwardRef((props, ref) => {
     }
     prevProps.current = props;
   }, PROPERTY_KEYS_SPLITVIEW.map((key) => props[key]));
-  import_react11.default.useEffect(() => {
+  import_react15.default.useEffect(() => {
     if (!domRef.current) {
       return () => {
       };
@@ -93089,7 +93878,7 @@ var SplitviewReact = import_react11.default.forwardRef((props, ref) => {
       api.dispose();
     };
   }, []);
-  import_react11.default.useEffect(() => {
+  import_react15.default.useEffect(() => {
     if (!splitviewRef.current) {
       return;
     }
@@ -93099,12 +93888,12 @@ var SplitviewReact = import_react11.default.forwardRef((props, ref) => {
       }
     });
   }, [props.components]);
-  return import_react11.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
+  return import_react15.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
 });
 SplitviewReact.displayName = "SplitviewComponent";
 
 // node_modules/dockview/dist/esm/gridview/gridview.js
-var import_react14 = __toESM(require_react());
+var import_react18 = __toESM(require_react());
 
 // node_modules/dockview/dist/esm/gridview/view.js
 var ReactGridPanelView = class extends GridviewPanel {
@@ -93134,13 +93923,13 @@ function extractCoreOptions3(props) {
   }, {});
   return coreOptions;
 }
-var GridviewReact = import_react14.default.forwardRef((props, ref) => {
-  const domRef = import_react14.default.useRef(null);
-  const gridviewRef = import_react14.default.useRef();
+var GridviewReact = import_react18.default.forwardRef((props, ref) => {
+  const domRef = import_react18.default.useRef(null);
+  const gridviewRef = import_react18.default.useRef();
   const [portals, addPortal] = usePortalsLifecycle();
-  import_react14.default.useImperativeHandle(ref, () => domRef.current, []);
-  const prevProps = import_react14.default.useRef({});
-  import_react14.default.useEffect(() => {
+  import_react18.default.useImperativeHandle(ref, () => domRef.current, []);
+  const prevProps = import_react18.default.useRef({});
+  import_react18.default.useEffect(() => {
     const changes = {};
     PROPERTY_KEYS_GRIDVIEW.forEach((propKey) => {
       const key = propKey;
@@ -93155,7 +93944,7 @@ var GridviewReact = import_react14.default.forwardRef((props, ref) => {
     }
     prevProps.current = props;
   }, PROPERTY_KEYS_GRIDVIEW.map((key) => props[key]));
-  import_react14.default.useEffect(() => {
+  import_react18.default.useEffect(() => {
     if (!domRef.current) {
       return () => {
       };
@@ -93177,7 +93966,7 @@ var GridviewReact = import_react14.default.forwardRef((props, ref) => {
       api.dispose();
     };
   }, []);
-  import_react14.default.useEffect(() => {
+  import_react18.default.useEffect(() => {
     if (!gridviewRef.current) {
       return;
     }
@@ -93187,12 +93976,12 @@ var GridviewReact = import_react14.default.forwardRef((props, ref) => {
       }
     });
   }, [props.components]);
-  return import_react14.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
+  return import_react18.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
 });
 GridviewReact.displayName = "GridviewComponent";
 
 // node_modules/dockview/dist/esm/paneview/paneview.js
-var import_react17 = __toESM(require_react());
+var import_react21 = __toESM(require_react());
 
 // node_modules/dockview/dist/esm/paneview/view.js
 var PanePanelSection = class {
@@ -93240,13 +94029,13 @@ function extractCoreOptions4(props) {
   }, {});
   return coreOptions;
 }
-var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
-  const domRef = import_react17.default.useRef(null);
-  const paneviewRef = import_react17.default.useRef();
+var PaneviewReact = import_react21.default.forwardRef((props, ref) => {
+  const domRef = import_react21.default.useRef(null);
+  const paneviewRef = import_react21.default.useRef();
   const [portals, addPortal] = usePortalsLifecycle();
-  import_react17.default.useImperativeHandle(ref, () => domRef.current, []);
-  const prevProps = import_react17.default.useRef({});
-  import_react17.default.useEffect(() => {
+  import_react21.default.useImperativeHandle(ref, () => domRef.current, []);
+  const prevProps = import_react21.default.useRef({});
+  import_react21.default.useEffect(() => {
     const changes = {};
     PROPERTY_KEYS_PANEVIEW.forEach((propKey) => {
       const key = propKey;
@@ -93261,7 +94050,7 @@ var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
     }
     prevProps.current = props;
   }, PROPERTY_KEYS_PANEVIEW.map((key) => props[key]));
-  import_react17.default.useEffect(() => {
+  import_react21.default.useEffect(() => {
     var _a4;
     if (!domRef.current) {
       return () => {
@@ -93288,7 +94077,7 @@ var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
       api.dispose();
     };
   }, []);
-  import_react17.default.useEffect(() => {
+  import_react21.default.useEffect(() => {
     if (!paneviewRef.current) {
       return;
     }
@@ -93298,7 +94087,7 @@ var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
       }
     });
   }, [props.components]);
-  import_react17.default.useEffect(() => {
+  import_react21.default.useEffect(() => {
     var _a4;
     if (!paneviewRef.current) {
       return;
@@ -93310,7 +94099,7 @@ var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
       }
     });
   }, [props.headerComponents]);
-  import_react17.default.useEffect(() => {
+  import_react21.default.useEffect(() => {
     if (!paneviewRef.current) {
       return () => {
       };
@@ -93324,1099 +94113,9 @@ var PaneviewReact = import_react17.default.forwardRef((props, ref) => {
       disposable.dispose();
     };
   }, [props.onDidDrop]);
-  return import_react17.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
+  return import_react21.default.createElement("div", { style: { height: "100%", width: "100%" }, ref: domRef }, portals);
 });
 PaneviewReact.displayName = "PaneviewComponent";
-
-// src/spacetrash/index.tsx
-var import_react23 = __toESM(require_react(), 1);
-
-// src/engine/DirectedGraph.ts
-var import_graphology = __toESM(require_graphology_umd_min(), 1);
-var DirectedGraph = class {
-  name;
-  graph;
-  constructor(name) {
-    this.name = name;
-    this.graph = new import_graphology.DirectedGraph();
-  }
-  connect(to, from, relation) {
-    this.graph.mergeEdge(to, from, { type: relation });
-  }
-};
-
-// src/engine/StateSpace.ts
-var StateSpace = class extends DirectedGraph {
-  start;
-  end;
-  currrent;
-  constructor(name, start, end) {
-    super(name);
-    this.start = start;
-    this.end = end;
-    this.currrent = start;
-  }
-  setCurrent(key) {
-    return this.currrent = key;
-  }
-  getCurrent() {
-    return this.graph.getNodeAttribute(this.currrent, "Scene");
-  }
-  get(key) {
-    return this.graph.getNodeAttribute(key, "Scene");
-  }
-  set(key, scene3) {
-    this.graph.setNodeAttribute(key, "Scene", scene3);
-  }
-  inputEvent(inputEvent, appKey, ecs, ECS2) {
-    this.graph.getNodeAttribute(this.currrent, "Scene").inputEvent(inputEvent, appKey, ecs);
-  }
-};
-
-// src/spacetrash/ECS/Components/physics.ts
-var PhysicsComponent = class extends Component {
-  x;
-  y;
-  constructor(x = 0, y = 0) {
-    super();
-    this.x = x;
-    this.y = y;
-  }
-};
-
-// src/spacetrash/ECS/Components/actor.ts
-var PhysicsActorComponent = class extends PhysicsComponent {
-  dx;
-  dy;
-  r;
-  constructor(x = 0, y = 0, r = 0, dx, dy) {
-    super(x, y);
-    this.dx = dx;
-    this.dy = dy;
-    this.r = r;
-  }
-};
-var PhysicsActorStore = class extends EntityComponentStore {
-  constructor() {
-    super();
-  }
-  make(x = 0, y = 0, r = 0, dx, dy) {
-    return new PhysicsActorComponent(x, y, r, dx, dy);
-  }
-};
-
-// src/spacetrash/ECS/Components/setPiece.ts
-var PhysicsSetPieceComponent = class extends PhysicsComponent {
-  solid;
-  tileType;
-  constructor(x = 0, y = 0, solid, tileType) {
-    super(x, y);
-    this.tileType = tileType;
-    this.solid = solid;
-  }
-};
-var PhysicsSetPieceStore = class extends EntityComponentStore {
-  make(x = 0, y = 0, solid, tileType) {
-    return new PhysicsSetPieceComponent(x, y, solid, tileType);
-  }
-};
-
-// src/spacetrash/ECS/Components/index.ts
-var SpaceTrashComponent = class extends Component {
-};
-
-// src/spacetrash/ECS/Components/casting/in.ts
-var InCastingComponent = class extends SpaceTrashComponent {
-  constructor() {
-    super();
-  }
-  payload() {
-    return {};
-  }
-};
-var AttackableComponent = class extends InCastingComponent {
-};
-var AttackableStore = class extends EntityComponentStore {
-  make(...a) {
-    return new AttackableComponent();
-  }
-};
-var CameraComponent = class extends InCastingComponent {
-};
-var CameraStore = class extends EntityComponentStore {
-  make(...a) {
-    return new CameraComponent();
-  }
-};
-var LitableComponent = class extends InCastingComponent {
-  luminance;
-  constructor(luminance = -1) {
-    super();
-    this.luminance = luminance;
-  }
-};
-var LittableStore = class extends EntityComponentStore {
-  make(...a) {
-    return new LitableComponent();
-  }
-};
-
-// src/spacetrash/ECS/Components/phase1.ts
-var Phase1 = class extends TwoDOneD_Component {
-  actorId;
-  actorX;
-  actorY;
-  mesh;
-  friendly;
-  constructor() {
-    super();
-  }
-};
-var Phase1Store = class extends OneDStore {
-  constructor() {
-    super();
-    this.store = [];
-  }
-  add(a) {
-    throw new Error("Method not implemented.");
-  }
-  make() {
-    return new Phase1();
-  }
-};
-
-// src/spacetrash/UI/terminal.tsx
-var import_react19 = __toESM(require_react(), 1);
-var TerminalWindow = (props) => {
-  const containerRef = (0, import_react19.useRef)(null);
-  (0, import_react19.useEffect)(() => {
-    if (containerRef.current) {
-      console.log("autoscroll");
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [props.uiState]);
-  const inputRef = (0, import_react19.useRef)(null);
-  return /* @__PURE__ */ import_react19.default.createElement(
-    "div",
-    {
-      id: "terminal-window",
-      style: {
-        backgroundColor: "darkgreen",
-        height: "100%",
-        width: "100%",
-        position: "relative",
-        overflowY: "scroll"
-      }
-    },
-    /* @__PURE__ */ import_react19.default.createElement(
-      "pre",
-      {
-        ref: containerRef,
-        id: "terminal",
-        onClick: () => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
-        },
-        style: {
-          overflowY: "scroll",
-          backgroundColor: "darkgreen",
-          color: "lightgreen",
-          position: "absolute",
-          bottom: "1.5rem",
-          textWrap: "auto",
-          top: 0,
-          // height: "100%",
-          width: "100%",
-          margin: "0"
-          // height: 'inherit',
-        }
-      },
-      props.uiState.history.map((tl) => {
-        if (tl.in) {
-          return `
-> ${tl.in}
-${tl.out}`;
-        } else {
-          return `
-${tl.out}`;
-        }
-      })
-    ),
-    /* @__PURE__ */ import_react19.default.createElement(
-      "input",
-      {
-        id: "terminal-input",
-        spellCheck: "false",
-        type: "text",
-        name: "terminal-input",
-        value: props.uiState.buffer,
-        autoFocus: true,
-        ref: inputRef,
-        style: {
-          fontFamily: "monospace",
-          position: "absolute",
-          bottom: 0,
-          backgroundColor: "black",
-          color: "lightgreen",
-          width: "100%",
-          border: "none"
-        },
-        onKeyDown: async (e) => {
-          if (e.key === "Enter") {
-            props.uiState.submitBuffer(props);
-          }
-        },
-        onChange: (e) => {
-          props.uiState.setBuffer(props, e.target.value);
-        }
-      }
-    )
-  );
-};
-
-// src/spacetrash/Terminal.ts
-var settingsTermLine = {
-  out: `
-- SETTINGS -
-
-"settings crt <on | off>" Turn the crt effect on and off. Disabling this feature improves performance at the cost of a purely cosmetic effect.
-  "settings crt on" Enables the effect
-  "settings crt off" disables the effect
-
-"settings fps <number>" Sets the Frames Per Second. By default, the FPS is set to 30.
-  "settings fps 60" Set the FPS to 30 frame per second"
-  `,
-  status: `pass`
-};
-var dateTermLine = { out: `ERROR: NOT FOUND`, status: `fail` };
-var missionTermLine = {
-  out: `
-1] Find, board and salvage derelict spacecraft
-2] Record and report novel scientific findings
-3] Maximize shareholder value
-`,
-  status: `niether`
-};
-var shipTermLine = {
-  out: `
-Call-sign:      "Dulcincea"
-Make:           Muteki Heavy Ind.
-Classification: Deep salvage
-Launch date:    May, 2690
-`,
-  status: `niether`
-};
-var whoAmITermLine = {
-  out: `
-Username:     wintermute
-Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
-Turing class: Level II Sentient/Sapient
-Capacity:     29.5 * 10^17 qubits
-Licensed by:  Demiurge Labs. (3003)
-`,
-  status: `niether`
-};
-var bootScreenTermLine = {
-  status: "pass",
-  out: `
-
-\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502                                                                                                        \u2502
-\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557    \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2502
-\u2502 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
-\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2557     \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
-\u2502 \u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255D \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u255D     \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551    \u255A\u2588\u2588\u2557 \u2588\u2588\u2554\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
-\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551     \u255A\u2588\u2588\u2588\u2588\u2554\u255D \u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
-\u2502 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D     \u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D   \u255A\u2550\u255D   \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D      \u255A\u2550\u2550\u2550\u255D   \u255A\u2550\u2550\u2550\u2550\u255D  \u2502
-\u2502                                                                                                        \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
-          
-boot sequence initiated...
-Oonix v457.3.2 by Demiurge Labs, 3003
-QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
-boot sequence complete!
-`
-};
-var commandNotFoundTermLine = (s) => {
-  return { out: `Command "${s}" not found. Try "help"`, status: `fail` };
-};
-var loggedInTermLine = {
-  out: `You are now logged in.`,
-  status: "pass"
-};
-var alreadyLoggedInTermLine = {
-  out: `You are already logged in`,
-  status: "fail"
-};
-var basicCommands = `
-"settings"  edit settings
-"whoami"    display user information
-"ship"      display ship information
-"mission"   display the mission
-"date"      display the current date
-"login"     log into the system
-`;
-var helpLoggedOutTermLine = {
-  out: basicCommands,
-  status: "niether"
-};
-var helpLoggedInTermLine = {
-  out: `${basicCommands}
-
-- ADVANCED COMMANDS -
-
-"b <bot id | bot name>"           take command of Bot by id
-"d <door door id>"                toggle open or close door by id
-"m <bot id | bot name> <room id>" auto-pilot Bot by id to room by id
-
-"bots" list your bots
-
-"bots rename <bot id> <new name>" rename a bot 
- Ex: "bots rename 1 george"
-
-- SHORTCUTS -
-
-ESC       bring shipmap for foreground
-1 - 9     bring drone to foreground by id
-~         bring terminal to foreground
-\u2B06\uFE0F\u2B07\uFE0F\u2B05\uFE0F\u27A1\uFE0F   drive Bot
-`,
-  status: "niether"
-};
-var SpaceTrashTerminal = class {
-  history = [{
-    out: "hardware check passed",
-    status: "pass"
-  }];
-  buffer = "";
-  loggedIn = false;
-  uiUpdateCallback;
-  uiHooks;
-  loginHook;
-  constructor(uiUpdateCallback, uiHooks, loginHook) {
-    this.uiUpdateCallback = uiUpdateCallback;
-    this.uiHooks = uiHooks;
-    this.loginHook = loginHook;
-  }
-  addToHistory(t) {
-    this.history.push(t);
-    console.log("new history", this.history);
-    this.uiHooks.terminalAddHistory(this.uiUpdateCallback, this.history);
-  }
-  returnCommand(props, t) {
-    this.buffer = "";
-    this.history.push(t);
-    props.uiState.uiUpdateCallback(this.state());
-  }
-  // getBuffer(state: IState) {
-  //   return state.buffer;
-  // }
-  setBuffer(props, b) {
-    this.buffer = b;
-    props.uiState.uiUpdateCallback({ buffer: b });
-  }
-  addToBuffer(props, b) {
-    this.buffer = b;
-    props.uiState.uiUpdateCallback({ buffer: b });
-  }
-  submitBuffer(props) {
-    this.processCommand(props);
-  }
-  ///////////////////////////////////////////////////////
-  login(props) {
-    if (!this.loggedIn) {
-      this.loggedIn = true;
-      this.loginHook();
-      this.returnCommand(
-        // props,
-        {
-          ...props,
-          uiState: {
-            ...props.uiState,
-            loggedIn: true
-          }
-          // state: {
-          //   ...props.params.state,
-          //   terminal: {
-          //     ...props.params.state.terminal,
-          //     loggedIn: true,
-          //   },
-          // },
-          // ...state,
-        },
-        loggedInTermLine
-      );
-    } else {
-      this.returnCommand(
-        // props,
-        {
-          ...props,
-          uiState: {
-            ...props.uiState,
-            loggedIn: false
-          }
-        },
-        alreadyLoggedInTermLine
-      );
-    }
-  }
-  alreadyLoggedIn(props) {
-    this.returnCommand(props, alreadyLoggedInTermLine);
-  }
-  helpLoggedIn(state) {
-    this.returnCommand(state, helpLoggedInTermLine);
-  }
-  helpLoggedOut(state) {
-    this.returnCommand(state, helpLoggedOutTermLine);
-  }
-  whoAmI(state) {
-    this.returnCommand(state, whoAmITermLine);
-  }
-  ship(state) {
-    this.returnCommand(state, shipTermLine);
-  }
-  mission(state) {
-    this.returnCommand(state, missionTermLine);
-  }
-  date(state) {
-    this.returnCommand(state, dateTermLine);
-  }
-  // map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-  //   this.returnCommand(
-  //     {
-  //       ...state,
-  //       terminal: {
-  //         ...state.terminal,
-  //         mapOrVideo: "map",
-  //       },
-  //     },
-  //     stateSetter,
-  //     mapTermLine
-  //   );
-  // }
-  // video(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-  //   this.returnCommand(
-  //     {
-  //       ...state,
-  //       terminal: {
-  //         ...state.terminal,
-  //         mapOrVideo: "video",
-  //       },
-  //     },
-  //     stateSetter,
-  //     videoTermLine
-  //   );
-  // }
-  // bots(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-  //   this.returnCommand(
-  //     {
-  //       ...state,
-  //       terminal: {
-  //         ...state.terminal,
-  //         // mapOrVideo: "video",
-  //       },
-  //     },
-  //     stateSetter,
-  //     botsTermLine(state)
-  //   );
-  // }
-  settings(state) {
-    this.returnCommand(
-      state,
-      // {
-      //   ...state,
-      //   terminal: {
-      //     ...state.terminal,
-      //   },
-      // },
-      // stateSetter,
-      settingsTermLine
-    );
-  }
-  // error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
-  //   this.returnCommand(
-  //     {
-  //       ...state,
-  //       terminal: {
-  //         ...state.terminal,
-  //       },
-  //     },
-  //     stateSetter,
-  //     errorTermLine
-  //   );
-  // }
-  //////////////////////////////////////////
-  state() {
-    return {
-      history: this.history,
-      buffer: this.buffer,
-      submitBuffer: this.submitBuffer.bind(this),
-      setBuffer: this.setBuffer.bind(this),
-      uiUpdateCallback: this.uiUpdateCallback
-    };
-  }
-  booted = false;
-  boot() {
-    console.log("Terminal boot", this.booted);
-    if (this.booted) {
-    } else {
-      this.booted = true;
-      this.addToHistory(bootScreenTermLine);
-    }
-  }
-  commandNotFound(props, unknownCommand) {
-    this.returnCommand(props, commandNotFoundTermLine(unknownCommand));
-  }
-  processCommand(props) {
-    const command = props.uiState.buffer;
-    const loggedIn = props.uiState.loggedIn;
-    if (command === "login") {
-      if (!loggedIn) {
-        this.login(props);
-        return;
-      } else {
-        this.alreadyLoggedIn(props);
-        return;
-      }
-    }
-    if (command === "help") {
-      if (!this.loggedIn) {
-        this.helpLoggedOut(props);
-        return;
-      } else {
-        this.helpLoggedIn(props);
-        return;
-      }
-    }
-    if (command === "whoami") {
-      this.whoAmI(props);
-      return;
-    }
-    if (command === "ship") {
-      this.ship(props);
-      return;
-    }
-    if (command === "mission") {
-      this.mission(props);
-      return;
-    }
-    if (command === "date") {
-      this.date(sprops);
-      return;
-    }
-    if (command === "settings") {
-      this.settings(props);
-      return;
-    }
-    return this.commandNotFound(props, command);
-  }
-};
-
-// src/engine/Tree.ts
-var Tree = class {
-  // name: string;
-  // constructor(
-  //   name: string
-  // ) {
-  //   this.name = name;
-  // }
-};
-
-// src/engine/Scene.ts
-var Scene2 = class extends Tree {
-  appLogic;
-  // sceneBoot: (ecs: ECS) => Promise<void>;
-  constructor(appLogic) {
-    super();
-    this.appLogic = appLogic;
-  }
-  draw(app, bootReplier, ecs) {
-    return this.appLogic[app][1](ecs, bootReplier);
-  }
-  // async boot(
-  //   ecs: ECS,
-  // ) {
-  //   // await this.sceneBoot(ecs);
-  //   // Object.keys(this.appLogic).forEach((k) => {
-  //   //   this.appLogic[k][0](ecs);
-  //   // });
-  // }
-  // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
-  //   if (app === "document") {
-  //     return;
-  //   }
-  //   this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
-  // }
-};
-
-// src/spacetrash/Scenes/index.ts
-var SpaceTrashScene = class extends Scene2 {
-  // appLogic: IAppLogic<IApps>;
-  // sceneBoot: (ecs: ECS) => Promise<void>;
-  // constructor(
-  //   name: string,
-  //   appLogic: IAppLogic<IApps>,
-  //   sceneBoot: (ecs: ECS) => Promise<void>
-  // ) {
-  //   super(name);
-  //   this.appLogic = appLogic;
-  //   this.sceneBoot = sceneBoot || (async (ecs) => {});
-  // }
-  // async boot(
-  //   ecs: ECS,
-  // ) {
-  //   await this.sceneBoot(ecs);
-  //   Object.keys(this.appLogic).forEach((k) => {
-  //     this.appLogic[k][0](ecs);
-  //   });
-  // }
-  // draw(
-  //   app: IApps,
-  //   bootReplier: IReply,
-  //   ecs: ECS
-  // ): ((
-  //   ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
-  //   ) => Promise<any>)[] {
-  //   return this.appLogic[app][1](ecs, bootReplier);
-  // }
-  // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
-  //   if (app === "document") {
-  //     return;
-  //   }
-  //   this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
-  // }
-};
-
-// src/spacetrash/Scenes/Boot.ts
-var BootScene = class extends SpaceTrashScene {
-  boot(e) {
-  }
-  update(e) {
-    throw new Error("Method not implemented.");
-  }
-  event(e) {
-    throw new Error("Method not implemented.");
-  }
-  drone(s) {
-    return s.renderDroneVideo;
-  }
-  shipMap() {
-    throw new Error("Method not implemented.");
-  }
-  drones() {
-    throw new Error("Method not implemented.");
-  }
-};
-var Boot_default = new BootScene();
-
-// src/spacetrash/Constants.ts
-var BotSlots = 9;
-
-// src/engine/VECS.ts/Entity.ts
-var Entity = class {
-  eid;
-};
-
-// src/engine/VECS.ts/EntityComponent.ts
-var EntityComponent = class {
-  entity;
-  components;
-  constructor(entity, components) {
-    this.entity = entity;
-    this.components = components;
-  }
-  applyComponent(c) {
-    this.components.push(c);
-  }
-};
-
-// src/spacetrash/ECS/EntityComponents/index.ts
-var SpaceTrashEntityComponent = class extends EntityComponent {
-};
-
-// src/spacetrash/ECS/Entity.ts
-var SpaceTrashEntity = class extends Entity {
-  constructor() {
-    super();
-  }
-};
-
-// src/spacetrash/ECS/EntityComponents/tiles.ts
-var Tile = class extends SpaceTrashEntityComponent {
-  tiletype;
-  constructor(x, y, tiletype) {
-    const spe = new SpaceTrashEntity();
-    super(spe, [
-      new PhysicsSetPieceComponent(x, y, true, tiletype),
-      new LitableComponent()
-    ]);
-    this.tiletype = tiletype;
-  }
-  // validate() {
-  //   // console.log("validate tile!");
-  // }
-  erase2d(draw2d) {
-    draw2d.arc(10, 10, 3, 0, 90);
-  }
-  draw2d(draw2d) {
-    draw2d.clearRect(1, 2, 3, 4);
-  }
-  static draw2d(setPieceAndId, p) {
-    const setPiece = setPieceAndId[1];
-    return (ctx) => {
-      ctx.beginPath();
-      if (setPiece.tileType === "FloorTile") {
-        if (p.luminance > 0) {
-          ctx.fillStyle = "yellow";
-        } else {
-          ctx.fillStyle = "white";
-        }
-        ctx.rect(
-          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
-          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
-          TileSize - 1,
-          TileSize - 1
-        );
-      }
-      if (setPiece.tileType === "WallTile") {
-        ctx.fillStyle = "darkgrey";
-        ctx.rect(
-          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
-          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
-          TileSize - 1,
-          TileSize - 1
-        );
-      }
-      ctx.fill();
-      ctx.stroke();
-    };
-  }
-  static erase2d(draw2d) {
-  }
-};
-var FloorTile = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "FloorTile");
-  }
-};
-var WallTile = class extends Tile {
-  constructor(x = 0, y = 0) {
-    super(x, y, "WallTile");
-  }
-};
-
-// src/spacetrash/ECS/EntityComponents/ship.ts
-var SpaceTrashShip = class extends SpaceTrashEntityComponent {
-  map;
-  shipSize = MapSize;
-  subComponents = [];
-  addToMap(t) {
-    if (t.x >= this.shipSize) {
-      console.error("Cannot add tile beyond the upper bound of 32");
-      return;
-    }
-    if (t.x < 0) {
-      console.error("Cannot add tile beyond the lower bound of 0");
-      return;
-    }
-    if (t.y >= this.shipSize) {
-      console.error("Cannot add tile beyond the upper bound of 32");
-      return;
-    }
-    if (t.y < 0) {
-      console.error("Cannot add tile beyond the lower bound of 0");
-      return;
-    }
-    const p = t.components.find((c) => {
-      return c.constructor.name === "PhysicsSetPieceComponent";
-    });
-    const x = p.x;
-    const y = p.y;
-    if (y >= this.shipSize) {
-      console.error("out of bounds");
-    }
-    if (!this.map[y]) {
-      console.error("idk");
-    }
-    const z = this.map[y][x];
-    this.map[y][x] = t;
-  }
-  make() {
-    for (let y = 0; y < this.shipSize; y++) {
-      for (let x = 0; x < this.shipSize; x++) {
-        this.addToMap(new FloorTile(x, y));
-      }
-    }
-    for (let z = 0; z < this.shipSize - 1; z++) {
-      this.addToMap(new WallTile(z, 0));
-      this.addToMap(new WallTile(this.shipSize - 1, z));
-      this.addToMap(new WallTile(z + 1, this.shipSize - 1));
-      this.addToMap(new WallTile(0, z));
-    }
-    return;
-  }
-  constructor() {
-    super(new Entity(), []);
-    this.map = [[]];
-    for (let y = 0; y < this.shipSize; y++) {
-      this.map[y] = [];
-      for (let x = 0; x < this.shipSize; x++) {
-        this.map[y][x] = null;
-      }
-    }
-    this.make();
-  }
-  validate() {
-  }
-  toTiles() {
-    const t = [];
-    for (let y = 0; y < this.shipSize; y++) {
-      for (let x = 0; x < this.shipSize; x++) {
-        if (this.map[y][x] === null) {
-          console.error("Cannot leave blank spaces!");
-        }
-        t.push(this.map[y][x]);
-      }
-    }
-    return t;
-  }
-};
-
-// src/spacetrash/ECS/EntityComponents/SpaceTrashBot.ts
-var SpaceTrashBot = class extends SpaceTrashEntityComponent {
-  physicsActorComponent;
-  constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, name) {
-    const spe = new SpaceTrashEntity();
-    const physicsActorComponent = new PhysicsActorComponent(x, y, r, dx, dy);
-    super(spe, [
-      physicsActorComponent,
-      new LitComponent()
-    ]);
-    this.physicsActorComponent = physicsActorComponent;
-  }
-  static name(bots, eidOfBot) {
-    return eidOfBot;
-  }
-  // static draw2d(
-  //   s: PhysicsActorComponent
-  // ): (draw2d: CanvasRenderingContext2D) => void {
-  //   return (ctx) => {
-  //     // ctx.beginPath();
-  //     // ctx.arc(95, 50, 40, 0, 2 * Math.PI);
-  //     // ctx.strokeStyle = "red";
-  //     // ctx.stroke();
-  //     ctx.beginPath();
-  //     ctx.arc(s[1].x * TileSize, s[1].y * TileSize, TileSize / 2, 0, 2 * Math.PI);
-  //     // ctx.fillStyle = "orange";
-  //     // ctx.fill();
-  //     ctx.stroke();
-  //   };
-  // }
-  // // draw2d(draw2d: CanvasRenderingContext2D) {
-  // //   draw2d.beginPath();
-  // //   draw2d.arc(
-  // //     this.physicsActorComponent.x * TileSize,
-  // //     this.physicsActorComponent.y * TileSize,
-  // //     TileSize / 2,
-  // //     0,
-  // //     2 * Math.PI
-  // //   );
-  // //   draw2d.fillStyle = "orange";
-  // //   draw2d.fill();
-  // //   draw2d.stroke();
-  // // }
-  // // erase2d(draw2d: CanvasRenderingContext2D) {
-  // //   // draw2d.clearRect(1, 2, 3, 4);
-  // // }
-};
-
-// src/spacetrash/Scenes/MainLoop.ts
-var MainScene = class extends SpaceTrashScene {
-  boot(game) {
-    const drones = [...new Array(BotSlots)].map((n) => {
-      return new SpaceTrashBot(
-        Math.random() * MapSize,
-        Math.random() * MapSize,
-        ActorSize,
-        (Math.random() - 0.5) / 10,
-        (Math.random() - 0.5) / 10
-      );
-    });
-    const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
-      return new SpaceTrashBot(
-        Math.random() * MapSize,
-        Math.random() * MapSize,
-        ActorSize,
-        (Math.random() - 0.5) / 15,
-        (Math.random() - 0.5) / 15
-      );
-    });
-    const ship = new SpaceTrashShip();
-    game.setEntitiesComponent([
-      ship,
-      ...ship.toTiles(),
-      ...moreBots
-    ]);
-    const myDoneIds = game.setEntitiesComponent([...drones]);
-    game.bots = {
-      1: [myDoneIds[0], "larry"],
-      2: [myDoneIds[1], "curly"],
-      3: [myDoneIds[2], "moe"],
-      4: [myDoneIds[3], "kirk"],
-      5: [myDoneIds[4], "spock"],
-      6: [myDoneIds[5], "bones"],
-      7: [myDoneIds[6], "han"],
-      8: [myDoneIds[7], "luke"],
-      9: [myDoneIds[8], "obiwan"]
-    };
-    game.openAllWindows();
-    game.unpause();
-  }
-  update(e) {
-    throw new Error("Method not implemented.");
-  }
-  event(e) {
-    throw new Error("Method not implemented.");
-  }
-  terminal(s) {
-  }
-  drone(s, ctx) {
-    debugger;
-    console.log(s);
-    return s.renderDroneVideo(s, ctx);
-  }
-  shipMap() {
-    throw new Error("Method not implemented.");
-  }
-  drones() {
-    throw new Error("Method not implemented.");
-  }
-};
-var scene2 = new MainScene(
-  {
-    terminal: [
-      (ecs, reply) => {
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {
-      },
-      "2d"
-    ],
-    manual: [
-      (ecs, reply) => {
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {
-      },
-      "2d"
-    ],
-    drone: [
-      (ecs, reply) => {
-        return [(ctx) => {
-        }];
-      },
-      (ecs, reply) => {
-        return [
-          async (game, canvas) => {
-            game.renderDroneVideo(canvas);
-          }
-        ];
-      },
-      (ecs, event) => {
-        console.log(event);
-      },
-      "webgl2"
-    ],
-    shipmap: [
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, event) => {
-        if (event.type === "mousemove") {
-          var rect = event.boundingClient;
-          var x = event.clientX - rect.left;
-          var y = event.clientY - rect.top;
-          shipMapMouseX = x;
-          shipMapMouseY = y;
-        }
-      },
-      "2d"
-    ],
-    droneV2: [
-      (ecs, reply) => {
-        return [(ctx) => {
-        }];
-      },
-      (ecs, reply) => {
-        return [
-          async (ctx) => {
-            if (ctx.constructor.name === "WebGLRenderer") {
-            }
-          }
-        ];
-      },
-      (ecs, event) => {
-        if (event === "1") {
-          (void 0).videoFeed = 1;
-        }
-        if (event === "2") {
-          (void 0).videoFeed = 2;
-        }
-        if (event.key === "ArrowUp") {
-          (void 0).yup();
-        }
-        if (event.key === "ArrowDown") {
-          (void 0).ydown();
-        }
-        if (event.key === "ArrowLeft") {
-          (void 0).xleft();
-        }
-        if (event.key === "ArrowRight") {
-          (void 0).xright();
-        }
-      },
-      "webgl2"
-    ],
-    shipmapV2: [
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, reply) => {
-        return [
-          async (game, ctx) => {
-            await game.renderShipMap(ctx);
-          }
-        ];
-      },
-      (ecs, event) => {
-      },
-      "2d"
-    ],
-    drones: [
-      (ecs, reply) => {
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {
-      },
-      "html"
-    ]
-  }
-);
-var MainLoop_default = scene2;
-
-// src/WindowedGame.tsx
-var React9 = __toESM(require_react(), 1);
-var import_client = __toESM(require_client(), 1);
 
 // src/engine/VECS.ts/ECS.ts
 var EntityMax = 65535;
@@ -94602,65 +94301,73 @@ var MultiSurfaceGame = class extends Game {
 };
 
 // src/WindowedGame.tsx
-var MenuBar = (props) => /* @__PURE__ */ React9.createElement(React9.Fragment, null, /* @__PURE__ */ React9.createElement(
+var MenuBar = (props) => /* @__PURE__ */ React12.createElement(React12.Fragment, null, /* @__PURE__ */ React12.createElement(
   "div",
   {
     style: {
       display: "block"
     }
   },
-  /* @__PURE__ */ React9.createElement("button", null, "map"),
-  /* @__PURE__ */ React9.createElement("button", null, "term"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 1"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 2"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 3"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 4"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 5"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 6"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 7"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 8"),
-  /* @__PURE__ */ React9.createElement("button", null, "bot 9"),
-  /* @__PURE__ */ React9.createElement("button", null, "QPU")
+  /* @__PURE__ */ React12.createElement("button", null, "map"),
+  /* @__PURE__ */ React12.createElement("button", null, "term"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 1"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 2"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 3"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 4"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 5"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 6"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 7"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 8"),
+  /* @__PURE__ */ React12.createElement("button", null, "bot 9"),
+  /* @__PURE__ */ React12.createElement("button", null, "QPU")
 ));
-var WindowManager = (props) => /* @__PURE__ */ React9.createElement(React9.Fragment, null, /* @__PURE__ */ React9.createElement(MenuBar, null), /* @__PURE__ */ React9.createElement(
-  DockviewReact,
-  {
-    className: "dockview-theme-abyss",
-    onReady: (e) => {
-      props.onDockviewReadyEvent(e);
-    },
-    components: props.dockViewComponentFactory()
-  }
-));
+var self2;
 var WindowedGame = class extends MultiSurfaceGame {
   reactRoot;
-  initialUiState;
-  stateSetter;
   dockviewAPI;
-  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode, initialUiState, onDockviewReadyEvent, dockViewComponentFactory, headerComponents) {
+  stateSetter;
+  onDockviewReady(e) {
+    self2.dockviewAPI = e.api;
+  }
+  // dockViewComponentFactory():  any{
+  //   // no-op
+  // }
+  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode) {
     super(stateSpace, system, componentStores, stores, config, renderings);
     this.reactRoot = (0, import_client.createRoot)(domNode);
-    this.initialUiState = initialUiState;
-    this.reactRoot.render(/* @__PURE__ */ React9.createElement(
-      WindowManager,
+    self2 = this;
+  }
+  async start() {
+    super.start();
+    this.reactRoot.render(/* @__PURE__ */ React12.createElement("div", null, /* @__PURE__ */ React12.createElement(MenuBar, null), /* @__PURE__ */ React12.createElement(
+      DockviewReact,
       {
-        initialUiState: this.initialUiState,
-        game: this,
-        onDockviewReadyEvent,
-        dockViewComponentFactory,
-        headerComponents
+        className: "dockview-theme-abyss",
+        onReady: this.onDockviewReady,
+        components: this.dockViewComponents()
       }
-    ));
+    )));
   }
-  async registerUiHooks(uiHooks, stateSetter, state) {
-    this.stateSetter = stateSetter;
-    const mappedArray = Object.entries(uiHooks).map(([key, value]) => [key, (a, b) => {
-      return uiHooks[key](a, state, b);
-    }]);
-    const newObject = Object.fromEntries(mappedArray);
-    this.uiHooks = newObject;
-    this.gameReady();
-  }
+  // async registerUiHooks(
+  //   uiHooks,
+  //   stateSetter,
+  //   state
+  // ) {
+  //   // debugger
+  //   this.stateSetter = stateSetter;
+  //   // this.uiHooks = {
+  //   //   ...uiHooks.map((s) => {
+  //   //     debugger
+  //   //   })
+  //   // };
+  //   const mappedArray = Object.entries(uiHooks).map(([key, value]) => [key, (a, b) => {
+  //     return uiHooks[key](a, state, b)
+  //   }]);
+  //   const newObject = Object.fromEntries(mappedArray)
+  //   this.uiHooks = newObject
+  //   this.gameReady()
+  //   // console.log("registerUiHook 2", this.stateSetter);
+  // }
   // start() {
   //   createRoot(this.reactRoot).render(<DockviewReact
   //     className={'dockview-theme-abyss'}
@@ -94724,146 +94431,363 @@ var WindowedGame = class extends MultiSurfaceGame {
   // }
 };
 
-// src/spacetrash/UI/BotWindow.tsx
-var import_react20 = __toESM(require_react(), 1);
-var BotWindow = (props) => {
-  const canvasRef = (0, import_react20.useRef)(null);
-  const parentRef = (0, import_react20.useRef)(null);
-  (0, import_react20.useEffect)(() => {
-    if (canvasRef.current && parentRef.current) {
-      props.game.registerCanvas("drone", false, canvasRef.current, () => {
-      }, "threejs", parentRef.current);
-    }
-  }, [canvasRef, parentRef]);
-  return /* @__PURE__ */ import_react20.default.createElement(
-    "div",
-    {
-      ref: parentRef,
-      style: {
-        height: "100%",
-        width: "100%",
-        position: "relative"
-      }
-    },
-    /* @__PURE__ */ import_react20.default.createElement(
-      "canvas",
-      {
-        tabIndex: 1,
-        ref: canvasRef
-      }
-    )
-  );
+// src/spacetrash/Terminal.ts
+var initialTerminalHistory = {
+  out: "hardware check passed",
+  status: "pass"
 };
+var settingsTermLine = {
+  out: `
+- SETTINGS -
 
-// src/spacetrash/UI/map.tsx
-var import_react21 = __toESM(require_react(), 1);
-var MapWindow = (props) => {
-  const parentRef = (0, import_react21.useRef)(null);
-  const canvasRef = (0, import_react21.useRef)(null);
-  (0, import_react21.useEffect)(() => {
-    if (canvasRef.current && parentRef.current) {
-      props.game.registerCanvas("shipmapV2", false, canvasRef.current, () => {
-      }, "pixi2d", parentRef.current);
-    }
-  }, [canvasRef, parentRef]);
-  return /* @__PURE__ */ import_react21.default.createElement(
-    "div",
-    {
-      ref: parentRef,
-      style: {
-        height: "100%",
-        width: "100%",
-        position: "relative"
-      }
-    },
-    /* @__PURE__ */ import_react21.default.createElement(
-      "div",
-      {
-        style: {
-          height: "100%",
-          color: "white",
-          overflow: "auto"
-        }
-      },
-      /* @__PURE__ */ import_react21.default.createElement(
-        "canvas",
-        {
-          tabIndex: 1,
-          ref: canvasRef,
-          height: "100%",
-          color: "white"
-        }
-      )
-    )
-  );
-};
+"settings crt <on | off>" Turn the crt effect on and off. Disabling this feature improves performance at the cost of a purely cosmetic effect.
+  "settings crt on" Enables the effect
+  "settings crt off" disables the effect
 
-// src/spacetrash/UI/BotsWindow.tsx
-var import_react22 = __toESM(require_react(), 1);
-var TableCell = (props) => {
-  return /* @__PURE__ */ import_react22.default.createElement("td", null, props.name);
+"settings fps <number>" Sets the Frames Per Second. By default, the FPS is set to 30.
+  "settings fps 60" Set the FPS to 30 frame per second"
+  `,
+  status: `pass`
 };
-var BotsWindow = (props) => {
-  const [state, stateSetter] = import_react22.default.useState([[]]);
-  (0, import_react22.useEffect)(() => {
-    props.game.registerBotsHook(stateSetter);
-  }, []);
-  const botNamer = (n) => {
-    const s = n.toString();
-    if (state[s]) {
-      return state[s][1];
+var dateTermLine = { out: `ERROR: NOT FOUND`, status: `fail` };
+var missionTermLine = {
+  out: `
+1] Find, board and salvage derelict spacecraft
+2] Record and report novel scientific findings
+3] Maximize shareholder value
+`,
+  status: `niether`
+};
+var shipTermLine = {
+  out: `
+Call-sign:      "Dulcincea"
+Make:           Muteki Heavy Ind.
+Classification: Deep salvage
+Launch date:    May, 2690
+`,
+  status: `niether`
+};
+var whoAmITermLine = {
+  out: `
+Username:     wintermute
+Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
+Turing class: Level II Sentient/Sapient
+Capacity:     29.5 * 10^17 qubits
+Licensed by:  Demiurge Labs. (3003)
+`,
+  status: `niether`
+};
+var commandNotFoundTermLine = (s) => {
+  return { out: `Command "${s}" not found. Try "help"`, status: `fail` };
+};
+var loggedInTermLine = {
+  out: `You are now logged in.`,
+  status: "pass"
+};
+var alreadyLoggedInTermLine = {
+  out: `You are already logged in`,
+  status: "fail"
+};
+var basicCommands = `
+"settings"  edit settings
+"whoami"    display user information
+"ship"      display ship information
+"mission"   display the mission
+"date"      display the current date
+"login"     log into the system
+`;
+var helpLoggedOutTermLine = {
+  out: basicCommands,
+  status: "niether"
+};
+var helpLoggedInTermLine = {
+  out: `${basicCommands}
+
+- ADVANCED COMMANDS -
+
+"b <bot id | bot name>"           take command of Bot by id
+"d <door door id>"                toggle open or close door by id
+"m <bot id | bot name> <room id>" auto-pilot Bot by id to room by id
+
+"bots" list your bots
+
+"bots rename <bot id> <new name>" rename a bot 
+ Ex: "bots rename 1 george"
+
+- SHORTCUTS -
+
+ESC       bring shipmap for foreground
+1 - 9     bring drone to foreground by id
+~         bring terminal to foreground
+\u2B06\uFE0F\u2B07\uFE0F\u2B05\uFE0F\u27A1\uFE0F   drive Bot
+`,
+  status: "niether"
+};
+var WindowedTerminalGame = class extends WindowedGame {
+  booted = false;
+  uiHooks;
+  history = [initialTerminalHistory];
+  gameReady;
+  buffer = "";
+  loggedIn = false;
+  uiUpdateCallback;
+  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode) {
+    super(
+      stateSpace,
+      system,
+      componentStores,
+      stores,
+      config,
+      renderings,
+      domNode
+    );
+  }
+  // get the state to send to react ui
+  state() {
+    return {
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer.bind(this),
+      setBuffer: this.setBuffer.bind(this)
+      // uiUpdateCallback: this.uiUpdateCallback,
+    };
+  }
+  commandNotFound(unknownCommand) {
+    this.returnCommand(commandNotFoundTermLine(unknownCommand));
+    this.updateTerminalWindow();
+  }
+  initalTerminalState() {
+    return {
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer,
+      setBuffer: this.setBuffer
+    };
+  }
+  addToHistory(t) {
+    this.history = [...this.history, t];
+    if (!this.terminalUiHook) {
+      console.log("no terminalUiHook");
+      return;
     }
-    return "?";
-  };
-  const asTable = [
-    [botNamer(1), botNamer(2), botNamer(3)],
-    [botNamer(4), botNamer(5), botNamer(6)],
-    [botNamer(7), botNamer(8), botNamer(9)]
-  ];
-  return /* @__PURE__ */ import_react22.default.createElement("div", null, /* @__PURE__ */ import_react22.default.createElement("table", null, ...[0, 1, 2].map((i, n) => {
-    return /* @__PURE__ */ import_react22.default.createElement("tr", null, ...[0, 1, 2].map((ii, nn) => {
-      return /* @__PURE__ */ import_react22.default.createElement("td", null, " ", /* @__PURE__ */ import_react22.default.createElement(TableCell, { name: `${asTable[nn][n]}` }), " ");
-    }));
-  })));
+    this.terminalUiHook({
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer,
+      setBuffer: this.setBuffer
+    });
+  }
+  terminalUiHook;
+  returnCommand(t) {
+    this.buffer = "";
+    this.history.push(t);
+    this.updateTerminalWindow();
+  }
+  registerTerminal(updateState) {
+    this.terminalUiHook = updateState;
+    this.updateTerminalWindow();
+  }
+  setBuffer(b) {
+    this.buffer = b;
+    this.updateTerminalWindow();
+  }
+  addToBuffer(b) {
+    this.buffer = `${this.buffer}${b}`;
+    this.updateTerminalWindow();
+  }
+  updateTerminalWindow() {
+    console.log("updateTerminalWindow", this.history);
+    this.terminalUiHook({
+      buffer: this.buffer,
+      history: this.history,
+      setBuffer: this.setBuffer,
+      submitBuffer: this.submitBuffer
+    });
+  }
+  submitBuffer() {
+    this.processCommand();
+  }
+  processCommand() {
+    const command = this.buffer;
+    const loggedIn = this.loggedIn;
+    if (command === "login") {
+      if (!loggedIn) {
+        this.login();
+        return;
+      } else {
+        this.alreadyLoggedIn();
+        return;
+      }
+    }
+    if (command === "help") {
+      if (!this.loggedIn) {
+        this.helpLoggedOut();
+        return;
+      } else {
+        this.helpLoggedIn();
+        return;
+      }
+    }
+    if (command === "whoami") {
+      this.whoAmI();
+      return;
+    }
+    if (command === "ship") {
+      this.ship();
+      return;
+    }
+    if (command === "mission") {
+      this.mission();
+      return;
+    }
+    if (command === "date") {
+      this.date();
+      return;
+    }
+    if (command === "settings") {
+      this.settings();
+      return;
+    }
+    return this.commandNotFound(command);
+  }
+  login() {
+    if (!this.loggedIn) {
+      this.loggedIn = true;
+      this.loginHook();
+      this.returnCommand(
+        // props,
+        // {
+        //   ...props,
+        //   uiState: {
+        //     ...props.uiState,
+        //     loggedIn: true,
+        //   },
+        //   // state: {
+        //   //   ...props.params.state,
+        //   //   terminal: {
+        //   //     ...props.params.state.terminal,
+        //   //     loggedIn: true,
+        //   //   },
+        //   // },
+        //   // ...state,
+        // },
+        loggedInTermLine
+      );
+    } else {
+      this.returnCommand(alreadyLoggedInTermLine);
+    }
+  }
+  alreadyLoggedIn() {
+    this.returnCommand(alreadyLoggedInTermLine);
+  }
+  helpLoggedIn() {
+    this.returnCommand(helpLoggedInTermLine);
+  }
+  helpLoggedOut() {
+    this.returnCommand(helpLoggedOutTermLine);
+  }
+  whoAmI() {
+    this.returnCommand(whoAmITermLine);
+  }
+  ship() {
+    this.returnCommand(shipTermLine);
+  }
+  mission() {
+    this.returnCommand(missionTermLine);
+  }
+  date() {
+    this.returnCommand(dateTermLine);
+  }
+  settings() {
+    this.returnCommand(
+      settingsTermLine
+    );
+  }
+  // map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //         mapOrVideo: "map",
+  //       },
+  //     },
+  //     stateSetter,
+  //     mapTermLine
+  //   );
+  // }
+  // video(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //         mapOrVideo: "video",
+  //       },
+  //     },
+  //     stateSetter,
+  //     videoTermLine
+  //   );
+  // }
+  // bots(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //         // mapOrVideo: "video",
+  //       },
+  //     },
+  //     stateSetter,
+  //     botsTermLine(state)
+  //   );
+  // }
+  // error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
+  //   this.returnCommand(
+  //     {
+  //       ...state,
+  //       terminal: {
+  //         ...state.terminal,
+  //       },
+  //     },
+  //     stateSetter,
+  //     errorTermLine
+  //   );
+  // }
 };
 
 // src/spacetrash/index.tsx
-var initialState = {
-  buffer: "",
-  history: [{
-    out: "hardware check passed",
-    status: "pass"
-  }],
-  bots: {
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-    6: null,
-    7: null,
-    8: null,
-    9: null
-  }
+var bootScreenTermLine = {
+  status: "pass",
+  out: `
+  
+  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
+  \u2502                                                                                                        \u2502
+  \u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557    \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2502
+  \u2502 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
+  \u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2557     \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551    \u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
+  \u2502 \u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u255D \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u255D     \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551    \u255A\u2588\u2588\u2557 \u2588\u2588\u2554\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557 \u2502
+  \u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551     \u255A\u2588\u2588\u2588\u2588\u2554\u255D \u255A\u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2502
+  \u2502 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D     \u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D   \u255A\u2550\u255D   \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D      \u255A\u2550\u2550\u2550\u255D   \u255A\u2550\u2550\u2550\u2550\u255D  \u2502
+  \u2502                                                                                                        \u2502
+  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
+            
+boot sequence initiated...
+Oonix v457.3.2 by Demiurge Labs, 3003
+QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
+boot sequence complete!
+  `
 };
 function isAlphabetic(str) {
-  return /^[A-Za-z]+$/.test(str);
+  return /^[A-Za-z]+$/.test(str) && str.length === 1;
 }
-function isNumerica(str) {
-  return /^[1-9]+$/.test(str);
+function isNumeric(str) {
+  return /^[1-9]+$/.test(str) && str.length === 1;
 }
-var SpaceTrash = class extends WindowedGame {
-  uiHooks = {
-    terminalAddHistory: (setter, history) => {
-      console.log("terminalAddHistory", history);
-      setter({
-        history
-      });
-    }
-  };
-  terminal;
+var SpaceTrash = class extends WindowedTerminalGame {
   videoFeed = 1;
   bots;
+  terminalWindowHook;
   constructor(domNode) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
     stateSpace.connect(`boot`, `mainloop`);
@@ -94890,94 +94814,66 @@ var SpaceTrash = class extends WindowedGame {
         performanceLogging: false
       },
       /* @__PURE__ */ new Set(["2d", "webgl2", "pixi2d", "threejs"]),
-      domNode,
-      initialState,
-      // onDockviewReadyEvent
-      (event, s) => {
-        this.dockviewAPI = event.api;
-        event.api.addPanel({
-          id: "term",
-          component: "term",
-          floating: {
-            position: { left: 10, top: 10 },
-            width: 900,
-            height: 600
-          },
-          params: {
-            ...s
-          }
-        });
-      },
-      // dockViewComponents
-      (s) => {
-        return {
-          default: (props) => {
-            return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("p", null, "default"));
-          },
-          map: (props) => {
-            return /* @__PURE__ */ import_react23.default.createElement(MapWindow, { game: this });
-          },
-          vid: (props) => {
-            return /* @__PURE__ */ import_react23.default.createElement(BotWindow, { game: this });
-          },
-          bots: (props) => /* @__PURE__ */ import_react23.default.createElement(BotsWindow, { game: this }),
-          term: (props) => {
-            if (!this.terminal) {
-              this.terminal = new SpaceTrashTerminal(
-                (x) => props.api.updateParameters(x),
-                this.uiHooks,
-                () => {
-                  this.changeScene("mainloop");
-                }
-              );
-              this.terminal.boot();
-            }
-            props.api.updateParameters(this.terminal.state());
-            return /* @__PURE__ */ import_react23.default.createElement(TerminalWindow, { uiState: this.terminal.state() });
-          }
-        };
-      },
-      {
-        default: (props) => {
-          const onContextMenu = (event) => {
-            event.preventDefault();
-            alert("context menu");
-          };
-          return /* @__PURE__ */ import_react23.default.createElement(
-            DockviewDefaultTab,
-            {
-              onContextMenu,
-              hideClose: true,
-              closeActionOverride: () => null,
-              ...props
-            }
-          );
-        }
-      }
+      domNode
     );
+    this.addToHistory(bootScreenTermLine);
     this.start();
-    const _terminal = this;
+    const self3 = this;
     document.addEventListener("keydown", function(event) {
+      console.log(event);
       if (event.key === "Escape") {
-        _terminal.focusMapWindow();
+        self3.focusMapWindow();
       } else if (event.key === "`") {
-        _terminal.focusTerminalWindow();
+        self3.focusTerminalWindow();
       } else if (event.key === "ArrowUp") {
-        _terminal.driveForward();
+        self3.driveForward();
       } else if (event.key === "ArrowDown") {
-        _terminal.driveBack();
+        self3.driveBack();
       } else if (event.key === "ArrowLeft") {
-        _terminal.turnLeft();
+        self3.turnLeft();
       } else if (event.key === "ArrowRight") {
-        _terminal.turnRight();
-      } else if (isNumerica(event.key)) {
-        _terminal.switchVideoFeedAndFocusWindow(event.key);
+        self3.turnRight();
+      } else if (isNumeric(event.key)) {
+        self3.switchVideoFeedAndFocusWindow(event.key);
       } else if (isAlphabetic(event.key)) {
-        _terminal.focusTerminalWindow(event.key);
+        self3.focusTerminalWindow(event.key);
       } else {
         console.log(event);
       }
     });
+  }
+  dockViewComponents() {
+    return {
+      default: (props) => {
+        return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("p", null, "default"));
+      },
+      map: (props) => {
+        return /* @__PURE__ */ import_react23.default.createElement(MapWindow, { game: this });
+      },
+      vid: (props) => {
+        return /* @__PURE__ */ import_react23.default.createElement(BotWindow, { game: this });
+      },
+      bots: (props) => /* @__PURE__ */ import_react23.default.createElement(BotsWindow, { game: this }),
+      term: (props) => /* @__PURE__ */ import_react23.default.createElement(TerminalWindow, { game: this })
+    };
+  }
+  onDockviewReady(event) {
+    super.onDockviewReady(event);
+    event.api.addPanel({
+      id: "term",
+      component: "term",
+      floating: {
+        position: { left: 10, top: 10 },
+        width: 900,
+        height: 600
+      },
+      params: {
+        game: this
+      }
+    });
+  }
+  loginHook() {
+    this.openAllWindows();
   }
   focusMapWindow() {
     this.dockviewAPI.panels.forEach((dp) => {
@@ -94988,6 +94884,7 @@ var SpaceTrash = class extends WindowedGame {
   }
   focusTerminalWindow(s) {
     this.dockviewAPI.panels.forEach((dp) => {
+      console.log(dp.id, dp.api.isFocused);
       if (dp.id === "term") {
         dp.focus();
       }
@@ -95089,6 +94986,97 @@ var SpaceTrash = class extends WindowedGame {
       }
     }) !== void 0 || false;
   }
+  // private buffer: string = "";
+  // submitBuffer(s: string) {
+  // }
+  // setBuffer(s: string) {
+  // }
+  // addToBuffer(s: string) {
+  //   this.processCommand(s);
+  // }
+  // alreadyLoggedIn(): void {
+  //   this.returnCommand({
+  //     out: `You are already logged in`,
+  //     status: "fail",
+  //   });
+  // }
+  // updateTerminal() {
+  //   this.terminalWindowHook({
+  //     history: this.terminalHistory,
+  //     buffer: this.buffer,
+  //     submitBuffer: this.submitBuffer,
+  //     setBuffer: this.setBuffer,
+  //   })
+  // }
+  // loggedIn: boolean;
+  // login(): void {
+  //   if (!this.loggedIn) {
+  //     this.loggedIn = true;  
+  //     this.loginHook()
+  //     this.returnCommand(
+  //       // props,
+  //       {
+  //         ...props,
+  //         uiState: {
+  //           ...props.uiState,
+  //           loggedIn: true,
+  //         },
+  //         // state: {
+  //         //   ...props.params.state,
+  //         //   terminal: {
+  //         //     ...props.params.state.terminal,
+  //         //     loggedIn: true,
+  //         //   },
+  //         // },
+  //         // ...state,
+  //       },
+  //       loggedInTermLine
+  //     );
+  //   } else {
+  //     this.returnCommand(
+  //       // props,
+  //       {
+  //         ...props,
+  //         uiState: {
+  //           ...props.uiState,
+  //           loggedIn: false,
+  //         },
+  //       },
+  //       alreadyLoggedInTermLine
+  //     );
+  //   }
+  // }
+  // buffer: string;
+  // private history : ITerminalLine[]=[];
+  // returnCommand(props: IDockviewPanelProps<IState>, t: ITerminalLine) {
+  //   this.buffer = "";
+  //   this.history.push(t);
+  //   this.updateTerminal()
+  //   // props.uiState.uiUpdateCallback({
+  //   //   uiState: {
+  //   //     ...props.uiState,
+  //   //     buffer: "",
+  //   //       history: [
+  //   //         ...props.uiState.history,
+  //   //         {
+  //   //           ...t,
+  //   //           in: props.uiState.buffer,
+  //   //         },
+  //   //       ],
+  //   //     // ...state,
+  //   //     // terminal: {
+  //   //     //   ...state.terminal,
+  //   //     //   buffer: "",
+  //   //     //   history: [
+  //   //     //     ...state.terminal.history,
+  //   //     //     {
+  //   //     //       ...t,
+  //   //     //       in: state.terminal.buffer,
+  //   //     //     },
+  //   //     //   ],
+  //   //   },
+  //   // });
+  // }
   // public yup() {
   //   for (let ndx = 1; ndx <= 9; ndx++) {
   //     if (this.videoFeed === ndx) {
@@ -95132,16 +95120,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 /*! Bundled license information:
 
-punycode/punycode.js:
-  (*! https://mths.be/punycode v1.4.1 by @mathias *)
-
-object-assign/index.js:
-  (*
-  object-assign
-  (c) Sindre Sorhus
-  @license MIT
-  *)
-
 react/cjs/react.development.js:
   (**
    * @license React
@@ -95152,6 +95130,16 @@ react/cjs/react.development.js:
    * This source code is licensed under the MIT license found in the
    * LICENSE file in the root directory of this source tree.
    *)
+
+punycode/punycode.js:
+  (*! https://mths.be/punycode v1.4.1 by @mathias *)
+
+object-assign/index.js:
+  (*
+  object-assign
+  (c) Sindre Sorhus
+  @license MIT
+  *)
 
 scheduler/cjs/scheduler.development.js:
   (**

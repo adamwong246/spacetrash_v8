@@ -1,10 +1,9 @@
-import pixiShipMap from "./ECS/Views/pixi2d";
-import threejsDroneVideo from "./ECS/Views/threejs3d";
-
-import { DockviewDefaultTab, DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
-import React, { FunctionComponent } from "react";
+import { DockviewDefaultTab, DockviewReadyEvent, IDockviewPanelHeaderProps } from "dockview";
+import React from "react";
 
 import { StateSpace } from "../engine/StateSpace";
+import pixiShipMap from "./ECS/Views/pixi2d";
+import threejsDroneVideo from "./ECS/Views/threejs3d";
 
 import { } from "./ECS/Components/physics";
 import {
@@ -20,17 +19,13 @@ import { Phase0Store } from "./ECS/Components/phase0";
 import { Phase1Store } from "./ECS/Components/phase1";
 import { PhysicsActorStore } from "./ECS/Components/actor";
 import { PhysicsSetPieceStore } from "./ECS/Components/setPiece";
-
-import { TerminalWindow } from "./UI/terminal";
-
-import { ITerminalLine, SpaceTrashTerminal } from "./Terminal";
-
+import { ITermWindowState, TerminalWindow } from "./UI/terminal";
 import bootScene from "./Scenes/Boot";
 import mainLoopScene from "./Scenes/MainLoop";
-import { WindowedGame } from "../WindowedGame";
 import { BotWindow } from "./UI/BotWindow";
 import { MapWindow } from "./UI/map";
 import { BotsWindow } from "./UI/BotsWindow";
+import { ITerminalLine, WindowedTerminalGame } from "./Terminal";
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
@@ -43,70 +38,52 @@ export type ISpaceTrashApps =
   | "shipmapV2"
   | "droneV2";
 
-export type IState = {
-  buffer: string;
-  history: ITerminalLine[];
 
-  bots: {
-    1: [number, string] | null;
-    2: [number, string] | null;
-    3: [number, string] | null;
-    4: [number, string] | null;
-    5: [number, string] | null;
-    6: [number, string] | null;
-    7: [number, string] | null;
-    8: [number, string] | null;
-    9: [number, string] | null;
-  };
+const bootScreenTermLine: ITerminalLine = {
+  status: "pass",
+  out: `
+  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                                                                                                        │
+  │ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
+  │ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
+  │ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
+  │ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
+  │ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
+  │ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
+  │                                                                                                        │
+  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+            
+boot sequence initiated...
+Oonix v457.3.2 by Demiurge Labs, 3003
+QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
+boot sequence complete!
+  `,
 };
 
-const initialState: IState = {
-  buffer: "",
-  history: [{
-    out: "hardware check passed",
-    status: "pass"
-  }],
-  bots: {
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-    6: null,
-    7: null,
-    8: null,
-    9: null,
-  }
-}
+
+
+export type IState = {
+  game: SpaceTrash;
+};
 
 export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | null;
 
 function isAlphabetic(str: string): boolean {
-  return /^[A-Za-z]+$/.test(str);
+  return /^[A-Za-z]+$/.test(str) && str.length === 1;
 }
 
-function isNumerica(str: string): boolean {
-  return /^[1-9]+$/.test(str);
+function isNumeric(str: string): boolean {
+  return /^[1-9]+$/.test(str) && str.length === 1;
 }
 
-export class SpaceTrash extends WindowedGame<IRenderings, {
+export class SpaceTrash extends WindowedTerminalGame<IRenderings, {
   Phase0: Phase0Store,
   Phase1: Phase1Store
 }, number> {
 
 
 
-  uiHooks = {
-    terminalAddHistory: (setter, history: ITerminalLine[]) => {
-      console.log('terminalAddHistory', history)
-      setter({
-        history
-      })
-      // debugger
-    }
-  }
-
-  terminal: SpaceTrashTerminal;
   public videoFeed: number = 1;
 
   public bots: {
@@ -120,10 +97,9 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     8: [number, string];
     9: [number, string];
   };
+  terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
 
   constructor(domNode: HTMLElement) {
-
-
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
     stateSpace.connect(`boot`, `mainloop`);
     stateSpace.connect(`mainloop`, `goodbye`);
@@ -151,183 +127,119 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
       },
       new Set(["2d", "webgl2", "pixi2d", "threejs"]),
       domNode,
-
-      initialState,
-
-      // onDockviewReadyEvent
-      (event: DockviewReadyEvent, s) => {
-
-        this.dockviewAPI = event.api;
-
-        event.api.addPanel({
-          id: 'term',
-          component: 'term',
-          floating: {
-            position: { left: 10, top: 10 },
-            width: 900,
-            height: 600
-          },
-          params: {
-            ...s,
-          }
-        })
-
-        // event.api.addPanel({
-        //   id: 'bot',
-
-        //   component: 'bot',
-        //   floating: {
-        //     position: { left: 50, top: 50 },
-        //     width: 600,
-        //     height: 400
-        //   },
-        //   params: {
-        //     ...s,
-        //   }
-        // })
-
-        // this.start()
-      },
-
-      // dockViewComponents
-      (s: IState) => {
-        return {
-
-          default: (props: IDockviewPanelHeaderProps<IState>) => {
-            return (
-              <div>
-                <p>default</p>
-                {/* <div>{`custom tab: ${props.api.title}`}</div>
-                    <span>{`value: ${props.params.myValue}`}</span> */}
-              </div>
-            );
-          },
-
-          map: (props: IDockviewPanelHeaderProps<IState>) => {
-            return (
-              <MapWindow game={this} />
-            );
-          },
-
-          vid: (props: IDockviewPanelHeaderProps<IState>) => {
-            return (
-              <BotWindow game={this} />
-            );
-          },
-
-          bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
-
-          term: (props: IDockviewPanelHeaderProps<IState>) => {
-
-            if (!this.terminal) {
-              this.terminal = new SpaceTrashTerminal(
-                (x) => props.api.updateParameters(x),
-                this.uiHooks,
-                () => {
-
-                  this.changeScene("mainloop");
-                  // this.ecs.unpause();
-                }
-              );
-              this.terminal.boot();
-            }
-
-            props.api.updateParameters(this.terminal.state())
-
-            return (
-              <TerminalWindow uiState={this.terminal.state()} />
-            );
-          },
-        }
-      },
-      {
-        default: (props: IDockviewPanelHeaderProps) => {
-          const onContextMenu = (event: React.MouseEvent) => {
-            event.preventDefault();
-            alert('context menu');
-          };
-          return <DockviewDefaultTab
-            onContextMenu={onContextMenu}
-            hideClose={true}
-            closeActionOverride={() => null}
-
-            {...props} />;
-        },
-      },
-
     );
 
-
+    this.addToHistory(bootScreenTermLine)
 
     this.start()
 
-    const _terminal = this;
+    const self = this;
     document.addEventListener('keydown', function (event) {
-
+      console.log(event)
       if (event.key === 'Escape') {
-        _terminal.focusMapWindow();
+        self.focusMapWindow();
       }
       else if (event.key === "`") {
-        _terminal.focusTerminalWindow();
+        self.focusTerminalWindow();
       }
       else if (event.key === 'ArrowUp') {
-        _terminal.driveForward();
+        self.driveForward();
       }
       else if (event.key === 'ArrowDown') {
-        _terminal.driveBack();
+        self.driveBack();
       }
       else if (event.key === 'ArrowLeft') {
-        _terminal.turnLeft();
+        self.turnLeft();
       }
       else if (event.key === 'ArrowRight') {
-        _terminal.turnRight();
+        self.turnRight();
       }
-      else if (isNumerica((event.key))) {
-        _terminal.switchVideoFeedAndFocusWindow(event.key)
+      else if (isNumeric((event.key))) {
+        self.switchVideoFeedAndFocusWindow(event.key)
       }
       else if (isAlphabetic(event.key)) {
-        _terminal.focusTerminalWindow(event.key)
+        self.focusTerminalWindow(event.key)
       }
       else {
         console.log(event);
       }
 
-
-
-      //   props.worker.postMessage(["inputEvent", "UP", "drone"]);
-      // } else if (event.key === 'ArrowDown') {
-      //   props.worker.postMessage(["inputEvent", "DOWN", "drone"]);
-      // } else if (event.key === 'ArrowLeft') {
-      //   props.worker.postMessage(["inputEvent", "LEFT", "drone"]);
-      // } else if (event.key === 'ArrowRight') {
-      //   props.worker.postMessage(["inputEvent", "RIGHT", "drone"]);
-      // }
     });
-
-
-
   }
+
+
+
+  dockViewComponents() {
+    return {
+
+      default: (props: IDockviewPanelHeaderProps<IState>) => {
+        return (
+          <div>
+            <p>default</p>
+            {/* <div>{`custom tab: ${props.api.title}`}</div>
+                <span>{`value: ${props.params.myValue}`}</span> */}
+          </div>
+        );
+      },
+
+      map: (props: IDockviewPanelHeaderProps<IState>) => {
+        return (
+          <MapWindow game={this} />
+        );
+      },
+
+      vid: (props: IDockviewPanelHeaderProps<IState>) => {
+        return (
+          <BotWindow game={this} />
+        );
+      },
+
+      bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
+      term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
+    }
+  }
+
+
+  onDockviewReady(event: DockviewReadyEvent) {
+    super.onDockviewReady(event);
+    event.api.addPanel({
+      id: 'term',
+      component: 'term',
+      floating: {
+        position: { left: 10, top: 10 },
+        width: 900,
+        height: 600
+      },
+      params: {
+        game: this
+      }
+    })
+  }
+
+  loginHook() {
+    this.openAllWindows()
+  }
+
   focusMapWindow() {
     this.dockviewAPI.panels.forEach((dp) => {
       if (dp.id === "map") {
         dp.focus()
       }
     });
-    
   }
 
   focusTerminalWindow(s?: string) {
     this.dockviewAPI.panels.forEach((dp) => {
+      console.log(dp.id, dp.api.isFocused)
       if (dp.id === "term") {
         dp.focus()
       }
     });
     if (s) {
-      // this.terminal.addToBuffer(s)
-      // this.terminal.buffer = `${this.terminal.buffer}${s}`
-
+      // this.addToBuffer(s)
     }
   }
+
   driveForward() {
     throw new Error("Method not implemented.");
   }
@@ -341,14 +253,13 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     throw new Error("Method not implemented.");
   }
 
-  switchVideoFeedAndFocusWindow(s: string  ) {
+  switchVideoFeedAndFocusWindow(s: string) {
     this.videoFeed = Number(s);
     this.dockviewAPI.panels.forEach((dp) => {
       if (dp.id === "vid") {
         dp.focus()
       }
     })
-
   }
 
   openAllWindows() {
@@ -393,7 +304,6 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
   }
 
   gameReady: () => void = () => {
-    // this.terminal = new SpaceTrashTerminal(this.stateSetter, this.uiHooks);
     this.start()
   }
 
@@ -448,6 +358,127 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     }) !== undefined || false
     // throw new Error("Method not implemented.");
   }
+
+
+
+
+
+  // private buffer: string = "";
+
+  // submitBuffer(s: string) {
+
+  // }
+  // setBuffer(s: string) {
+
+  // }
+  // addToBuffer(s: string) {
+  //   this.processCommand(s);
+  // }
+
+  // alreadyLoggedIn(): void {
+  //   this.returnCommand({
+  //     out: `You are already logged in`,
+  //     status: "fail",
+  //   });
+  // }
+
+
+
+  // updateTerminal() {
+  //   this.terminalWindowHook({
+  //     history: this.terminalHistory,
+  //     buffer: this.buffer,
+  //     submitBuffer: this.submitBuffer,
+  //     setBuffer: this.setBuffer,
+  //   })
+  // }
+
+  // loggedIn: boolean;
+
+  // login(): void {
+
+  //   if (!this.loggedIn) {
+  //     this.loggedIn = true;  
+  //     this.loginHook()
+  //     this.returnCommand(
+  //       // props,
+  //       {
+  //         ...props,
+  //         uiState: {
+  //           ...props.uiState,
+  //           loggedIn: true,
+  //         },
+
+  //         // state: {
+  //         //   ...props.params.state,
+  //         //   terminal: {
+  //         //     ...props.params.state.terminal,
+  //         //     loggedIn: true,
+  //         //   },
+  //         // },
+
+  //         // ...state,
+  //       },
+
+  //       loggedInTermLine
+  //     );
+
+  //   } else {
+  //     this.returnCommand(
+  //       // props,
+  //       {
+  //         ...props,
+  //         uiState: {
+  //           ...props.uiState,
+  //           loggedIn: false,
+  //         },
+
+  //       },
+
+  //       alreadyLoggedInTermLine
+  //     );
+  //   }
+
+
+
+
+  // }
+
+  // buffer: string;
+
+  // private history : ITerminalLine[]=[];
+
+  // returnCommand(props: IDockviewPanelProps<IState>, t: ITerminalLine) {
+  //   this.buffer = "";
+  //   this.history.push(t);
+  //   this.updateTerminal()
+  //   // props.uiState.uiUpdateCallback({
+  //   //   uiState: {
+  //   //     ...props.uiState,
+  //   //     buffer: "",
+  //   //       history: [
+  //   //         ...props.uiState.history,
+  //   //         {
+  //   //           ...t,
+  //   //           in: props.uiState.buffer,
+  //   //         },
+  //   //       ],
+
+  //   //     // ...state,
+  //   //     // terminal: {
+  //   //     //   ...state.terminal,
+  //   //     //   buffer: "",
+  //   //     //   history: [
+  //   //     //     ...state.terminal.history,
+  //   //     //     {
+  //   //     //       ...t,
+  //   //     //       in: state.terminal.buffer,
+  //   //     //     },
+  //   //     //   ],
+  //   //   },
+  //   // });
+  // }
+
 
 
   // public yup() {

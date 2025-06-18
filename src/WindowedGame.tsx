@@ -1,23 +1,20 @@
+import { DockviewDefaultTab, DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
 // Allows a game with multiple windows
 // It is specific to the browser because it relies upon react and dockview
 
 import * as React from 'react'
-import { FunctionComponent, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { DockviewApi, DockviewReact, DockviewReadyEvent, IDockviewPanelProps } from 'dockview';
+import { DockviewApi, DockviewReact } from 'dockview';
 
 import { StateSpace } from "./engine/StateSpace";
 import { System } from "./engine/VECS.ts/System";
 import { IComponentsStores, IStores } from "./engine/VECS.ts/types";
 import { MultiSurfaceGame } from "./MultiSurfaceGame";
+import { FunctionComponent } from "react";
 
 const MenuBar: (p: {
-  // initialUiState,
-  // game: WindowedGame<any, any, any>,
-  // onDockviewReadyEvent,
-  // dockViewComponentFactory,
-  // headerComponents
+
 
 }) => any = (props) => <>
   <div
@@ -40,34 +37,45 @@ const MenuBar: (p: {
   </div>
 </>
 
-const WindowManager: (p: {
-  initialUiState,
-  game: WindowedGame<any, any, any>,
-  onDockviewReadyEvent,
-  dockViewComponentFactory,
-  headerComponents
+// const WindowManager: (p: {
+//   game: WindowedGame<any, any, any>,
+//   onDockviewReadyEvent,
+//   dockViewComponentFactory,
+//   // headerComponents
 
-}) => any = (props) => <>
-  <MenuBar/>
-  <DockviewReact
-    className={'dockview-theme-abyss'}
-    onReady={(e) => {
-      props.onDockviewReadyEvent(e)
-    }}
-    components={props.dockViewComponentFactory()}
-  // defaultTabComponent={props.headerComponents.default}
-  /></>
+// }) => any = (props) => <>
+//   <MenuBar />
+//   <DockviewReact
+//     className={'dockview-theme-abyss'}
+//     onReady={(e) => {
+//       this.onDockviewReadyEvent(e)
+//     }}
+//     components={props.dockViewComponentFactory()}
+//   // defaultTabComponent={props.headerComponents.default}
+//   /></>
 
+let self;
 export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurfaceGame<IRenderings, II> {
   private reactRoot;
-  private initialUiState;
+  dockviewAPI: DockviewApi;
 
   abstract gameReady: () => void;
 
   stateSetter: (s: any) => void;
   abstract uiHooks: any;
 
-  public dockviewAPI: DockviewApi;
+  onDockviewReady(e: DockviewReadyEvent) {
+    self.dockviewAPI = e.api;
+  }
+
+  // dockViewComponents(): Record<string, FunctionComponent<IDockviewPanelProps>> {
+  //   return {}
+  // }
+  abstract dockViewComponents(): Record<string, FunctionComponent<IDockviewPanelProps>> 
+
+  // dockViewComponentFactory():  any{
+  //   // no-op
+  // }
 
   constructor(
     stateSpace: StateSpace,
@@ -80,49 +88,50 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
     },
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
-    initialUiState: IState,
-    onDockviewReadyEvent: (e: DockviewReadyEvent) => void,
-    dockViewComponentFactory: (s: IState) => Record<string, FunctionComponent<IDockviewPanelProps>>,
-    headerComponents,
-    // uiHooks
   ) {
     super(stateSpace, system, componentStores, stores, config, renderings);
     this.reactRoot = createRoot(domNode)
-    this.initialUiState = initialUiState
-
-    this.reactRoot.render(<WindowManager
-      initialUiState={this.initialUiState}
-      game={this}
-      onDockviewReadyEvent={onDockviewReadyEvent}
-      dockViewComponentFactory={dockViewComponentFactory}
-      headerComponents={headerComponents}
-    // uiHooks={ uiHooks}
-    />)
-
+    self = this;
+    // this.dockviewAPI.bind(this);
+    // this.onDockviewReady.bind(this);
   }
 
-  async registerUiHooks(
-    uiHooks,
-    stateSetter,
-    state
-  ) {
-    // debugger
-    this.stateSetter = stateSetter;
-    // this.uiHooks = {
-    //   ...uiHooks.map((s) => {
-    //     debugger
-    //   })
-    // };
-    const mappedArray = Object.entries(uiHooks).map(([key, value]) => [key, (a, b) => {
-      return uiHooks[key](a, state, b)
+  async start() {
+    super.start();
 
-    }]);
-    const newObject = Object.fromEntries(mappedArray)
-    this.uiHooks = newObject
-
-    this.gameReady()
-    // console.log("registerUiHook 2", this.stateSetter);
+    this.reactRoot.render(<div>
+      <MenuBar />
+      <DockviewReact
+        className={'dockview-theme-abyss'}
+        onReady={this.onDockviewReady}
+        components={this.dockViewComponents()}
+      />
+    </div>)
   }
+
+
+  // async registerUiHooks(
+  //   uiHooks,
+  //   stateSetter,
+  //   state
+  // ) {
+  //   // debugger
+  //   this.stateSetter = stateSetter;
+  //   // this.uiHooks = {
+  //   //   ...uiHooks.map((s) => {
+  //   //     debugger
+  //   //   })
+  //   // };
+  //   const mappedArray = Object.entries(uiHooks).map(([key, value]) => [key, (a, b) => {
+  //     return uiHooks[key](a, state, b)
+
+  //   }]);
+  //   const newObject = Object.fromEntries(mappedArray)
+  //   this.uiHooks = newObject
+
+  //   this.gameReady()
+  //   // console.log("registerUiHook 2", this.stateSetter);
+  // }
 
 
   // start() {

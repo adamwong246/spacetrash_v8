@@ -1,13 +1,14 @@
-import { IDockviewPanelProps } from "dockview";
-
+import { DockviewReadyEvent, IDockviewPanelProps } from "dockview";
+import { FunctionComponent } from "react";
 import { IState } from ".";
+import { WindowedGame } from "../WindowedGame";
+import { StateSpace } from "../engine/StateSpace";
+import { System } from "../engine/VECS.ts/System";
+import { ITermWindowState } from "./UI/terminal";
 
-export type IComStatus = "pass" | "fail" | "niether";
-
-export type ITerminalLine = {
-  in?: string;
-  out: string;
-  status: IComStatus;
+const initialTerminalHistory: ITerminalLine = {
+  out: "hardware check passed",
+  status: "pass",
 };
 
 const errorTermLine: ITerminalLine = {
@@ -81,28 +82,6 @@ Licensed by:  Demiurge Labs. (3003)
   status: `niether`,
 };
 
-const bootScreenTermLine: ITerminalLine = {
-  status: "pass",
-  out: `
-
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                                        │
-│ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
-│ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
-│ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
-│ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
-│ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
-│ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
-│                                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-          
-boot sequence initiated...
-Oonix v457.3.2 by Demiurge Labs, 3003
-QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
-boot sequence complete!
-`,
-};
-
 const commandNotFoundTermLine: (s: string) => ITerminalLine = (s) => {
   return { out: `Command "${s}" not found. Try "help"`, status: `fail` };
 };
@@ -155,177 +134,290 @@ ESC       bring shipmap for foreground
   status: "niether",
 };
 
-export class SpaceTrashTerminal {
-  public history: ITerminalLine[] = [{
-    out: "hardware check passed",
-    status: "pass"
-  }];
-  public buffer: string = "";
-  loggedIn = false
-  uiUpdateCallback: (h: ITerminalLine[]) => void;
+type IComStatus = "pass" | "fail" | "niether";
+
+export type ITerminalLine = {
+  in?: string;
+  out: string;
+  status: IComStatus;
+};
+
+export abstract class WindowedTerminalGame<
+  IRenderings,
+  II,
+  III
+> extends WindowedGame<IRenderings, II, III> {
+  booted = false;
   uiHooks: any;
-  loginHook: any;
+  history: ITerminalLine[] = [initialTerminalHistory];
+  gameReady: () => void;
+  public buffer: string = "";
+  loggedIn = false;
+  uiUpdateCallback: any;
 
   constructor(
-    uiUpdateCallback: (s: any) => void,
-    uiHooks,
-    loginHook
+    stateSpace: StateSpace,
+    system: System,
+    componentStores,
+    stores,
+    config,
+    renderings: Set<IRenderings>,
+    domNode: HTMLElement
+    
   ) {
-    this.uiUpdateCallback = uiUpdateCallback;
-    this.uiHooks = uiHooks;
-    this.loginHook = loginHook;
+    super(
+      stateSpace,
+      system,
+      componentStores,
+      stores,
+      config,
+      renderings,
+      domNode
+    );
+  }
+
+  // get the state to send to react ui
+  state(): {
+    history: ITerminalLine[];
+    buffer: string;
+    submitBuffer: any;
+    setBuffer: any;
+    // uiUpdateCallback: any;
+  } {
+    return {
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer.bind(this),
+      setBuffer: this.setBuffer.bind(this),
+      // uiUpdateCallback: this.uiUpdateCallback,
+    };
+  }
+
+  commandNotFound(unknownCommand: string) {
+    this.returnCommand(commandNotFoundTermLine(unknownCommand));
+    this.updateTerminalWindow();
+  }
+
+  initalTerminalState(): ITermWindowState {
+    return {
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer,
+      setBuffer: this.setBuffer,
+    };
   }
 
   addToHistory(t: ITerminalLine) {
-    this.history.push(t);
-    console.log("new history", this.history);
-    this.uiHooks.terminalAddHistory(this.uiUpdateCallback, this.history);
+    this.history = [...this.history, t];
+
+    if (!this.terminalUiHook) {
+      console.log("no terminalUiHook");
+      return;
+    }
+
+    this.terminalUiHook({
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer,
+      setBuffer: this.setBuffer,
+    });
   }
 
-  returnCommand(props: IDockviewPanelProps<IState>, t: ITerminalLine) {
+  terminalUiHook: (s: ITermWindowState) => void;
+
+  returnCommand(t: ITerminalLine) {
     this.buffer = "";
     this.history.push(t);
-    props.uiState.uiUpdateCallback(this.state())
-    // props.uiState.uiUpdateCallback({
-    //   uiState: {
-    //     ...props.uiState,
-    //     buffer: "",
-    //       history: [
-    //         ...props.uiState.history,
-    //         {
-    //           ...t,
-    //           in: props.uiState.buffer,
-    //         },
-    //       ],
-
-    //     // ...state,
-    //     // terminal: {
-    //     //   ...state.terminal,
-    //     //   buffer: "",
-    //     //   history: [
-    //     //     ...state.terminal.history,
-    //     //     {
-    //     //       ...t,
-    //     //       in: state.terminal.buffer,
-    //     //     },
-    //     //   ],
-    //   },
-    // });
+    this.updateTerminalWindow();
   }
 
-  // getBuffer(state: IState) {
-  //   return state.buffer;
-  // }
-
-  setBuffer(
-    props: any,
-    b: string
+  registerTerminal(
+    updateState: React.Dispatch<React.SetStateAction<ITermWindowState>>
   ) {
+    this.terminalUiHook = updateState;
+    this.updateTerminalWindow();
+  }
+
+  setBuffer(b: string) {
     this.buffer = b;
-    props.uiState.uiUpdateCallback({buffer: b});
+    this.updateTerminalWindow();
   }
 
-  addToBuffer(
-    props: any,
-    b: string
-  ) {
-    this.buffer = b;
-    props.uiState.uiUpdateCallback({buffer: b});
+  addToBuffer(b: string) {
+    this.buffer = `${this.buffer}${b}`;
+    this.updateTerminalWindow();
   }
 
-  submitBuffer(props: IDockviewPanelProps<IState>) {
-    this.processCommand(props);
+  updateTerminalWindow() {
+    console.log("updateTerminalWindow", this.history);
+    this.terminalUiHook({
+      buffer: this.buffer,
+      history: this.history,
+      setBuffer: this.setBuffer,
+      submitBuffer: this.submitBuffer,
+    });
   }
 
-  ///////////////////////////////////////////////////////
+  submitBuffer() {
+    this.processCommand();
+  }
 
-  login(props: IDockviewPanelProps<IState>): void {
+  processCommand(): void {
+    const command = this.buffer;
+    const loggedIn = this.loggedIn;
 
+    if (command === "login") {
+      if (!loggedIn) {
+        this.login();
+        return;
+      } else {
+        this.alreadyLoggedIn();
+        return;
+      }
+    }
+
+    // if (command === "bots") {
+    //   if (!loggedIn) {
+    //     this.error(props);
+    //     return;
+    //   } else {
+    //     this.bots(props);
+    //     return;
+    //   }
+    // }
+
+    if (command === "help") {
+      if (!this.loggedIn) {
+        this.helpLoggedOut();
+        return;
+      } else {
+        this.helpLoggedIn();
+        return;
+      }
+    }
+
+    if (command === "whoami") {
+      this.whoAmI();
+      return;
+    }
+
+    if (command === "ship") {
+      this.ship();
+      return;
+    }
+
+    if (command === "mission") {
+      this.mission();
+      return;
+    }
+
+    if (command === "date") {
+      this.date();
+      return;
+    }
+
+    if (command === "settings") {
+      this.settings();
+      return;
+    }
+
+    // if (command === "map") {
+    //   this.map(state, stateSetter);
+    //   return;
+    // }
+
+    // if (command === "video") {
+    //   this.video(state, stateSetter);
+    //   return;
+    // }
+
+    // const matchForBot = (/b ([1-9])*/gm).exec(command);
+
+    // if (matchForBot && matchForBot?.length > 0) {
+
+    //   // if (!matchForBot || !matchForBot[0]) {
+    //   //   return {
+    //   //     out: `couldn't parse bot id`,
+    //   //     status: 'fail'
+    //   //   }
+    //   // }
+    //   debugger
+
+    //   SpaceTrashPlayer.videoFeed = Number.parseInt(matchForBot[0]);
+
+    //   return {
+    //     out: `now commanding Bot #${SpaceTrashPlayer.videoFeed}`,
+    //     status: 'pass'
+    //   }
+    // }
+    return this.commandNotFound(command);
+  }
+
+  login(): void {
     if (!this.loggedIn) {
-      this.loggedIn = true;  
-      this.loginHook()
+      this.loggedIn = true;
+      this.loginHook();
       this.returnCommand(
         // props,
-        {
-          ...props,
-          uiState: {
-            ...props.uiState,
-            loggedIn: true,
-          },
-  
-          // state: {
-          //   ...props.params.state,
-          //   terminal: {
-          //     ...props.params.state.terminal,
-          //     loggedIn: true,
-          //   },
-          // },
-  
-          // ...state,
-        },
-  
+        // {
+        //   ...props,
+        //   uiState: {
+        //     ...props.uiState,
+        //     loggedIn: true,
+        //   },
+
+        //   // state: {
+        //   //   ...props.params.state,
+        //   //   terminal: {
+        //   //     ...props.params.state.terminal,
+        //   //     loggedIn: true,
+        //   //   },
+        //   // },
+
+        //   // ...state,
+        // },
+
         loggedInTermLine
       );
-      
     } else {
-      this.returnCommand(
-        // props,
-        {
-          ...props,
-          uiState: {
-            ...props.uiState,
-            loggedIn: false,
-          },
-  
-        },
-  
-        alreadyLoggedInTermLine
-      );
+      this.returnCommand(alreadyLoggedInTermLine);
     }
-    
-
-    
-    
   }
 
-  alreadyLoggedIn(props: IDockviewPanelProps<IState>): void {
-    this.returnCommand(props, alreadyLoggedInTermLine);
+  abstract loginHook();
+
+  alreadyLoggedIn(): void {
+    this.returnCommand(alreadyLoggedInTermLine);
   }
 
-  helpLoggedIn(
-    state: IState,
-  ) {
-    this.returnCommand(state,  helpLoggedInTermLine);
+  helpLoggedIn(): void {
+    this.returnCommand(helpLoggedInTermLine);
   }
 
-  helpLoggedOut(
-    state: IState,
-  ) {
-    this.returnCommand(state,  helpLoggedOutTermLine);
+  helpLoggedOut(): void {
+    this.returnCommand(helpLoggedOutTermLine);
   }
 
-  whoAmI(
-    state: IState,
-  ) {
-    this.returnCommand(state,  whoAmITermLine);
+  whoAmI(): void {
+    this.returnCommand(whoAmITermLine);
   }
 
-  ship(
-    state: IState,
-  ) {
-    this.returnCommand(state, shipTermLine);
+  ship(): void {
+    this.returnCommand(shipTermLine);
   }
 
-  mission(
-    state: IState,
-  ) {
-    this.returnCommand(state, missionTermLine);
+  mission(): void {
+    this.returnCommand(missionTermLine);
   }
 
-  date(
-    state: IState,
-  ) {
-    this.returnCommand(state, dateTermLine);
+  date(): void {
+    this.returnCommand(dateTermLine);
+  }
+
+  settings() {
+    this.returnCommand(
+      settingsTermLine
+    );
   }
 
   // map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
@@ -370,19 +462,7 @@ export class SpaceTrashTerminal {
   //   );
   // }
 
-  settings(state: IState) {
-    this.returnCommand(
-      state,
-      // {
-      //   ...state,
-      //   terminal: {
-      //     ...state.terminal,
-      //   },
-      // },
-      // stateSetter,
-      settingsTermLine
-    );
-  }
+  
 
   // error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
   //   this.returnCommand(
@@ -397,131 +477,32 @@ export class SpaceTrashTerminal {
   //   );
   // }
 
-  //////////////////////////////////////////
-
-  state(): {
-    history: ITerminalLine[];
-    buffer: string;
-    submitBuffer: any;
-    setBuffer: any;
-    uiUpdateCallback: any
-  } {
-    // debugger;
-    return {
-      history: this.history,
-      buffer: this.buffer,
-      submitBuffer: this.submitBuffer.bind(this),
-      setBuffer: this.setBuffer.bind(this),
-      uiUpdateCallback: this.uiUpdateCallback
-    };
-  }
-
-  booted = false
-  boot() {
-    console.log("Terminal boot", this.booted);
-    if (this.booted) {
-      // 
-    } else {
-      this.booted = true
-      this.addToHistory(bootScreenTermLine);
-      
-    }
-    
-  }
-
-  commandNotFound(props: IDockviewPanelProps<IState>, unknownCommand: string) {
-    this.returnCommand(props, commandNotFoundTermLine(unknownCommand));
-  }
-
-  processCommand(props: IDockviewPanelProps<IState>): void {
-    // const state = props.uiState;
-    const command =  props.uiState.buffer;
-    const loggedIn =  props.uiState.loggedIn;
-
-    if (command === "login") {
-      if (!loggedIn) {
-        this.login(props);
-        return;
-      } else {
-        this.alreadyLoggedIn(props);
-        return;
-      }
-    }
-
-    // if (command === "bots") {
-    //   if (!loggedIn) {
-    //     this.error(props);
-    //     return;
-    //   } else {
-    //     this.bots(props);
-    //     return;
-    //   }
-    // }
-
-    if (command === "help") {
-      if (!this.loggedIn) {
-        this.helpLoggedOut(props);
-        return;
-      } else {
-        this.helpLoggedIn(props);
-        return;
-      }
-    }
-
-    if (command === "whoami") {
-      this.whoAmI(props);
-      return;
-    }
-
-    if (command === "ship") {
-      this.ship(props);
-      return;
-    }
-
-    if (command === "mission") {
-      this.mission(props);
-      return;
-    }
-
-    if (command === "date") {
-      this.date(sprops);
-      return;
-    }
-
-    if (command === "settings") {
-      this.settings(props);
-      return;
-    }
-
-    // if (command === "map") {
-    //   this.map(state, stateSetter);
-    //   return;
-    // }
-
-    // if (command === "video") {
-    //   this.video(state, stateSetter);
-    //   return;
-    // }
-
-    // const matchForBot = (/b ([1-9])*/gm).exec(command);
-
-    // if (matchForBot && matchForBot?.length > 0) {
-
-    //   // if (!matchForBot || !matchForBot[0]) {
-    //   //   return {
-    //   //     out: `couldn't parse bot id`,
-    //   //     status: 'fail'
-    //   //   }
-    //   // }
-    //   debugger
-
-    //   SpaceTrashPlayer.videoFeed = Number.parseInt(matchForBot[0]);
-
-    //   return {
-    //     out: `now commanding Bot #${SpaceTrashPlayer.videoFeed}`,
-    //     status: 'pass'
-    //   }
-    // }
-    return this.commandNotFound(props, command);
-  }
+  
 }
+
+
+  // terminalAddHistory() {
+  //   // throw new Error("Method not implemented.");
+  //   // const x: ITermWindowState = {
+
+  //   // }
+  //   this.terminalUiHook({
+
+  //   } );
+  // }
+  // terminalUiHook() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // terminalUiHook() {
+  //   throw new Error("Method not implemented.");
+  // }
+
+    // boot() {
+  //   console.log("Terminal boot", this.booted);
+  //   if (this.booted) {
+  //     //
+  //   } else {
+  //     this.booted = true;
+  //     this.addToHistory(bootScreenTermLine);
+  //   }
+  // }

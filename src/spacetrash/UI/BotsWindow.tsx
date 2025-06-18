@@ -13,6 +13,8 @@ export const BotsWindow = (props: { game: SpaceTrash }) => {
     props.game.registerBotsHook(stateSetter);
   }, []);
 
+  if (!state) return <pre>loading...</pre>
+  
   const botNamer = (n: number) => {
     const s: string = n.toString();
 

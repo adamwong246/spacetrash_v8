@@ -1,31 +1,36 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { ITerminalLine } from "../Terminal";
+import { SpaceTrash } from "..";
 
+export type ITermWindowState = {
+  history: ITerminalLine[];
+  buffer: string;
+  submitBuffer: () => void;
+  setBuffer: (s: string) => void;
+}
 export const TerminalWindow = (
-
-  props: {
-    uiState: {
-      history: ITerminalLine[];
-      buffer: string;
-      submitBuffer: any;
-      setBuffer: any;
-    }
-  },
-
+props: {game: SpaceTrash},
 ) => {
 
-  // Scroll when children change
+  const [state, updateState] = useState<ITermWindowState>(props.game.initalTerminalState());
+
+  useEffect(() => {
+    props.game.registerTerminal(updateState)
+  }, []);
+
+  // Scroll when history is added
   const containerRef = useRef(null);
   useEffect(() => {
     if (containerRef.current) {
-      console.log("autoscroll")
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
     }
-  }, [props.uiState]);
+  }, [state]);
 
   const inputRef = useRef(null);
+
+  if (!state) return <pre>loading...</pre>
 
   return (<div
     id={"terminal-window"}
@@ -65,7 +70,7 @@ export const TerminalWindow = (
     >
 
       {
-        props.uiState.history.map((tl: ITerminalLine) => {
+        state.history.map((tl: ITerminalLine) => {
 
           if (tl.in) {
             return (`
@@ -88,7 +93,7 @@ ${tl.out}`)
       spellCheck="false"
       type="text"
       name="terminal-input"
-      value={props.uiState.buffer}
+      value={state.buffer}
       autoFocus={true}
       ref={inputRef}
 
@@ -103,12 +108,12 @@ ${tl.out}`)
       }}
       onKeyDown={async (e) => {
         if (e.key === 'Enter') {
-          props.uiState.submitBuffer(props);
+          props.game.submitBuffer();
 
         }
       }}
       onChange={(e) => {
-        props.uiState.setBuffer(props, e.target.value);
+        props.game.setBuffer(e.target.value);
       }
       }
     />
