@@ -99,6 +99,7 @@ ${tl.out}`)
         backgroundColor: "black",
         color: "lightgreen",
         width: "100%",
+        border: "none",
       }}
       onKeyDown={async (e) => {
         if (e.key === 'Enter') {

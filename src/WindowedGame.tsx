@@ -101,23 +101,6 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
 
   }
 
-  // async draw(): Promise<any> {
-  //   console.log("draw")
-  //   // throw new Error("Method not implemented.");
-  // }
-
-  // start() {
-
-  //   return super.start()
-  // }
-
-  // async registerUiHook(stateSetter) {
-  //   console.log("registerUiHook 1", stateSetter);
-  //   this.stateSetter = stateSetter;
-  //   this.gameReady()
-  //   // console.log("registerUiHook 2", this.stateSetter);
-  // }
-
   async registerUiHooks(
     uiHooks,
     stateSetter,

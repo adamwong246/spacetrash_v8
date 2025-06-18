@@ -1179,5 +1179,5 @@ td {
   border: 1px solid black;
 }
 #terminal-window input:focus-visible {
-  outline: none;
+  outline: 1px solid lightgreen;
 }

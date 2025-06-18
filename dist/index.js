@@ -93559,7 +93559,8 @@ ${tl.out}`;
           bottom: 0,
           backgroundColor: "black",
           color: "lightgreen",
-          width: "100%"
+          width: "100%",
+          border: "none"
         },
         onKeyDown: async (e) => {
           if (e.key === "Enter") {
@@ -93712,6 +93713,10 @@ var SpaceTrashTerminal = class {
   //   return state.buffer;
   // }
   setBuffer(props, b) {
+    this.buffer = b;
+    props.uiState.uiUpdateCallback({ buffer: b });
+  }
+  addToBuffer(props, b) {
     this.buffer = b;
     props.uiState.uiUpdateCallback({ buffer: b });
   }
@@ -94647,19 +94652,6 @@ var WindowedGame = class extends MultiSurfaceGame {
       }
     ));
   }
-  // async draw(): Promise<any> {
-  //   console.log("draw")
-  //   // throw new Error("Method not implemented.");
-  // }
-  // start() {
-  //   return super.start()
-  // }
-  // async registerUiHook(stateSetter) {
-  //   console.log("registerUiHook 1", stateSetter);
-  //   this.stateSetter = stateSetter;
-  //   this.gameReady()
-  //   // console.log("registerUiHook 2", this.stateSetter);
-  // }
   async registerUiHooks(uiHooks, stateSetter, state) {
     this.stateSetter = stateSetter;
     const mappedArray = Object.entries(uiHooks).map(([key, value]) => [key, (a, b) => {
@@ -94904,8 +94896,8 @@ var SpaceTrash = class extends WindowedGame {
       (event, s) => {
         this.dockviewAPI = event.api;
         event.api.addPanel({
-          id: "terminal",
-          component: "terminal",
+          id: "term",
+          component: "term",
           floating: {
             position: { left: 10, top: 10 },
             width: 900,
@@ -94922,14 +94914,14 @@ var SpaceTrash = class extends WindowedGame {
           default: (props) => {
             return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("p", null, "default"));
           },
-          shipMap: (props) => {
+          map: (props) => {
             return /* @__PURE__ */ import_react23.default.createElement(MapWindow, { game: this });
           },
-          bot: (props) => {
+          vid: (props) => {
             return /* @__PURE__ */ import_react23.default.createElement(BotWindow, { game: this });
           },
           bots: (props) => /* @__PURE__ */ import_react23.default.createElement(BotsWindow, { game: this }),
-          terminal: (props) => {
+          term: (props) => {
             if (!this.terminal) {
               this.terminal = new SpaceTrashTerminal(
                 (x) => props.api.updateParameters(x),
@@ -94979,19 +94971,29 @@ var SpaceTrash = class extends WindowedGame {
       } else if (event.key === "ArrowRight") {
         _terminal.turnRight();
       } else if (isNumerica(event.key)) {
-        _terminal.switchVideoFeed(Number(event.key));
+        _terminal.switchVideoFeedAndFocusWindow(event.key);
       } else if (isAlphabetic(event.key)) {
-        _terminal.switchVideoFeed(event.key);
+        _terminal.focusTerminalWindow(event.key);
       } else {
         console.log(event);
       }
     });
   }
   focusMapWindow() {
-    throw new Error("Method not implemented.");
+    this.dockviewAPI.panels.forEach((dp) => {
+      if (dp.id === "map") {
+        dp.focus();
+      }
+    });
   }
-  focusTerminalWindow() {
-    throw new Error("Method not implemented.");
+  focusTerminalWindow(s) {
+    this.dockviewAPI.panels.forEach((dp) => {
+      if (dp.id === "term") {
+        dp.focus();
+      }
+    });
+    if (s) {
+    }
   }
   driveForward() {
     throw new Error("Method not implemented.");
@@ -95005,13 +95007,18 @@ var SpaceTrash = class extends WindowedGame {
   turnRight() {
     throw new Error("Method not implemented.");
   }
-  switchVideoFeed(arg0) {
-    throw new Error("Method not implemented.");
+  switchVideoFeedAndFocusWindow(s) {
+    this.videoFeed = Number(s);
+    this.dockviewAPI.panels.forEach((dp) => {
+      if (dp.id === "vid") {
+        dp.focus();
+      }
+    });
   }
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
-      id: "bot",
-      component: "bot",
+      id: "vid",
+      component: "vid",
       floating: {
         position: { left: 50, top: 50 },
         width: 600,
@@ -95020,8 +95027,8 @@ var SpaceTrash = class extends WindowedGame {
       params: {}
     });
     this.dockviewAPI.component.addPanel({
-      id: "shipMap",
-      component: "shipMap",
+      id: "map",
+      component: "map",
       floating: {
         position: { left: 100, top: 150 },
         width: 600,

@@ -160,8 +160,8 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
         this.dockviewAPI = event.api;
 
         event.api.addPanel({
-          id: 'terminal',
-          component: 'terminal',
+          id: 'term',
+          component: 'term',
           floating: {
             position: { left: 10, top: 10 },
             width: 900,
@@ -203,13 +203,13 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
             );
           },
 
-          shipMap: (props: IDockviewPanelHeaderProps<IState>) => {
+          map: (props: IDockviewPanelHeaderProps<IState>) => {
             return (
               <MapWindow game={this} />
             );
           },
 
-          bot: (props: IDockviewPanelHeaderProps<IState>) => {
+          vid: (props: IDockviewPanelHeaderProps<IState>) => {
             return (
               <BotWindow game={this} />
             );
@@ -217,7 +217,7 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
 
           bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
 
-          terminal: (props: IDockviewPanelHeaderProps<IState>) => {
+          term: (props: IDockviewPanelHeaderProps<IState>) => {
 
             if (!this.terminal) {
               this.terminal = new SpaceTrashTerminal(
@@ -283,10 +283,10 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
         _terminal.turnRight();
       }
       else if (isNumerica((event.key))) {
-        _terminal.switchVideoFeed(Number(event.key))
+        _terminal.switchVideoFeedAndFocusWindow(event.key)
       }
       else if (isAlphabetic(event.key)) {
-        _terminal.switchVideoFeed(event.key)
+        _terminal.focusTerminalWindow(event.key)
       }
       else {
         console.log(event);
@@ -308,10 +308,25 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
 
   }
   focusMapWindow() {
-    throw new Error("Method not implemented.");
+    this.dockviewAPI.panels.forEach((dp) => {
+      if (dp.id === "map") {
+        dp.focus()
+      }
+    });
+    
   }
-  focusTerminalWindow() {
-    throw new Error("Method not implemented.");
+
+  focusTerminalWindow(s?: string) {
+    this.dockviewAPI.panels.forEach((dp) => {
+      if (dp.id === "term") {
+        dp.focus()
+      }
+    });
+    if (s) {
+      // this.terminal.addToBuffer(s)
+      // this.terminal.buffer = `${this.terminal.buffer}${s}`
+
+    }
   }
   driveForward() {
     throw new Error("Method not implemented.");
@@ -325,14 +340,21 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
   turnRight() {
     throw new Error("Method not implemented.");
   }
-  switchVideoFeed(arg0: string  ) {
-    throw new Error("Method not implemented.");
+
+  switchVideoFeedAndFocusWindow(s: string  ) {
+    this.videoFeed = Number(s);
+    this.dockviewAPI.panels.forEach((dp) => {
+      if (dp.id === "vid") {
+        dp.focus()
+      }
+    })
+
   }
 
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
-      id: 'bot',
-      component: 'bot',
+      id: 'vid',
+      component: 'vid',
       floating: {
         position: { left: 50, top: 50 },
         width: 600,
@@ -344,8 +366,8 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     })
 
     this.dockviewAPI.component.addPanel({
-      id: 'shipMap',
-      component: 'shipMap',
+      id: 'map',
+      component: 'map',
       floating: {
         position: { left: 100, top: 150 },
         width: 600,

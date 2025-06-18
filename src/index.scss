@@ -9,6 +9,12 @@ td {
   border: 1px solid black
 }
 
+// this can't be accomplished easily in react
 #terminal-window input:focus-visible{
-  outline: none;
+  outline: 1px solid lightgreen;
 }
+
+// #terminal-input{
+//   border: 1px red;
+// }
+

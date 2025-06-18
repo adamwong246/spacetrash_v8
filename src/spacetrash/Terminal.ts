@@ -219,18 +219,17 @@ export class SpaceTrashTerminal {
 
   setBuffer(
     props: any,
-    // stateSetter: React.Dispatch<React.SetStateAction<IState>>,
     b: string
   ) {
-    // props.api.updateParameters({ myValue: Date.now() });
     this.buffer = b;
-    // const x = {
-    //   uiState: {
-    //     ...props.uiState,
-    //     buffer: b,
-    //   },
-    // };
-    // debugger
+    props.uiState.uiUpdateCallback({buffer: b});
+  }
+
+  addToBuffer(
+    props: any,
+    b: string
+  ) {
+    this.buffer = b;
     props.uiState.uiUpdateCallback({buffer: b});
   }
 
