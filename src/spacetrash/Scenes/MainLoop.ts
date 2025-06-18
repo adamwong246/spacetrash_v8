@@ -120,6 +120,7 @@ const scene = new MainScene(
       },
   
       (ecs, event: any) => {
+        console.log(event)
         // if (event === "1") {
         //   this.videoFeed = 1;
         // }

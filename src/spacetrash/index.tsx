@@ -81,6 +81,14 @@ const initialState: IState = {
 
 export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | null;
 
+function isAlphabetic(str: string): boolean {
+  return /^[A-Za-z]+$/.test(str);
+}
+
+function isNumerica(str: string): boolean {
+  return /^[1-9]+$/.test(str);
+}
+
 export class SpaceTrash extends WindowedGame<IRenderings, {
   Phase0: Phase0Store,
   Phase1: Phase1Store
@@ -249,9 +257,76 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
 
     );
 
+
+
     this.start()
 
+    const _terminal = this;
+    document.addEventListener('keydown', function (event) {
 
+      if (event.key === 'Escape') {
+        _terminal.focusMapWindow();
+      }
+      else if (event.key === "`") {
+        _terminal.focusTerminalWindow();
+      }
+      else if (event.key === 'ArrowUp') {
+        _terminal.driveForward();
+      }
+      else if (event.key === 'ArrowDown') {
+        _terminal.driveBack();
+      }
+      else if (event.key === 'ArrowLeft') {
+        _terminal.turnLeft();
+      }
+      else if (event.key === 'ArrowRight') {
+        _terminal.turnRight();
+      }
+      else if (isNumerica((event.key))) {
+        _terminal.switchVideoFeed(Number(event.key))
+      }
+      else if (isAlphabetic(event.key)) {
+        _terminal.switchVideoFeed(event.key)
+      }
+      else {
+        console.log(event);
+      }
+
+
+
+      //   props.worker.postMessage(["inputEvent", "UP", "drone"]);
+      // } else if (event.key === 'ArrowDown') {
+      //   props.worker.postMessage(["inputEvent", "DOWN", "drone"]);
+      // } else if (event.key === 'ArrowLeft') {
+      //   props.worker.postMessage(["inputEvent", "LEFT", "drone"]);
+      // } else if (event.key === 'ArrowRight') {
+      //   props.worker.postMessage(["inputEvent", "RIGHT", "drone"]);
+      // }
+    });
+
+
+
+  }
+  focusMapWindow() {
+    throw new Error("Method not implemented.");
+  }
+  focusTerminalWindow() {
+    throw new Error("Method not implemented.");
+  }
+  driveForward() {
+    throw new Error("Method not implemented.");
+  }
+  driveBack() {
+    throw new Error("Method not implemented.");
+  }
+  turnLeft() {
+    throw new Error("Method not implemented.");
+  }
+  turnRight() {
+    throw new Error("Method not implemented.");
+  }
+  switchVideoFeed(arg0: string  ) {
+    throw new Error("Method not implemented.");
   }
 
   openAllWindows() {
@@ -327,6 +402,7 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     this.botsHook = stateSetter;
     this.fireBotsHook()
   }
+
   fireBotsHook() {
     this.botsHook(this.bots)
   }
@@ -336,7 +412,7 @@ export class SpaceTrash extends WindowedGame<IRenderings, {
     let isFriend: boolean = false;
 
     if (!this.bots) throw "no bots?!";
-      
+
     return Object.keys(this.bots).find((b) => {
 
       const bot: [number, string] = this.bots[b];

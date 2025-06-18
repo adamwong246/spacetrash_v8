@@ -94308,6 +94308,7 @@ var scene2 = new MainScene(
         ];
       },
       (ecs, event) => {
+        console.log(event);
       },
       "webgl2"
     ],
@@ -94838,6 +94839,12 @@ var initialState = {
     9: null
   }
 };
+function isAlphabetic(str) {
+  return /^[A-Za-z]+$/.test(str);
+}
+function isNumerica(str) {
+  return /^[1-9]+$/.test(str);
+}
 var SpaceTrash = class extends WindowedGame {
   uiHooks = {
     terminalAddHistory: (setter, history) => {
@@ -94942,6 +94949,49 @@ var SpaceTrash = class extends WindowedGame {
       }
     );
     this.start();
+    const _terminal = this;
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        _terminal.focusMapWindow();
+      } else if (event.key === "`") {
+        _terminal.focusTerminalWindow();
+      } else if (event.key === "ArrowUp") {
+        _terminal.driveForward();
+      } else if (event.key === "ArrowDown") {
+        _terminal.driveBack();
+      } else if (event.key === "ArrowLeft") {
+        _terminal.turnLeft();
+      } else if (event.key === "ArrowRight") {
+        _terminal.turnRight();
+      } else if (isNumerica(event.key)) {
+        _terminal.switchVideoFeed(Number(event.key));
+      } else if (isAlphabetic(event.key)) {
+        _terminal.switchVideoFeed(event.key);
+      } else {
+        console.log(event);
+      }
+    });
+  }
+  focusMapWindow() {
+    throw new Error("Method not implemented.");
+  }
+  focusTerminalWindow() {
+    throw new Error("Method not implemented.");
+  }
+  driveForward() {
+    throw new Error("Method not implemented.");
+  }
+  driveBack() {
+    throw new Error("Method not implemented.");
+  }
+  turnLeft() {
+    throw new Error("Method not implemented.");
+  }
+  turnRight() {
+    throw new Error("Method not implemented.");
+  }
+  switchVideoFeed(arg0) {
+    throw new Error("Method not implemented.");
   }
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
