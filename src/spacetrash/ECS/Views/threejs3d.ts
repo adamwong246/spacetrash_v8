@@ -1,21 +1,14 @@
 import * as THREE from "three";
 
-import { Assets } from "@pixi/assets";
-import { Application } from "pixi.js";
-import { Sprite } from "three";
-import { SpaceTrash } from "../..";
-import { Phase0Store } from "../Components/phase0";
+import { IView } from "../../../engine/VECS.ts/View";
+
 import { Phase1Store } from "../Components/phase1";
-import { MapSize, TileSize, ActorSize } from "../System";
+import { MapSize, TileSize } from "../System";
 
 let tick = -1;
 let videoRenderer: THREE.WebGLRenderer;
 
 var scene = new THREE.Scene();
-
-
-
-
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 const unlitFloorMaterial = new THREE.MeshBasicMaterial({ color: "lightgrey" });
@@ -33,10 +26,7 @@ const cylinderGeometry = new THREE.CylinderGeometry(
 var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
 var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
 
-const render: (game: SpaceTrash, canvas: HTMLCanvasElement) => Promise<any> = (
-  game,
-  canvas
-) =>
+const render: IView = (game, canvas) =>
   new Promise((res, rej) => {
     tick++;
 
@@ -49,7 +39,7 @@ const render: (game: SpaceTrash, canvas: HTMLCanvasElement) => Promise<any> = (
     } else {
     }
     // const twoD = game.ecs.stores["Phase0"].store;
-    const twoD = game.stores.Phase0.store
+    const twoD = game.stores.Phase0.store;
     const oneD = (game.stores["Phase1"] as Phase1Store).store;
 
     for (let y = 0; y < MapSize; y++) {
@@ -257,11 +247,9 @@ const render: (game: SpaceTrash, canvas: HTMLCanvasElement) => Promise<any> = (
     const p = canvas.parentElement.getBoundingClientRect();
     videoRenderer.setSize(p.width, p.height);
 
-    debugger
     videoRenderer.render(scene, camera);
 
     res(true);
   });
 
 export default render;
-

@@ -1,13 +1,13 @@
 import { Assets } from "@pixi/assets";
 import { Application, Sprite } from "pixi.js";
 
-import { SpaceTrash } from "../..";
 import { Phase0Store } from "../Components/phase0";
 import { Phase1Store } from "../Components/phase1";
 import { MapSize, TileSize, ActorSize } from "../System";
 
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
+import { IView } from "../../../engine/VECS.ts/View";
 
 let actors: Sprite[] = [];
 let pixi2dApp: Application;
@@ -19,7 +19,7 @@ let bunnyTexture: any;
 
 const tiles: [any, boolean][][] = [[]];
 
-const render: (game: SpaceTrash, canvas: HTMLCanvasElement) => Promise<any> = (game, canvas) =>
+const render: IView = (game, canvas) =>
   new Promise(async (res, rej) => {
     // console.log("Pixi2dShipMap hello", tick, tiles);
     const twoD = (game.stores["Phase0"] as Phase0Store).store;
