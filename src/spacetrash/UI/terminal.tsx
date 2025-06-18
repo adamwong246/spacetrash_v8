@@ -19,74 +19,88 @@ export const TerminalWindow = (
   const containerRef = useRef(null);
   useEffect(() => {
     if (containerRef.current) {
+      console.log("autoscroll")
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
     }
   }, [props.uiState]);
 
-
+  const inputRef = useRef(null);
 
   return (<div
-
+    id={"terminal-window"}
     style={{
+      backgroundColor: "darkgreen",
       height: "100%",
       width: "100%",
       position: "relative",
+      overflowY: "scroll",
     }}
   >
 
-    <div >
 
-      <pre
-        ref={containerRef}
-        id="terminal"
-        style={{
-          overflowX: "scroll",
-          overflowY: "scroll",
-          backgroundColor: "darkgreen",
-          color: "lightgreen",
-          position: "absolute",
-          bottom: '1.5rem',
-          top: 0,
-          // height: "100%",
-          width: "100%",
-          margin: "0",
-          // height: 'inherit',
-        }}
-      >
 
-        {
-          props.uiState.history.map((tl: ITerminalLine) => {
+    <pre
+      ref={containerRef}
+      id="terminal"
+      onClick={() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }}
+      style={{
+        overflowY: "scroll",
+        backgroundColor: "darkgreen",
+        color: "lightgreen",
+        position: "absolute",
+        bottom: '1.5rem',
+        textWrap: 'auto',
+        top: 0,
+        // height: "100%",
+        width: "100%",
+        margin: "0",
+        // height: 'inherit',
 
-            if (tl.in) {
-              return (`
+      }}
+    >
+
+      {
+        props.uiState.history.map((tl: ITerminalLine) => {
+
+          if (tl.in) {
+            return (`
 > ${tl.in}
 ${tl.out}`)
-            } else {
-              return (`
+          } else {
+            return (`
 ${tl.out}`)
-            }
+          }
 
-          })
-        }
+        })
+      }
 
-      </pre>
+    </pre>
 
-    </div>
+
 
     <input
+      id="terminal-input"
+      spellCheck="false"
       type="text"
       name="terminal-input"
       value={props.uiState.buffer}
+      autoFocus={true}
+      ref={inputRef}
 
       style={{
+        fontFamily: "monospace",
         position: "absolute",
         bottom: 0,
-        backgroundColor: "darkgreen",
+        backgroundColor: "black",
         color: "lightgreen",
         width: "100%",
       }}
-      onKeyDown={(e) => {
+      onKeyDown={async (e) => {
         if (e.key === 'Enter') {
           props.uiState.submitBuffer(props);
 

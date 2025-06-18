@@ -93491,30 +93491,40 @@ var TerminalWindow = (props) => {
   const containerRef = (0, import_react19.useRef)(null);
   (0, import_react19.useEffect)(() => {
     if (containerRef.current) {
+      console.log("autoscroll");
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [props.uiState]);
+  const inputRef = (0, import_react19.useRef)(null);
   return /* @__PURE__ */ import_react19.default.createElement(
     "div",
     {
+      id: "terminal-window",
       style: {
+        backgroundColor: "darkgreen",
         height: "100%",
         width: "100%",
-        position: "relative"
+        position: "relative",
+        overflowY: "scroll"
       }
     },
-    /* @__PURE__ */ import_react19.default.createElement("div", null, /* @__PURE__ */ import_react19.default.createElement(
+    /* @__PURE__ */ import_react19.default.createElement(
       "pre",
       {
         ref: containerRef,
         id: "terminal",
+        onClick: () => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        },
         style: {
-          overflowX: "scroll",
           overflowY: "scroll",
           backgroundColor: "darkgreen",
           color: "lightgreen",
           position: "absolute",
           bottom: "1.5rem",
+          textWrap: "auto",
           top: 0,
           // height: "100%",
           width: "100%",
@@ -93532,21 +93542,26 @@ ${tl.out}`;
 ${tl.out}`;
         }
       })
-    )),
+    ),
     /* @__PURE__ */ import_react19.default.createElement(
       "input",
       {
+        id: "terminal-input",
+        spellCheck: "false",
         type: "text",
         name: "terminal-input",
         value: props.uiState.buffer,
+        autoFocus: true,
+        ref: inputRef,
         style: {
+          fontFamily: "monospace",
           position: "absolute",
           bottom: 0,
-          backgroundColor: "darkgreen",
+          backgroundColor: "black",
           color: "lightgreen",
           width: "100%"
         },
-        onKeyDown: (e) => {
+        onKeyDown: async (e) => {
           if (e.key === "Enter") {
             props.uiState.submitBuffer(props);
           }
