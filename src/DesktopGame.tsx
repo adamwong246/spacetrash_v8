@@ -119,7 +119,6 @@ export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceG
   
   
   focusWindowById(s: string, p?: any) {
-    debugger
     this.dockviewAPI.panels.forEach((p) => {
       if (p.id === s) {
         p.focus();

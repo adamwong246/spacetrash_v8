@@ -97,6 +97,10 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     9: [number, string];
   };
   terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
+  forward: boolean;
+  back: boolean;
+  left: boolean;
+  right: boolean;
 
   constructor(domNode: HTMLElement) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -159,7 +163,24 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       else {
         console.log(event);
       }
-
+    });
+    document.addEventListener('keyup', function (event) {
+      
+      if (event.key === 'ArrowUp') {
+        self.stopForward();
+      }
+      else if (event.key === 'ArrowDown') {
+        self.stopBack();
+      }
+      else if (event.key === 'ArrowLeft') {
+        self.stopLeft();
+      }
+      else if (event.key === 'ArrowRight') {
+        self.stopRight();
+      }
+      else {
+        console.log(event);
+      }
     });
 
   }
@@ -282,24 +303,42 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
 
   driveForward() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    pac.dy = pac.dy - .001;
+    this.forward = true;
+    
+    // const beid = this.bots[this.videoFeed][0];
+    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
+    // pac.dy = pac.dy - .001;
   }
   driveBack() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    pac.dy = pac.dy + 0.01;
+    this.back = true;
+    // const beid = this.bots[this.videoFeed][0];
+    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
+    // pac.dy = pac.dy + 0.01;
   }
   turnLeft() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    pac.dx = pac.dx - 0.01;
+    this.left = true;
+    // const beid = this.bots[this.videoFeed][0];
+    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
+    // pac.dx = pac.dx - 0.01;
   }
   turnRight() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    pac.dx = pac.dx + 0.01;
+    this.right = true;
+    // const beid = this.bots[this.videoFeed][0];
+    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
+    // pac.dx = pac.dx + 0.01;
+  }
+
+  stopForward() {
+    this.forward = false;
+  }
+  stopBack() {
+    this.back = false;
+  }
+  stopLeft() {
+    this.left = false;
+  }
+  stopRight() {
+    this.right = false;
   }
 
   openAllWindows() {

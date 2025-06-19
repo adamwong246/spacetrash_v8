@@ -16,8 +16,8 @@ const numberOfShips = 5;
 const numberOfRooms = 50;
 export const ShadowLimit = 5;
 
-export const NumberOfActors = 20
-  // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
+export const NumberOfActors = 20;
+// BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 15;
 export const ActorSize = TileSize / 1;
 
@@ -25,7 +25,7 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 30
+export const MapSize = 30;
 
 const illuminate = (xFloat: number, yFloat: number): any => {
   const x = Math.round(xFloat);
@@ -358,6 +358,25 @@ class MainSystem extends System {
             // no-opt
           }
 
+          console.log(i, game.bots[game.videoFeed][0]);
+          if (i === game.bots[game.videoFeed][0]) {
+            if (game.forward === true) {
+              a.dy = a.dy - 0.001;
+            }
+
+            if (game.back === true) {
+              a.dy = a.dy + 0.001;
+            }
+
+            if (game.left === true) {
+              a.dx = a.dx - 0.001;
+            }
+
+            if (game.right === true) {
+              a.dx = a.dx + 0.001;
+            }
+          }
+
           // collision check with other actors
           // this causes GC but there's nothing I can do about it
           actorsStore.store.forEach(([i2, a2], n2) => {
@@ -427,12 +446,8 @@ class MainSystem extends System {
           a.dy = a.dy * 0.999;
 
           // update the position
-          a.x = (a.x + a.dx);
+          a.x = a.x + a.dx;
           a.y = a.y + a.dy;
-
-          
-
-          
 
           // this causes GC but there's nothing I can do about it
 

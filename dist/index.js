@@ -57680,6 +57680,21 @@ var MainSystem = class extends System2 {
             }
           } else {
           }
+          console.log(i, game.bots[game.videoFeed][0]);
+          if (i === game.bots[game.videoFeed][0]) {
+            if (game.forward === true) {
+              a.dy = a.dy - 1e-3;
+            }
+            if (game.back === true) {
+              a.dy = a.dy + 1e-3;
+            }
+            if (game.left === true) {
+              a.dx = a.dx - 1e-3;
+            }
+            if (game.right === true) {
+              a.dx = a.dx + 1e-3;
+            }
+          }
           actorsStore.store.forEach(([i2, a2], n2) => {
             if (n !== n2) {
               if (actorsCollide(a, a2)) {
@@ -94414,7 +94429,6 @@ var DesktopGame = class extends MultiSurfaceGame {
     )));
   }
   focusWindowById(s, p) {
-    debugger;
     this.dockviewAPI.panels.forEach((p2) => {
       if (p2.id === s) {
         p2.focus();
@@ -94774,6 +94788,10 @@ var SpaceTrash = class extends TerminalGame {
   videoFeed = 1;
   bots;
   terminalWindowHook;
+  forward;
+  back;
+  left;
+  right;
   constructor(domNode) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
     stateSpace.connect(`boot`, `mainloop`);
@@ -94821,6 +94839,19 @@ var SpaceTrash = class extends TerminalGame {
         self3.focusVideoWindow(event.key);
       } else if (isAlphabetic(event.key)) {
         self3.focusTerminalWindow(event.key);
+      } else {
+        console.log(event);
+      }
+    });
+    document.addEventListener("keyup", function(event) {
+      if (event.key === "ArrowUp") {
+        self3.stopForward();
+      } else if (event.key === "ArrowDown") {
+        self3.stopBack();
+      } else if (event.key === "ArrowLeft") {
+        self3.stopLeft();
+      } else if (event.key === "ArrowRight") {
+        self3.stopRight();
       } else {
         console.log(event);
       }
@@ -94911,24 +94942,28 @@ var SpaceTrash = class extends TerminalGame {
   //   })
   // }
   driveForward() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
-    pac.dy = pac.dy - 1e-3;
+    this.forward = true;
   }
   driveBack() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
-    pac.dy = pac.dy + 0.01;
+    this.back = true;
   }
   turnLeft() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
-    pac.dx = pac.dx - 0.01;
+    this.left = true;
   }
   turnRight() {
-    const beid = this.bots[this.videoFeed][0];
-    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
-    pac.dx = pac.dx + 0.01;
+    this.right = true;
+  }
+  stopForward() {
+    this.forward = false;
+  }
+  stopBack() {
+    this.back = false;
+  }
+  stopLeft() {
+    this.left = false;
+  }
+  stopRight() {
+    this.right = false;
   }
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
