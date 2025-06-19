@@ -1,7 +1,5 @@
 import { SpaceTrashScene } from ".";
-import { ISpaceTrashApps, SpaceTrash } from "..";
-import { Game } from "../../engine/Game";
-import { Scene } from "../../engine/Scene";
+import { SpaceTrash } from "..";
 import { BotSlots } from "../Constants";
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
@@ -9,14 +7,13 @@ import { MapSize, ActorSize, NumberOfActors } from "../ECS/System";
 
 class MainScene extends SpaceTrashScene {
   boot(game: SpaceTrash) {
-
     const drones = [...new Array(BotSlots)].map((n) => {
       return new SpaceTrashBot(
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 10,
-        (Math.random() - 0.5) / 10
+        (Math.random() - 0.5) / 50,
+        (Math.random() - 0.5) / 50
       );
     });
 
@@ -25,18 +22,14 @@ class MainScene extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 15,
-        (Math.random() - 0.5) / 15
+        (Math.random() - 0.5) / 50,
+        (Math.random() - 0.5) / 50
       );
     });
 
-    const ship = new SpaceTrashShip()
+    const ship = new SpaceTrashShip();
 
-    game.setEntitiesComponent([
-      ship,
-      ...ship.toTiles(),
-      ...moreBots,
-    ]);
+    game.setEntitiesComponent([ship, ...ship.toTiles(), ...moreBots]);
 
     const myDoneIds = game.setEntitiesComponent([...drones]);
 
@@ -52,7 +45,7 @@ class MainScene extends SpaceTrashScene {
       9: [myDoneIds[8], "obiwan"],
     };
 
-    game.openAllWindows()    
+    game.openAllWindows();
     game.unpause();
   }
 
@@ -64,13 +57,10 @@ class MainScene extends SpaceTrashScene {
   }
 
   terminal(s: SpaceTrash) {
-    // debugger
     // return s.renderTerminal;
   }
   drone(s: SpaceTrash, ctx: HTMLCanvasElement) {
-    debugger
-    console.log(s)
-    return s.renderDroneVideo(s, ctx)
+    return s.renderDroneVideo(s, ctx);
   }
   shipMap() {
     throw new Error("Method not implemented.");
@@ -80,225 +70,211 @@ class MainScene extends SpaceTrashScene {
   }
 }
 
-const scene = new MainScene(
-  {
-    terminal: [
-      (ecs, reply) => {
-        // reply(["login", ""]);
-        // reply(["terminal-update", this.terminal.login()]);
-        // ecs.unpause();
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {},
-      "2d",
-    ],
-    manual: [
-      (ecs, reply) => {
-        // return []
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {},
-      "2d",
-    ],
-  
-    drone: [
-      (ecs, reply) => {
-        return [(ctx) => {}];
-      },
-  
-      (ecs, reply) => {
-        return [
-          async (game, canvas) => {
-            game.renderDroneVideo(canvas);
-            // return false
-          },
-        ];
-      },
-  
-      (ecs, event: any) => {
-        console.log(event)
-        // if (event === "1") {
-        //   this.videoFeed = 1;
-        // }
-        // if (event === "2") {
-        //   this.videoFeed = 2;
-        // }
-        // if (event.key === "ArrowUp") {
-        //   this.yup();
-        // }
-        // if (event.key === "ArrowDown") {
-        //   this.ydown();
-        // }
-        // if (event.key === "ArrowLeft") {
-        //   this.xleft();
-        // }
-        // if (event.key === "ArrowRight") {
-        //   this.xright();
-        // }
-      },
-      "webgl2",
-    ],
-  
-    shipmap: [
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, reply) => {
-        return [];
-        // const thingsToDraw = [];  //shipMapUpdateLoop(ecs);
-  
-        // return [
-        //   ...thingsToDraw,
-        //   (canvas) => {
-        //     if (
-        //       canvas.constructor.name ===
-        //       "OffscreenCanvasRenderingContext2D"
-        //     ) {
-        //       const canvas2d =
-        //         canvas as OffscreenCanvasRenderingContext2D;
-        //       canvas2d.beginPath();
-        //       canvas2d.arc(
-        //         shipMapMouseX,
-        //         shipMapMouseY,
-        //         TileSize / 1,
-        //         0,
-        //         2 * Math.PI
-        //       );
-        //       canvas2d.lineWidth = 1;
-        //       canvas2d.strokeStyle = "green";
-        //       canvas2d.stroke();
-        //     }
-        //   },
-        // ];
-      },
-      (ecs, event: any) => {
-        if (event.type === "mousemove") {
-          var rect = event.boundingClient;
-          var x = event.clientX - rect.left;
-          var y = event.clientY - rect.top;
-  
-          shipMapMouseX = x;
-          shipMapMouseY = y;
-        }
-      },
-      "2d",
-    ],
-  
-    droneV2: [
-      (ecs, reply) => {
-        return [(ctx) => {}];
-      },
-  
-      (ecs, reply) => {
-        return [
-          async (ctx) => {
-            if (ctx.constructor.name === "WebGLRenderer") {
-              // await renderDroneV2(ecs, ctx);
-            }
-          },
-        ];
-      },
-      (ecs, event: any) => {
-        if (event === "1") {
-          this.videoFeed = 1;
-        }
-        if (event === "2") {
-          this.videoFeed = 2;
-        }
-        if (event.key === "ArrowUp") {
-          this.yup();
-        }
-        if (event.key === "ArrowDown") {
-          this.ydown();
-        }
-        if (event.key === "ArrowLeft") {
-          this.xleft();
-        }
-        if (event.key === "ArrowRight") {
-          this.xright();
-        }
-      },
-      "webgl2",
-    ],
-  
-    shipmapV2: [
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, reply) => {
-        return [
-          async (game: SpaceTrash, ctx) => {
-            await game.renderShipMap(ctx);
-          },
-        ];
-  
-        
-      },
-      (ecs, event: any) => {
-        // if (event.type === "mousemove") {
-        //   var rect = event.boundingClient;
-        //   var x = event.clientX - rect.left;
-        //   var y = event.clientY - rect.top;
-  
-        //   shipMapMouseX = x;
-        //   shipMapMouseY = y;
-        // }
-      },
-      "2d",
-    ],
-  
-    drones: [
-      (ecs, reply) => {
-        // debugger
-        // workerPostMessage([`drones-update`, 'hello']);
-      },
-      (ecs, reply) => {
-        // debugger
-        // workerPostMessage([`drones-update`, 'hello']);
-        return [];
-      },
-      (ecs, events) => {
-        // debugger
-        // workerPostMessage([`drones-update`, 'hello']);
-      },
-      "html",
-    ],
-  },
-  
+const scene = new MainScene({
+  terminal: [
+    (ecs, reply) => {
+      // reply(["login", ""]);
+      // reply(["terminal-update", this.terminal.login()]);
+      // ecs.unpause();
+    },
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, events) => {},
+    "2d",
+  ],
+  manual: [
+    (ecs, reply) => {
+      // return []
+    },
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, events) => {},
+    "2d",
+  ],
 
+  drone: [
+    (ecs, reply) => {
+      return [(ctx) => {}];
+    },
 
-);
+    (ecs, reply) => {
+      return [
+        async (game, canvas) => {
+          game.renderDroneVideo(canvas);
+          // return false
+        },
+      ];
+    },
+
+    (ecs, event: any) => {
+      console.log(event);
+      // if (event === "1") {
+      //   this.videoFeed = 1;
+      // }
+      // if (event === "2") {
+      //   this.videoFeed = 2;
+      // }
+      // if (event.key === "ArrowUp") {
+      //   this.yup();
+      // }
+      // if (event.key === "ArrowDown") {
+      //   this.ydown();
+      // }
+      // if (event.key === "ArrowLeft") {
+      //   this.xleft();
+      // }
+      // if (event.key === "ArrowRight") {
+      //   this.xright();
+      // }
+    },
+    "webgl2",
+  ],
+
+  shipmap: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [];
+      // const thingsToDraw = [];  //shipMapUpdateLoop(ecs);
+
+      // return [
+      //   ...thingsToDraw,
+      //   (canvas) => {
+      //     if (
+      //       canvas.constructor.name ===
+      //       "OffscreenCanvasRenderingContext2D"
+      //     ) {
+      //       const canvas2d =
+      //         canvas as OffscreenCanvasRenderingContext2D;
+      //       canvas2d.beginPath();
+      //       canvas2d.arc(
+      //         shipMapMouseX,
+      //         shipMapMouseY,
+      //         TileSize / 1,
+      //         0,
+      //         2 * Math.PI
+      //       );
+      //       canvas2d.lineWidth = 1;
+      //       canvas2d.strokeStyle = "green";
+      //       canvas2d.stroke();
+      //     }
+      //   },
+      // ];
+    },
+    (ecs, event: any) => {
+      if (event.type === "mousemove") {
+        var rect = event.boundingClient;
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+
+        shipMapMouseX = x;
+        shipMapMouseY = y;
+      }
+    },
+    "2d",
+  ],
+
+  droneV2: [
+    (ecs, reply) => {
+      return [(ctx) => {}];
+    },
+
+    (ecs, reply) => {
+      return [
+        async (ctx) => {
+          if (ctx.constructor.name === "WebGLRenderer") {
+            // await renderDroneV2(ecs, ctx);
+          }
+        },
+      ];
+    },
+    (ecs, event: any) => {
+      if (event === "1") {
+        this.videoFeed = 1;
+      }
+      if (event === "2") {
+        this.videoFeed = 2;
+      }
+      if (event.key === "ArrowUp") {
+        this.yup();
+      }
+      if (event.key === "ArrowDown") {
+        this.ydown();
+      }
+      if (event.key === "ArrowLeft") {
+        this.xleft();
+      }
+      if (event.key === "ArrowRight") {
+        this.xright();
+      }
+    },
+    "webgl2",
+  ],
+
+  shipmapV2: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game: SpaceTrash, ctx) => {
+          await game.renderShipMap(ctx);
+        },
+      ];
+    },
+    (ecs, event: any) => {
+      // if (event.type === "mousemove") {
+      //   var rect = event.boundingClient;
+      //   var x = event.clientX - rect.left;
+      //   var y = event.clientY - rect.top;
+      //   shipMapMouseX = x;
+      //   shipMapMouseY = y;
+      // }
+    },
+    "2d",
+  ],
+
+  drones: [
+    (ecs, reply) => {
+      // workerPostMessage([`drones-update`, 'hello']);
+    },
+    (ecs, reply) => {
+      // workerPostMessage([`drones-update`, 'hello']);
+      return [];
+    },
+    (ecs, events) => {
+      // workerPostMessage([`drones-update`, 'hello']);
+    },
+    "html",
+  ],
+});
 export default scene;
 
 // "menuscene_view_v0",
 
-
-
-
 // return [
-        //   ...thingsToDraw,
-        //   (canvas) => {
-        //     if (
-        //       canvas.constructor.name ===
-        //       "OffscreenCanvasRenderingContext2D"
-        //     ) {
-        //       const canvas2d =
-        //         canvas as OffscreenCanvasRenderingContext2D;
-        //       canvas2d.beginPath();
-        //       canvas2d.arc(
-        //         shipMapMouseX,
-        //         shipMapMouseY,
-        //         TileSize / 1,
-        //         0,
-        //         2 * Math.PI
-        //       );
-        //       canvas2d.lineWidth = 1;
-        //       canvas2d.strokeStyle = "green";
-        //       canvas2d.stroke();
-        //     }
-        //   },
-        // ];
+//   ...thingsToDraw,
+//   (canvas) => {
+//     if (
+//       canvas.constructor.name ===
+//       "OffscreenCanvasRenderingContext2D"
+//     ) {
+//       const canvas2d =
+//         canvas as OffscreenCanvasRenderingContext2D;
+//       canvas2d.beginPath();
+//       canvas2d.arc(
+//         shipMapMouseX,
+//         shipMapMouseY,
+//         TileSize / 1,
+//         0,
+//         2 * Math.PI
+//       );
+//       canvas2d.lineWidth = 1;
+//       canvas2d.strokeStyle = "green";
+//       canvas2d.stroke();
+//     }
+//   },
+// ];

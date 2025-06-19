@@ -1,33 +1,31 @@
-
 import { System } from "../../engine/VECS.ts/System.ts";
-import { PhysicsActorComponent, PhysicsActorStore } from "./Components/actor";
+
+import { SpaceTrash } from "../index.tsx";
+import { BotSlots } from "../Constants.ts";
 
 import { LitableComponent, LittableStore } from "./Components/casting/in";
 import { LitComponent, LitStore } from "./Components/casting/out";
 import { Phase0, Phase0Store } from "./Components/phase0";
 import { Phase1, Phase1Store } from "./Components/phase1";
 import {} from "./Components/physics";
-import {
-  PhysicsSetPieceStore,
-} from "./Components/setPiece";
-import { BotSlots } from "../Constants";
-import { ECS } from "../../engine/VECS.ts/ECS.ts";
-import { SpaceTrash } from "../index.tsx";
+import { PhysicsActorComponent, PhysicsActorStore } from "./Components/actor";
+import { PhysicsSetPieceStore } from "./Components/setPiece";
 
-const shipSize = 20;
-const numberOfShips = 1;
-const numberOfRooms = 13;
-export const ShadowLimit = 10;
+const shipSize = 4;
+const numberOfShips = 5;
+const numberOfRooms = 50;
+export const ShadowLimit = 5;
 
-export const NumberOfActors = 11
+export const NumberOfActors = 20
   // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
-export const TileSize = 25;
+export const TileSize = 15;
 export const ActorSize = TileSize / 1;
 
 export type ISpaceTrashSystems = `physical` | "casting";
-export const MapSize = Math.floor(
-  Math.sqrt(shipSize * shipSize * numberOfShips)
-);
+// export const MapSize = Math.floor(
+//   Math.sqrt(shipSize * shipSize * numberOfShips)
+// );
+export const MapSize = 30
 
 const illuminate = (xFloat: number, yFloat: number): any => {
   const x = Math.round(xFloat);
@@ -97,9 +95,7 @@ const actorsCollide = (a: PhysicsActorComponent, b: PhysicsActorComponent) => {
   // return distanceBetweenActorsV0(a, b);
 };
 
-const isFriendly = (n: number) => {
-  
-}
+const isFriendly = (n: number) => {};
 
 let firstTick = true;
 let phaseZero: Phase0[][];
@@ -170,7 +166,7 @@ class MainSystem extends System {
 
         for (let y = 0; y < actorsStore.store.length; y++) {
           const aeid = actorsStore.store[y][0];
-          
+
           phaseOne[y] = {
             actorId: y,
             actorX: actorsStore.store[y][1].x,
@@ -179,7 +175,7 @@ class MainSystem extends System {
             renderedWebgl: "fresh",
             culled2d: false,
             culledWebgl: false,
-            friendly: game.isFriendly(aeid)
+            friendly: game.isFriendly(aeid),
             // friendly: Math.random() > 0.5,
           };
         }
@@ -281,7 +277,6 @@ class MainSystem extends System {
         });
 
         actorsStore.store.forEach(([i, a], n) => {
-          
           // x and y are the "look ahead" pointer
           let x = Math.round(a.x + a.dx);
           if (x >= this.mapSize - 1) x = 0;
@@ -289,8 +284,6 @@ class MainSystem extends System {
           let y = Math.round(a.y + a.dy);
           if (y >= this.mapSize - 1) y = 0;
           if (y < 0) y = this.mapSize - 1;
-
-
 
           // collision check with set-pieces
           if (!phaseZero[y][x]) debugger;
@@ -425,13 +418,21 @@ class MainSystem extends System {
             a.y = low;
           }
 
-          // update the position
-          a.x = a.x + a.dx;
-          a.y = a.y + a.dy;
+          // govern the speed
+          a.dx = Math.min(a.dx, 0.5);
+          a.dy = Math.min(a.dy, 0.5);
 
           // friction
-          // a.dx = a.dx * 0.999;
-          // a.dy = a.dy * 0.999;
+          a.dx = a.dx * 0.999;
+          a.dy = a.dy * 0.999;
+
+          // update the position
+          a.x = (a.x + a.dx);
+          a.y = a.y + a.dy;
+
+          
+
+          
 
           // this causes GC but there's nothing I can do about it
 

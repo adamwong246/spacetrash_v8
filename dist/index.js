@@ -7961,7 +7961,7 @@ var require_react_dom_development = __commonJS({
         var HostPortal = 4;
         var HostComponent = 5;
         var HostText = 6;
-        var Fragment2 = 7;
+        var Fragment = 7;
         var Mode = 8;
         var ContextConsumer = 9;
         var ContextProvider = 10;
@@ -9118,7 +9118,7 @@ var require_react_dom_development = __commonJS({
               return "DehydratedFragment";
             case ForwardRef:
               return getWrappedName$1(type, type.render, "ForwardRef");
-            case Fragment2:
+            case Fragment:
               return "Fragment";
             case HostComponent:
               return type;
@@ -17547,7 +17547,7 @@ var require_react_dom_development = __commonJS({
             }
           }
           function updateFragment2(returnFiber, current2, fragment10, lanes, key) {
-            if (current2 === null || current2.tag !== Fragment2) {
+            if (current2 === null || current2.tag !== Fragment) {
               var created = createFiberFromFragment(fragment10, returnFiber.mode, lanes, key);
               created.return = returnFiber;
               return created;
@@ -17950,7 +17950,7 @@ var require_react_dom_development = __commonJS({
               if (child.key === key) {
                 var elementType = element.type;
                 if (elementType === REACT_FRAGMENT_TYPE) {
-                  if (child.tag === Fragment2) {
+                  if (child.tag === Fragment) {
                     deleteRemainingChildren(returnFiber, child.sibling);
                     var existing = useFiber(child, element.props.children);
                     existing.return = returnFiber;
@@ -23426,7 +23426,7 @@ var require_react_dom_development = __commonJS({
               var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
               return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
             }
-            case Fragment2:
+            case Fragment:
               return updateFragment(current2, workInProgress2, renderLanes2);
             case Mode:
               return updateMode(current2, workInProgress2, renderLanes2);
@@ -23698,7 +23698,7 @@ var require_react_dom_development = __commonJS({
             case SimpleMemoComponent:
             case FunctionComponent:
             case ForwardRef:
-            case Fragment2:
+            case Fragment:
             case Mode:
             case Profiler:
             case ContextConsumer:
@@ -27959,7 +27959,7 @@ var require_react_dom_development = __commonJS({
           return fiber;
         }
         function createFiberFromFragment(elements, mode, lanes, key) {
-          var fiber = createFiber(Fragment2, elements, key, mode);
+          var fiber = createFiber(Fragment, elements, key, mode);
           fiber.lanes = lanes;
           return fiber;
         }
@@ -57461,15 +57461,11 @@ var Phase0Store = class extends TwoDStore {
 };
 
 // src/spacetrash/ECS/System.ts
-var shipSize = 20;
-var numberOfShips = 1;
-var ShadowLimit = 10;
-var NumberOfActors = 11;
-var TileSize = 25;
+var ShadowLimit = 5;
+var NumberOfActors = 20;
+var TileSize = 15;
 var ActorSize = TileSize / 1;
-var MapSize = Math.floor(
-  Math.sqrt(shipSize * shipSize * numberOfShips)
-);
+var MapSize = 30;
 var illuminate = (xFloat, yFloat) => {
   const x = Math.round(xFloat);
   const y = Math.round(yFloat);
@@ -57712,6 +57708,10 @@ var MainSystem = class extends System2 {
           if (a.y > high) {
             a.y = low;
           }
+          a.dx = Math.min(a.dx, 0.5);
+          a.dy = Math.min(a.dy, 0.5);
+          a.dx = a.dx * 0.999;
+          a.dy = a.dy * 0.999;
           a.x = a.x + a.dx;
           a.y = a.y + a.dy;
           if (phaseOne[n].actorX === actorsStore.store[n][1].x && phaseOne[n].actorY === actorsStore.store[n][1].y) {
@@ -82514,9 +82514,13 @@ var cylinderGeometry = new CylinderGeometry(
 );
 var material = new MeshBasicMaterial({ color: "#433F81" });
 var camera = new PerspectiveCamera(75, 600 / 400, 0.1, 1e4);
+var defToRad = (d) => d * Math.PI / 180;
+camera.rotateX(defToRad(-90));
+camera.rotateZ(defToRad(0));
 var render2 = (game, canvas) => new Promise((res, rej) => {
   tick++;
   if (tick === 0) {
+    console.log("hello threejs ");
     videoRenderer = new WebGLRenderer({
       canvas,
       context: canvas.getContext("webgl2"),
@@ -82596,8 +82600,8 @@ var render2 = (game, canvas) => new Promise((res, rej) => {
     }
   });
   const position = game.videoFeedPosition();
-  camera.position.x = position.x;
-  camera.position.y = position.y;
+  camera.position.x = position.x * TileSize;
+  camera.position.y = position.y * TileSize;
   const p = canvas.parentElement.getBoundingClientRect();
   videoRenderer.setSize(p.width, p.height);
   videoRenderer.render(scene, camera);
@@ -82731,6 +82735,11 @@ var TerminalWindow = (props) => {
     }
   }, [state]);
   const inputRef = (0, import_react.useRef)(null);
+  (0, import_react.useEffect)(() => {
+    if (inputRef.current) {
+      props.game.registerTerminalBuffer(inputRef);
+    }
+  }, [inputRef]);
   if (!state) return /* @__PURE__ */ import_react.default.createElement("pre", null, "loading...");
   return /* @__PURE__ */ import_react.default.createElement(
     "div",
@@ -83003,6 +83012,26 @@ var WallTile = class extends Tile {
     super(x, y, "WallTile");
   }
 };
+var SouthWest = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "SouthWest");
+  }
+};
+var SouthEast = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "SouthEast");
+  }
+};
+var NorthWest = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "NorthWest");
+  }
+};
+var NorthEast = class extends Tile {
+  constructor(x = 0, y = 0) {
+    super(x, y, "NorthEast");
+  }
+};
 
 // src/spacetrash/ECS/EntityComponents/ship.ts
 var SpaceTrashShip = class extends SpaceTrashEntityComponent {
@@ -83052,6 +83081,42 @@ var SpaceTrashShip = class extends SpaceTrashEntityComponent {
       this.addToMap(new WallTile(z + 1, this.shipSize - 1));
       this.addToMap(new WallTile(0, z));
     }
+    this.addToMap(new NorthWest(15, 15));
+    this.addToMap(new WallTile(16, 15));
+    this.addToMap(new WallTile(17, 15));
+    this.addToMap(new WallTile(18, 15));
+    this.addToMap(new WallTile(19, 15));
+    this.addToMap(new NorthEast(20, 15));
+    this.addToMap(new WallTile(20, 16));
+    this.addToMap(new WallTile(20, 17));
+    this.addToMap(new WallTile(20, 18));
+    this.addToMap(new WallTile(20, 19));
+    this.addToMap(new SouthEast(20, 20));
+    this.addToMap(new WallTile(19, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new SouthWest(15, 20));
+    this.addToMap(new WallTile(0, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new SouthWest(15, 20));
+    this.addToMap(new WallTile(15, 16));
+    this.addToMap(new WallTile(15, 17));
+    this.addToMap(new WallTile(15, 18));
+    this.addToMap(new WallTile(15, 19));
+    this.addToMap(new WallTile(15, 20));
+    this.addToMap(new WallTile(20, 16));
+    this.addToMap(new WallTile(20, 17));
+    this.addToMap(new WallTile(20, 18));
+    this.addToMap(new WallTile(20, 19));
+    this.addToMap(new WallTile(20, 20));
+    this.addToMap(new WallTile(15, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(19, 20));
     return;
   }
   constructor() {
@@ -83137,8 +83202,8 @@ var MainScene = class extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 10,
-        (Math.random() - 0.5) / 10
+        (Math.random() - 0.5) / 50,
+        (Math.random() - 0.5) / 50
       );
     });
     const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
@@ -83146,16 +83211,12 @@ var MainScene = class extends SpaceTrashScene {
         Math.random() * MapSize,
         Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 15,
-        (Math.random() - 0.5) / 15
+        (Math.random() - 0.5) / 50,
+        (Math.random() - 0.5) / 50
       );
     });
     const ship = new SpaceTrashShip();
-    game.setEntitiesComponent([
-      ship,
-      ...ship.toTiles(),
-      ...moreBots
-    ]);
+    game.setEntitiesComponent([ship, ...ship.toTiles(), ...moreBots]);
     const myDoneIds = game.setEntitiesComponent([...drones]);
     game.bots = {
       1: [myDoneIds[0], "larry"],
@@ -83180,8 +83241,6 @@ var MainScene = class extends SpaceTrashScene {
   terminal(s) {
   }
   drone(s, ctx) {
-    debugger;
-    console.log(s);
     return s.renderDroneVideo(s, ctx);
   }
   shipMap() {
@@ -83191,125 +83250,123 @@ var MainScene = class extends SpaceTrashScene {
     throw new Error("Method not implemented.");
   }
 };
-var scene2 = new MainScene(
-  {
-    terminal: [
-      (ecs, reply) => {
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {
-      },
-      "2d"
-    ],
-    manual: [
-      (ecs, reply) => {
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {
-      },
-      "2d"
-    ],
-    drone: [
-      (ecs, reply) => {
-        return [(ctx) => {
-        }];
-      },
-      (ecs, reply) => {
-        return [
-          async (game, canvas) => {
-            game.renderDroneVideo(canvas);
+var scene2 = new MainScene({
+  terminal: [
+    (ecs, reply) => {
+    },
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, events) => {
+    },
+    "2d"
+  ],
+  manual: [
+    (ecs, reply) => {
+    },
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, events) => {
+    },
+    "2d"
+  ],
+  drone: [
+    (ecs, reply) => {
+      return [(ctx) => {
+      }];
+    },
+    (ecs, reply) => {
+      return [
+        async (game, canvas) => {
+          game.renderDroneVideo(canvas);
+        }
+      ];
+    },
+    (ecs, event) => {
+      console.log(event);
+    },
+    "webgl2"
+  ],
+  shipmap: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, event) => {
+      if (event.type === "mousemove") {
+        var rect = event.boundingClient;
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        shipMapMouseX = x;
+        shipMapMouseY = y;
+      }
+    },
+    "2d"
+  ],
+  droneV2: [
+    (ecs, reply) => {
+      return [(ctx) => {
+      }];
+    },
+    (ecs, reply) => {
+      return [
+        async (ctx) => {
+          if (ctx.constructor.name === "WebGLRenderer") {
           }
-        ];
-      },
-      (ecs, event) => {
-        console.log(event);
-      },
-      "webgl2"
-    ],
-    shipmap: [
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, event) => {
-        if (event.type === "mousemove") {
-          var rect = event.boundingClient;
-          var x = event.clientX - rect.left;
-          var y = event.clientY - rect.top;
-          shipMapMouseX = x;
-          shipMapMouseY = y;
         }
-      },
-      "2d"
-    ],
-    droneV2: [
-      (ecs, reply) => {
-        return [(ctx) => {
-        }];
-      },
-      (ecs, reply) => {
-        return [
-          async (ctx) => {
-            if (ctx.constructor.name === "WebGLRenderer") {
-            }
-          }
-        ];
-      },
-      (ecs, event) => {
-        if (event === "1") {
-          (void 0).videoFeed = 1;
+      ];
+    },
+    (ecs, event) => {
+      if (event === "1") {
+        (void 0).videoFeed = 1;
+      }
+      if (event === "2") {
+        (void 0).videoFeed = 2;
+      }
+      if (event.key === "ArrowUp") {
+        (void 0).yup();
+      }
+      if (event.key === "ArrowDown") {
+        (void 0).ydown();
+      }
+      if (event.key === "ArrowLeft") {
+        (void 0).xleft();
+      }
+      if (event.key === "ArrowRight") {
+        (void 0).xright();
+      }
+    },
+    "webgl2"
+  ],
+  shipmapV2: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game, ctx) => {
+          await game.renderShipMap(ctx);
         }
-        if (event === "2") {
-          (void 0).videoFeed = 2;
-        }
-        if (event.key === "ArrowUp") {
-          (void 0).yup();
-        }
-        if (event.key === "ArrowDown") {
-          (void 0).ydown();
-        }
-        if (event.key === "ArrowLeft") {
-          (void 0).xleft();
-        }
-        if (event.key === "ArrowRight") {
-          (void 0).xright();
-        }
-      },
-      "webgl2"
-    ],
-    shipmapV2: [
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, reply) => {
-        return [
-          async (game, ctx) => {
-            await game.renderShipMap(ctx);
-          }
-        ];
-      },
-      (ecs, event) => {
-      },
-      "2d"
-    ],
-    drones: [
-      (ecs, reply) => {
-      },
-      (ecs, reply) => {
-        return [];
-      },
-      (ecs, events) => {
-      },
-      "html"
-    ]
-  }
-);
+      ];
+    },
+    (ecs, event) => {
+    },
+    "2d"
+  ],
+  drones: [
+    (ecs, reply) => {
+    },
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, events) => {
+    },
+    "html"
+  ]
+});
 var MainLoop_default = scene2;
 
 // src/spacetrash/UI/BotWindow.tsx
@@ -83416,7 +83473,7 @@ var BotsWindow = (props) => {
   })));
 };
 
-// src/WindowedGame.tsx
+// src/DesktopGame.tsx
 var React12 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 
@@ -94191,7 +94248,6 @@ var ECS = class {
   }
   ///////////////////////////////////////////////////////////////////
   async tick(delta) {
-    console.log("tick");
     if (!this.paused) {
       await this.system.tick(delta, this);
     }
@@ -94241,6 +94297,8 @@ var Game = class extends ECS {
     super.start();
   }
   changeScene(to) {
+    console.log("changing scenes from ", this.stateSpace.getCurrent().constructor.name, "to", to);
+    if (this.stateSpace.get(to) === this.stateSpace.getCurrent()) throw "why did you change scenes to the same scene";
     this.stateSpace.setCurrent(to);
     const newScene = this.stateSpace.getCurrent();
     newScene.boot(this);
@@ -94257,7 +94315,6 @@ var MultiSurfaceGame = class extends Game {
   }
   canvasContexts;
   registerCanvas(key, run, canvas, callback, canvasContext, parentComponent) {
-    console.log("register", key, canvas);
     if (canvasContext === void 0 !== (canvasContext === void 0)) {
       throw `you must pass both canvas and context, or neither. canvas, canvasContext: ${canvas}, ${canvasContext}`;
     }
@@ -94300,38 +94357,16 @@ var MultiSurfaceGame = class extends Game {
   }
 };
 
-// src/WindowedGame.tsx
-var MenuBar = (props) => /* @__PURE__ */ React12.createElement(React12.Fragment, null, /* @__PURE__ */ React12.createElement(
-  "div",
-  {
-    style: {
-      display: "block"
-    }
-  },
-  /* @__PURE__ */ React12.createElement("button", null, "map"),
-  /* @__PURE__ */ React12.createElement("button", null, "term"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 1"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 2"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 3"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 4"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 5"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 6"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 7"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 8"),
-  /* @__PURE__ */ React12.createElement("button", null, "bot 9"),
-  /* @__PURE__ */ React12.createElement("button", null, "QPU")
-));
+// src/DesktopGame.tsx
 var self2;
-var WindowedGame = class extends MultiSurfaceGame {
+var DesktopGame = class extends MultiSurfaceGame {
   reactRoot;
   dockviewAPI;
   stateSetter;
-  onDockviewReady(e) {
-    self2.dockviewAPI = e.api;
+  onDockviewReady(event) {
+    self2.dockviewAPI = event.api;
   }
-  // dockViewComponentFactory():  any{
-  //   // no-op
-  // }
+  // abstract dockViewComponents: Record<string, FunctionComponent<IDockviewPanelProps>> 
   constructor(stateSpace, system, componentStores, stores, config, renderings, domNode) {
     super(stateSpace, system, componentStores, stores, config, renderings);
     this.reactRoot = (0, import_client.createRoot)(domNode);
@@ -94339,96 +94374,54 @@ var WindowedGame = class extends MultiSurfaceGame {
   }
   async start() {
     super.start();
-    this.reactRoot.render(/* @__PURE__ */ React12.createElement("div", null, /* @__PURE__ */ React12.createElement(MenuBar, null), /* @__PURE__ */ React12.createElement(
+    self2.reactRoot.render(/* @__PURE__ */ React12.createElement("div", null, /* @__PURE__ */ React12.createElement(
+      "div",
+      {
+        style: {
+          display: "block"
+        }
+      },
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("map") }, "map"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("term") }, "term"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 1) }, "1"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 2) }, "2"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 3) }, "3"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 4) }, "4"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 5) }, "5"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 6) }, "6"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 7) }, "7"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 8) }, "8"),
+      /* @__PURE__ */ React12.createElement("button", { onClick: () => this.focusWindowById("vid", 9) }, "9")
+    ), /* @__PURE__ */ React12.createElement(
       DockviewReact,
       {
         className: "dockview-theme-abyss",
-        onReady: this.onDockviewReady,
-        components: this.dockViewComponents()
+        onReady: self2.onDockviewReady,
+        components: {
+          default: (props) => {
+            return /* @__PURE__ */ React12.createElement("div", null, /* @__PURE__ */ React12.createElement("p", null, "default"));
+          },
+          map: (props) => {
+            return /* @__PURE__ */ React12.createElement(MapWindow, { game: self2 });
+          },
+          vid: (props) => {
+            return /* @__PURE__ */ React12.createElement(BotWindow, { game: self2 });
+          },
+          bots: (props) => /* @__PURE__ */ React12.createElement(BotsWindow, { game: self2 }),
+          term: (props) => /* @__PURE__ */ React12.createElement(TerminalWindow, { game: self2 })
+        }
       }
     )));
   }
-  // async registerUiHooks(
-  //   uiHooks,
-  //   stateSetter,
-  //   state
-  // ) {
-  //   // debugger
-  //   this.stateSetter = stateSetter;
-  //   // this.uiHooks = {
-  //   //   ...uiHooks.map((s) => {
-  //   //     debugger
-  //   //   })
-  //   // };
-  //   const mappedArray = Object.entries(uiHooks).map(([key, value]) => [key, (a, b) => {
-  //     return uiHooks[key](a, state, b)
-  //   }]);
-  //   const newObject = Object.fromEntries(mappedArray)
-  //   this.uiHooks = newObject
-  //   this.gameReady()
-  //   // console.log("registerUiHook 2", this.stateSetter);
-  // }
-  // start() {
-  //   createRoot(this.reactRoot).render(<DockviewReact
-  //     className={'dockview-theme-abyss'}
-  //     onReady={this.onDockviewReadyEvent}
-  //     components={this.dockViewComponents} />)
-  //   return super.start()
-  // }
-  // draw() {
-  //   return super.draw()
-  // }
-  // renderings: Set<IRenderings>;
-  // constructor(
-  //   stateSpace: StateSpace,
-  //   system: System,
-  //   componentStores: IComponentsStores<any>,
-  //   stores: IStores<any>,
-  //   config: {
-  //     fps: number;
-  //     performanceLogging: boolean;
-  //   },
-  //   renderings: Set<IRenderings>,
-  // ) {
-  //   super(stateSpace, system, componentStores, stores, config);
-  //   this.renderings = renderings;
-  //   this.canvasContexts = {};
-  // }
-  // canvasContexts: Record<
-  //   any,
-  //   {
-  //     run: boolean;
-  //     canvas?: HTMLCanvasElement;
-  //     callback?: (a: any) => void;
-  //     canvasContext?: IRenderings;
-  //     parentComponent?: HTMLElement;
-  //   }
-  // >;
-  // registerCanvas(
-  //   key: any,
-  //   run: boolean,
-  //   canvas?: HTMLCanvasElement,
-  //   callback?: (data: any) => void,
-  //   canvasContext?: IRenderings,
-  //   parentComponent?: HTMLElement
-  // ) {
-  //   console.log("register", key, canvas);
-  //   if ((canvasContext === undefined) !== (canvasContext === undefined)) {
-  //     throw `you must pass both canvas and context, or neither. canvas, canvasContext: ${canvas}, ${canvasContext}`;
-  //   }
-  //   if (canvasContext !== undefined && !this.renderings.has(canvasContext)) {
-  //     throw `you passed an illegal context: ${canvasContext}. I expected ${this.renderings.entries}`;
-  //   }
-  //   this.canvasContexts[key] = {
-  //     run,
-  //     canvas,
-  //     callback,
-  //     canvasContext,
-  //     parentComponent,
-  //   };
-  //   this.canvasContexts[key].callback &&
-  //     this.canvasContexts[key].callback(false);
-  // }
+  focusWindowById(s, p) {
+    debugger;
+    this.dockviewAPI.panels.forEach((p2) => {
+      if (p2.id === s) {
+        p2.focus();
+        p2.setTitle(`${s}`);
+      }
+    });
+  }
 };
 
 // src/spacetrash/Terminal.ts
@@ -94523,7 +94516,7 @@ ESC       bring shipmap for foreground
 `,
   status: "niether"
 };
-var WindowedTerminalGame = class extends WindowedGame {
+var TerminalGame = class extends DesktopGame {
   booted = false;
   uiHooks;
   history = [initialTerminalHistory];
@@ -94588,8 +94581,15 @@ var WindowedTerminalGame = class extends WindowedGame {
     this.updateTerminalWindow();
   }
   setBuffer(b) {
-    this.buffer = b;
-    this.updateTerminalWindow();
+    if ([`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `0`].includes(b)) {
+      this.focusWindowById("vid", b);
+    } else {
+      if (b === "`") {
+        return;
+      }
+      this.buffer = b;
+      this.updateTerminalWindow();
+    }
   }
   addToBuffer(b) {
     this.buffer = `${this.buffer}${b}`;
@@ -94654,29 +94654,14 @@ var WindowedTerminalGame = class extends WindowedGame {
     if (!this.loggedIn) {
       this.loggedIn = true;
       this.loginHook();
-      this.returnCommand(
-        // props,
-        // {
-        //   ...props,
-        //   uiState: {
-        //     ...props.uiState,
-        //     loggedIn: true,
-        //   },
-        //   // state: {
-        //   //   ...props.params.state,
-        //   //   terminal: {
-        //   //     ...props.params.state.terminal,
-        //   //     loggedIn: true,
-        //   //   },
-        //   // },
-        //   // ...state,
-        // },
-        loggedInTermLine
-      );
+      this.returnCommand(loggedInTermLine);
     } else {
       this.returnCommand(alreadyLoggedInTermLine);
     }
   }
+  // focusWindowById(s: string, p?) {
+  //   super.focusWindowById(s)
+  // }
   alreadyLoggedIn() {
     this.returnCommand(alreadyLoggedInTermLine);
   }
@@ -94784,7 +94769,8 @@ function isAlphabetic(str) {
 function isNumeric(str) {
   return /^[1-9]+$/.test(str) && str.length === 1;
 }
-var SpaceTrash = class extends WindowedTerminalGame {
+var SpaceTrash = class extends TerminalGame {
+  // uiHooks: any;
   videoFeed = 1;
   bots;
   terminalWindowHook;
@@ -94810,17 +94796,15 @@ var SpaceTrash = class extends WindowedTerminalGame {
         Phase1: new Phase1Store()
       },
       {
-        fps: 60,
+        fps: 45,
         performanceLogging: false
       },
       /* @__PURE__ */ new Set(["2d", "webgl2", "pixi2d", "threejs"]),
       domNode
     );
     this.addToHistory(bootScreenTermLine);
-    this.start();
     const self3 = this;
     document.addEventListener("keydown", function(event) {
-      console.log(event);
       if (event.key === "Escape") {
         self3.focusMapWindow();
       } else if (event.key === "`") {
@@ -94833,8 +94817,8 @@ var SpaceTrash = class extends WindowedTerminalGame {
         self3.turnLeft();
       } else if (event.key === "ArrowRight") {
         self3.turnRight();
-      } else if (isNumeric(event.key)) {
-        self3.switchVideoFeedAndFocusWindow(event.key);
+      } else if (isNumeric(event.key) && self3.buffer === "") {
+        self3.focusVideoWindow(event.key);
       } else if (isAlphabetic(event.key)) {
         self3.focusTerminalWindow(event.key);
       } else {
@@ -94842,21 +94826,48 @@ var SpaceTrash = class extends WindowedTerminalGame {
       }
     });
   }
-  dockViewComponents() {
-    return {
-      default: (props) => {
-        return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("p", null, "default"));
-      },
-      map: (props) => {
-        return /* @__PURE__ */ import_react23.default.createElement(MapWindow, { game: this });
-      },
-      vid: (props) => {
-        return /* @__PURE__ */ import_react23.default.createElement(BotWindow, { game: this });
-      },
-      bots: (props) => /* @__PURE__ */ import_react23.default.createElement(BotsWindow, { game: this }),
-      term: (props) => /* @__PURE__ */ import_react23.default.createElement(TerminalWindow, { game: this })
-    };
+  bufferRef;
+  registerTerminalBuffer(inputRef) {
+    this.bufferRef = inputRef;
   }
+  dockViewComponents = {
+    default: (props) => {
+      return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("p", null, "default"));
+    },
+    map: (props) => {
+      return /* @__PURE__ */ import_react23.default.createElement(MapWindow, { game: this });
+    },
+    vid: (props) => {
+      return /* @__PURE__ */ import_react23.default.createElement(BotWindow, { game: this });
+    },
+    bots: (props) => /* @__PURE__ */ import_react23.default.createElement(BotsWindow, { game: this }),
+    term: (props) => /* @__PURE__ */ import_react23.default.createElement(TerminalWindow, { game: this })
+  };
+  // dockViewComponents() {
+  //   return {
+  //     default: (props: IDockviewPanelHeaderProps<IState>) => {
+  //       return (
+  //         <div>
+  //           <p>default</p>
+  //           {/* <div>{`custom tab: ${props.api.title}`}</div>
+  //               <span>{`value: ${props.params.myValue}`}</span> */}
+  //         </div>
+  //       );
+  //     },
+  //     map: (props: IDockviewPanelHeaderProps<IState>) => {
+  //       return (
+  //         <MapWindow game={this} />
+  //       );
+  //     },
+  //     vid: (props: IDockviewPanelHeaderProps<IState>) => {
+  //       return (
+  //         <BotWindow game={this} />
+  //       );
+  //     },
+  //     bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
+  //     term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
+  //   }
+  // }
   onDockviewReady(event) {
     super.onDockviewReady(event);
     event.api.addPanel({
@@ -94873,44 +94884,51 @@ var SpaceTrash = class extends WindowedTerminalGame {
     });
   }
   loginHook() {
+    this.changeScene("mainloop");
     this.openAllWindows();
   }
   focusMapWindow() {
-    this.dockviewAPI.panels.forEach((dp) => {
-      if (dp.id === "map") {
-        dp.focus();
-      }
-    });
+    this.unFocusOnTermInput();
+    super.focusWindowById(`map`);
   }
-  focusTerminalWindow(s) {
-    this.dockviewAPI.panels.forEach((dp) => {
-      console.log(dp.id, dp.api.isFocused);
-      if (dp.id === "term") {
-        dp.focus();
-      }
-    });
-    if (s) {
-    }
+  focusTerminalWindow() {
+    super.focusWindowById(`term`);
+    this.focusOnTermInput();
   }
+  focusVideoWindow(s) {
+    const n = Number(s);
+    if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`;
+    this.videoFeed = n;
+    this.unFocusOnTermInput();
+    super.focusWindowById(`vid`);
+  }
+  //   focusVideoWindowAndSwitchVideoFeed(s: string) {
+  //   this.videoFeed = Number(s);
+  //   this.dockviewAPI.panels.forEach((dp) => {
+  //     if (dp.id === "vid") {
+  //       dp.focus()
+  //     }
+  //   })
+  // }
   driveForward() {
-    throw new Error("Method not implemented.");
+    const beid = this.bots[this.videoFeed][0];
+    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
+    pac.dy = pac.dy - 1e-3;
   }
   driveBack() {
-    throw new Error("Method not implemented.");
+    const beid = this.bots[this.videoFeed][0];
+    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
+    pac.dy = pac.dy + 0.01;
   }
   turnLeft() {
-    throw new Error("Method not implemented.");
+    const beid = this.bots[this.videoFeed][0];
+    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
+    pac.dx = pac.dx - 0.01;
   }
   turnRight() {
-    throw new Error("Method not implemented.");
-  }
-  switchVideoFeedAndFocusWindow(s) {
-    this.videoFeed = Number(s);
-    this.dockviewAPI.panels.forEach((dp) => {
-      if (dp.id === "vid") {
-        dp.focus();
-      }
-    });
+    const beid = this.bots[this.videoFeed][0];
+    const pac = this.componentStores["PhysicsActorComponent"].get(beid);
+    pac.dx = pac.dx + 0.01;
   }
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
@@ -94986,128 +95004,23 @@ var SpaceTrash = class extends WindowedTerminalGame {
       }
     }) !== void 0 || false;
   }
-  // private buffer: string = "";
-  // submitBuffer(s: string) {
-  // }
-  // setBuffer(s: string) {
-  // }
-  // addToBuffer(s: string) {
-  //   this.processCommand(s);
-  // }
-  // alreadyLoggedIn(): void {
-  //   this.returnCommand({
-  //     out: `You are already logged in`,
-  //     status: "fail",
-  //   });
-  // }
-  // updateTerminal() {
-  //   this.terminalWindowHook({
-  //     history: this.terminalHistory,
-  //     buffer: this.buffer,
-  //     submitBuffer: this.submitBuffer,
-  //     setBuffer: this.setBuffer,
-  //   })
-  // }
-  // loggedIn: boolean;
-  // login(): void {
-  //   if (!this.loggedIn) {
-  //     this.loggedIn = true;  
-  //     this.loginHook()
-  //     this.returnCommand(
-  //       // props,
-  //       {
-  //         ...props,
-  //         uiState: {
-  //           ...props.uiState,
-  //           loggedIn: true,
-  //         },
-  //         // state: {
-  //         //   ...props.params.state,
-  //         //   terminal: {
-  //         //     ...props.params.state.terminal,
-  //         //     loggedIn: true,
-  //         //   },
-  //         // },
-  //         // ...state,
-  //       },
-  //       loggedInTermLine
-  //     );
-  //   } else {
-  //     this.returnCommand(
-  //       // props,
-  //       {
-  //         ...props,
-  //         uiState: {
-  //           ...props.uiState,
-  //           loggedIn: false,
-  //         },
-  //       },
-  //       alreadyLoggedInTermLine
-  //     );
-  //   }
-  // }
-  // buffer: string;
-  // private history : ITerminalLine[]=[];
-  // returnCommand(props: IDockviewPanelProps<IState>, t: ITerminalLine) {
-  //   this.buffer = "";
-  //   this.history.push(t);
-  //   this.updateTerminal()
-  //   // props.uiState.uiUpdateCallback({
-  //   //   uiState: {
-  //   //     ...props.uiState,
-  //   //     buffer: "",
-  //   //       history: [
-  //   //         ...props.uiState.history,
-  //   //         {
-  //   //           ...t,
-  //   //           in: props.uiState.buffer,
-  //   //         },
-  //   //       ],
-  //   //     // ...state,
-  //   //     // terminal: {
-  //   //     //   ...state.terminal,
-  //   //     //   buffer: "",
-  //   //     //   history: [
-  //   //     //     ...state.terminal.history,
-  //   //     //     {
-  //   //     //       ...t,
-  //   //     //       in: state.terminal.buffer,
-  //   //     //     },
-  //   //     //   ],
-  //   //   },
-  //   // });
-  // }
-  // public yup() {
-  //   for (let ndx = 1; ndx <= 9; ndx++) {
-  //     if (this.videoFeed === ndx) {
-  //       this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 0.001;
-  //     }
-  //   }
-  // }
-  // public ydown() {
-  //   for (let ndx = 1; ndx <= 9; ndx++) {
-  //     if (this.videoFeed === ndx) {
-  //       this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 0.001;
-  //     }
-  //   }
-  // }
-  // public xleft() {
-  //   for (let ndx = 1; ndx <= 9; ndx++) {
-  //     if (this.videoFeed === ndx) {
-  //       this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 0.001;
-  //     }
-  //   }
-  // }
-  // public xright() {
-  //   for (let ndx = 1; ndx <= 9; ndx++) {
-  //     if (this.videoFeed === ndx) {
-  //       this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 0.001;
-  //     }
-  //   }
-  // }
-  // onStateChange(stateSetter: Dispatch<SetStateAction<IState>>) {
-  //   this.stateSetter = stateSetter
-  // }
+  focusWindowById(s, p) {
+    if (s == "map") {
+      this.focusMapWindow();
+    } else if (s === `term`) {
+      this.focusTerminalWindow();
+    } else if (s === `vid`) {
+      this.focusVideoWindow(p);
+    } else {
+      throw `no window by id ${s}, ${p}`;
+    }
+  }
+  focusOnTermInput() {
+    this.bufferRef.current.focus();
+  }
+  unFocusOnTermInput() {
+    this.bufferRef.current.blur();
+  }
 };
 
 // src/index.tsx
@@ -95117,6 +95030,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     throw `no rootHtml?! I expected an html element with id of "react-root"`;
   }
   const s = new SpaceTrash(domNode);
+  s.start();
 });
 /*! Bundled license information:
 

@@ -44,8 +44,6 @@ export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings
     canvasContext?: IRenderings,
     parentComponent?: HTMLElement
   ) {
-    console.log("register", key, canvas);
-    // debugger
     if ((canvasContext === undefined) !== (canvasContext === undefined)) {
       throw `you must pass both canvas and context, or neither. canvas, canvasContext: ${canvas}, ${canvasContext}`;
     }

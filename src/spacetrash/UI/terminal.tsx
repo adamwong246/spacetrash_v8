@@ -29,6 +29,11 @@ props: {game: SpaceTrash},
   }, [state]);
 
   const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      props.game.registerTerminalBuffer(inputRef)
+    }
+  }, [inputRef]);
 
   if (!state) return <pre>loading...</pre>
 

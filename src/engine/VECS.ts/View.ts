@@ -1,3 +1,3 @@
 import { Game } from "../Game";
 
-export type IView = (game: Game<any, any>, canvas: HTMLCanvasElement) => Promise<any>;
+export type IView<I extends Game<any, any>> = (game: I, canvas: HTMLCanvasElement) => Promise<any>;

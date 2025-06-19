@@ -41,6 +41,8 @@ export abstract class Game<IRenderings, I> extends ECS {
   }
 
   changeScene(to: string) {
+    console.log("changing scenes from ", this.stateSpace.getCurrent().constructor.name, "to", to);
+    if (this.stateSpace.get(to) === this.stateSpace.getCurrent()) throw "why did you change scenes to the same scene"
     this.stateSpace.setCurrent(to);
     const newScene = this.stateSpace.getCurrent();
     newScene.boot(this);

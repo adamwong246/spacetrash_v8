@@ -1,7 +1,7 @@
 import { Entity } from "../../../engine/VECS.ts/Entity";
 
 import { SpaceTrashEntityComponent } from ".";
-import { Tile, FloorTile, WallTile } from "./tiles";
+import { Tile, FloorTile, WallTile, NorthEast, NorthWest, SouthEast, SouthWest } from "./tiles";
 import { MapSize } from "../System";
 import { PhysicsSetPieceComponent } from "../Components/setPiece";
 
@@ -88,48 +88,48 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     }
 
 
-    // // a room
-    // this.addToMap(new NorthWest(15, 15));
-    // this.addToMap(new WallTile(16, 15));
-    // this.addToMap(new WallTile(17, 15));
-    // this.addToMap(new WallTile(18, 15));
-    // this.addToMap(new WallTile(19, 15));
-    // this.addToMap(new NorthEast(20, 15));
+    // a room
+    this.addToMap(new NorthWest(15, 15));
+    this.addToMap(new WallTile(16, 15));
+    this.addToMap(new WallTile(17, 15));
+    this.addToMap(new WallTile(18, 15));
+    this.addToMap(new WallTile(19, 15));
+    this.addToMap(new NorthEast(20, 15));
 
-    // this.addToMap(new WallTile(20, 16));
-    // this.addToMap(new WallTile(20, 17));
-    // this.addToMap(new WallTile(20, 18));
-    // this.addToMap(new WallTile(20, 19));
-    // this.addToMap(new SouthEast(20, 20));
+    this.addToMap(new WallTile(20, 16));
+    this.addToMap(new WallTile(20, 17));
+    this.addToMap(new WallTile(20, 18));
+    this.addToMap(new WallTile(20, 19));
+    this.addToMap(new SouthEast(20, 20));
 
-    // this.addToMap(new WallTile(19, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new SouthWest(15, 20));
+    this.addToMap(new WallTile(19, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new SouthWest(15, 20));
 
-    // this.addToMap(new WallTile(0, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new SouthWest(15, 20));
+    this.addToMap(new WallTile(0, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new SouthWest(15, 20));
 
-    // this.addToMap(new WallTile(15, 16));
-    // this.addToMap(new WallTile(15, 17));
-    // this.addToMap(new WallTile(15, 18));
-    // this.addToMap(new WallTile(15, 19));
-    // this.addToMap(new WallTile(15, 20));
-    // // this.addToMap(new WallTile(20, 15));
-    // this.addToMap(new WallTile(20, 16));
-    // this.addToMap(new WallTile(20, 17));
-    // this.addToMap(new WallTile(20, 18));
-    // this.addToMap(new WallTile(20, 19));
-    // this.addToMap(new WallTile(20, 20));
-    // this.addToMap(new WallTile(15, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(19, 20));
+    this.addToMap(new WallTile(15, 16));
+    this.addToMap(new WallTile(15, 17));
+    this.addToMap(new WallTile(15, 18));
+    this.addToMap(new WallTile(15, 19));
+    this.addToMap(new WallTile(15, 20));
+    // this.addToMap(new WallTile(20, 15));
+    this.addToMap(new WallTile(20, 16));
+    this.addToMap(new WallTile(20, 17));
+    this.addToMap(new WallTile(20, 18));
+    this.addToMap(new WallTile(20, 19));
+    this.addToMap(new WallTile(20, 20));
+    this.addToMap(new WallTile(15, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(19, 20));
 
 
     // this should error
@@ -153,7 +153,7 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     }
 
     this.make()
-    // debugger
+
     // this.make().then((s) => {
     //   return this
     // })

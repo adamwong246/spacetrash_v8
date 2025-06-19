@@ -16,9 +16,17 @@ import { BotsWindow } from "./spacetrash/UI/BotsWindow";
 import { BotWindow } from "./spacetrash/UI/BotWindow";
 import { MapWindow } from "./spacetrash/UI/map";
 import { TerminalWindow } from "./spacetrash/UI/terminal";
+import { WindowedGame } from "./WindowedGame";
 
-let self: WindowedGame<any, any, any>;
-export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurfaceGame<IRenderings, II> {
+// const MenuBar: (p: {
+
+//   focusMap: () => unknown
+// }) => any = (props) => <>
+
+// </>
+
+let self: DesktopGame<any, any, any>;
+export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceGame<IRenderings, II> {
   private reactRoot;
   dockviewAPI: DockviewApi;
 
@@ -30,6 +38,8 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
   onDockviewReady(event: DockviewReadyEvent) {
     self.dockviewAPI = event.api;
   }
+
+  // abstract dockViewComponents: Record<string, FunctionComponent<IDockviewPanelProps>> 
 
   constructor(
     stateSpace: StateSpace,
@@ -51,43 +61,69 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
   async start() {
     super.start();
 
-    self.reactRoot.render(<DockviewReact
-      className={'dockview-theme-abyss'}
-      onReady={self.onDockviewReady}
-      components={{
+    self.reactRoot.render(<div>
 
-        default: (props: IDockviewPanelHeaderProps<any>) => {
-          return (
-            <div>
-              <p>default</p>
-              {/* <div>{`custom tab: ${props.api.title}`}</div>
-                  <span>{`value: ${props.params.myValue}`}</span> */}
-            </div>
-          );
-        },
 
-        map: (props: IDockviewPanelHeaderProps<any>) => {
-          return (
-            <MapWindow game={self} />
-          );
-        },
+      <div
+        style={{
+          display: 'block',
+        }}
+      >
+        <button onClick={() => this.focusWindowById('map')}>map</button>
+        <button onClick={() => this.focusWindowById('term')}>term</button>
+        <button onClick={() => this.focusWindowById('vid', 1)}>1</button>
+        <button onClick={() => this.focusWindowById('vid', 2)}>2</button>
+        <button onClick={() => this.focusWindowById('vid', 3)}>3</button>
+        <button onClick={() => this.focusWindowById('vid', 4)}>4</button>
+        <button onClick={() => this.focusWindowById('vid', 5)}>5</button>
+        <button onClick={() => this.focusWindowById('vid', 6)}>6</button>
+        <button onClick={() => this.focusWindowById('vid', 7)}>7</button>
+        <button onClick={() => this.focusWindowById('vid', 8)}>8</button>
+        <button onClick={() => this.focusWindowById('vid', 9)}>9</button>
+      </div>
 
-        vid: (props: IDockviewPanelHeaderProps<any>) => {
-          return (
-            <BotWindow game={self} />
-          );
-        },
+      <DockviewReact
+        className={'dockview-theme-abyss'}
+        onReady={self.onDockviewReady}
+        components={{
 
-        bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
-        term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
-      }}
-    />)
+          default: (props: IDockviewPanelHeaderProps<any>) => {
+            return (
+              <div>
+                <p>default</p>
+                {/* <div>{`custom tab: ${props.api.title}`}</div>
+                    <span>{`value: ${props.params.myValue}`}</span> */}
+              </div>
+            );
+          },
+
+          map: (props: IDockviewPanelHeaderProps<any>) => {
+            return (
+              <MapWindow game={self} />
+            );
+          },
+
+          vid: (props: IDockviewPanelHeaderProps<any>) => {
+            return (
+              <BotWindow game={self} />
+            );
+          },
+
+          bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
+          term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
+        }}
+      />
+    </div>)
   }
 
+  
+  
   focusWindowById(s: string, p?: any) {
+    debugger
     this.dockviewAPI.panels.forEach((p) => {
       if (p.id === s) {
-        p.focus()
+        p.focus();
+        p.setTitle(`${s}`)
       }
     })
   }

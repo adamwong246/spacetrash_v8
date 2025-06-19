@@ -5,6 +5,7 @@ import { WindowedGame } from "../WindowedGame";
 import { StateSpace } from "../engine/StateSpace";
 import { System } from "../engine/VECS.ts/System";
 import { ITermWindowState } from "./UI/terminal";
+import { DesktopGame } from "../DesktopGame";
 
 const initialTerminalHistory: ITerminalLine = {
   out: "hardware check passed",
@@ -142,11 +143,11 @@ export type ITerminalLine = {
   status: IComStatus;
 };
 
-export abstract class WindowedTerminalGame<
+export abstract class TerminalGame<
   IRenderings,
   II,
   III
-> extends WindowedGame<IRenderings, II, III> {
+> extends DesktopGame<IRenderings, II, III> {
   booted = false;
   uiHooks: any;
   history: ITerminalLine[] = [initialTerminalHistory];
@@ -154,6 +155,7 @@ export abstract class WindowedTerminalGame<
   public buffer: string = "";
   loggedIn = false;
   uiUpdateCallback: any;
+  
 
   constructor(
     stateSpace: StateSpace,
@@ -192,6 +194,8 @@ export abstract class WindowedTerminalGame<
       // uiUpdateCallback: this.uiUpdateCallback,
     };
   }
+
+  
 
   commandNotFound(unknownCommand: string) {
     this.returnCommand(commandNotFoundTermLine(unknownCommand));
@@ -239,8 +243,20 @@ export abstract class WindowedTerminalGame<
   }
 
   setBuffer(b: string) {
-    this.buffer = b;
-    this.updateTerminalWindow();
+    if ([`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `0`].includes(b)) {
+      this.focusWindowById('vid', b); 
+    } else {
+
+
+      if (b === "`") {
+        return; 
+      }
+
+      this.buffer = b;
+      this.updateTerminalWindow();
+    }
+
+    
   }
 
   addToBuffer(b: string) {
@@ -341,7 +357,6 @@ export abstract class WindowedTerminalGame<
     //   //     status: 'fail'
     //   //   }
     //   // }
-    //   debugger
 
     //   SpaceTrashPlayer.videoFeed = Number.parseInt(matchForBot[0]);
 
@@ -357,28 +372,7 @@ export abstract class WindowedTerminalGame<
     if (!this.loggedIn) {
       this.loggedIn = true;
       this.loginHook();
-      this.returnCommand(
-        // props,
-        // {
-        //   ...props,
-        //   uiState: {
-        //     ...props.uiState,
-        //     loggedIn: true,
-        //   },
-
-        //   // state: {
-        //   //   ...props.params.state,
-        //   //   terminal: {
-        //   //     ...props.params.state.terminal,
-        //   //     loggedIn: true,
-        //   //   },
-        //   // },
-
-        //   // ...state,
-        // },
-
-        loggedInTermLine
-      );
+      this.returnCommand(loggedInTermLine);
     } else {
       this.returnCommand(alreadyLoggedInTermLine);
     }
@@ -386,6 +380,10 @@ export abstract class WindowedTerminalGame<
 
   abstract loginHook();
 
+  // focusWindowById(s: string, p?) {
+  //   super.focusWindowById(s)
+  // }
+  
   alreadyLoggedIn(): void {
     this.returnCommand(alreadyLoggedInTermLine);
   }

@@ -102,7 +102,6 @@ export abstract class ECS {
   ///////////////////////////////////////////////////////////////////
 
   async tick(delta: number): Promise<any> {
-    console.log("tick");
     if (!this.paused) {
       await this.system.tick(delta, this);
     }

@@ -4,6 +4,7 @@ import { IView } from "../../../engine/VECS.ts/View";
 
 import { Phase1Store } from "../Components/phase1";
 import { MapSize, TileSize } from "../System";
+import { SpaceTrash } from "../..";
 
 let tick = -1;
 let videoRenderer: THREE.WebGLRenderer;
@@ -26,11 +27,21 @@ const cylinderGeometry = new THREE.CylinderGeometry(
 var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
 var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
 
-const render: IView = (game, canvas) =>
+const defToRad = (d: number) => (d * Math.PI) / 180;
+
+camera.rotateX(defToRad(-90));
+// camera.rotateY(defToRad(270));
+camera.rotateZ(defToRad(0));
+
+
+
+
+const render: IView<SpaceTrash> = (game, canvas) =>
   new Promise((res, rej) => {
     tick++;
 
     if (tick === 0) {
+      console.log("hello threejs ");
       videoRenderer = new THREE.WebGLRenderer({
         canvas,
         context: canvas.getContext("webgl2") as WebGL2RenderingContext,
@@ -242,8 +253,10 @@ const render: IView = (game, canvas) =>
     });
 
     const position = game.videoFeedPosition();
-    camera.position.x = position.x;
-    camera.position.y = position.y;
+
+    camera.position.x = position.x * TileSize;
+    camera.position.y = position.y * TileSize;
+
     const p = canvas.parentElement.getBoundingClientRect();
     videoRenderer.setSize(p.width, p.height);
 
