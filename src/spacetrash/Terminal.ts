@@ -265,7 +265,6 @@ export abstract class TerminalGame<
   }
 
   updateTerminalWindow() {
-    console.log("updateTerminalWindow", this.history);
     this.terminalUiHook({
       buffer: this.buffer,
       history: this.history,

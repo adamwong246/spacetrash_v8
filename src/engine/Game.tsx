@@ -20,19 +20,11 @@ export abstract class Game<IRenderings, I> extends ECS {
       fps: number,
       performanceLogging: boolean
     }
-    // renderings: Set<IRenderings>,
-    // html: HTMLElement,
 
   ) {
     super(system, componentStores, stores, config)
     this.stateSpace = stateSpace;
-    
     this.changeScene = this.changeScene.bind(this);
-    
-
-
-    
-
   }
 
   async start() {
@@ -42,41 +34,10 @@ export abstract class Game<IRenderings, I> extends ECS {
 
   changeScene(to: string) {
     console.log("changing scenes from ", this.stateSpace.getCurrent().constructor.name, "to", to);
-    if (this.stateSpace.get(to) === this.stateSpace.getCurrent()) throw "why did you change scenes to the same scene"
+    if (this.stateSpace.get(to) === this.stateSpace.getCurrent()) throw "why did you change scenes to the same scene?"
     this.stateSpace.setCurrent(to);
     const newScene = this.stateSpace.getCurrent();
     newScene.boot(this);
   }
 
-
 }
-
-
-  // abstract scenes: StateSpace;
-
-  
-
-  
-
-  // reactElement(): ReactElement {
-  //   return (<DockviewReact
-  //     className={'dockview-theme-abyss'}
-  //     onReady={this.onDockviewReadyEvent}
-  //     components={this.dockviewComponents}
-  //   // defaultTabComponent={headerComponents.default}
-  //   />)
-  // }
-
-  
-
-  
-
-  // abstract updateUI(uiState: any);
-
-  
-
-
-
-  // inputEvent(event: Event | string, appKey: string) {
-  //   this.stateSpace.getCurrent().inputEvent(event, appKey, this);
-  // }
