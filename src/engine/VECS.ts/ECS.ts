@@ -3,10 +3,14 @@
 
 import { System } from "./System";
 import { EntityComponent } from "./EntityComponent";
-import { IComponentsStores, IEntitiesStore, IStores } from "./types";
+import { IArchtypesStore, IComponentsStores, IEntitiesStore, IStores } from "./types";
 import { Component } from "./Component";
+import { Entity } from "./Entity";
 
+
+const uint32Max = 4294967295
 const EntityMax = 65535;
+const maxArchetypes = 255;
 
 export type IPerformanceConfig = {
   performanceLogging: boolean;
@@ -24,12 +28,15 @@ export abstract class ECS {
   paused = true;
   nextId = 0;
   headless = false;
+  archetypes: IArchtypesStore;
+  archetypeCodes: string[]
 
   constructor(
     system: System,
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
-    config: IPerformanceConfig
+    config: IPerformanceConfig,
+    archetypeCodes2: string[]
   ) {
     this.system = system;
     this.componentStores = componentStores;
@@ -37,12 +44,32 @@ export abstract class ECS {
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
     this.headless = config.headless;
+    this.archetypeCodes = [];
+
+    ///////////////////////////////////
 
     const sharedBuffer = new SharedArrayBuffer(
       Int32Array.BYTES_PER_ELEMENT * EntityMax
     );
     const sharedArray = new Int32Array(sharedBuffer);
     this.entities = sharedArray;
+
+    ///////////////////////////////////
+
+    const archetypeBuffer = new SharedArrayBuffer(
+      Uint8Array.BYTES_PER_ELEMENT * maxArchetypes
+    );
+    const sharedArchetypeArray = new Uint8Array(archetypeBuffer);
+    this.archetypes = sharedArchetypeArray
+    // this.entities = sharedArray;
+
+    // this.archetypes = new Uint8Array();
+    
+    
+    // this.archetypeCodes.forEach((a, i) => {
+    //   this.archetypes[i] = i;
+    // })
+    // debugger
   }
 
   addComponent(i: number, c: Component<any, any>) {
@@ -64,11 +91,27 @@ export abstract class ECS {
       });
   }
 
-  addEntity(): number {
+  addEntity(e: EntityComponent): number {
     const toReturn = this.nextId;
+    
     this.entities[this.nextId] = this.nextId;
+    this.archetypes[this.nextId] = this.archetypeId(e)
+    debugger
+
     this.nextId++;
     return toReturn;
+  }
+
+  archetypeId(e: EntityComponent): number {
+    const m = this.archetypeCodes.findIndex((a) => a === e.constructor.name);
+
+    if (m !== -1) return m
+    else {
+      this.archetypeCodes.push(e.constructor.name)
+      return this.archetypeCodes.findIndex((a) => a === e.constructor.name)
+    }
+
+    
   }
 
   // returns the ids of entities added
@@ -79,7 +122,7 @@ export abstract class ECS {
         console.error("e should not be null!");
       }
 
-      const i = this.addEntity();
+      const i = this.addEntity(e);
       toReturn.push(i);
 
       e.components.forEach((c: Component<any, any>) => {

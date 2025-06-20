@@ -71970,6 +71970,7 @@ PaneviewReact.displayName = "PaneviewComponent";
 
 // src/engine/VECS.ts/ECS.ts
 var EntityMax = 65535;
+var maxArchetypes = 255;
 var ECS = class {
   static {
     __name(this, "ECS");
@@ -71983,18 +71984,26 @@ var ECS = class {
   paused = true;
   nextId = 0;
   headless = false;
-  constructor(system, componentStores, stores, config) {
+  archetypes;
+  archetypeCodes;
+  constructor(system, componentStores, stores, config, archetypeCodes2) {
     this.system = system;
     this.componentStores = componentStores;
     this.stores = stores;
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
     this.headless = config.headless;
+    this.archetypeCodes = [];
     const sharedBuffer = new SharedArrayBuffer(
       Int32Array.BYTES_PER_ELEMENT * EntityMax
     );
     const sharedArray = new Int32Array(sharedBuffer);
     this.entities = sharedArray;
+    const archetypeBuffer = new SharedArrayBuffer(
+      Uint8Array.BYTES_PER_ELEMENT * maxArchetypes
+    );
+    const sharedArchetypeArray = new Uint8Array(archetypeBuffer);
+    this.archetypes = sharedArchetypeArray;
   }
   addComponent(i, c) {
     const name = c.constructor.name;
@@ -72010,11 +72019,21 @@ var ECS = class {
       return x !== void 0;
     });
   }
-  addEntity() {
+  addEntity(e) {
     const toReturn = this.nextId;
     this.entities[this.nextId] = this.nextId;
+    this.archetypes[this.nextId] = this.archetypeId(e);
+    debugger;
     this.nextId++;
     return toReturn;
+  }
+  archetypeId(e) {
+    const m = this.archetypeCodes.findIndex((a) => a === e.constructor.name);
+    if (m !== -1) return m;
+    else {
+      this.archetypeCodes.push(e.constructor.name);
+      return this.archetypeCodes.findIndex((a) => a === e.constructor.name);
+    }
   }
   // returns the ids of entities added
   setEntitiesComponent(entityComponents) {
@@ -72023,7 +72042,7 @@ var ECS = class {
       if (!e) {
         console.error("e should not be null!");
       }
-      const i = this.addEntity();
+      const i = this.addEntity(e);
       toReturn.push(i);
       e.components.forEach((c) => {
         if (!c.constructor.name) {
@@ -72159,8 +72178,8 @@ var Game = class extends ECS {
     __name(this, "Game");
   }
   stateSpace;
-  constructor(stateSpace, system, componentStores, stores, config) {
-    super(system, componentStores, stores, config);
+  constructor(stateSpace, system, componentStores, stores, config, archetypeMappings) {
+    super(system, componentStores, stores, config, archetypeMappings);
     this.stateSpace = stateSpace;
     this.changeScene = this.changeScene.bind(this);
   }
@@ -72183,8 +72202,8 @@ var MultiSurfaceGame = class extends Game {
     __name(this, "MultiSurfaceGame");
   }
   renderings;
-  constructor(stateSpace, system, componentStores, stores, config, renderings) {
-    super(stateSpace, system, componentStores, stores, config);
+  constructor(stateSpace, system, componentStores, stores, config, renderings, archetypeMappings) {
+    super(stateSpace, system, componentStores, stores, config, archetypeMappings);
     this.renderings = renderings;
     this.canvasContexts = {};
   }
@@ -72245,8 +72264,8 @@ var DesktopGame = class extends MultiSurfaceGame {
     self2.dockviewAPI = event.api;
   }
   // abstract dockViewComponents: Record<string, FunctionComponent<IDockviewPanelProps>> 
-  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode) {
-    super(stateSpace, system, componentStores, stores, config, renderings);
+  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode, archetypeMappings) {
+    super(stateSpace, system, componentStores, stores, config, renderings, archetypeMappings);
     this.reactRoot = (0, import_client.createRoot)(domNode);
     self2 = this;
   }
@@ -72407,7 +72426,7 @@ var TerminalGame = class extends DesktopGame {
   buffer = "";
   loggedIn = false;
   uiUpdateCallback;
-  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode) {
+  constructor(stateSpace, system, componentStores, stores, config, renderings, domNode, archetypeMappings) {
     super(
       stateSpace,
       system,
@@ -72415,7 +72434,8 @@ var TerminalGame = class extends DesktopGame {
       stores,
       config,
       renderings,
-      domNode
+      domNode,
+      archetypeMappings
     );
   }
   // get the state to send to react ui
@@ -98078,7 +98098,11 @@ var SpaceTrash = class extends TerminalGame {
       },
       performanceConfig,
       /* @__PURE__ */ new Set(["2d", "webgl2", "pixi2d", "threejs"]),
-      domNode
+      domNode,
+      [
+        "Tile",
+        "SpaceTrashBot"
+      ]
     );
     this.addToHistory(bootScreenTermLine);
     const self3 = this;

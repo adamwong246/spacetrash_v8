@@ -150,6 +150,9 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       performanceConfig,
       new Set(["2d", "webgl2", "pixi2d", "threejs"]),
       domNode,
+      [
+        "Tile", "SpaceTrashBot"
+      ]
     );
 
     this.addToHistory(bootScreenTermLine)

@@ -9,7 +9,7 @@ import { DockviewApi, DockviewReact } from 'dockview';
 
 import { StateSpace } from "./engine/StateSpace";
 import { System } from "./engine/VECS.ts/System";
-import { IComponentsStores, IStores } from "./engine/VECS.ts/types";
+import { IArchtypesMapping, IComponentsStores, IStores } from "./engine/VECS.ts/types";
 import { MultiSurfaceGame } from "./MultiSurfaceGame";
 import { FunctionComponent } from "react";
 import { BotsWindow } from "./spacetrash/UI/BotsWindow";
@@ -50,8 +50,9 @@ export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceG
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
+    archetypeMappings: IArchtypesMapping
   ) {
-    super(stateSpace, system, componentStores, stores, config, renderings);
+    super(stateSpace, system, componentStores, stores, config, renderings, archetypeMappings);
     this.reactRoot = createRoot(domNode)
     self = this;
   }

@@ -5,7 +5,7 @@ import { Game } from "./engine/Game";
 import { StateSpace } from "./engine/StateSpace";
 import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 import { System } from "./engine/VECS.ts/System";
-import { IComponentsStores, IStores } from "./engine/VECS.ts/types";
+import { IArchtypesMapping, IComponentsStores, IStores } from "./engine/VECS.ts/types";
 
 
 export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings, II> {
@@ -18,8 +18,9 @@ export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings
     stores: IStores<any>,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
+    archetypeMappings: IArchtypesMapping
   ) {
-    super(stateSpace, system, componentStores, stores, config);
+    super(stateSpace, system, componentStores, stores, config, archetypeMappings);
     this.renderings = renderings;
     this.canvasContexts = {};
   }

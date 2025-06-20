@@ -7,6 +7,7 @@ import { System } from "../engine/VECS.ts/System";
 import { ITermWindowState } from "./UI/terminal";
 import { DesktopGame } from "../DesktopGame";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
+import { IArchtypesMapping } from "../engine/VECS.ts/types";
 
 const initialTerminalHistory: ITerminalLine = {
   out: "hardware check passed",
@@ -165,7 +166,8 @@ export abstract class TerminalGame<
     stores,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
-    domNode: HTMLElement
+    domNode: HTMLElement,
+    archetypeMappings: IArchtypesMapping
     
   ) {
     super(
@@ -175,7 +177,8 @@ export abstract class TerminalGame<
       stores,
       config,
       renderings,
-      domNode
+      domNode,
+      archetypeMappings
     );
   }
 
