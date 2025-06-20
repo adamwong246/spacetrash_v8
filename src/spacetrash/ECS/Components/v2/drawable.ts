@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { Sprite, SpriteSource, Texture } from "pixi.js";
 import { ISpaceTrashComponents } from "..";
 import {
@@ -8,7 +9,7 @@ import { ComponentStore, EntityComponentStore, OneDStore, Store } from "../../..
 
 import { ActorComponent } from "../phase1";
 import { FloatPositionComponent, FloatPositionStore } from "./physical";
-import { Assets } from "@pixi/assets";
+// import { Assets } from "@pixi/assets";
 
 
 
@@ -37,24 +38,22 @@ import { Assets } from "@pixi/assets";
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   textureURL: string
   sprite?: Sprite
-  // x: number;
-  // y: number;
+  mesh?: THREE.Mesh;
 
   constructor(textureURL: string) {
     super();
     this.textureURL = textureURL;
   }
 
+  setMesh(m: THREE.Mesh) {
+    this.mesh = m;
+    // console.log("mark1", this.sprite)
+  }
+
   setSprite(s: Sprite) {
     this.sprite = s
     // console.log("mark1", this.sprite)
   }
-  
-
-  // start(): Sprite {
-  //   debugger
-  //   return this.sprite = Sprite.from(TheSpriteMaster.texture(this.texture));
-  // }
 }
 
 export class DrawableStore extends EntityComponentStore<DrawableComponent> {
@@ -93,6 +92,10 @@ export class DrawableStore extends EntityComponentStore<DrawableComponent> {
       
       d.sprite.position.x = p.x;
       d.sprite.position.y = p.y;
+    }
+    if (d.mesh) {      
+      d.mesh.position.x = p.x;
+      d.mesh.position.y = p.y;
     }
     // 
     // d.x = p.x;

@@ -356,7 +356,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   positionOfBot(eid: number): { x: number; y: number } {
-    const storeName = "FloatMovingComponent";
+    const storeName = "FloatPositionComponent";
 
     if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
     if (!this.componentStores[storeName].get(eid)) throw "missing entity";

@@ -22,7 +22,7 @@ import { DrawableStore } from "./Components/v2/drawable.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1
-export const NumberOfActors = 400;
+export const NumberOfActors = 60;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 5;
 export const ActorSize = TileSize / 1;
@@ -30,9 +30,9 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 50;
+export const MapSize = 150;
 
-const VisRange = 50;
+const VisRange = 200;
 
 let twoD: SetPieceStore;
 let oneD: ActorStore;
@@ -49,6 +49,7 @@ let drawables: DrawableStore;
 // let drawings: DrawingStore;
 
 const runFirstTick = async (game: SpaceTrash) => {
+  console.log("runFirstTick")
   // drawables.store.forEach(([eidOfActorsLightToPostion, drawableComponent]) => {
   //   // drawings.add({
   //   //   drawState: "new",

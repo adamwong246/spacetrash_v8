@@ -54112,10 +54112,10 @@ var SetPieceStore = class extends TwoDStore {
 };
 
 // src/spacetrash/ECS/System.ts
-var NumberOfActors = 400;
+var NumberOfActors = 60;
 var TileSize = 5;
 var ActorSize = TileSize / 1;
-var MapSize = 50;
+var MapSize = 150;
 var twoD;
 var oneD;
 var fps;
@@ -54129,6 +54129,7 @@ var actorsLit;
 var setPieceLit;
 var drawables;
 var runFirstTick = async (game) => {
+  console.log("runFirstTick");
   lightingEntitiesStore.store.forEach(([eid, le]) => {
     lights.add(eid, fps.get(eid), classs.get(eid));
   });
@@ -58756,19 +58757,17 @@ var NameGenerator_default = {
 var DrawableComponent = class extends Component {
   textureURL;
   sprite;
-  // x: number;
-  // y: number;
+  mesh;
   constructor(textureURL) {
     super();
     this.textureURL = textureURL;
   }
+  setMesh(m) {
+    this.mesh = m;
+  }
   setSprite(s) {
     this.sprite = s;
   }
-  // start(): Sprite {
-  //   debugger
-  //   return this.sprite = Sprite.from(TheSpriteMaster.texture(this.texture));
-  // }
 };
 var DrawableStore = class extends EntityComponentStore {
   // store: DrawableComponent;
@@ -58790,6 +58789,10 @@ var DrawableStore = class extends EntityComponentStore {
     if (d.sprite) {
       d.sprite.position.x = p.x;
       d.sprite.position.y = p.y;
+    }
+    if (d.mesh) {
+      d.mesh.position.x = p.x;
+      d.mesh.position.y = p.y;
     }
   }
 };
@@ -95173,6 +95176,7 @@ var WebGLRenderer = class {
 };
 
 // src/spacetrash/ECS/Views/threejs3d.ts
+var drawables3;
 var tick2 = -1;
 var videoRenderer;
 var scene2 = new Scene2();
@@ -95194,56 +95198,32 @@ var camera = new PerspectiveCamera(75, 600 / 400, 0.1, 1e4);
 var defToRad = (d) => d * Math.PI / 180;
 camera.rotateX(defToRad(-90));
 camera.rotateZ(defToRad(0));
-var tiles3d = [[]];
-var actors3d = [];
-var render2 = (game, canvas) => {
-  tick2++;
-  const twoD2 = game.stores.SetPieceComponent.store;
-  const oneD2 = game.stores["ActorComponent"].store;
-  if (tick2 === 0) {
-    videoRenderer = new WebGLRenderer({
-      canvas,
-      context: canvas.getContext("webgl2"),
-      antialias: true
-    });
-    for (let y = 0; y < twoD2.length; y++) {
-      if (!tiles3d[y]) {
-        tiles3d[y] = [];
-      }
-      for (let x = 0; x < twoD2[y].length; x++) {
-        const t = game.stores["SetPieceComponent"].get(x, y);
-        const tt = t.tileType;
-        if (tt === "WallTile") {
-          tiles3d[y][x] = [
-            new Mesh2(cubeGeometry, litFloorMaterial),
-            true
-          ];
-        } else if (tt === "FloorTile") {
-          tiles3d[y][x] = [
-            new Mesh2(floorGeometry, litFloorMaterial),
-            true
-          ];
-        }
-        if (tt === "WallTile" || tt === "FloorTile") {
-          tiles3d[y][x][0].position.x = x * TileSize;
-          tiles3d[y][x][0].position.y = y * TileSize;
-          scene2.add(tiles3d[y][x][0]);
-        }
-      }
-    }
-    for (let i = 0; i < oneD2.length; i++) {
-      actors3d[i] = [new Mesh2(cylinderGeometry, material), true];
-    }
+var render2 = async (game, canvas) => {
+  if (!game) debugger;
+  if (tick2 === -1) {
+    drawables3 = game.componentStores["DrawableComponent"];
+    await firstRender2(game, canvas);
+    tick2++;
   } else {
-    for (let i = 0; i < oneD2.length; i++) {
-      actors3d[i][0].position.x = oneD2[i].actorX * TileSize;
-      actors3d[i][0].position.y = oneD2[i].actorY * TileSize;
-    }
+    const position = game.videoFeedPosition();
+    camera.position.x = position.x * TileSize;
+    camera.position.y = position.y * TileSize;
+    videoRenderer.render(scene2, camera);
   }
-  const position = game.videoFeedPosition();
-  camera.position.x = position.x * TileSize;
-  camera.position.y = position.y * TileSize;
-  videoRenderer.render(scene2, camera);
+  return;
+};
+var firstRender2 = async (game, canvas) => {
+  videoRenderer = new WebGLRenderer({
+    canvas,
+    context: canvas.getContext("webgl2"),
+    antialias: true
+  });
+  Object.keys(drawables3.store).forEach(async ([k, i]) => {
+    const mesh = new Mesh2(cylinderGeometry, litFloorMaterial);
+    scene2.add(mesh);
+    await drawables3.store[k][1].setMesh(mesh);
+  });
+  return;
 };
 var threejs3d_default = render2;
 
@@ -95475,7 +95455,7 @@ var SpaceTrash = class extends TerminalGame {
     this.start();
   };
   positionOfBot(eid) {
-    const storeName = "FloatMovingComponent";
+    const storeName = "FloatPositionComponent";
     if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
     if (!this.componentStores[storeName].get(eid)) throw "missing entity";
     return {
