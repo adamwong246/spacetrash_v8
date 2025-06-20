@@ -23,7 +23,7 @@ import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
-export const NumberOfActors = 50;
+export const NumberOfActors = 150;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 5;
 export const ActorSize = TileSize / 1;
@@ -33,10 +33,10 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // );
 export const MapSize = 200;
 
-const VisRange = 200;
+const VisRange = 300;
 
 let twoD: SetPieceStore;
-let oneD: ActorStore;
+// let oneD: ActorStore;
 let fps: FloatPositionStore;
 let ips: IntegerPositionStore;
 let lightableEntitiesStore: LittableStore;
@@ -57,9 +57,9 @@ const runFirstTick = async (game: SpaceTrash) => {
     const eid = k;
 
     if (classification === "SpaceTrashBot") {
-      eid2PMSs.add(new Eid2PMComponent(fps.get(n), classs.get(n)), n);
+      eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     } else if (classification === "Tile") {
-      eid2PMSs.add(new Eid2PMComponent(ips.get(n), classs.get(n)), n);
+      eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
     }
   });
 
@@ -68,7 +68,7 @@ const runFirstTick = async (game: SpaceTrash) => {
     lights.add(eid, fps.get(eid), classification);
   });
 
-  lightableEntitiesStore.store.forEach(([eid, le]) => {
+  lightableEntitiesStore.each(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
 
     if (classification === "Tile") {
@@ -93,28 +93,30 @@ const runFirstTick = async (game: SpaceTrash) => {
   ips.store.forEach(([i, s], ndx) => {
     twoD.store[s.y][s.x].setId = ndx;
     twoD.store[s.y][s.x].tileType = s.tileType;
-    twoD.store[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
-      ([eid]: [string, LitableComponent]) => eid == i
-    );
+    // twoD.store[s.y][s.x].littableId = lightableEntitiesStore.get(i);
+
+    // twoD.store[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
+    //   ([eid]: [string, LitableComponent]) => eid == i
+    // );
   });
 
   // setup the oneD list
-  for (let y = 0; y < fps.store.length; y++) {
-    const aeid = fps.store[y][0];
+  // for (let y = 0; y < fps.store.length; y++) {
+  //   const aeid = fps.store[y][0];
 
-    // add the actors
-    oneD.add({
-      actorId: aeid,
-      // actorX: fps.store[y][1].x,
-      // actorY: fps.store[y][1].y,
-      rendered2d: "fresh",
-      renderedWebgl: "fresh",
-      culled2d: false,
-      culledWebgl: false,
-      friendly: game.isFriendly(aeid),
-      floatPosition: fps.store[y][1],
-    });
-  }
+  //   // add the actors
+  //   oneD.add({
+  //     actorId: aeid,
+  //     // actorX: fps.store[y][1].x,
+  //     // actorY: fps.store[y][1].y,
+  //     rendered2d: "fresh",
+  //     renderedWebgl: "fresh",
+  //     culled2d: false,
+  //     culledWebgl: false,
+  //     friendly: game.isFriendly(aeid),
+  //     floatPosition: fps.store[y][1],
+  //   });
+  // }
 
   runInitialMapBoundaryCheck();
 };
@@ -170,7 +172,7 @@ class MainSystem extends System {
         //////////////////////////////////////////////////////////////////////
 
         twoD = game.stores["SetPieceComponent"] as SetPieceStore;
-        oneD = game.stores["ActorComponent"] as ActorStore;
+        // oneD = game.stores["ActorComponent"] as ActorStore;
         lights = game.stores["LightComponent"] as LightComponentStore;
         actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
         setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
@@ -407,7 +409,7 @@ function runIlluminationBotToBot(
   p2: FloatPositionComponent
 ) {
   if (distanceBetweenFloats(p, p2) < VisRange) {
-    oneD.get(eidOfLitable).luminance = 1;
+    // oneD.get(eidOfLitable).luminance = 1;
   }
 }
 
@@ -417,7 +419,7 @@ function runIlluminationTileToBot(
   p2: FloatPositionComponent
 ) {
   if (distanceBetweenFloatAndIntegerPostion(p, p2) < VisRange) {
-    oneD.get(eidOfLitable).luminance = 1;
+    // oneD.get(eidOfLitable).luminance = 1;
   }
 }
 

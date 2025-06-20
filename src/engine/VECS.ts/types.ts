@@ -10,7 +10,7 @@ export abstract class ComponentStore<I extends Component<any, any>> {
 export abstract class Store<I> {
   abstract store: I;
   abstract add(...a: any);
-  abstract make(...a): I;
+  // abstract make(...a): I;
   // abstract get(...a): any;
 }
 

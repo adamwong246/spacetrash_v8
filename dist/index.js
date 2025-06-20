@@ -55569,6 +55569,7 @@ var Store = class {
   static {
     __name(this, "Store");
   }
+  // abstract make(...a): I;
   // abstract get(...a): any;
 };
 var EntityComponentStore = class extends ComponentStore {
@@ -55745,12 +55746,11 @@ var Eid2PMStore = class extends Store {
 };
 
 // src/spacetrash/ECS/System.ts
-var NumberOfActors = 50;
+var NumberOfActors = 150;
 var TileSize = 5;
 var ActorSize = TileSize / 1;
 var MapSize = 200;
 var twoD;
-var oneD;
 var fps;
 var ips;
 var lightableEntitiesStore;
@@ -55769,16 +55769,16 @@ var runFirstTick = /* @__PURE__ */ __name(async (game) => {
     const classification = kk;
     const eid = k;
     if (classification === "SpaceTrashBot") {
-      eid2PMSs.add(new Eid2PMComponent(fps.get(n), classs.get(n)), n);
+      eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     } else if (classification === "Tile") {
-      eid2PMSs.add(new Eid2PMComponent(ips.get(n), classs.get(n)), n);
+      eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
     }
   });
   lightingEntitiesStore.store.forEach(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
     lights.add(eid, fps.get(eid), classification);
   });
-  lightableEntitiesStore.store.forEach(([eid, le]) => {
+  lightableEntitiesStore.each(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
     if (classification === "Tile") {
       setPieceLit.add(eid, ips.get(eid), classification);
@@ -55798,24 +55798,7 @@ var runFirstTick = /* @__PURE__ */ __name(async (game) => {
   ips.store.forEach(([i, s], ndx) => {
     twoD.store[s.y][s.x].setId = ndx;
     twoD.store[s.y][s.x].tileType = s.tileType;
-    twoD.store[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
-      ([eid]) => eid == i
-    );
   });
-  for (let y = 0; y < fps.store.length; y++) {
-    const aeid = fps.store[y][0];
-    oneD.add({
-      actorId: aeid,
-      // actorX: fps.store[y][1].x,
-      // actorY: fps.store[y][1].y,
-      rendered2d: "fresh",
-      renderedWebgl: "fresh",
-      culled2d: false,
-      culledWebgl: false,
-      friendly: game.isFriendly(aeid),
-      floatPosition: fps.store[y][1]
-    });
-  }
   runInitialMapBoundaryCheck();
 }, "runFirstTick");
 function runEveryOtherTick() {
@@ -55847,7 +55830,6 @@ var MainSystem = class extends System2 {
         lightingEntitiesStore = game.componentStores[LitComponent.name];
         drawables = game.componentStores["DrawableComponent"];
         twoD = game.stores["SetPieceComponent"];
-        oneD = game.stores["ActorComponent"];
         lights = game.stores["LightComponent"];
         actorsLit = game.stores["ActorsLit"];
         setPieceLit = game.stores["SetPiecesLit"];
@@ -56049,9 +56031,25 @@ var LitableComponent = class extends InCastingComponent {
     this.luminance = luminance;
   }
 };
-var LittableStore = class extends EntityComponentStore {
+var LittableStore = class extends Store {
   static {
     __name(this, "LittableStore");
+  }
+  store;
+  constructor() {
+    super();
+    this.store = {};
+  }
+  each(arg0) {
+    Object.keys(this.store).forEach((k) => {
+      arg0([Number(k), this.store[k]]);
+    });
+  }
+  add(lc, n) {
+    return this.store[n] = lc;
+  }
+  get(n) {
+    return this.store[n];
   }
   make(...a) {
     return new LitableComponent();
@@ -71986,14 +71984,14 @@ var ECS = class {
   headless = false;
   archetypes;
   archetypeCodes;
-  constructor(system, componentStores, stores, config, archetypeCodes2) {
+  constructor(system, componentStores, stores, config, archetypeCodes) {
     this.system = system;
     this.componentStores = componentStores;
     this.stores = stores;
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
     this.headless = config.headless;
-    this.archetypeCodes = [];
+    this.archetypeCodes = ["_"];
     const sharedBuffer = new SharedArrayBuffer(
       Int32Array.BYTES_PER_ELEMENT * EntityMax
     );
@@ -72023,7 +72021,6 @@ var ECS = class {
     const toReturn = this.nextId;
     this.entities[this.nextId] = this.nextId;
     this.archetypes[this.nextId] = this.archetypeId(e);
-    debugger;
     this.nextId++;
     return toReturn;
   }

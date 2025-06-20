@@ -5,7 +5,6 @@ import { System } from "./System";
 import { EntityComponent } from "./EntityComponent";
 import { IArchtypesStore, IComponentsStores, IEntitiesStore, IStores } from "./types";
 import { Component } from "./Component";
-import { Entity } from "./Entity";
 
 
 const uint32Max = 4294967295
@@ -36,7 +35,7 @@ export abstract class ECS {
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
     config: IPerformanceConfig,
-    archetypeCodes2: string[]
+    archetypeCodes: string[]
   ) {
     this.system = system;
     this.componentStores = componentStores;
@@ -44,7 +43,7 @@ export abstract class ECS {
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
     this.headless = config.headless;
-    this.archetypeCodes = [];
+    this.archetypeCodes = ['_'];
 
     ///////////////////////////////////
 
@@ -60,7 +59,9 @@ export abstract class ECS {
       Uint8Array.BYTES_PER_ELEMENT * maxArchetypes
     );
     const sharedArchetypeArray = new Uint8Array(archetypeBuffer);
-    this.archetypes = sharedArchetypeArray
+    this.archetypes = sharedArchetypeArray;
+    // this.archetypeCodes = archetypeCodes;
+
     // this.entities = sharedArray;
 
     // this.archetypes = new Uint8Array();
@@ -70,6 +71,8 @@ export abstract class ECS {
     //   this.archetypes[i] = i;
     // })
     // debugger
+
+
   }
 
   addComponent(i: number, c: Component<any, any>) {
@@ -93,20 +96,17 @@ export abstract class ECS {
 
   addEntity(e: EntityComponent): number {
     const toReturn = this.nextId;
-    
-    this.entities[this.nextId] = this.nextId;
-    this.archetypes[this.nextId] = this.archetypeId(e)
-    debugger
 
+    this.entities[this.nextId] = this.nextId;
+    this.archetypes[this.nextId] = this.archetypeId(e); 
     this.nextId++;
     return toReturn;
   }
 
   archetypeId(e: EntityComponent): number {
     const m = this.archetypeCodes.findIndex((a) => a === e.constructor.name);
-
     if (m !== -1) return m
-    else {
+    else {   
       this.archetypeCodes.push(e.constructor.name)
       return this.archetypeCodes.findIndex((a) => a === e.constructor.name)
     }

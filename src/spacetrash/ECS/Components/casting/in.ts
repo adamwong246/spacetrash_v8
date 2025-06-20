@@ -1,6 +1,6 @@
-
 import { SpaceTrashComponent } from "..";
-import { EntityComponentStore } from "../../../../engine/VECS.ts/types";
+import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
+import { FloatPositionComponent } from "../v2/physical";
 
 export type IRays =
   | "light"
@@ -51,7 +51,33 @@ export class LitableComponent extends InCastingComponent {
   }
 }
 
-export class LittableStore extends EntityComponentStore<LitableComponent> {
+// export class LittableStore extends EntityComponentStore<LitableComponent> {
+//   make(...a: any[]): LitableComponent {
+//     return new LitableComponent();
+//   }
+// }
+
+export class LittableStore extends Store<any> {
+  store: Record<number, LitableComponent>;
+
+  constructor() {
+    super();
+    this.store = {};
+  }
+
+  each(arg0: ([eid, le]: [number, LitableComponent]) => void) {
+    Object.keys(this.store).forEach((k) => {
+      arg0([Number(k), this.store[k]])
+    });
+  }
+  add(lc: LitableComponent, n: number) {
+    return (this.store[n] = lc);
+  }
+
+  get(n: number): LitableComponent {
+    return this.store[n];
+  }
+
   make(...a: any[]): LitableComponent {
     return new LitableComponent();
   }
