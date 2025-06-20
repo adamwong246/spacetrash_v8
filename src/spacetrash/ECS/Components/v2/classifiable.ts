@@ -2,7 +2,7 @@
 
 import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { EntityComponentStore } from "../../../../engine/VECS.ts/types";
+import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
 
 export class ClassificationComponent extends Component<
   unknown,
@@ -16,18 +16,25 @@ export class ClassificationComponent extends Component<
   }
 }
 
-export class ClassificationStore extends EntityComponentStore<ClassificationComponent> {
+export class ClassificationStore extends Store<Record<number, string>> {
   
+  store: Record<number, string> = {};
+
   constructor() {
     super();
   }
 
-  add(c: ClassificationComponent, i: number) {
-    this.store.push([i, c]);
+  get(n: number) {
+    return this.store[n];
+  }
+  
+  add(c: any, i: number) {
+    this.store[i] = c.entityConstructorName
   }
 
   make(entityConstructorName: string) {
-    return new ClassificationComponent(entityConstructorName);
+    throw "not implemented"
+    // return new ClassificationComponent(entityConstructorName);
   }
 
   // pmcOfEid(eid: number): { position: any; moving: any; classification: any } {

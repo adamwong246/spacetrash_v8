@@ -11,7 +11,7 @@ export class LightComponentStore extends Store<any> {
     number,
     {
       floatPosition: FloatPositionComponent;
-      classification: ClassificationComponent;
+      classification: string;
     }
   >;
 
@@ -23,7 +23,7 @@ export class LightComponentStore extends Store<any> {
   add(
     n: number,
     floatPosition: FloatPositionComponent,
-    classification: ClassificationComponent
+    classification: string
   ) {
     return (this.store[n] = {
       floatPosition,
@@ -33,7 +33,7 @@ export class LightComponentStore extends Store<any> {
 
   get(n: number): {
     floatPosition: FloatPositionComponent;
-    classification: ClassificationComponent;
+    classification: string;
   } {
     return this.store[n];
   }
@@ -57,7 +57,7 @@ export class LightingComponentStore extends Store<any> {
     number,
     {
       floatPosition: FloatPositionComponent;
-      classification: ClassificationComponent;
+      classification: string;
     }
   >;
 
@@ -69,7 +69,7 @@ export class LightingComponentStore extends Store<any> {
   add(
     n: number,
     floatPosition: FloatPositionComponent,
-    classification: ClassificationComponent
+    classification: string
   ) {
     return (this.store[n] = {
       floatPosition,

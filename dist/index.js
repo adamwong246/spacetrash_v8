@@ -55763,17 +55763,15 @@ var setPieceLit;
 var drawables;
 var eid2PMSs;
 var runFirstTick = /* @__PURE__ */ __name(async (game) => {
-  classs.store.forEach(([eid, classification]) => {
-    if (classification.entityConstructorName === "SpaceTrashBot") {
-      eid2PMSs.add(new Eid2PMComponent(
-        fps.get(eid),
-        classification
-      ), eid);
-    } else {
-      eid2PMSs.add(new Eid2PMComponent(
-        ips.get(eid),
-        classification
-      ), eid);
+  Object.keys(classs.store).forEach((k) => {
+    const n = Number.parseInt(k);
+    const kk = classs.get(n);
+    const classification = kk;
+    const eid = k;
+    if (classification === "SpaceTrashBot") {
+      eid2PMSs.add(new Eid2PMComponent(fps.get(n), classs.get(n)), n);
+    } else if (classification === "Tile") {
+      eid2PMSs.add(new Eid2PMComponent(ips.get(n), classs.get(n)), n);
     }
   });
   lightingEntitiesStore.store.forEach(([eid, le]) => {
@@ -55782,7 +55780,7 @@ var runFirstTick = /* @__PURE__ */ __name(async (game) => {
   });
   lightableEntitiesStore.store.forEach(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
-    if (classification.entityConstructorName === "Tile") {
+    if (classification === "Tile") {
       setPieceLit.add(eid, ips.get(eid), classification);
     } else {
       actorsLit.add(eid, fps.get(eid), classification);
@@ -55939,11 +55937,11 @@ __name(updateBotPosition, "updateBotPosition");
 function runPhysics() {
   fmc.store.forEach(([eid, f]) => {
     const { position, classification } = eid2PMSs.get(eid);
-    if (classification.entityConstructorName === "SpaceTrashBot") {
+    if (classification === "SpaceTrashBot") {
       updateBotPosition(position, f);
       boundaryCheckBot(position);
       drawables.updatePostion(eid, position);
-    } else if (classification.entityConstructorName === "Tile") {
+    } else if (classification === "Tile") {
     }
   });
 }
@@ -56503,18 +56501,22 @@ var ClassificationComponent = class extends Component {
     this.entityConstructorName = entityConstructorName;
   }
 };
-var ClassificationStore = class extends EntityComponentStore {
+var ClassificationStore = class extends Store {
   static {
     __name(this, "ClassificationStore");
   }
+  store = {};
   constructor() {
     super();
   }
+  get(n) {
+    return this.store[n];
+  }
   add(c, i) {
-    this.store.push([i, c]);
+    this.store[i] = c.entityConstructorName;
   }
   make(entityConstructorName) {
-    return new ClassificationComponent(entityConstructorName);
+    throw "not implemented";
   }
   // pmcOfEid(eid: number): { position: any; moving: any; classification: any } {
   //   throw new Error("Method not implemented.");

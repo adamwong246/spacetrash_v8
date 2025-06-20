@@ -23,11 +23,11 @@ import { ClassificationComponent } from "./classifiable";
 
 export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   position: PositionComponent;
-  classification: ClassificationComponent;
+  classification: string;
 
   constructor(
     position: PositionComponent,
-    classification: ClassificationComponent
+    classification: string
   ) {
     super();
     this.position = position;

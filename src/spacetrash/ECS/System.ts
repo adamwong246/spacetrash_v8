@@ -22,7 +22,7 @@ import { DrawableStore } from "./Components/v2/drawable.ts";
 import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
-export const ShadowLimit = 1
+export const ShadowLimit = 1;
 export const NumberOfActors = 50;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 5;
@@ -50,23 +50,19 @@ let drawables: DrawableStore;
 let eid2PMSs: Eid2PMStore;
 
 const runFirstTick = async (game: SpaceTrash) => {
+  Object.keys(classs.store).forEach((k) => {
+    const n = Number.parseInt(k);
+    const kk = classs.get(n);
+    const classification = kk;
+    const eid = k;
 
-  classs.store.forEach(([eid, classification]) => {
-
-    if (classification.entityConstructorName === "SpaceTrashBot") {
-      eid2PMSs.add(new Eid2PMComponent(
-        fps.get(eid),
-        classification
-      ), eid)
-    } else {
-      eid2PMSs.add(new Eid2PMComponent(
-        ips.get(eid),
-        classification
-      ), eid)
+    if (classification === "SpaceTrashBot") {
+      eid2PMSs.add(new Eid2PMComponent(fps.get(n), classs.get(n)), n);
+    } else if (classification === "Tile") {
+      eid2PMSs.add(new Eid2PMComponent(ips.get(n), classs.get(n)), n);
     }
-    
-  })
-  
+  });
+
   lightingEntitiesStore.store.forEach(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
     lights.add(eid, fps.get(eid), classification);
@@ -75,7 +71,7 @@ const runFirstTick = async (game: SpaceTrash) => {
   lightableEntitiesStore.store.forEach(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
 
-    if (classification.entityConstructorName === "Tile") {
+    if (classification === "Tile") {
       setPieceLit.add(eid, ips.get(eid), classification);
     } else {
       actorsLit.add(eid, fps.get(eid), classification);
@@ -179,7 +175,7 @@ class MainSystem extends System {
         actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
         setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
         eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-        
+
         runFirstTick(game);
         res(true);
       } else {
@@ -318,7 +314,7 @@ function runIllumination() {
   lightingEntitiesStore.store.forEach(([eidOfLight, lightingComponent]) => {
     const { classification, floatPosition } = lights.get(eidOfLight);
 
-    if (classification.entityConstructorName === "SpaceTrashBot") {
+    if (classification === "SpaceTrashBot") {
       // const p = fps.get(eidOfClassification);
       // const p = eidOfActorsLightToPostion[eidOfClassification];
       // const p: FloatPositionComponent = lights.get(eidOfLight)
@@ -326,7 +322,7 @@ function runIllumination() {
       // if (!p) throw "floating position component not found";
 
       runIlluminationBot(eidOfLight, floatPosition, lightingComponent);
-    } else if (classification.entityConstructorName === "Tile") {
+    } else if (classification === "Tile") {
       throw "lighting tiles is not implemented";
       // const p = ips.get(eidOfClassification);
       // if (!p) throw "integer position component not found";
@@ -371,9 +367,9 @@ function runIlluminationBot(
     const { classification, floatPosition } = lights.get(eidOfLight);
 
     let p: FloatPositionComponent | IntegerPositionComponent;
-    if (classification.entityConstructorName === "SpaceTrashBot") {
+    if (classification === "SpaceTrashBot") {
       runIlluminationBotToBot(fpc, eidOfLight, floatPosition);
-    } else if (classification.entityConstructorName === "Tile") {
+    } else if (classification === "Tile") {
       // runIlluminationBotToTile(fpc, eidOfLightable, floatPosition);
     }
 
@@ -512,7 +508,7 @@ function boundaryCheckTile(ipc: IntegerPositionComponent) {
 }
 
 function updateVelocity(f: number): number {
-  return Math.min(f, 0.5) * 1 ;
+  return Math.min(f, 0.5) * 1;
 }
 
 function updateMovement(f: FloatMovingComponent) {
@@ -524,14 +520,13 @@ function updatePosition(p: FloatPositionComponent, f: FloatMovingComponent) {
   p.x = p.x + f.dx;
   p.y = p.y + f.dy;
 
-  if (Number.isNaN(p.y)){
-    debugger
-    throw "position is Nan?FloatMovingComponent"
+  if (Number.isNaN(p.y)) {
+    debugger;
+    throw "position is Nan?FloatMovingComponent";
   }
 }
 
 function updateBotPosition(p: FloatPositionComponent, f: FloatMovingComponent) {
-
   updateMovement(f);
   updatePosition(p, f);
 }
@@ -550,17 +545,16 @@ function runPhysics() {
     // const classification = classs.get(eid);
     const { position, classification } = eid2PMSs.get(eid);
 
-    if (classification.entityConstructorName === "SpaceTrashBot") {
+    if (classification === "SpaceTrashBot") {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
 
       updateBotPosition(position, f);
       boundaryCheckBot(position);
 
-      drawables.updatePostion(eid, position)
+      drawables.updatePostion(eid, position);
       // oneD.update(eid, p)
-
-    } else if (classification.entityConstructorName === "Tile") {
+    } else if (classification === "Tile") {
       // const p = ips.get(eidOfClassification);
       // if (!p) throw "integer position component not found";
       // updateTilePosition(p, f);
