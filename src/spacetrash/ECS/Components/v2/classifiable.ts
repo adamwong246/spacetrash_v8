@@ -8,7 +8,7 @@ export class ClassificationComponent extends Component<
   unknown,
   ISpaceTrashComponents
 > {
-  entityConstructorName: string
+  entityConstructorName: string;
 
   constructor(entityConstructorName: string) {
     super();
@@ -17,12 +17,20 @@ export class ClassificationComponent extends Component<
 }
 
 export class ClassificationStore extends EntityComponentStore<ClassificationComponent> {
+  
   constructor() {
     super();
   }
 
+  add(c: ClassificationComponent, i: number) {
+    this.store.push([i, c]);
+  }
+
   make(entityConstructorName: string) {
-    
     return new ClassificationComponent(entityConstructorName);
   }
+
+  // pmcOfEid(eid: number): { position: any; moving: any; classification: any } {
+  //   throw new Error("Method not implemented.");
+  // }
 }

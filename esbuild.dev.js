@@ -2,6 +2,7 @@ import esbuild from 'esbuild';
 import { sassPlugin } from 'esbuild-sass-plugin'
 
 esbuild.context({
+  keepNames: true,
   bundle: true,
   format: "esm",
   entryPoints: [

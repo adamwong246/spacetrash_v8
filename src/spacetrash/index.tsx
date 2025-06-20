@@ -31,6 +31,7 @@ import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2
 
 import threejsDroneVideo from "./ECS/Views/threejs3d";
 import { DrawableComponent, DrawableStore, } from "./ECS/Components/v2/drawable";
+import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 // import { DrawingComponent, DrawingStore } from "./ECS/Components/v2/drawings";
 
 const performanceConfig: IPerformanceConfig = {
@@ -144,7 +145,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         LightComponent: new LightComponentStore(),
         ActorsLit: new LightingComponentStore(),
         SetPiecesLit: new LightingComponentStore(),
-        // DrawingComponent: new DrawingStore(),
+        Eid2PMComponent: new Eid2PMStore(),
       },
       performanceConfig,
       new Set(["2d", "webgl2", "pixi2d", "threejs"]),
@@ -359,11 +360,13 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const storeName = "FloatPositionComponent";
 
     if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
-    if (!this.componentStores[storeName].get(eid)) throw "missing entity";
+
+    const c = this.componentStores[storeName].get(eid);
+    if (!c) throw "missing entity";
 
     return {
-      x: this.componentStores[storeName].get(eid).x,
-      y: this.componentStores[storeName].get(eid).y,
+      x: c.x,
+      y: c.y,
     };
   }
 

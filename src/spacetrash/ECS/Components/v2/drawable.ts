@@ -9,31 +9,6 @@ import { ComponentStore, EntityComponentStore, OneDStore, Store } from "../../..
 
 import { ActorComponent } from "../phase1";
 import { FloatPositionComponent, FloatPositionStore } from "./physical";
-// import { Assets } from "@pixi/assets";
-
-
-
-// class SpriteMaster{
-
-  
-
-//   async start() {
-//     this.brickTexture = await Assets.load(brick);
-//     this.stoneTexture = await Assets.load(stone);
-//     this.bunnyTexture = await Assets.load(
-//       "https://pixijs.com/assets/bunny.png"
-//     );
-//   }
-
-//   texture(s: string) {
-//     if (s == brick) return this.brickTexture;
-//     if (s == stone) return this.stoneTexture;
-//     if (s == "https://pixijs.com/assets/bunny.png") return this.bunnyTexture;
-//   }
-// }
-
-// export const TheSpriteMaster = new SpriteMaster();
-// TheSpriteMaster.start();
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   textureURL: string
