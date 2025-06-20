@@ -54280,19 +54280,15 @@ function updateBotPosition(p, f) {
 }
 function runPhysics() {
   fmc.store.forEach(([eid, f]) => {
-    classs.store.forEach(([eidOfClassification, classification]) => {
-      if (eidOfClassification === eid) {
-        let p;
-        if (classification.entityConstructorName === "SpaceTrashBot") {
-          const p2 = fps.get(eidOfClassification);
-          if (!p2) throw "floating position component not found";
-          updateBotPosition(p2, f);
-          boundaryCheckBot(p2);
-          drawables.updatePostion(eid, p2);
-        } else if (classification.entityConstructorName === "Tile") {
-        }
-      }
-    });
+    const classification = classs.get(eid);
+    if (classification.entityConstructorName === "SpaceTrashBot") {
+      const p = fps.get(eid);
+      if (!p) throw "floating position component not found";
+      updateBotPosition(p, f);
+      boundaryCheckBot(p);
+      drawables.updatePostion(eid, p);
+    } else if (classification.entityConstructorName === "Tile") {
+    }
   });
 }
 var SpaceTrashMainSystem = new MainSystem(MapSize);

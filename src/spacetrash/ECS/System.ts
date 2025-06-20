@@ -543,30 +543,24 @@ function updateTilePosition(
 function runPhysics() {
   // actors out of bounds check
   fmc.store.forEach(([eid, f]) => {
-    classs.store.forEach(([eidOfClassification, classification]) => {
-      if (eidOfClassification === eid) {
-        let p: FloatPositionComponent | IntegerPositionComponent;
-        if (classification.entityConstructorName === "SpaceTrashBot") {
-          const p = fps.get(eidOfClassification);
-          if (!p) throw "floating position component not found";
+    const classification = classs.get(eid);
 
-          updateBotPosition(p, f);
-          boundaryCheckBot(p);
+    if (classification.entityConstructorName === "SpaceTrashBot") {
+      const p = fps.get(eid);
+      if (!p) throw "floating position component not found";
 
-          drawables.updatePostion(eid, p)
-          // oneD.update(eid, p)
+      updateBotPosition(p, f);
+      boundaryCheckBot(p);
 
-          // const actor: ActorComponent = oneD.get(eid);
-          // actor.floatPosition.x = p.x;
-          // actor.floatPosition.y = p.y;
-        } else if (classification.entityConstructorName === "Tile") {
-          // const p = ips.get(eidOfClassification);
-          // if (!p) throw "integer position component not found";
-          // updateTilePosition(p, f);
-          // boundaryCheckTile(p);
-        }
-      }
-    });
+      drawables.updatePostion(eid, p)
+      // oneD.update(eid, p)
+
+    } else if (classification.entityConstructorName === "Tile") {
+      // const p = ips.get(eidOfClassification);
+      // if (!p) throw "integer position component not found";
+      // updateTilePosition(p, f);
+      // boundaryCheckTile(p);
+    }
   });
 }
 
