@@ -3,6 +3,7 @@
 
 import { Game } from "./engine/Game";
 import { StateSpace } from "./engine/StateSpace";
+import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 import { System } from "./engine/VECS.ts/System";
 import { IComponentsStores, IStores } from "./engine/VECS.ts/types";
 
@@ -15,10 +16,7 @@ export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings
     system: System,
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
-    config: {
-      fps: number;
-      performanceLogging: boolean;
-    },
+    config: IPerformanceConfig,
     renderings: Set<IRenderings>,
   ) {
     super(stateSpace, system, componentStores, stores, config);
@@ -64,13 +62,13 @@ export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings
   }
 
   draw() {
-    return Promise.all(Object.keys(this.canvasContexts).map((c) => {
-      return this.drawCanvas(c)
+    return Promise.all(Object.keys(this.canvasContexts).map(async (c) => {
+      return await this.drawCanvas(c)
     }));
   }
 
   
-  drawCanvas(key: string): Promise<any> {
+  async drawCanvas(key: string): Promise<any> {
     const scene = this.stateSpace.get(this.stateSpace.currrent);
     const canvas = this.canvasContexts[key].canvas;
     
@@ -81,7 +79,7 @@ export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings
       this
     );
 
-    return Promise.all(
+    await Promise.all(
       drawOps.map(async (d) => {
         if (canvas === null) {
           console.error(this.canvasContexts[key].toString());

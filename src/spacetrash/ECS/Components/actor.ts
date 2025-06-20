@@ -1,4 +1,3 @@
-
 import { EntityComponentStore } from "../../../engine/VECS.ts/types";
 
 import { PhysicsComponent } from "./physics";

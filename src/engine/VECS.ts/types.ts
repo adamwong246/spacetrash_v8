@@ -9,9 +9,9 @@ export abstract class ComponentStore<I extends Component<any, any>> {
 
 export abstract class Store<I> {
   abstract store: I;
-  abstract add(c: I);
+  abstract add(...a: any);
   abstract make(...a): I;
-  abstract get(...a): any;
+  // abstract get(...a): any;
 }
 
 export abstract class EntityComponentStore<
@@ -28,15 +28,20 @@ export abstract class EntityComponentStore<
       return v[0] === i;
     });
 
-    if (!toReturn) return undefined;
+    if (!toReturn) throw "not found!";
     if (!toReturn[1]) throw "not found!";
 
     return toReturn[1];
   }
 }
 
-export abstract class OneDStore<I> extends Store<I> {
+export abstract class OneDStore<I extends []> extends Store<I> {
   store: I[] = [];
+
+  constructor() {
+    super();
+  }
+
 
   add(e) {
     this.store.push(e);

@@ -1,9 +1,8 @@
-import { DockviewDefaultTab, DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
+import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
 import React from "react";
 
 import { StateSpace } from "../engine/StateSpace";
 import pixiShipMap from "./ECS/Views/pixi2d";
-import threejsDroneVideo from "./ECS/Views/threejs3d";
 
 import { } from "./ECS/Components/physics";
 import {
@@ -15,18 +14,30 @@ import {
   LittableStore,
 } from "./ECS/Components/casting/in";
 import { LitStore } from "./ECS/Components/casting/out";
-import { Phase0Store } from "./ECS/Components/phase0";
-import { Phase1Store } from "./ECS/Components/phase1";
-import { PhysicsActorStore } from "./ECS/Components/actor";
-import { PhysicsSetPieceStore } from "./ECS/Components/setPiece";
+import { SetPieceStore } from "./ECS/Components/phase0";
+import { ActorStore } from "./ECS/Components/phase1";
 import { ITermWindowState, TerminalWindow } from "./UI/terminal";
 import bootScene from "./Scenes/Boot";
 import mainLoopScene from "./Scenes/MainLoop";
 import { BotWindow } from "./UI/BotWindow";
 import { MapWindow } from "./UI/map";
 import { BotsWindow } from "./UI/BotsWindow";
-import { ITerminalLine, TerminalGame, WindowedTerminalGame } from "./Terminal";
-import { DesktopGame } from "../DesktopGame";
+import { ITerminalLine, TerminalGame } from "./Terminal";
+import { IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore } from "./ECS/Components/v2/physical";
+import { NameableStore } from "./ECS/Components/v2/nameable";
+import { ClassificationStore } from "./ECS/Components/v2/classifiable";
+import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
+import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
+
+import threejsDroneVideo from "./ECS/Views/threejs3d";
+import { DrawableComponent, DrawableStore, } from "./ECS/Components/v2/drawable";
+// import { DrawingComponent, DrawingStore } from "./ECS/Components/v2/drawings";
+
+const performanceConfig: IPerformanceConfig = {
+  fps: 60,
+  performanceLogging: false,
+  headless: false
+};
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
@@ -77,8 +88,8 @@ function isNumeric(str: string): boolean {
 }
 
 export class SpaceTrash extends TerminalGame<IRenderings, {
-  Phase0: Phase0Store,
-  Phase1: Phase1Store
+  SetPieceComponent: SetPieceStore,
+  ActorComponent: ActorStore
 }, number> {
 
   // uiHooks: any;
@@ -113,21 +124,29 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       stateSpace,
       SpaceTrashMainSystem,
       {
-        PhysicsSetPieceComponent: new PhysicsSetPieceStore(),
-        PhysicsActorComponent: new PhysicsActorStore(),
+        IntegerPositionComponent: new IntegerPositionStore(),
+        FloatPositionComponent: new FloatPositionStore(),
+        DegreesDirectionComponent: new DegreesDirectionStore(),
+        OrdinalDirectionComponent: new OrdinalDirectionStore(),
+        FloatMovingComponent: new FloatMovingStore(),
+        OridinalMovingComponent: new OridinalMovingStore(),
+        NameableComponent: new NameableStore(),
+        ClassificationComponent: new ClassificationStore(),
         LitableComponent: new LittableStore(),
         LitComponent: new LitStore(),
         CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
+        DrawableComponent: new DrawableStore()
       },
       {
-        Phase0: new Phase0Store(),
-        Phase1: new Phase1Store(),
+        SetPieceComponent: new SetPieceStore(),
+        ActorComponent: new ActorStore(),
+        LightComponent: new LightComponentStore(),
+        ActorsLit: new LightingComponentStore(),
+        SetPiecesLit: new LightingComponentStore(),
+        // DrawingComponent: new DrawingStore(),
       },
-      {
-        fps: 45,
-        performanceLogging: false,
-      },
+      performanceConfig,
       new Set(["2d", "webgl2", "pixi2d", "threejs"]),
       domNode,
     );
@@ -161,11 +180,11 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         self.focusTerminalWindow(event.key)
       }
       else {
-        console.log(event);
+        // console.log(event);
       }
     });
     document.addEventListener('keyup', function (event) {
-      
+
       if (event.key === 'ArrowUp') {
         self.stopForward();
       }
@@ -179,10 +198,16 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         self.stopRight();
       }
       else {
-        console.log(event);
+        // console.log(event);
       }
     });
 
+  }
+
+  start() {
+    super.start()
+    return new Promise(async (res, rej) => {
+    })
   }
 
   bufferRef: React.MutableRefObject<null>;
@@ -220,37 +245,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
 
-  // dockViewComponents() {
-  //   return {
-
-  //     default: (props: IDockviewPanelHeaderProps<IState>) => {
-  //       return (
-  //         <div>
-  //           <p>default</p>
-  //           {/* <div>{`custom tab: ${props.api.title}`}</div>
-  //               <span>{`value: ${props.params.myValue}`}</span> */}
-  //         </div>
-  //       );
-  //     },
-
-  //     map: (props: IDockviewPanelHeaderProps<IState>) => {
-  //       return (
-  //         <MapWindow game={this} />
-  //       );
-  //     },
-
-  //     vid: (props: IDockviewPanelHeaderProps<IState>) => {
-  //       return (
-  //         <BotWindow game={this} />
-  //       );
-  //     },
-
-  //     bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
-  //     term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
-  //   }
-  // }
-
-
   onDockviewReady(event: DockviewReadyEvent) {
     super.onDockviewReady(event);
     event.api.addPanel({
@@ -269,7 +263,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
   loginHook() {
     this.changeScene("mainloop")
-    this.openAllWindows()
   }
 
   focusMapWindow() {
@@ -292,42 +285,18 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
   }
 
-  //   focusVideoWindowAndSwitchVideoFeed(s: string) {
-  //   this.videoFeed = Number(s);
-  //   this.dockviewAPI.panels.forEach((dp) => {
-  //     if (dp.id === "vid") {
-  //       dp.focus()
-  //     }
-  //   })
-  // }
-
-
   driveForward() {
     this.forward = true;
-    
-    // const beid = this.bots[this.videoFeed][0];
-    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    // pac.dy = pac.dy - .001;
   }
   driveBack() {
     this.back = true;
-    // const beid = this.bots[this.videoFeed][0];
-    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    // pac.dy = pac.dy + 0.01;
   }
   turnLeft() {
     this.left = true;
-    // const beid = this.bots[this.videoFeed][0];
-    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    // pac.dx = pac.dx - 0.01;
   }
   turnRight() {
     this.right = true;
-    // const beid = this.bots[this.videoFeed][0];
-    // const pac = this.componentStores['PhysicsActorComponent'].get(beid);
-    // pac.dx = pac.dx + 0.01;
   }
-
   stopForward() {
     this.forward = false;
   }
@@ -386,26 +355,30 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.start()
   }
 
-  positionOfEntity(eid: number): { x: number; y: number } {
-    if (!this.componentStores["PhysicsActorComponent"].get(eid)) throw "missing entity";
+  positionOfBot(eid: number): { x: number; y: number } {
+    const storeName = "FloatMovingComponent";
+
+    if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
+    if (!this.componentStores[storeName].get(eid)) throw "missing entity";
+
     return {
-      x: this.componentStores["PhysicsActorComponent"].get(eid).x,
-      y: this.componentStores["PhysicsActorComponent"].get(eid).y,
+      x: this.componentStores[storeName].get(eid).x,
+      y: this.componentStores[storeName].get(eid).y,
     };
   }
 
   public videoFeedPosition(): { x: number; y: number } {
-    return this.positionOfEntity(
+    return this.positionOfBot(
       (this.bots[this.videoFeed] as [number, string])[0]
     );
   }
 
-  renderDroneVideo(ctx: HTMLCanvasElement) {
-    threejsDroneVideo(this, ctx);
+  async renderDroneVideo(ctx: HTMLCanvasElement) {
+    await threejsDroneVideo(this, ctx);
   }
 
-  renderShipMap(ctx: any) {
-    pixiShipMap(this, ctx);
+  async renderShipMap(ctx: any) {
+    await pixiShipMap(this, ctx);
   }
 
   botsHook: React.Dispatch<any>;
@@ -460,160 +433,3 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
 }
-
-// private buffer: string = "";
-
-// submitBuffer(s: string) {
-
-// }
-// setBuffer(s: string) {
-
-// }
-// addToBuffer(s: string) {
-//   this.processCommand(s);
-// }
-
-// alreadyLoggedIn(): void {
-//   this.returnCommand({
-//     out: `You are already logged in`,
-//     status: "fail",
-//   });
-// }
-
-
-
-// updateTerminal() {
-//   this.terminalWindowHook({
-//     history: this.terminalHistory,
-//     buffer: this.buffer,
-//     submitBuffer: this.submitBuffer,
-//     setBuffer: this.setBuffer,
-//   })
-// }
-
-// loggedIn: boolean;
-
-// login(): void {
-
-//   if (!this.loggedIn) {
-//     this.loggedIn = true;
-//     this.loginHook()
-//     this.returnCommand(
-//       // props,
-//       {
-//         ...props,
-//         uiState: {
-//           ...props.uiState,
-//           loggedIn: true,
-//         },
-
-//         // state: {
-//         //   ...props.params.state,
-//         //   terminal: {
-//         //     ...props.params.state.terminal,
-//         //     loggedIn: true,
-//         //   },
-//         // },
-
-//         // ...state,
-//       },
-
-//       loggedInTermLine
-//     );
-
-//   } else {
-//     this.returnCommand(
-//       // props,
-//       {
-//         ...props,
-//         uiState: {
-//           ...props.uiState,
-//           loggedIn: false,
-//         },
-
-//       },
-
-//       alreadyLoggedInTermLine
-//     );
-//   }
-
-
-
-
-// }
-
-// buffer: string;
-
-// private history : ITerminalLine[]=[];
-
-// returnCommand(props: IDockviewPanelProps<IState>, t: ITerminalLine) {
-//   this.buffer = "";
-//   this.history.push(t);
-//   this.updateTerminal()
-//   // props.uiState.uiUpdateCallback({
-//   //   uiState: {
-//   //     ...props.uiState,
-//   //     buffer: "",
-//   //       history: [
-//   //         ...props.uiState.history,
-//   //         {
-//   //           ...t,
-//   //           in: props.uiState.buffer,
-//   //         },
-//   //       ],
-
-//   //     // ...state,
-//   //     // terminal: {
-//   //     //   ...state.terminal,
-//   //     //   buffer: "",
-//   //     //   history: [
-//   //     //     ...state.terminal.history,
-//   //     //     {
-//   //     //       ...t,
-//   //     //       in: state.terminal.buffer,
-//   //     //     },
-//   //     //   ],
-//   //   },
-//   // });
-// }
-
-
-
-// public yup() {
-//   for (let ndx = 1; ndx <= 9; ndx++) {
-//     if (this.videoFeed === ndx) {
-//       this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy - 0.001;
-//     }
-//   }
-// }
-// public ydown() {
-//   for (let ndx = 1; ndx <= 9; ndx++) {
-//     if (this.videoFeed === ndx) {
-//       this.bots[this.videoFeed].dy = this.bots[this.videoFeed].dy + 0.001;
-//     }
-//   }
-// }
-
-// public xleft() {
-//   for (let ndx = 1; ndx <= 9; ndx++) {
-//     if (this.videoFeed === ndx) {
-//       this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx - 0.001;
-//     }
-//   }
-// }
-// public xright() {
-//   for (let ndx = 1; ndx <= 9; ndx++) {
-//     if (this.videoFeed === ndx) {
-//       this.bots[this.videoFeed].dx = this.bots[this.videoFeed].dx + 0.001;
-//     }
-//   }
-// }
-
-// onStateChange(stateSetter: Dispatch<SetStateAction<IState>>) {
-//   this.stateSetter = stateSetter
-// }
-
-
-
-
-// const st = new SpaceTrash();

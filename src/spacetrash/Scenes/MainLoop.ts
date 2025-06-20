@@ -1,12 +1,13 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
 import { BotSlots } from "../Constants";
+
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 import { MapSize, ActorSize, NumberOfActors } from "../ECS/System";
 
 class MainScene extends SpaceTrashScene {
-  boot(game: SpaceTrash) {
+  async boot(game: SpaceTrash) {
     const drones = [...new Array(BotSlots)].map((n) => {
       return new SpaceTrashBot(
         Math.random() * MapSize,
@@ -109,7 +110,7 @@ const scene = new MainScene({
     },
 
     (ecs, event: any) => {
-      console.log(event);
+      // console.log(event);
       // if (event === "1") {
       //   this.videoFeed = 1;
       // }

@@ -5,7 +5,7 @@ import { Component, TwoDOneD_Component } from "../../../engine/VECS.ts/Component
 import { TwoDStore } from "../../../engine/VECS.ts/types";
 
 
-export class Phase0 extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
+export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
   setId = -1;
   actorIds = [];
   litIds = [];
@@ -24,7 +24,7 @@ export class Phase0 extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
   }
 }
 
-export class Phase0Store extends TwoDStore<Phase0> {
+export class SetPieceStore extends TwoDStore<SetPieceComponent> {
   constructor() {
     super();
     this.store = [[]];
@@ -35,6 +35,6 @@ export class Phase0Store extends TwoDStore<Phase0> {
   }
 
   make() {
-    return new Phase0();
+    return new SetPieceComponent();
   }
 }

@@ -3,7 +3,8 @@ import { Entity } from "../../../engine/VECS.ts/Entity";
 import { SpaceTrashEntityComponent } from ".";
 import { Tile, FloorTile, WallTile, NorthEast, NorthWest, SouthEast, SouthWest } from "./tiles";
 import { MapSize } from "../System";
-import { PhysicsSetPieceComponent } from "../Components/setPiece";
+import { IntegerPositionComponent } from "../Components/v2/physical";
+// import { PhysicsSetPieceComponent } from "../Components/setPiece";
 
 export class SpaceTrashShip extends SpaceTrashEntityComponent {
   map: (Tile)[][];
@@ -14,27 +15,28 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
 
   addToMap(t: Tile){
 
-    if (t.x >= this.shipSize) {
+    if (t.position().x >= this.shipSize) {
       console.error("Cannot add tile beyond the upper bound of 32");
       return;
     }
-    if (t.x < 0) {
+    if (t.position().y < 0) {
       console.error("Cannot add tile beyond the lower bound of 0");
       return;
     }
 
-    if (t.y >= this.shipSize) {
+    if (t.position().y >= this.shipSize) {
       console.error("Cannot add tile beyond the upper bound of 32");
       return;
     }
-    if (t.y < 0) {
+    if (t.position().y < 0) {
       console.error("Cannot add tile beyond the lower bound of 0");
       return;
     }
 
     const p = t.components.find((c) => {
-      return c.constructor.name === "PhysicsSetPieceComponent";
-    }) as PhysicsSetPieceComponent;
+      return c.constructor.name === "IntegerPositionComponent";
+    }) as IntegerPositionComponent;
+
     const x = p.x;
     const y = p.y;
 

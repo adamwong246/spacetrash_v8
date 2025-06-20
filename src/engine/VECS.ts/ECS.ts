@@ -8,30 +8,35 @@ import { Component } from "./Component";
 
 const EntityMax = 65535;
 
+export type IPerformanceConfig = {
+  performanceLogging: boolean;
+  fps: number;
+  headless: boolean;
+};
+
 export abstract class ECS {
   system: System;
   entities: IEntitiesStore;
   componentStores: IComponentsStores<any>;
   stores: IStores<any>;
-  fps: number = 30;
+  fps: number = 60;
   performanceLogging = false;
   paused = true;
   nextId = 0;
+  headless = false;
 
   constructor(
     system: System,
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
-    config: {
-      fps: number;
-      performanceLogging: boolean;
-    }
+    config: IPerformanceConfig
   ) {
     this.system = system;
     this.componentStores = componentStores;
     this.stores = stores;
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
+    this.headless = config.headless;
 
     const sharedBuffer = new SharedArrayBuffer(
       Int32Array.BYTES_PER_ELEMENT * EntityMax
@@ -41,7 +46,12 @@ export abstract class ECS {
   }
 
   addComponent(i: number, c: Component<any, any>) {
-    this.componentStores[c.constructor.name].add(c, i);
+    const name = c.constructor.name;
+    const store = this.componentStores[name];
+
+    if (!store)
+      throw `Did you forget to register the store "${name}? Check the top level constructor for the implementation of Game."`;
+    store.add(c, i);
   }
 
   getComponents(i: number): Component<any, any>[] {
@@ -73,6 +83,7 @@ export abstract class ECS {
       toReturn.push(i);
 
       e.components.forEach((c: Component<any, any>) => {
+        // if (c.constructor.name === "DrawableComponent") debugger
         if (!c.constructor.name) {
           console.error("constructor-name not found.", c);
         } else {
@@ -101,9 +112,11 @@ export abstract class ECS {
 
   ///////////////////////////////////////////////////////////////////
 
+  ticked: false | true = false;
   async tick(delta: number): Promise<any> {
     if (!this.paused) {
       await this.system.tick(delta, this);
+      this.ticked = true;
     }
   }
 
@@ -120,10 +133,10 @@ export abstract class ECS {
     // run the logic loop as fast as possible
     let d;
     let p = performance.now();
-    const repeatedFunction = async () => {
+    const repeatedFunction = () => {
       d = performance.now();
       const timeDelta = d - p;
-      await this.tick(timeDelta);
+      this.tick(timeDelta);
       if (this.performanceLogging) {
         console.debug("ECS tick time delta", timeDelta);
       }
@@ -132,20 +145,101 @@ export abstract class ECS {
 
     setInterval(repeatedFunction, 1);
 
-    // run the render loop at FPS
-    while (true) {
-      let now = await new Promise(requestAnimationFrame);
-      if (now - then < interval - delta) {
-        continue;
-      }
-      delta = Math.min(interval, delta + now - then - interval);
-      then = now;
+    if (!this.headless) {
+      // run the render loop at FPS
+      while (true) {
+        let now = await new Promise(requestAnimationFrame);
+        if (now - then < interval - delta) {
+          continue;
+        }
+        delta = Math.min(interval, delta + now - then - interval);
+        then = now;
 
-      if (this.performanceLogging) {
-        console.debug("Draw time delta, total", delta);
+        if (this.ticked) {
+          await this.draw();
+        }
       }
-
-      await this.draw();
+    } else {
+      console.log("running in headless mode")
     }
   }
+
+  // // ready = false;
+  // // drawing = false;
+  // // async tick(delta: number): Promise<any> {
+  // //   if (!this.paused) {
+  // //     await this.system.tick(delta, this);
+  // //     this.ready = true;
+  // //   }
+  // // }
+
+  // abstract draw(): Promise<any>;
+
+  // async start() {
+  //   console.log("start");
+
+  //   // await this.system.tick(0, this);
+    
+
+  //   // let then = performance.now();
+  //   // const interval = 1000 / this.fps;
+  //   // let delta = 0;
+
+  //   // // run the logic loop as fast as possible
+    
+  //   // let ds;
+  //   // let ps = performance.now();
+
+  //   // const systemLoop = () => {
+  //   //   ds = performance.now();
+  //   //   const timeDelta = ds - ps;
+  //   //   this.tick(timeDelta);
+  //   //   if (this.performanceLogging) {
+  //   //     console.debug("ECS tick time delta", timeDelta);
+  //   //   }
+  //   //   ps = ds;
+  //   // };
+
+  //   // setInterval(systemLoop, 1);
+
+  //   // let dd;
+  //   // let pd = performance.now();
+  //   // const drawLoop = async () => {
+  //   //   dd = performance.now();
+  //   //   const timeDelta = dd - pd;
+
+  //   //   if (true) {
+        
+  //   //     await this.draw();
+  //   //   }
+
+  //   //   if (this.performanceLogging) {
+  //   //     console.debug("draw tick time delta", timeDelta);
+  //   //   }
+  //   //   pd = dd;
+  //   // };
+
+  //   // setInterval(drawLoop, 333);
+
+  //   let then = performance.now();
+  //   const interval = 1000 / this.fps;
+  //   let delta = 0;
+
+  //   if (!this.headless) {
+  //     // run the render loop at FPS
+  //     while (true) {
+  //       let now = await new Promise(requestAnimationFrame);
+  //       if (now - then < interval - delta) {
+  //         continue;
+  //       }
+  //       delta = Math.min(interval, delta + now - then - interval);
+  //       then = now;
+
+  //       await this.draw();
+  //       await this.system.tick(delta, this)
+  //     }
+  //   } else {
+  //     console.log("running in headless mode")
+  //   }
+  // }
 }

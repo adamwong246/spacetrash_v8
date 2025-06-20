@@ -17,6 +17,7 @@ import { BotWindow } from "./spacetrash/UI/BotWindow";
 import { MapWindow } from "./spacetrash/UI/map";
 import { TerminalWindow } from "./spacetrash/UI/terminal";
 import { WindowedGame } from "./WindowedGame";
+import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 
 // const MenuBar: (p: {
 
@@ -46,10 +47,7 @@ export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceG
     system: System,
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
-    config: {
-      fps: number;
-      performanceLogging: boolean;
-    },
+    config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
   ) {
@@ -66,7 +64,10 @@ export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceG
 
       <div
         style={{
-          display: 'block',
+          top: 0,
+          left: 0,
+          position: 'absolute',
+          zIndex: 1
         }}
       >
         <button onClick={() => this.focusWindowById('map')}>map</button>
@@ -113,11 +114,11 @@ export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceG
           term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
         }}
       />
-    </div>)
+    </div >)
   }
 
-  
-  
+
+
   focusWindowById(s: string, p?: any) {
     this.dockviewAPI.panels.forEach((p) => {
       if (p.id === s) {

@@ -14,8 +14,14 @@ export abstract class TwoDOneD_Component<IMove, IComponents> extends Component<
   IMove,
   IComponents
 > {
-  culledWebgl: boolean;
-  renderedWebgl: `new` | `fresh` | "unchanged" | "changed" | `rendered`;
-  culled2d: boolean;
-  rendered2d: `new` | `fresh` | "unchanged" | "changed" | `rendered`;
+  // culledWebgl: boolean;
+  renderedWebgl:
+    | `new`
+    | `rendered`
+    | `culled`
+    | `invisible`
+    | `visible`
+    | `no-op`;
+  // culled2d: boolean;
+  rendered2d: `new` | `rendered` | `culled` | `invisible` | `visible` | `no-op`;
 }

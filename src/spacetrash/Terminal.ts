@@ -6,6 +6,7 @@ import { StateSpace } from "../engine/StateSpace";
 import { System } from "../engine/VECS.ts/System";
 import { ITermWindowState } from "./UI/terminal";
 import { DesktopGame } from "../DesktopGame";
+import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 
 const initialTerminalHistory: ITerminalLine = {
   out: "hardware check passed",
@@ -162,7 +163,7 @@ export abstract class TerminalGame<
     system: System,
     componentStores,
     stores,
-    config,
+    config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement
     

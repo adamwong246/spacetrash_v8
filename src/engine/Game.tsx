@@ -1,6 +1,6 @@
 // The 1st class. It handles the scenes and rendering
 
-import { ECS } from "./VECS.ts/ECS.ts";
+import { ECS, IPerformanceConfig } from "./VECS.ts/ECS.ts";
 import { StateSpace } from "./StateSpace";
 import { System } from "./VECS.ts/System.ts";
 import { IComponentsStores, IStores } from "./VECS.ts/types.ts";
@@ -16,10 +16,7 @@ export abstract class Game<IRenderings, I> extends ECS {
     system: System,
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
-    config: {
-      fps: number,
-      performanceLogging: boolean
-    }
+    config: IPerformanceConfig
 
   ) {
     super(system, componentStores, stores, config)
@@ -28,11 +25,11 @@ export abstract class Game<IRenderings, I> extends ECS {
   }
 
   async start() {
-    this.stateSpace.getCurrent().boot(this)
-    super.start()
+    await this.stateSpace.getCurrent().boot(this)
+    await super.start()
   }
 
-  changeScene(to: string) {
+  async changeScene(to: string) {
     console.log("changing scenes from ", this.stateSpace.getCurrent().constructor.name, "to", to);
     if (this.stateSpace.get(to) === this.stateSpace.getCurrent()) throw "why did you change scenes to the same scene?"
     this.stateSpace.setCurrent(to);

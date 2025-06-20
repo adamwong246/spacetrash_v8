@@ -1,6 +1,3 @@
-import * as THREE from "three";
-
-
 import { Tree } from "./Tree";
 import { ECS } from "./VECS.ts/ECS";
 import { Game } from "./Game";
@@ -9,13 +6,7 @@ type IReply = (ecs: any) => void;
 
 type IBoot = (ecs: ECS, reply: IReply) => void;
 
-type IUpdate = (
-  ecs: ECS,
-  update: any
-) => ((
-  ctx: any,
-  opts?
-) => Promise<any>)[];
+type IUpdate = (ecs: ECS, update: any) => ((ctx: any, opts?) => Promise<any>)[];
 
 type IEvents = (ecs: ECS, event: Event) => void;
 
@@ -28,7 +19,7 @@ export abstract class Scene extends Tree {
   // sceneBoot: (ecs: ECS) => Promise<void>;
 
   constructor(
-    appLogic: IAppLogic<any>,
+    appLogic: IAppLogic<any>
     // sceneBoot: (ecs: ECS) => Promise<void>
   ) {
     super();
@@ -44,10 +35,7 @@ export abstract class Scene extends Tree {
     app: any,
     bootReplier: IReply,
     ecs: ECS
-  ): ((
-    g: Game<any, any>, 
-    ctx: HTMLCanvasElement
-    ) => Promise<any>)[] {
+  ): ((g: Game<any, any>, ctx: HTMLCanvasElement) => Promise<any>)[] {
     return this.appLogic[app][1](ecs, bootReplier);
   }
 
@@ -59,8 +47,6 @@ export abstract class Scene extends Tree {
   //   //   this.appLogic[k][0](ecs);
   //   // });
   // }
-
-  
 
   // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
   //   if (app === "document") {

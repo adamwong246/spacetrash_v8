@@ -1,33 +1,41 @@
-import * as THREE from "three";
+import { Application, Sprite } from "pixi.js";
 
 import { TwoDOneD_Component } from "../../../engine/VECS.ts/Component";
 import { OneDStore } from "../../../engine/VECS.ts/types";
 
 import { ISpaceTrashComponents } from ".";
+import { FloatPositionComponent, FloatPositionStore } from "./v2/physical";
 
-export class Phase1 extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
+export class ActorComponent extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
   actorId: number;
-  actorX: number;
-  actorY: number;
-  mesh?: THREE.Mesh;
   friendly: boolean;
+  floatPosition: FloatPositionComponent;
+  sprite: Sprite
 
   constructor() {
     super();
   }
 }
 
-export class Phase1Store extends OneDStore<Phase1> {
-  constructor() {
-    super();
-    this.store = [];
+export class ActorStore extends OneDStore<any> {
+  
+  get(n: number): ActorComponent {
+    return this.store.find((v) => v.actorId === n);
+    
   }
 
-  add(a: any) {
-    throw new Error("Method not implemented.");
+  add(a: ActorComponent) {
+    super.add(a);
   }
 
   make() {
-    return new Phase1();
+    return new ActorComponent();
+  }
+
+  positionOf(eidOfLight: number): FloatPositionComponent {
+    throw new Error("Method not implemented.");
+  }
+  update(n: number, p: FloatPositionComponent) {
+    this.get(n).floatPosition = p;
   }
 }

@@ -1,139 +1,155 @@
-import { Assets } from "@pixi/assets";
-import { Application, Sprite } from "pixi.js";
+import { Application, Loader, Sprite } from "pixi.js";
 
-import { Phase0Store } from "../Components/phase0";
-import { Phase1Store } from "../Components/phase1";
-import { MapSize, TileSize, ActorSize } from "../System";
+import { MapSize, TileSize } from "../System";
+
+import { IView } from "../../../engine/VECS.ts/View";
+import { SpaceTrash } from "../..";
+// import { DrawingStore } from "../Components/v2/drawings";
+import { DrawableComponent, DrawableStore } from "../Components/v2/drawable";
+import { Assets } from "@pixi/assets";
 
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
-import { IView } from "../../../engine/VECS.ts/View";
 
-let actors: Sprite[] = [];
 let pixi2dApp: Application;
-let firstRender = true;
+let tick = -1;
+let drawables: DrawableStore;
+let ctx: HTMLCanvasElement;
 
-let brickTexture: any;
-let stoneTexture: any;
-let bunnyTexture: any;
+let brickTexture;
+let stoneTexture;
+let bunnyTexture;
 
-const tiles: [any, boolean][][] = [[]];
+const render: IView<any> = async (game, canvas) => {
+  if (!game) debugger;
+  if (tick === -1) {
+    drawables = game.componentStores["DrawableComponent"] as DrawableStore;
 
-const render: IView = (game, canvas) =>
-  new Promise(async (res, rej) => {
-    // const twoD = (game.stores["Phase0"] as Phase0Store).store;
-    const oneD = (game.stores["Phase1"] as Phase1Store).store;
+    await firstRender(game, canvas);
+    tick++;
+  } else {
+    pixi2dApp.render();
+  }
 
-    if (firstRender) {
-      firstRender = false;
+  return;
+};
 
-      let ctx = canvas.getContext("webgl2");
-
-      pixi2dApp = new Application({
-        width: (MapSize + 7) * TileSize,
-        height: (MapSize + 7) * TileSize,
-        antialias: true, // 抗锯齿，圆滑边界
-        resolution: 1,
-        view: ctx?.canvas,
-        backgroundColor: 0x00ff00,
-        sharedTicker: false,
-      });
-      pixi2dApp.ticker.stop();
-      pixi2dApp.ticker.destroy();
-      pixi2dApp.renderer.plugins.interaction.useSystemTicker = false;
-
-      brickTexture = await Assets.load(brick);
-      stoneTexture = await Assets.load(stone);
-      bunnyTexture = await Assets.load("https://pixijs.com/assets/bunny.png");
-
-      for (let y = 0; y < MapSize; y++) {
-        tiles[y] = [];
-        for (let x = 0; x < MapSize; x++) {
-          const t = (game.stores["Phase0"] as Phase0Store).get(x, y).tileType;
-
-          let s: Sprite;
-          if (t === "FloorTile") {
-            s = Sprite.from(stoneTexture);
-          } else if (t === "WallTile") {
-            s = Sprite.from(brickTexture);
-          } else {
-            s = Sprite.from(bunnyTexture);
-          }
-
-          s.width = TileSize;
-          s.height = TileSize;
-          // s.tint = 0xff0000;
-
-          // cubes[y][x] = [] as Mesh3D;
-
-          // const bunny = new Sprite(texture);
-
-          // Set the sprite's anchor point to its center
-          // s.anchor.set(0.5);
-
-          // Set the sprite's position
-          s.x = x * TileSize * 1.1;
-          s.y = y * TileSize * 1.1;
-
-          // Add the sprite to the stage
-          pixi2dApp.stage.addChild(s);
-
-          const e = s;
-          tiles[y][x] = [e, true];
-
-          // t.position.x = x * 2.1;
-          // cube.position.y = y * 2.1;
-          // cube.position.z =y;
-          // cube.position.z = y * TileSize;
-          // cube.position.set(x *2, y *2,  y *2)
-          // const t = new Transform3D()
-          // t.position.x = x * TileSize;
-          // t.position.y = y * TileSize;
-          // cube.transform = t;
-          // cube.visible = true;
-          // console.log(cube.position.x, cube.position.y)
-          // pixi3dApp.stage.addChild(cube);
-          // const e = cube;
-          // cubes[y][x] = [e, true];
-          // pixi3dApp.render()
-        }
-      }
-
-      oneD.forEach((actor, i) => {
-        actors[i] = Sprite.from(bunnyTexture);
-        actors[i].width = ActorSize;
-        actors[i].height = ActorSize;
-        actors[i].x = actor.actorX * TileSize;
-        actors[i].y = actor.actorY * TileSize;
-        console.log(actor.friendly)
-        if (!actor.friendly) {
-          actors[i].tint = 0x000000aa  
-        } else {
-          actors[i].tint = 0x000aa000
-        }
-          
-        
-        pixi2dApp.stage.addChild(actors[i]);
-      });
-
-      res(true);
-    } else {
-      oneD.forEach((actor, i) => {
-        if (actors[i]) {
-          actors[i].x = actor.actorX * TileSize;
-          actors[i].y = actor.actorY * TileSize;
-        } else {
-          throw "no actor?";
-        }
-      });
-
-      pixi2dApp.render();
-      // console.log("Pixi2dShipMap gooodbye B", tick);
-      res(true);
-    }
-
-    // rotation = rotation + 0.01;
+const firstRender = async (game: SpaceTrash, canvas) => {
+  pixi2dApp = new Application({
+    width: (MapSize + 7) * TileSize,
+    height: (MapSize + 7) * TileSize,
+    antialias: true, // 抗锯齿，圆滑边界
+    resolution: 1,
+    view: canvas.getContext("webgl2")?.canvas,
+    backgroundColor: 0x00ff00,
+    sharedTicker: false,
   });
+
+  pixi2dApp.ticker.stop();
+  pixi2dApp.ticker.destroy();
+  pixi2dApp.renderer.plugins.interaction.useSystemTicker = false;
+
+  const g = game;
+
+  const loader = new Loader();
+  loader.add("stone", stone); // Replace with your image path
+  loader.load((loader, resources) => {
+
+
+    Object.keys(drawables.store).forEach(async ([k, i]) => {
+
+      const bunny = new Sprite(resources.stone.texture);
+    // bunny.x = 100 * Math.random();
+    // bunny.y = 100 * Math.random();
+      // bunny.anchor.set(0.5);
+      
+      pixi2dApp.stage.addChild(bunny)
+      await drawables.store[k][1].setSprite(bunny);
+
+      // console.log(i);
+      // drawables.store[k][1];
+
+      // if (
+      //   drawables.store[k][1].textureURL === "https://pixijs.com/assets/bunny.png"
+      // ) {
+      //   // const s = Sprite.from(brickTexture);
+      //   // s.position.x = 100 * Math.random();
+      //   // s.position.y = 100 * Math.random();
+      //   await drawables.store[k][1].setSprite(pixi2dApp.stage.addChild(bunny));
+      //   // console.log("pixi", drawables.store[k][1].sprite);
+      // }
+
+      // pixi2dApp.stage.addChild(d.drawable.sprite);
+    });
+
+    // debugger
+
+    // pixi2dApp.stage.addChild(bunny);
+  });
+
+  // brickTexture = await Assets.load(brick);
+  // stoneTexture = await Assets.load(stone);
+  // bunnyTexture = await Assets.load("https://pixijs.com/assets/bunny.png");
+
+  return;
+};
+
+////////////////////////////////////////////////////////
+
+// const everyOtherRender = async (game: SpaceTrash) => {
+//   drawings.store.forEach(([i, a]: [number, DrawingComponent], dnx) => {
+//     console.log(i, a)
+//     if (a.drawable.sprite) {
+//       if (a.drawState === "new") {
+//         pixi2dApp.stage.addChild(a.drawable.sprite);
+//         a.drawState = "rendered";
+//       }
+
+//       if (a.drawState === "culled") {
+//         pixi2dApp.stage.removeChild(a.drawable.sprite);
+//       }
+
+//       if (a.drawState === "invisible") {
+//         a.drawable.sprite.visible = false;
+//       }
+
+//       if (a.drawState === "visible") {
+//         a.drawable.sprite.visible = true;
+//       }
+
+//       if (a.drawState === "no-op") {
+//         // do nothing
+//       }
+
+//       delete drawings.store[dnx];
+//     }
+//   });
+
+//   pixi2dApp.render();
+
+//   // if pixi2dApp.stage.c
+//   // actors.store.forEach((actor, i) => {
+//   //   if (actors.store[i]) {
+//   //     actors.store[i].x = actor.floatPosition.x * TileSize;
+//   //     actors.store[i].y = actor.floatPosition.y * TileSize;
+//   //     // actors[i].render(  )
+//   //   } else {
+//   //     throw "no actor?";
+//   //   }
+//   // });
+
+//   // for (let y = 0; y < MapSize; y++) {
+//   //   // tiles[y] = [];
+//   //   for (let x = 0; x < MapSize; x++) {
+//   //     const l = setPieces.get(y, x).luminance;
+//   //     if (l > 0) {
+//   //       tiles[y][x][0].visible = true;
+//   //     } else {
+//   //       tiles[y][x][0].visible = false;
+//   //     }
+//   //   }
+//   // }
+// };
 
 export default render;
 
@@ -223,4 +239,77 @@ export default render;
 // }
 // oneD.forEach((actor, i) => {
 //   // do things
+// });
+
+// brickTexture = await Assets.load(brick);
+// stoneTexture = await Assets.load(stone);
+// bunnyTexture = await Assets.load("https://pixijs.com/assets/bunny.png");
+
+// for (let y = 0; y < MapSize; y++) {
+//   tiles[y] = [];
+//   for (let x = 0; x < MapSize; x++) {
+//     const t = setPieces.get(y, x).tileType;
+
+//     let s: Sprite;
+//     if (t === "FloorTile") {
+//       s = Sprite.from(stoneTexture);
+//     } else if (t === "WallTile") {
+//       s = Sprite.from(brickTexture);
+//     } else {
+//       debugger
+//       s = Sprite.from(bunnyTexture);
+//     }
+
+//     s.width = TileSize;
+//     s.height = TileSize;
+//     // s.tint = 0xff0000;
+
+//     // cubes[y][x] = [] as Mesh3D;
+
+//     // const bunny = new Sprite(texture);
+
+//     // Set the sprite's anchor point to its center
+//     // s.anchor.set(0.5);
+
+//     // Set the sprite's position
+//     s.x = x * TileSize * 1.1;
+//     s.y = y * TileSize * 1.1;
+
+//     // Add the sprite to the stage
+//     pixi2dApp.stage.addChild(s);
+
+//     tiles[y][x] = [s, true];
+
+//     // t.position.x = x * 2.1;
+//     // cube.position.y = y * 2.1;
+//     // cube.position.z =y;
+//     // cube.position.z = y * TileSize;
+//     // cube.position.set(x *2, y *2,  y *2)
+//     // const t = new Transform3D()
+//     // t.position.x = x * TileSize;
+//     // t.position.y = y * TileSize;
+//     // cube.transform = t;
+//     // cube.visible = true;
+//     // console.log(cube.position.x, cube.position.y)
+//     // pixi3dApp.stage.addChild(cube);
+//     // const e = cube;
+//     // cubes[y][x] = [e, true];
+//     // pixi3dApp.render()
+//   }
+// }
+
+// setPieces.store.forEach((actor, i) => {
+//   actors[i] = Sprite.from(bunnyTexture);
+//   actors[i].width = ActorSize;
+//   actors[i].height = ActorSize;
+//   actors[i].x = actor.actorX * TileSize;
+//   actors[i].y = actor.actorY * TileSize;
+//   console.log(actor.friendly);
+//   if (!actor.friendly) {
+//     actors[i].tint = 0x000000aa;
+//   } else {
+//     actors[i].tint = 0x000aa000;
+//   }
+
+//   pixi2dApp.stage.addChild(actors[i]);
 // });

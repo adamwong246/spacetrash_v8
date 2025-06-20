@@ -1,11 +1,14 @@
 import { LitableComponent } from "../Components/casting/in";
 
 
-import { PhysicsSetPieceComponent } from "../Components/setPiece";
+// import { PhysicsSetPieceComponent } from "../Components/setPiece";
 import { TileSize } from "../System";
-import { Phase0 } from "../Components/phase0";
+import { SetPieceComponent } from "../Components/phase0";
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { SpaceTrashEntity } from "../Entity";
+import { IntegerPositionComponent } from "../Components/v2/physical";
+import { ClassificationComponent } from "../Components/v2/classifiable";
+import { DrawableComponent } from "../Components/v2/drawable";
 
 
 export class Tile extends SpaceTrashEntityComponent {
@@ -14,66 +17,22 @@ export class Tile extends SpaceTrashEntityComponent {
   constructor(x: number, y: number, tiletype: ITiles) {
     const spe = new SpaceTrashEntity();
     super(spe, [
-      new PhysicsSetPieceComponent(x, y, true, tiletype),
+      new IntegerPositionComponent(x, y),
       new LitableComponent(),
+      new ClassificationComponent("Tile"),
+      // new DrawableComponent("https://pixijs.com/assets/bunny.png"),
     ]);
     this.tiletype = tiletype;
   }
 
-  // validate() {
-  //   // console.log("validate tile!");
-  // }
+  position(): IntegerPositionComponent {
+    const c = this.components.find((c) => {
+      return c.constructor.name === "IntegerPositionComponent"
+    }) as IntegerPositionComponent | undefined;
 
-  erase2d(draw2d: CanvasRenderingContext2D) {
-    draw2d.arc(10, 10, 3, 0, 90);
-  }
+    if (!c) throw "missing component"
 
-  draw2d(draw2d: CanvasRenderingContext2D) {
-    draw2d.clearRect(1, 2, 3, 4);
-  }
-
-  static draw2d(
-    setPieceAndId: [number, PhysicsSetPieceComponent],
-    p: Phase0
-  ): (canvas2d: CanvasRenderingContext2D) => void {
-    const setPiece = setPieceAndId[1];
-
-    return (ctx: CanvasRenderingContext2D) => {
-      
-      ctx.beginPath();
-      if (setPiece.tileType === "FloorTile") {
-        if (p.luminance > 0) {
-          ctx.fillStyle = "yellow";
-        } else {
-          ctx.fillStyle = "white";
-        }
-
-        ctx.rect(
-          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
-          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
-          TileSize - 1,
-          TileSize - 1
-        );
-      }
-      if (setPiece.tileType === "WallTile") {
-        ctx.fillStyle = "darkgrey";
-        ctx.rect(
-          Math.floor(setPiece.x * TileSize - TileSize / 2 + 1),
-          Math.floor(setPiece.y * TileSize - TileSize / 2 + 1),
-          TileSize - 1,
-          TileSize - 1
-        );
-      }
-
-      ctx.fill();
-      ctx.stroke();
-
-      
-    };
-  }
-
-  static erase2d(draw2d: CanvasRenderingContext2D) {
-    // draw2d.clearRect(1, 2, 3, 4);
+    return c;
   }
 }
 

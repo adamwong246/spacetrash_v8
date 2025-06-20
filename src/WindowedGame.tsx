@@ -16,6 +16,7 @@ import { BotsWindow } from "./spacetrash/UI/BotsWindow";
 import { BotWindow } from "./spacetrash/UI/BotWindow";
 import { MapWindow } from "./spacetrash/UI/map";
 import { TerminalWindow } from "./spacetrash/UI/terminal";
+import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 
 let self: WindowedGame<any, any, any>;
 export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurfaceGame<IRenderings, II> {
@@ -36,10 +37,7 @@ export abstract class WindowedGame<IRenderings, II, IState> extends MultiSurface
     system: System,
     componentStores: IComponentsStores<any>,
     stores: IStores<any>,
-    config: {
-      fps: number;
-      performanceLogging: boolean;
-    },
+    config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
   ) {

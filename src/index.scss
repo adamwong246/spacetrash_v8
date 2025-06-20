@@ -2,7 +2,7 @@
 
 @import './engine/index.scss';
 
-// @import './crt.scss';
+@import './crt.scss';
 
 
 td {
@@ -23,4 +23,14 @@ td {
   height: 100%;
     width: 100%;
     position: absolute;
+}
+
+.dv-resize-container .dv-resize-handle-bottomright{
+  height: 16px;
+  width: 16px;
+  right: -8px;
+  bottom: -8px;
+  // z-index: var(--dv-overlay-z-index);
+  // position: absolute;
+  // cursor: se-resize;
 }
