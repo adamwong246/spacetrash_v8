@@ -141,67 +141,73 @@ class MainSystem extends System {
   tick(delta: number, game: SpaceTrash): Promise<boolean> {
     DELTA = delta;
     return new Promise((res) => {
-      if (firstTick) {
-        firstTick = false;
-
-        fps = game.componentStores[
-          "FloatPositionComponent"
-        ] as FloatPositionStore;
-        ips = game.componentStores[
-          "IntegerPositionComponent"
-        ] as IntegerPositionStore;
-        fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
-        classs = game.componentStores[
-          "ClassificationComponent"
-        ] as ClassificationStore;
-
-        lightableEntitiesStore = game.componentStores[
-          "LitableComponent"
-        ] as LittableStore;
-
-        lightingEntitiesStore = game.componentStores[
-          LitComponent.name
-        ] as LitStore;
-
-        lightingEntitiesStore = game.componentStores[
-          LitComponent.name
-        ] as LitStore;
-
-        drawables = game.componentStores["DrawableComponent"] as DrawableStore;
-
-        //////////////////////////////////////////////////////////////////////
-
-        twoD = game.stores["SetPieceComponent"] as SetPieceStore;
-        // oneD = game.stores["ActorComponent"] as ActorStore;
-        lights = game.stores["LightComponent"] as LightComponentStore;
-        actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
-        setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
-        eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-
-        runFirstTick(game);
-        res(true);
+      if (!game.pixiLoaded) {
+        console.log("pixi isn't ready");
+        res(false);
       } else {
-        runEveryOtherTick();
-      }
+        console.log("pixi is ready");
+        if (firstTick) {
+          firstTick = false;
 
-      res(true);
+          fps = game.componentStores[
+            "FloatPositionComponent"
+          ] as FloatPositionStore;
+          ips = game.componentStores[
+            "IntegerPositionComponent"
+          ] as IntegerPositionStore;
+          fmc = game.componentStores[
+            "FloatMovingComponent"
+          ] as FloatMovingStore;
+          classs = game.componentStores[
+            "ClassificationComponent"
+          ] as ClassificationStore;
+
+          lightableEntitiesStore = game.componentStores[
+            "LitableComponent"
+          ] as LittableStore;
+
+          lightingEntitiesStore = game.componentStores[
+            LitComponent.name
+          ] as LitStore;
+
+          lightingEntitiesStore = game.componentStores[
+            LitComponent.name
+          ] as LitStore;
+
+          drawables = game.componentStores[
+            "DrawableComponent"
+          ] as DrawableStore;
+
+          //////////////////////////////////////////////////////////////////////
+
+          twoD = game.stores["SetPieceComponent"] as SetPieceStore;
+          // oneD = game.stores["ActorComponent"] as ActorStore;
+          lights = game.stores["LightComponent"] as LightComponentStore;
+          actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
+          setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
+          eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
+
+          runFirstTick(game);
+          res(true);
+        } else {
+          runEveryOtherTick();
+        }
+      }
     });
   }
 }
 
-const runPlaceImmoveableSetPieces=()=>{
-  drawables.each((([eid, [did, dic], k]) => {
-
+const runPlaceImmoveableSetPieces = () => {
+  drawables.each(([eid, [did, dic], k]) => {
     const p = ips.get(did);
     if (dic.sprite) {
       dic.sprite.position.x = p.x * TileSize;
       dic.sprite.position.y = p.y * TileSize;
     } else {
-      throw "the sprite should be loaded by now"
+      throw "the sprite should be loaded by now";
     }
-    
-  }))
-}
+  });
+};
 
 const illuminate = (xFloat: number, yFloat: number): any => {
   const x = Math.round(xFloat);

@@ -45,16 +45,23 @@ const firstRender = async (game: SpaceTrash, canvas) => {
 
   const g = game;
 
-
   const loader = new Loader();
+  loader.onComplete.add(() => {
+    game.pixiLoaded = true
+  }); 
+
+
+  // let binding = mySignal.add(onSignal);
+  // mySignal.dispatch("foo", "bar");
+  // mySignal.detach(binding);
+
+  // loader.onComplete(mySignal);
+
   loader.add("stone", stone); // Replace with your image path
   await loader.add("brick", brick); // Replace with your image path
   await loader.add("bunny", "https://pixijs.com/assets/bunny.png"); // Replace with your image path=
   await loader.load((loader, resources) => {
-
-    
     Object.keys(drawables.store).forEach(async ([i]) => {
-      debugger
       const d = drawables.store[i][1];
       let sprite: Sprite;
       if (d.textureURL === "brick") {
@@ -62,7 +69,6 @@ const firstRender = async (game: SpaceTrash, canvas) => {
       } else if (d.textureURL === "stone") {
         sprite = new Sprite(resources.stone.texture);
       } else if (d.textureURL === "bunny") {
-        debugger;
         sprite = new Sprite(resources.bunny.texture);
       } else {
         console.error(`I don't recognize this texture ${d.textureURL}`);
@@ -73,9 +79,7 @@ const firstRender = async (game: SpaceTrash, canvas) => {
       pixi2dApp.stage.addChild(sprite);
       drawables.store[i][1].setSprite(sprite);
     });
-
   });
-  
 };
 
 ////////////////////////////////////////////////////////

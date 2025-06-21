@@ -55826,27 +55826,32 @@ var MainSystem = class extends System2 {
   tick(delta, game) {
     DELTA = delta;
     return new Promise((res) => {
-      if (firstTick) {
-        firstTick = false;
-        fps = game.componentStores["FloatPositionComponent"];
-        ips = game.componentStores["IntegerPositionComponent"];
-        fmc = game.componentStores["FloatMovingComponent"];
-        classs = game.componentStores["ClassificationComponent"];
-        lightableEntitiesStore = game.componentStores["LitableComponent"];
-        lightingEntitiesStore = game.componentStores[LitComponent.name];
-        lightingEntitiesStore = game.componentStores[LitComponent.name];
-        drawables = game.componentStores["DrawableComponent"];
-        twoD = game.stores["SetPieceComponent"];
-        lights = game.stores["LightComponent"];
-        actorsLit = game.stores["ActorsLit"];
-        setPieceLit = game.stores["SetPiecesLit"];
-        eid2PMSs = game.stores["Eid2PMComponent"];
-        runFirstTick(game);
-        res(true);
+      if (!game.pixiLoaded) {
+        console.log("pixi isn't ready");
+        res(false);
       } else {
-        runEveryOtherTick();
+        console.log("pixi is ready");
+        if (firstTick) {
+          firstTick = false;
+          fps = game.componentStores["FloatPositionComponent"];
+          ips = game.componentStores["IntegerPositionComponent"];
+          fmc = game.componentStores["FloatMovingComponent"];
+          classs = game.componentStores["ClassificationComponent"];
+          lightableEntitiesStore = game.componentStores["LitableComponent"];
+          lightingEntitiesStore = game.componentStores[LitComponent.name];
+          lightingEntitiesStore = game.componentStores[LitComponent.name];
+          drawables = game.componentStores["DrawableComponent"];
+          twoD = game.stores["SetPieceComponent"];
+          lights = game.stores["LightComponent"];
+          actorsLit = game.stores["ActorsLit"];
+          setPieceLit = game.stores["SetPiecesLit"];
+          eid2PMSs = game.stores["Eid2PMComponent"];
+          runFirstTick(game);
+          res(true);
+        } else {
+          runEveryOtherTick();
+        }
       }
-      res(true);
     });
   }
 };
@@ -55979,12 +55984,14 @@ var firstRender = /* @__PURE__ */ __name(async (game, canvas) => {
   pixi2dApp.renderer.plugins.interaction.useSystemTicker = false;
   const g = game;
   const loader = new Loader();
+  loader.onComplete.add(() => {
+    game.pixiLoaded = true;
+  });
   loader.add("stone", stone_default);
   await loader.add("brick", brick_default);
   await loader.add("bunny", "https://pixijs.com/assets/bunny.png");
   await loader.load((loader2, resources2) => {
     Object.keys(drawables2.store).forEach(async ([i]) => {
-      debugger;
       const d = drawables2.store[i][1];
       let sprite;
       if (d.textureURL === "brick") {
@@ -55992,7 +55999,6 @@ var firstRender = /* @__PURE__ */ __name(async (game, canvas) => {
       } else if (d.textureURL === "stone") {
         sprite = new Sprite(resources2.stone.texture);
       } else if (d.textureURL === "bunny") {
-        debugger;
         sprite = new Sprite(resources2.bunny.texture);
       } else {
         console.error(`I don't recognize this texture ${d.textureURL}`);
