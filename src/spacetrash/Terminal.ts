@@ -142,11 +142,14 @@ export type ITerminalLine = {
   status: IComStatus;
 };
 
-export abstract class TerminalGame<IRenderings, II, III> extends DesktopGame<
+export abstract class TerminalGame<IRenderings, II, ICanvases> extends DesktopGame<
   IRenderings,
   II,
-  III
+  ICanvases
 > {
+  registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
+    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
+  }
   booted = false;
   uiHooks: any;
   history: ITerminalLine[] = [initialTerminalHistory];

@@ -18,7 +18,10 @@ import { TerminalWindow } from "./spacetrash/UI/terminal";
 import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 
 let self: DesktopGame<any, any, any>;
-export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceGame<IRenderings, II> {
+export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfaceGame<IRenderings, II> {
+  registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
+    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
+  }
   private reactRoot;
   dockviewAPI: DockviewApi;
 
@@ -28,8 +31,6 @@ export abstract class DesktopGame<IRenderings, II, IState> extends MultiSurfaceG
   onDockviewReady(event: DockviewReadyEvent) {
     self.dockviewAPI = event.api;
   }
-
-  // abstract dockViewComponents: Record<string, FunctionComponent<IDockviewPanelProps>> 
 
   constructor(
     stateSpace: StateSpace,

@@ -15,6 +15,7 @@ export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashCo
   mesh?: THREE.Mesh;
   x: number;
   y: number;
+  culledWebgl: boolean;
 
   constructor() {
     super();
@@ -28,6 +29,10 @@ export class SetPieceStore extends TwoDStore<SetPieceComponent> {
   constructor() {
     super();
     this.store = [[]];
+  }
+
+  tileIsAt(x: number, y: number, t: string): boolean {
+    return this.store[x][y].tileType !== t
   }
 
   add(a: any) {

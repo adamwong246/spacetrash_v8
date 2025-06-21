@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { LitableComponent } from "../Components/casting/in";
 
@@ -11,10 +12,12 @@ import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
 import { redMaterial, blueMaterial, blankMaterial } from "../../threejs";
 
+import brick from "./../../Assets/brick.png";
+import stone from "./../../Assets/stone.png";
+
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
 var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
-
 
 const floorTile = () => {
   const m = new THREE.Mesh(floorGeometry, redMaterial);
@@ -22,11 +25,31 @@ const floorTile = () => {
   return m;
 };
 
-
 const blankTile = () => {
   const m = new THREE.Mesh(floorGeometry, blankMaterial);
   m.position.z = -TileSize / 2;
   return m;
+};
+
+const stoneSprite = () => {
+  const s = new PIXI.Sprite(PIXI.Texture.from(stone));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
+};
+
+const brickSprite = () => {
+  const s = new PIXI.Sprite(PIXI.Texture.from(brick));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
+};
+
+const bunnySprite = () => {
+  const s = new PIXI.Sprite(PIXI.Texture.from("https://pixijs.com/assets/bunny.png"));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
 };
 
 export class Tile extends SpaceTrashEntityComponent {
@@ -36,7 +59,10 @@ export class Tile extends SpaceTrashEntityComponent {
     x: number,
     y: number,
     tiletype: ITiles,
-    d?: DrawableComponent = new DrawableComponent("stone", blankTile())
+    d: DrawableComponent = new DrawableComponent(
+      bunnySprite(),
+      blankTile()
+    )
   ) {
     const spe = new SpaceTrashEntity();
     super(spe, [
@@ -63,7 +89,15 @@ export class Tile extends SpaceTrashEntityComponent {
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(x, y, "FloorTile", new DrawableComponent("stone", floorTile()));
+    super(
+      x,
+      y,
+      "FloorTile",
+      new DrawableComponent(
+        stoneSprite(),
+        floorTile()
+      )
+    );
   }
 }
 
@@ -73,7 +107,10 @@ export class WallTile extends Tile {
       x,
       y,
       "WallTile",
-      new DrawableComponent("brick", new THREE.Mesh(cubeGeo, blueMaterial))
+      new DrawableComponent(
+        brickSprite(),
+        new THREE.Mesh(cubeGeo, blueMaterial)
+      )
     );
   }
 }

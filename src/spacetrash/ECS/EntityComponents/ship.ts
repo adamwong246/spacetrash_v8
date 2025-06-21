@@ -76,7 +76,7 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     // for (let y = 1; y < this.shipSize-1; y++) {
     //   for (let x = 1; x < this.shipSize-1; x++) {
     //     // this.subComponents.push(new FloorTile(x, y));
-    //     await this.addToMap(new FloorTile(x, y));
+    //     this.addToMap(new FloorTile(x, y));
     //   }
     // }
 
@@ -134,11 +134,16 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     this.addToMap(new WallTile(19, 20));
 
 
+    for (let i = 0; i < 100; i++){
+      this.addToMap(new WallTile(
+        Math.floor(Math.random() * MapSize),
+        Math.floor(Math.random() * MapSize),
+      ));
+    }
+
     // this should error
     // this.subComponents.push(new WallTile(20, 20));
     // this.subComponents.push(new WallTile(20, 20));
-
-    return;
 
   }
 

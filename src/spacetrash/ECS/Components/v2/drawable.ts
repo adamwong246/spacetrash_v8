@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import * as PIXI from "pixi.js";
+
 import { Sprite, Texture } from "pixi.js";
 import { ISpaceTrashComponents } from "..";
 import {
@@ -19,14 +21,13 @@ import { TileSize } from "../../System";
 
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
-  textureURL: string;
-  sprite?: Sprite;
-  mesh?: THREE.Mesh;
+  sprite: PIXI.Sprite;
+  mesh: THREE.Mesh;
 
-  constructor(textureURL: string, mesh: THREE.Mesh) {
+  constructor(sprite: PIXI.Sprite, mesh: THREE.Mesh) {
     super();
-    this.textureURL = textureURL;
     this.mesh = mesh;
+    this.sprite = sprite;
   }
 
   setMesh(m: THREE.Mesh) {
@@ -70,8 +71,8 @@ export class DrawableStore extends EntityComponentStore<DrawableComponent> {
       d.sprite.position.y = p.y * TileSize;
     }
     if (d.mesh) {
-      d.mesh.position.x = p.x / TileSize;
-      d.mesh.position.y = p.y/ TileSize;
+      d.mesh.position.x = p.x * TileSize;
+      d.mesh.position.y = p.y * TileSize;
     }
     //
     // d.x = p.x;

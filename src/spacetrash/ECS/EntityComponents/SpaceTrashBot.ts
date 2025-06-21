@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
 import { LitComponent } from "../Components/casting/out";
@@ -15,9 +16,23 @@ import { NameableComponent } from "../Components/v2/nameable";
 import RandomMaleNames from "./../../NameGenerator";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
-import { blueMaterial } from "../../threejs";
+import { blueMaterial, greenMaterial } from "../../threejs";
+import { Tiles } from "./tiles";
+import { TileSize } from "../System";
+import { degToRad } from "three/src/math/MathUtils.js";
 
-const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1);
+const cylinderGeometry = new THREE.CylinderGeometry(
+  TileSize / 4,
+  TileSize / 2,
+  TileSize
+);
+
+const cylinder = () => {
+  const m = new THREE.Mesh(cylinderGeometry, greenMaterial);
+  m.rotateZ(degToRad(90));
+  m.rotateX(degToRad(90));
+  return m;
+};
 
 export class SpaceTrashBot extends SpaceTrashEntityComponent {
   constructor(
@@ -39,7 +54,12 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
       new NameableComponent(RandomMaleNames.generate("male", spe)),
       new ClassificationComponent("SpaceTrashBot"),
 
-      new DrawableComponent("bunny", new THREE.Mesh(cylinderGeometry, blueMaterial)), 
+      new DrawableComponent(
+        new PIXI.Sprite(
+          PIXI.Texture.from("https://pixijs.com/assets/bunny.png")
+        ),
+        cylinder()
+      ),
     ]);
   }
 
@@ -59,5 +79,4 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
   ) {
     return eidOfBot;
   }
-
 }

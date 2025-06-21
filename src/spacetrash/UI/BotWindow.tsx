@@ -11,7 +11,7 @@ export const BotWindow = (props: {
 
   useEffect(() => {
     if (canvasRef.current && parentRef.current) {
-      props.game.registerCanvas("drone", false, canvasRef.current, () => { }, "threejs", parentRef.current)
+      props.game.registerCanvas("bot", false, canvasRef.current, () => { }, "threejs", parentRef.current)
     }
   }, [canvasRef, parentRef]);
 

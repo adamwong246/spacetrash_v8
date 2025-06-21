@@ -8,7 +8,13 @@ import { System } from "./engine/VECS.ts/System";
 import { IArchtypesMapping, IComponentsStores, IStores } from "./engine/VECS.ts/types";
 
 
-export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings, II> {
+export abstract class MultiSurfaceGame<
+  IRenderings,
+  II,
+  > extends Game<
+    IRenderings,
+    II
+  > {
   renderings: Set<IRenderings>;
 
   constructor(
@@ -36,7 +42,7 @@ export abstract class MultiSurfaceGame<IRenderings, II> extends Game<IRenderings
   >;
 
   registerCanvas(
-    key: any,
+    key: ICanvases,
     run: boolean,
     canvas?: HTMLCanvasElement,
     callback?: (data: any) => void,

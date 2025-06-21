@@ -6,10 +6,13 @@ import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 import { MapSize, ActorSize, NumberOfActors, TileSize } from "../ECS/System";
 
-const SPEED_CONSTANT = 0.01
+const SPEED_CONSTANT = 0.1
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
+    
+    
+
     const drones = [...new Array(BotSlots)].map((n) => {
       return new SpaceTrashBot(
         Math.random() * MapSize,
@@ -53,8 +56,8 @@ class MainScene extends SpaceTrashScene {
       9: [myDoneIds[8], "obiwan"],
     };
 
-    game.openAllWindows();
-    game.unpause();
+    game.BeginTheGame()
+
     
   }
 
@@ -103,16 +106,15 @@ const scene = new MainScene({
     "2d",
   ],
 
-  drone: [
+  bot: [
     (ecs, reply) => {
       return [(ctx) => {}];
     },
 
     (ecs, reply) => {
       return [
-        async (game, canvas) => {
-          game.renderDroneVideo(canvas);
-          // return false
+        async (game: SpaceTrash) => {
+          game.renderBotCanvas()
         },
       ];
     },
@@ -223,14 +225,14 @@ const scene = new MainScene({
     "webgl2",
   ],
 
-  shipmapV2: [
+  map: [
     (ecs, reply) => {
       return [];
     },
     (ecs, reply) => {
       return [
-        async (game: SpaceTrash, ctx) => {
-          await game.renderShipMap(ctx);
+        async (game: SpaceTrash) => {
+          await game.renderShipMap();
         },
       ];
     },

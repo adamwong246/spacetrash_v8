@@ -8,7 +8,7 @@ export const MapWindow = (props: {game: SpaceTrash}) => {
 
   useEffect(() => {
     if (canvasRef.current && parentRef.current) {
-      props.game.registerCanvas("shipmapV2", false, canvasRef.current, () => { }, "pixi2d", parentRef.current)
+      props.game.registerCanvas("map", false, canvasRef.current, () => { }, "pixi2d", parentRef.current)
     }
   }, [canvasRef, parentRef]);
 

@@ -23,21 +23,20 @@ import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
-export const NumberOfActors = 20;
+export const NumberOfActors = 10;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
-export const TileSize = 30;
+export const TileSize = 15;
 export const ActorSize = TileSize / 1;
 export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 40;
+export const MapSize = 50;
 
-const VisRange = 3;
+const VisRange = 50;
 
 let DELTA: number = 0;
-let twoD: SetPieceStore;
-// let oneD: ActorStore;
+
 let fps: FloatPositionStore;
 let ips: IntegerPositionStore;
 let lightableEntitiesStore: LittableStore;
@@ -45,6 +44,10 @@ let lightingEntitiesStore: LitStore;
 let fmc: FloatMovingStore;
 let classs: ClassificationStore;
 let lights: LightComponentStore;
+
+let setPieces: SetPieceStore;
+let actors: ActorStore;
+
 let actorsLit: LightingComponentStore;
 let setPieceLit: LightingComponentStore;
 let drawables: DrawableStore;
@@ -79,45 +82,45 @@ const runFirstTick = async (game: SpaceTrash) => {
     }
   });
 
-  // setup the twoD grid
+  // setup the setPieces setPieces
   for (let y = 0; y < MapSize; y++) {
-    twoD.store[y] = [];
+    setPieces.store[y] = [];
     for (let x = 0; x < MapSize; x++) {
-      twoD.store[y][x] = new SetPieceComponent();
-      twoD.store[y][x].rendered2d = "fresh";
-      twoD.store[y][x].renderedWebgl = "fresh";
-      twoD.store[y][x].culledWebgl = true;
+      setPieces.store[y][x] = new SetPieceComponent();
     }
   }
 
   // add the tiles
-  ips.store.forEach(([i, s], ndx) => {
-    twoD.store[s.y][s.x].setId = ndx;
-    twoD.store[s.y][s.x].tileType = s.tileType;
-    // twoD.store[s.y][s.x].littableId = lightableEntitiesStore.get(i);
+  ips.store.forEach(([eid, s], ndx) => {
+    setPieces.store[s.y][s.x].setId = ndx;
+    setPieces.store[s.y][s.x].tileType = s.tileType;
+    // debugger;
+    // setPieces.store[s.y][s.x].littableId = lightableEntitiesStore.get(i);
 
-    // twoD.store[s.y][s.x].littableId = lightableEntitiesStore.store.findIndex(
-    //   ([eid]: [string, LitableComponent]) => eid == i
-    // );
+    // setPieces.store[s.y][s.x].littableId = lightableEntitiesStore.keyForEid(i);
   });
 
-  // setup the oneD list
-  // for (let y = 0; y < fps.store.length; y++) {
-  //   const aeid = fps.store[y][0];
+  // setup the actors list
+  for (let y = 0; y < fps.store.length; y++) {
+    const aeid = fps.store[y][0];
 
-  //   // add the actors
-  //   oneD.add({
-  //     actorId: aeid,
-  //     // actorX: fps.store[y][1].x,
-  //     // actorY: fps.store[y][1].y,
-  //     rendered2d: "fresh",
-  //     renderedWebgl: "fresh",
-  //     culled2d: false,
-  //     culledWebgl: false,
-  //     friendly: game.isFriendly(aeid),
-  //     floatPosition: fps.store[y][1],
-  //   });
-  // }
+    // add the actors
+    actors.add({
+      actorId: aeid,
+      // actorX: fps.store[y][1].x,
+      // actorY: fps.store[y][1].y,
+      // rendered2d: "fresh",
+      // renderedWebgl: "fresh",
+      // culled2d: false,
+      // culledWebgl: false,
+      friendly: game.isFriendly(aeid),
+      position: fps.store[y][1],
+      motion: fmc.store[y][1],
+      // sprite: new Sprite,
+      // renderedWebgl: "new",
+      // rendered2d: "new"
+    });
+  }
 
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
@@ -141,7 +144,7 @@ class MainSystem extends System {
   tick(delta: number, game: SpaceTrash): Promise<boolean> {
     DELTA = delta;
     return new Promise((res) => {
-      if (!game.pixiLoaded) {
+      if (false) {
         console.log("pixi isn't ready");
         res(false);
       } else {
@@ -179,8 +182,8 @@ class MainSystem extends System {
 
           //////////////////////////////////////////////////////////////////////
 
-          twoD = game.stores["SetPieceComponent"] as SetPieceStore;
-          // oneD = game.stores["ActorComponent"] as ActorStore;
+          setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
+          actors = game.stores["ActorComponent"] as ActorStore;
           lights = game.stores["LightComponent"] as LightComponentStore;
           actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
           setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
@@ -238,7 +241,7 @@ const illuminate = (xFloat: number, yFloat: number): any => {
   }
   // const litableComponent = lightableEntitiesStore[eid];
 
-  const space = twoD[y][x];
+  const space = setPieces[y][x];
   const lightableIdOfSpace = space.littableId;
   const litable = lightableEntitiesStore.store[lightableIdOfSpace]; //(lightableEntitiesStore.find((a) => a[0] === lightableIdOfSpace) as [string, LitableComponent]);
 
@@ -249,13 +252,13 @@ const illuminate = (xFloat: number, yFloat: number): any => {
   const [eid3, litableComponent] = litable;
   litableComponent.luminance = 2;
 
-  if (twoD[y][x].luminance !== litableComponent.luminance) {
-    twoD[y][x].luminance = litableComponent.luminance;
-    twoD[y][x].culledWebgl = false;
+  if (setPieces[y][x].luminance !== litableComponent.luminance) {
+    setPieces[y][x].luminance = litableComponent.luminance;
+    setPieces[y][x].culledWebgl = false;
 
-    if (twoD[y][x].rendered2d !== "fresh") {
-      twoD[y][x].rendered2d = "changed";
-      twoD[y][x].renderedWebgl = "changed";
+    if (setPieces[y][x].rendered2d !== "fresh") {
+      setPieces[y][x].rendered2d = "changed";
+      setPieces[y][x].renderedWebgl = "changed";
     }
   }
 };
@@ -329,7 +332,7 @@ const MapBoundHigh = MapSize - 1;
 function resetIllumination() {
   for (let y = 0; y < MapSize; y++) {
     for (let x = 0; x < MapSize; x++) {
-      twoD.store[y][x].luminance = 0;
+      setPieces.store[y][x].luminance = 0;
       // phaseZero[y][x].rendered2d = "changed";
       // phaseZero[y][x].renderedWebgl = "changed";
     }
@@ -436,7 +439,7 @@ function runIlluminationBotToBot(
   p2: FloatPositionComponent
 ) {
   if (distanceBetweenFloats(p, p2) < VisRange) {
-    // oneD.get(eidOfLitable).luminance = 1;
+    // actors.get(eidOfLitable).luminance = 1;
   }
 }
 
@@ -446,7 +449,7 @@ function runIlluminationTileToBot(
   p2: FloatPositionComponent
 ) {
   if (distanceBetweenFloatAndIntegerPostion(p, p2) < VisRange) {
-    // oneD.get(eidOfLitable).luminance = 1;
+    // actors.get(eidOfLitable).luminance = 1;
   }
 }
 
@@ -456,7 +459,7 @@ function runIlluminationTileToTile(
   p2: IntegerPositionComponent
 ) {
   if (distanceBetweenIntegers(p, p2) < VisRange) {
-    twoD[eidOfLitable].luminance = 1;
+    setPieces[eidOfLitable].luminance = 1;
   }
 }
 
@@ -466,7 +469,7 @@ function runIlluminationBotToTile(
   p2: IntegerPositionComponent
 ) {
   if (distanceBetweenFloatAndIntegerPostion(p2, p) < VisRange) {
-    twoD[eidOfLitable].luminance = 1;
+    setPieces[eidOfLitable].luminance = 1;
   }
 }
 
@@ -581,11 +584,13 @@ function runPhysics() {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
 
-      updateBotPosition(position, f);
       boundaryCheckBot(position);
+      collisionWalls();
+
+      updateBotPosition(position, f);
 
       drawables.updatePostion(eid, position);
-      // oneD.update(eid, p)
+      // actors.update(eid, p)
     } else if (classification === "Tile") {
       // const p = ips.get(eidOfClassification);
       // if (!p) throw "integer position component not found";
@@ -594,6 +599,97 @@ function runPhysics() {
     }
   });
 }
+
+const collisionWalls = () => {
+  actors.each((i, a) => {
+    // x and y are the "look ahead" pointer
+    let x = Math.round(a.position.x + a.motion.dx);
+    if (x >= MapSize - 1) x = 0;
+    if (x < 0) x = MapSize - 1;
+    let y = Math.round(a.position.y + a.motion.dy);
+    if (y >= MapSize - 1) y = 0;
+    if (y < 0) y = MapSize - 1;
+
+    // collision check with set-pieces
+    // if (!phaseZero[y][x]) debugger;
+
+    // if (phaseZero[y][x].setId === -1) {
+    //   console.error(
+    //     "Spaces should not be empty! X and Y",
+    //     x,
+    //     y,
+    //     " were NOT found"
+    //   );
+    //   console.error(phaseZero);
+    // }
+
+    // if (setPieces.store[
+    // actors.setPieceIdAt(x, y)
+    // ][1].tileType !== "FloorTile") {
+    // if (setPieces.at(x, y, "FloorTile")) {
+    // const aa = actors.setPieceIdAt(x, y);
+    // const aaa = setPieces.tileIsAt(aa, "FloorTile");
+
+    // if the look-ahead tile is floor
+    if (!setPieces.tileIsAt(x, y, "FloorTile")) {
+      magX = Math.abs(a.motion.dx);
+      magY = Math.abs(a.motion.dy);
+      roundX = Math.round(a.position.x);
+      roundY = Math.round(a.position.y);
+
+      if (x < roundX) {
+        if (y < roundY) {
+          // NorthWest
+          if (magX < magY) {
+            a.motion.dy = a.motion.dy * -1;
+          } else {
+            a.motion.dx = a.motion.dx * -1;
+          }
+        } else if (y > roundY) {
+          // SouthWest
+          if (magX > magY) {
+            a.motion.dx = a.motion.dx * -1;
+          } else {
+            a.motion.dy = a.motion.dy * -1;
+          }
+        } else {
+          // West
+          a.motion.dx = a.motion.dx * -1;
+        }
+      } else if (x > roundX) {
+        if (y < roundY) {
+          // NorthEast
+          if (magX > magY) {
+            a.motion.dx = a.motion.dx * -1;
+          } else {
+            a.motion.dy = a.motion.dy * -1;
+          }
+        } else if (roundY) {
+          // SouthEast
+
+          if (magX > magY) {
+            a.motion.dy = a.motion.dy * -1;
+          } else {
+            a.motion.dx = a.motion.dx * -1;
+          }
+        } else {
+          // East
+          a.motion.dx = a.motion.dx * -1;
+        }
+      } else {
+        if (y < roundY) {
+          // North
+          a.motion.dy = a.motion.dy * -1;
+        } else {
+          // South
+          a.motion.dy = a.motion.dy * -1;
+        }
+      }
+    } else {
+      // no-opt
+    }
+  });
+};
 
 export const SpaceTrashMainSystem = new MainSystem(MapSize);
 
@@ -802,7 +898,7 @@ export const SpaceTrashMainSystem = new MainSystem(MapSize);
 //   if (y >= this.mapSize - 1) y = 0;
 //   if (y < 0) y = this.mapSize - 1;
 
-//   if (twoD.store[y][x]) {
+//   if (setPieces.store[y][x]) {
 //     // illuminate the space upon which we stand
 //     illuminate(actor.x, actor.y);
 

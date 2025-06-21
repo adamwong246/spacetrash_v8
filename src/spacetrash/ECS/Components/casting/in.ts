@@ -81,4 +81,8 @@ export class LittableStore extends Store<any> {
   make(...a: any[]): LitableComponent {
     return new LitableComponent();
   }
+
+  keyForEid(i: number) {
+    Object.keys(this.store).findIndex(() => (eid) => eid == String(i))
+  }
 }

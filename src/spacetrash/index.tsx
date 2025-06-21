@@ -1,11 +1,15 @@
+import * as THREE from "three";
+import brick from "./Assets/brick.png";
+import stone from "./Assets/stone.png";
+import * as PIXI from "pixi.js";
 import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
 import React from "react";
 
 import { StateSpace } from "../engine/StateSpace";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 
-import pixiShipMap from "./ECS/Views/pixi2d";
-import { SpaceTrashMainSystem } from "./ECS/System";
+import pixiShipMap from "../trash/Views/pixi2d";
+import { MapSize, SpaceTrashMainSystem, TileSize } from "./ECS/System";
 import {
   AttackableStore, CameraStore, LittableStore,
 } from "./ECS/Components/casting/in";
@@ -25,15 +29,29 @@ import {
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
 import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
-import threejsDroneVideo from "./ECS/Views/threejs3d";
+import threejsDroneVideo from "../trash/Views/threejs3d";
 import { DrawableStore, } from "./ECS/Components/v2/drawable";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
+import { Ticker } from 'pixi.js';
+
+const ticker = Ticker.shared;
+ticker.maxFPS = 60;
+
+const pixi2dApp = new PIXI.Application();
+var scene = new THREE.Scene();
+
 const performanceConfig: IPerformanceConfig = {
-  fps: 5,
+  fps: 60,
   performanceLogging: false,
   headless: false
 };
+const defToRad = (d: number) => (d * Math.PI) / 180;
+var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
+camera.rotateX(defToRad(-90));
+camera.rotateZ(defToRad(180));
+camera.position.z = 5;
+
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
@@ -84,10 +102,21 @@ function isNumeric(str: string): boolean {
   return /^[1-9]+$/.test(str) && str.length === 1;
 }
 
+const Drawings = new DrawableStore();
+
 export class SpaceTrash extends TerminalGame<IRenderings, {
   SetPieceComponent: SetPieceStore,
   ActorComponent: ActorStore
 }, number> {
+  
+
+  threejsBotCanvasRef: HTMLCanvasElement;
+  threejsBotParentRef: HTMLElement;
+  threejsRenderer: THREE.WebGLRenderer;
+
+  pixijsBotCanvasRef: HTMLCanvasElement;
+  pixijsBotParentRef: HTMLElement;
+  pixijsRenderer: PIXI.Application;
 
   public pixiLoaded: boolean = false;
   public videoFeed: number = 1;
@@ -132,7 +161,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         LitComponent: new LitStore(),
         CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
-        DrawableComponent: new DrawableStore()
+        DrawableComponent: Drawings
       },
       {
         SetPieceComponent: new SetPieceStore(),
@@ -202,12 +231,28 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       }
     });
 
+    this.pixijsRenderer = new PIXI.Application();
   }
 
   start() {
+
+    PIXI.Assets.load([
+      "https://pixijs.com/assets/bunny.png",
+      stone,
+      brick,
+    ])
+    .then(() => {
+
+        PIXI.Texture.from(
+          "https://pixijs.com/assets/bunny.png"
+        );
+        PIXI.Texture.from(stone);
+        PIXI.Texture.from(brick);
+
+      })
+
+
     super.start()
-    return new Promise(async (res, rej) => {
-    })
   }
 
   bufferRef: React.MutableRefObject<null>;
@@ -373,14 +418,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     return p;
   }
 
-  async renderDroneVideo(ctx: HTMLCanvasElement) {
-    await threejsDroneVideo(this, ctx);
-  }
-
-  async renderShipMap(ctx: any) {
-    await pixiShipMap(this, ctx);
-  }
-
   botsHook: React.Dispatch<any>;
   registerBotsHook(stateSetter: React.Dispatch<any>) {
     this.botsHook = stateSetter;
@@ -432,4 +469,75 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.bufferRef.current.blur()
   }
 
+  async registerCanvas(
+    key: ICanvases,
+    run: boolean,
+    canvas: HTMLCanvasElement,
+    callback: (data: any) => void,
+    canvasContext: IRenderings | undefined,
+    parentComponent: HTMLElement
+  ) {
+    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
+    
+    if (key === "bot") {
+      this.threejsBotCanvasRef = canvas;
+      this.threejsBotParentRef = parentComponent;  
+
+      await pixi2dApp.init({
+        sharedTicker: true,
+        view: canvas.getContext("webgl2")?.canvas,
+        backgroundColor: 0x1099bb,
+        width: (MapSize + 7) * TileSize,
+        height: (MapSize + 7) * TileSize,
+      });
+    }
+    if (key === "map") {
+      this.pixijsBotCanvasRef = canvas;
+      this.pixijsBotParentRef = parentComponent;
+
+      this.threejsRenderer = new THREE.WebGLRenderer({
+        canvas,
+        context: canvas.getContext("webgl2") as WebGL2RenderingContext,
+        antialias: true,
+      });
+    }
+
+  }
+
+  async renderBotCanvas() {
+    const position = this.videoFeedPosition();
+    camera.position.x = position.x * TileSize;
+    camera.position.y = position.y * TileSize;
+    // console.log("camera", camera.position)
+
+    // camera.rotation.x = camera.rotation.x + 0.001;
+    camera.rotation.y = camera.rotation.y + 0.01;
+    // camera.rotation.y = camera.rotation.y + 0.001;
+
+    const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
+    this.threejsRenderer.setSize(p.width, p.height);
+    this.threejsRenderer.render(scene, camera);
+    // debugger
+  }
+
+  async renderShipMap() {
+    // todo
+    // debugger
+  }
+
+  BeginTheGame() {
+
+    this.openAllWindows();
+
+    Drawings.each(([a, d, c]) => {
+      pixi2dApp.stage.addChild(d[1].sprite)
+      scene.add(d[1].mesh)
+    })
+    
+    this.unpause();
+    
+  }
+
 }
+
+export type ICanvases = "map" | "bot";
