@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 import { LitComponent } from "../Components/casting/out";
 import { SpaceTrashEntity } from "../Entity";
 
@@ -13,6 +15,9 @@ import { NameableComponent } from "../Components/v2/nameable";
 import RandomMaleNames from "./../../NameGenerator";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
+import { blueMaterial } from "../../threejs";
+
+const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1);
 
 export class SpaceTrashBot extends SpaceTrashEntityComponent {
   constructor(
@@ -34,7 +39,7 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
       new NameableComponent(RandomMaleNames.generate("male", spe)),
       new ClassificationComponent("SpaceTrashBot"),
 
-      new DrawableComponent("bunny"),
+      new DrawableComponent("bunny", new THREE.Mesh(cylinderGeometry, blueMaterial)), 
     ]);
   }
 
@@ -55,38 +60,4 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
     return eidOfBot;
   }
 
-  // static draw2d(
-  //   s: PhysicsActorComponent
-  // ): (draw2d: CanvasRenderingContext2D) => void {
-  //   return (ctx) => {
-  //     // ctx.beginPath();
-  //     // ctx.arc(95, 50, 40, 0, 2 * Math.PI);
-  //     // ctx.strokeStyle = "red";
-  //     // ctx.stroke();
-
-  //     ctx.beginPath();
-  //     ctx.arc(s[1].x * TileSize, s[1].y * TileSize, TileSize / 2, 0, 2 * Math.PI);
-  //     // ctx.fillStyle = "orange";
-  //     // ctx.fill();
-  //     ctx.stroke();
-  //   };
-  // }
-
-  // // draw2d(draw2d: CanvasRenderingContext2D) {
-  // //   draw2d.beginPath();
-  // //   draw2d.arc(
-  // //     this.physicsActorComponent.x * TileSize,
-  // //     this.physicsActorComponent.y * TileSize,
-  // //     TileSize / 2,
-  // //     0,
-  // //     2 * Math.PI
-  // //   );
-  // //   draw2d.fillStyle = "orange";
-  // //   draw2d.fill();
-  // //   draw2d.stroke();
-  // // }
-
-  // // erase2d(draw2d: CanvasRenderingContext2D) {
-  // //   // draw2d.clearRect(1, 2, 3, 4);
-  // // }
 }
