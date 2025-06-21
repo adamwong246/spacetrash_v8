@@ -1,6 +1,5 @@
 import { LitableComponent } from "../Components/casting/in";
 
-
 // import { PhysicsSetPieceComponent } from "../Components/setPiece";
 import { TileSize } from "../System";
 import { SetPieceComponent } from "../Components/phase0";
@@ -10,27 +9,28 @@ import { IntegerPositionComponent } from "../Components/v2/physical";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
 
-
 export class Tile extends SpaceTrashEntityComponent {
   tiletype: ITiles;
 
-  constructor(x: number, y: number, tiletype: ITiles) {
+  constructor(x: number, y: number, tiletype: ITiles, d: DrawableComponent) {
     const spe = new SpaceTrashEntity();
     super(spe, [
-      new IntegerPositionComponent(x, y),
-      new LitableComponent(),
-      new ClassificationComponent("Tile"),
-      // new DrawableComponent("https://pixijs.com/assets/bunny.png"),
+      ...[
+        new IntegerPositionComponent(x, y),
+        new LitableComponent(),
+        new ClassificationComponent("Tile"),
+      ],
+      d || new DrawableComponent("stone"),
     ]);
     this.tiletype = tiletype;
   }
 
   position(): IntegerPositionComponent {
     const c = this.components.find((c) => {
-      return c.constructor.name === "IntegerPositionComponent"
+      return c.constructor.name === "IntegerPositionComponent";
     }) as IntegerPositionComponent | undefined;
 
-    if (!c) throw "missing component"
+    if (!c) throw "missing component";
 
     return c;
   }
@@ -38,13 +38,13 @@ export class Tile extends SpaceTrashEntityComponent {
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(x, y, "FloorTile");
+    super(x, y, "FloorTile", new DrawableComponent("stone"));
   }
 }
 
 export class WallTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(x, y, "WallTile");
+    super(x, y, "WallTile",  new DrawableComponent("brick"));
   }
 }
 

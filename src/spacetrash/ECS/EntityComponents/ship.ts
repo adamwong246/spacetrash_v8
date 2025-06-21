@@ -4,7 +4,7 @@ import { SpaceTrashEntityComponent } from ".";
 import { Tile, FloorTile, WallTile, NorthEast, NorthWest, SouthEast, SouthWest } from "./tiles";
 import { MapSize } from "../System";
 import { IntegerPositionComponent } from "../Components/v2/physical";
-// import { PhysicsSetPieceComponent } from "../Components/setPiece";
+
 
 export class SpaceTrashShip extends SpaceTrashEntityComponent {
   map: (Tile)[][];

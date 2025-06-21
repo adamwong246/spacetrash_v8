@@ -23,17 +23,17 @@ import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
-export const NumberOfActors = 150;
+export const NumberOfActors = 20;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
-export const TileSize = 5;
+export const TileSize = 30;
 export const ActorSize = TileSize / 1;
 export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 200;
+export const MapSize = 30;
 
-const VisRange = 300;
+const VisRange = 30;
 
 let twoD: SetPieceStore;
 // let oneD: ActorStore;
@@ -119,6 +119,7 @@ const runFirstTick = async (game: SpaceTrash) => {
   // }
 
   runInitialMapBoundaryCheck();
+  runPlaceImmoveableSetPieces();
 };
 
 function runEveryOtherTick() {
@@ -128,7 +129,6 @@ function runEveryOtherTick() {
 }
 
 let DELTA: number;
-
 class MainSystem extends System {
   mapSize: number;
   working: boolean;
@@ -187,6 +187,20 @@ class MainSystem extends System {
       res(true);
     });
   }
+}
+
+const runPlaceImmoveableSetPieces=()=>{
+  drawables.each((([eid, [did, dic], k]) => {
+
+    const p = ips.get(did);
+    if (dic.sprite) {
+      dic.sprite.position.x = p.x * TileSize;
+      dic.sprite.position.y = p.y * TileSize;
+    } else {
+      throw "the sprite should be loaded by now"
+    }
+    
+  }))
 }
 
 const illuminate = (xFloat: number, yFloat: number): any => {

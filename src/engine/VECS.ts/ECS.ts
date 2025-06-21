@@ -167,8 +167,9 @@ export abstract class ECS {
 
   async start() {
     console.log("start");
-    // this.updateUI(this.uiState);
-
+    
+    await this.draw();
+    
     let then = performance.now();
     const interval = 1000 / this.fps;
     let delta = 0;

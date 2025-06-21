@@ -1,24 +1,18 @@
 import { Application, Loader, Sprite } from "pixi.js";
 
-import { MapSize, TileSize } from "../System";
-
 import { IView } from "../../../engine/VECS.ts/View";
+
 import { SpaceTrash } from "../..";
-// import { DrawingStore } from "../Components/v2/drawings";
-import { DrawableComponent, DrawableStore } from "../Components/v2/drawable";
-import { Assets } from "@pixi/assets";
 
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
 
+import { MapSize, TileSize } from "../System";
+import { DrawableStore } from "../Components/v2/drawable";
+
 let pixi2dApp: Application;
 let tick = -1;
 let drawables: DrawableStore;
-let ctx: HTMLCanvasElement;
-
-let brickTexture;
-let stoneTexture;
-let bunnyTexture;
 
 const render: IView<any> = async (game, canvas) => {
   if (!game) debugger;
@@ -51,47 +45,37 @@ const firstRender = async (game: SpaceTrash, canvas) => {
 
   const g = game;
 
+
   const loader = new Loader();
   loader.add("stone", stone); // Replace with your image path
-  loader.load((loader, resources) => {
+  await loader.add("brick", brick); // Replace with your image path
+  await loader.add("bunny", "https://pixijs.com/assets/bunny.png"); // Replace with your image path=
+  await loader.load((loader, resources) => {
 
-
-    Object.keys(drawables.store).forEach(async ([k, i]) => {
-
-      const bunny = new Sprite(resources.stone.texture);
-    // bunny.x = 100 * Math.random();
-    // bunny.y = 100 * Math.random();
-      // bunny.anchor.set(0.5);
-      
-      pixi2dApp.stage.addChild(bunny)
-      await drawables.store[k][1].setSprite(bunny);
-
-      // console.log(i);
-      // drawables.store[k][1];
-
-      // if (
-      //   drawables.store[k][1].textureURL === "https://pixijs.com/assets/bunny.png"
-      // ) {
-      //   // const s = Sprite.from(brickTexture);
-      //   // s.position.x = 100 * Math.random();
-      //   // s.position.y = 100 * Math.random();
-      //   await drawables.store[k][1].setSprite(pixi2dApp.stage.addChild(bunny));
-      //   // console.log("pixi", drawables.store[k][1].sprite);
-      // }
-
-      // pixi2dApp.stage.addChild(d.drawable.sprite);
+    
+    Object.keys(drawables.store).forEach(async ([i]) => {
+      debugger
+      const d = drawables.store[i][1];
+      let sprite: Sprite;
+      if (d.textureURL === "brick") {
+        sprite = new Sprite(resources.brick.texture);
+      } else if (d.textureURL === "stone") {
+        sprite = new Sprite(resources.stone.texture);
+      } else if (d.textureURL === "bunny") {
+        debugger;
+        sprite = new Sprite(resources.bunny.texture);
+      } else {
+        console.error(`I don't recognize this texture ${d.textureURL}`);
+        return;
+      }
+      sprite.width = TileSize;
+      sprite.height = TileSize;
+      pixi2dApp.stage.addChild(sprite);
+      drawables.store[i][1].setSprite(sprite);
     });
 
-    // debugger
-
-    // pixi2dApp.stage.addChild(bunny);
   });
-
-  // brickTexture = await Assets.load(brick);
-  // stoneTexture = await Assets.load(stone);
-  // bunnyTexture = await Assets.load("https://pixijs.com/assets/bunny.png");
-
-  return;
+  
 };
 
 ////////////////////////////////////////////////////////

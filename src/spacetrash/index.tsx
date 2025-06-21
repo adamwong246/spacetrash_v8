@@ -35,7 +35,7 @@ import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 // import { DrawingComponent, DrawingStore } from "./ECS/Components/v2/drawings";
 
 const performanceConfig: IPerformanceConfig = {
-  fps: 60,
+  fps: 5,
   performanceLogging: false,
   headless: false
 };
@@ -81,6 +81,7 @@ export type IState = {
 export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | null;
 
 function isAlphabetic(str: string): boolean {
+  if (!str) return false;
   return /^[A-Za-z]+$/.test(str) && str.length === 1;
 }
 
@@ -93,8 +94,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   ActorComponent: ActorStore
 }, number> {
 
-  // uiHooks: any;
-
+  public pixiLoaded: boolean = false;
   public videoFeed: number = 1;
 
   public bots: {

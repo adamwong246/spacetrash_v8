@@ -55536,6 +55536,12 @@ extensions.add(
   AppLoaderPlugin
 );
 
+// src/spacetrash/Assets/brick.png
+var brick_default = "./brick.png";
+
+// src/spacetrash/Assets/stone.png
+var stone_default = "./stone.png";
+
 // src/engine/VECS.ts/System.ts
 var System2 = class {
   static {
@@ -55746,10 +55752,10 @@ var Eid2PMStore = class extends Store {
 };
 
 // src/spacetrash/ECS/System.ts
-var NumberOfActors = 150;
-var TileSize = 5;
+var NumberOfActors = 20;
+var TileSize = 30;
 var ActorSize = TileSize / 1;
-var MapSize = 200;
+var MapSize = 30;
 var twoD;
 var fps;
 var ips;
@@ -55800,6 +55806,7 @@ var runFirstTick = /* @__PURE__ */ __name(async (game) => {
     twoD.store[s.y][s.x].tileType = s.tileType;
   });
   runInitialMapBoundaryCheck();
+  runPlaceImmoveableSetPieces();
 }, "runFirstTick");
 function runEveryOtherTick() {
   runPhysics();
@@ -55843,6 +55850,17 @@ var MainSystem = class extends System2 {
     });
   }
 };
+var runPlaceImmoveableSetPieces = /* @__PURE__ */ __name(() => {
+  drawables.each(([eid, [did, dic], k]) => {
+    const p = ips.get(did);
+    if (dic.sprite) {
+      dic.sprite.position.x = p.x * TileSize;
+      dic.sprite.position.y = p.y * TileSize;
+    } else {
+      throw "the sprite should be loaded by now";
+    }
+  });
+}, "runPlaceImmoveableSetPieces");
 var di3 = Math.sqrt(ActorSize / 2);
 var firstTick = true;
 var MapBoundLow = 0;
@@ -55930,9 +55948,6 @@ function runPhysics() {
 __name(runPhysics, "runPhysics");
 var SpaceTrashMainSystem = new MainSystem(MapSize);
 
-// src/spacetrash/Assets/stone.png
-var stone_default = "./stone.png";
-
 // src/spacetrash/ECS/Views/pixi2d.ts
 var pixi2dApp;
 var tick = -1;
@@ -55965,14 +55980,30 @@ var firstRender = /* @__PURE__ */ __name(async (game, canvas) => {
   const g = game;
   const loader = new Loader();
   loader.add("stone", stone_default);
-  loader.load((loader2, resources2) => {
-    Object.keys(drawables2.store).forEach(async ([k, i]) => {
-      const bunny = new Sprite(resources2.stone.texture);
-      pixi2dApp.stage.addChild(bunny);
-      await drawables2.store[k][1].setSprite(bunny);
+  await loader.add("brick", brick_default);
+  await loader.add("bunny", "https://pixijs.com/assets/bunny.png");
+  await loader.load((loader2, resources2) => {
+    Object.keys(drawables2.store).forEach(async ([i]) => {
+      debugger;
+      const d = drawables2.store[i][1];
+      let sprite;
+      if (d.textureURL === "brick") {
+        sprite = new Sprite(resources2.brick.texture);
+      } else if (d.textureURL === "stone") {
+        sprite = new Sprite(resources2.stone.texture);
+      } else if (d.textureURL === "bunny") {
+        debugger;
+        sprite = new Sprite(resources2.bunny.texture);
+      } else {
+        console.error(`I don't recognize this texture ${d.textureURL}`);
+        return;
+      }
+      sprite.width = TileSize;
+      sprite.height = TileSize;
+      pixi2dApp.stage.addChild(sprite);
+      drawables2.store[i][1].setSprite(sprite);
     });
   });
-  return;
 }, "firstRender");
 var pixi2d_default = render;
 
@@ -56521,19 +56552,76 @@ var ClassificationStore = class extends Store {
   // }
 };
 
+// src/spacetrash/ECS/Components/v2/drawable.ts
+var DrawableComponent2 = class extends Component {
+  static {
+    __name(this, "DrawableComponent");
+  }
+  textureURL;
+  sprite;
+  mesh;
+  constructor(textureURL) {
+    super();
+    this.textureURL = textureURL;
+  }
+  setMesh(m) {
+    this.mesh = m;
+  }
+  setSprite(s) {
+    this.sprite = s;
+  }
+};
+var DrawableStore = class extends EntityComponentStore {
+  static {
+    __name(this, "DrawableStore");
+  }
+  // store: DrawableComponent;
+  // get(...a: any[]) {
+  //   throw new Error("Method not implemented.");
+  // }
+  // add(a: DrawableComponent) {
+  //   // super.add(a);
+  // }
+  make() {
+    throw new Error("Method not implemented.");
+    return new DrawableComponent2();
+  }
+  positionOf(eidOfLight) {
+    throw new Error("Method not implemented.");
+  }
+  updatePostion(eid, p) {
+    const d = this.get(eid);
+    if (d.sprite) {
+      d.sprite.position.x = p.x;
+      d.sprite.position.y = p.y;
+    }
+    if (d.mesh) {
+      d.mesh.position.x = p.x;
+      d.mesh.position.y = p.y;
+    }
+  }
+  each(arg0) {
+    Object.keys(this.store).forEach((k) => {
+      arg0([Number(k), this.store[k], k]);
+    });
+  }
+};
+
 // src/spacetrash/ECS/EntityComponents/tiles.ts
 var Tile = class extends SpaceTrashEntityComponent {
   static {
     __name(this, "Tile");
   }
   tiletype;
-  constructor(x, y, tiletype) {
+  constructor(x, y, tiletype, d) {
     const spe = new SpaceTrashEntity();
     super(spe, [
-      new IntegerPositionComponent(x, y),
-      new LitableComponent(),
-      new ClassificationComponent("Tile")
-      // new DrawableComponent("https://pixijs.com/assets/bunny.png"),
+      ...[
+        new IntegerPositionComponent(x, y),
+        new LitableComponent(),
+        new ClassificationComponent("Tile")
+      ],
+      d || new DrawableComponent2("stone")
     ]);
     this.tiletype = tiletype;
   }
@@ -56550,7 +56638,7 @@ var FloorTile = class extends Tile {
     __name(this, "FloorTile");
   }
   constructor(x = 0, y = 0) {
-    super(x, y, "FloorTile");
+    super(x, y, "FloorTile", new DrawableComponent2("stone"));
   }
 };
 var WallTile = class extends Tile {
@@ -56558,7 +56646,7 @@ var WallTile = class extends Tile {
     __name(this, "WallTile");
   }
   constructor(x = 0, y = 0) {
-    super(x, y, "WallTile");
+    super(x, y, "WallTile", new DrawableComponent2("brick"));
   }
 };
 var SouthWest = class extends Tile {
@@ -60547,56 +60635,6 @@ var NameGenerator_default = {
   }, "generate")
 };
 
-// src/spacetrash/ECS/Components/v2/drawable.ts
-var DrawableComponent2 = class extends Component {
-  static {
-    __name(this, "DrawableComponent");
-  }
-  textureURL;
-  sprite;
-  mesh;
-  constructor(textureURL) {
-    super();
-    this.textureURL = textureURL;
-  }
-  setMesh(m) {
-    this.mesh = m;
-  }
-  setSprite(s) {
-    this.sprite = s;
-  }
-};
-var DrawableStore = class extends EntityComponentStore {
-  static {
-    __name(this, "DrawableStore");
-  }
-  // store: DrawableComponent;
-  // get(...a: any[]) {
-  //   throw new Error("Method not implemented.");
-  // }
-  // add(a: DrawableComponent) {
-  //   // super.add(a);
-  // }
-  make() {
-    throw new Error("Method not implemented.");
-    return new DrawableComponent2();
-  }
-  positionOf(eidOfLight) {
-    throw new Error("Method not implemented.");
-  }
-  updatePostion(eid, p) {
-    const d = this.get(eid);
-    if (d.sprite) {
-      d.sprite.position.x = p.x;
-      d.sprite.position.y = p.y;
-    }
-    if (d.mesh) {
-      d.mesh.position.x = p.x;
-      d.mesh.position.y = p.y;
-    }
-  }
-};
-
 // src/spacetrash/ECS/EntityComponents/SpaceTrashBot.ts
 var SpaceTrashBot = class extends SpaceTrashEntityComponent {
   constructor(x = 0, y = 0, r = 0, dx = 0, dy = 0, name) {
@@ -60609,11 +60647,7 @@ var SpaceTrashBot = class extends SpaceTrashEntityComponent {
       new LitableComponent(),
       new NameableComponent(NameGenerator_default.generate("male", spe)),
       new ClassificationComponent("SpaceTrashBot"),
-      // new DrawableComponent(TheSpriteMaster.bunnyTexture),
-      new DrawableComponent2(
-        "https://pixijs.com/assets/bunny.png"
-        // TheSpriteMaster.texture(TheSpriteMaster.bunnyTexture)
-      )
+      new DrawableComponent2("bunny")
     ]);
   }
   static name(bots, eidOfBot) {
@@ -72075,6 +72109,7 @@ var ECS = class {
   }
   async start() {
     console.log("start");
+    await this.draw();
     let then = performance.now();
     const interval = 1e3 / this.fps;
     let delta = 0;
@@ -98016,7 +98051,7 @@ var threejs3d_default = render2;
 
 // src/spacetrash/index.tsx
 var performanceConfig = {
-  fps: 60,
+  fps: 5,
   performanceLogging: false,
   headless: false
 };
@@ -98042,6 +98077,7 @@ boot sequence complete!
   `
 };
 function isAlphabetic(str) {
+  if (!str) return false;
   return /^[A-Za-z]+$/.test(str) && str.length === 1;
 }
 __name(isAlphabetic, "isAlphabetic");
@@ -98053,7 +98089,7 @@ var SpaceTrash = class extends TerminalGame {
   static {
     __name(this, "SpaceTrash");
   }
-  // uiHooks: any;
+  pixiLoaded = false;
   videoFeed = 1;
   bots;
   terminalWindowHook;

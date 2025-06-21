@@ -13,7 +13,6 @@ import { NameableComponent } from "../Components/v2/nameable";
 import RandomMaleNames from "./../../NameGenerator";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
-import { Sprite } from "pixi.js";
 
 export class SpaceTrashBot extends SpaceTrashEntityComponent {
   constructor(
@@ -34,14 +33,9 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
       new LitableComponent(),
       new NameableComponent(RandomMaleNames.generate("male", spe)),
       new ClassificationComponent("SpaceTrashBot"),
-      // new DrawableComponent(TheSpriteMaster.bunnyTexture),
-      new DrawableComponent(
-        "https://pixijs.com/assets/bunny.png"
-        // TheSpriteMaster.texture(TheSpriteMaster.bunnyTexture)
-      ),
-    ]);
 
-    // this.physicsActorComponent = physicsActorComponent;
+      new DrawableComponent("bunny"),
+    ]);
   }
 
   static name(
