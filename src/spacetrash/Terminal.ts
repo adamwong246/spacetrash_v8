@@ -150,7 +150,6 @@ export abstract class TerminalGame<IRenderings, II, III> extends DesktopGame<
   booted = false;
   uiHooks: any;
   history: ITerminalLine[] = [initialTerminalHistory];
-  gameReady: () => void;
   public buffer: string = "";
   loggedIn = false;
   uiUpdateCallback: any;

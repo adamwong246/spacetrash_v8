@@ -352,10 +352,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
   }
 
-  gameReady: () => void = () => {
-    this.start()
-  }
-
   positionOfBot(eid: number): { x: number; y: number } {
     const storeName = "FloatPositionComponent";
 

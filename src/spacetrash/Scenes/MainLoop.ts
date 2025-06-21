@@ -54,10 +54,7 @@ class MainScene extends SpaceTrashScene {
     };
 
     game.openAllWindows();
-
-    setTimeout(() => {
-      game.unpause();
-    }, 3000)
+    game.unpause();
     
   }
 
