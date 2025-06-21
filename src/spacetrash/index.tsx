@@ -2,16 +2,12 @@ import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } fr
 import React from "react";
 
 import { StateSpace } from "../engine/StateSpace";
-import pixiShipMap from "./ECS/Views/pixi2d";
+import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 
-import { } from "./ECS/Components/physics";
+import pixiShipMap from "./ECS/Views/pixi2d";
+import { SpaceTrashMainSystem } from "./ECS/System";
 import {
-  SpaceTrashMainSystem,
-} from "./ECS/System";
-import {
-  AttackableStore,
-  CameraStore,
-  LittableStore,
+  AttackableStore, CameraStore, LittableStore,
 } from "./ECS/Components/casting/in";
 import { LitStore } from "./ECS/Components/casting/out";
 import { SetPieceStore } from "./ECS/Components/phase0";
@@ -23,16 +19,15 @@ import { BotWindow } from "./UI/BotWindow";
 import { MapWindow } from "./UI/map";
 import { BotsWindow } from "./UI/BotsWindow";
 import { ITerminalLine, TerminalGame } from "./Terminal";
-import { IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore } from "./ECS/Components/v2/physical";
-import { NameableStore } from "./ECS/Components/v2/nameable";
+import {
+  IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore
+} from "./ECS/Components/v2/physical";
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
-import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
+import { NameableStore } from "./ECS/Components/v2/nameable";
 import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
-
 import threejsDroneVideo from "./ECS/Views/threejs3d";
-import { DrawableComponent, DrawableStore, } from "./ECS/Components/v2/drawable";
+import { DrawableStore, } from "./ECS/Components/v2/drawable";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
-// import { DrawingComponent, DrawingStore } from "./ECS/Components/v2/drawings";
 
 const performanceConfig: IPerformanceConfig = {
   fps: 5,
@@ -187,6 +182,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         // console.log(event);
       }
     });
+
     document.addEventListener('keyup', function (event) {
 
       if (event.key === 'ArrowUp') {
@@ -316,12 +312,25 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
   openAllWindows() {
     this.dockviewAPI.component.addPanel({
+      id: 'bots',
+      component: 'bots',
+      floating: {
+        position: { left: 90, top: 90 },
+        width: 600,
+        height: 400
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
       id: 'vid',
       component: 'vid',
       floating: {
         position: { left: 50, top: 50 },
-        width: 600,
-        height: 400
+        width: 1200,
+        height: 1200
       },
       params: {
 
@@ -333,26 +342,14 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       component: 'map',
       floating: {
         position: { left: 100, top: 150 },
-        width: 600,
-        height: 400
+        width: 900,
+        height: 700
       },
       params: {
 
       }
     })
 
-    this.dockviewAPI.component.addPanel({
-      id: 'bots',
-      component: 'bots',
-      floating: {
-        position: { left: 100, top: 150 },
-        width: 600,
-        height: 400
-      },
-      params: {
-
-      }
-    })
   }
 
   gameReady: () => void = () => {
@@ -374,9 +371,10 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   public videoFeedPosition(): { x: number; y: number } {
-    return this.positionOfBot(
+    const p = this.positionOfBot(
       (this.bots[this.videoFeed] as [number, string])[0]
     );
+    return p;
   }
 
   async renderDroneVideo(ctx: HTMLCanvasElement) {

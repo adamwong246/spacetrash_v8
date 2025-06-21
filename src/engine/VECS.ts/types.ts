@@ -19,6 +19,17 @@ export abstract class EntityComponentStore<
 > extends ComponentStore<T> {
   store: [number, T][] = [];
 
+  // exists(i: number):boolean {
+  //   const toReturn = this.store.find((v) => {
+  //     return v[0] === i;
+  //   });
+
+  //   if (!toReturn) throw "not found!";
+  //   if (!toReturn[1]) throw "not found!";
+
+  //   return true;
+  // }
+
   add(c: T, i: number) {
     this.store.push([i, c]);
   }

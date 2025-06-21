@@ -4,7 +4,9 @@ import { BotSlots } from "../Constants";
 
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
-import { MapSize, ActorSize, NumberOfActors } from "../ECS/System";
+import { MapSize, ActorSize, NumberOfActors, TileSize } from "../ECS/System";
+
+const SPEED_CONSTANT = 0.01
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
@@ -12,19 +14,24 @@ class MainScene extends SpaceTrashScene {
       return new SpaceTrashBot(
         Math.random() * MapSize,
         Math.random() * MapSize,
+        // TileSize * (MapSize / 2 ),
+        // TileSize * (MapSize / 2 ),
         ActorSize,
-        (Math.random() - 0.5) / 50,
-        (Math.random() - 0.5) / 50
+        (Math.random() - 0.5) * SPEED_CONSTANT,
+        (Math.random() - 0.5) * SPEED_CONSTANT
       );
     });
 
     const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
       return new SpaceTrashBot(
+        // 200, 200,
         Math.random() * MapSize,
-        Math.random() * MapSize,
+        Math.random() * MapSize ,
+        // Math.random() * MapSize,
+        // Math.random() * MapSize,
         ActorSize,
-        (Math.random() - 0.5) / 50,
-        (Math.random() - 0.5) / 50
+        (Math.random() - 0.5) * SPEED_CONSTANT,
+        (Math.random() - 0.5) * SPEED_CONSTANT
       );
     });
 
@@ -47,7 +54,11 @@ class MainScene extends SpaceTrashScene {
     };
 
     game.openAllWindows();
-    game.unpause();
+
+    setTimeout(() => {
+      game.unpause();
+    }, 3000)
+    
   }
 
   update(e: SpaceTrash) {
@@ -252,30 +263,5 @@ const scene = new MainScene({
     "html",
   ],
 });
+
 export default scene;
-
-// "menuscene_view_v0",
-
-// return [
-//   ...thingsToDraw,
-//   (canvas) => {
-//     if (
-//       canvas.constructor.name ===
-//       "OffscreenCanvasRenderingContext2D"
-//     ) {
-//       const canvas2d =
-//         canvas as OffscreenCanvasRenderingContext2D;
-//       canvas2d.beginPath();
-//       canvas2d.arc(
-//         shipMapMouseX,
-//         shipMapMouseY,
-//         TileSize / 1,
-//         0,
-//         2 * Math.PI
-//       );
-//       canvas2d.lineWidth = 1;
-//       canvas2d.strokeStyle = "green";
-//       canvas2d.stroke();
-//     }
-//   },
-// ];

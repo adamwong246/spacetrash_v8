@@ -31,10 +31,11 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 30;
+export const MapSize = 40;
 
-const VisRange = 30;
+const VisRange = 3;
 
+let DELTA: number = 0;
 let twoD: SetPieceStore;
 // let oneD: ActorStore;
 let fps: FloatPositionStore;
@@ -128,7 +129,6 @@ function runEveryOtherTick() {
   // runIllumination();
 }
 
-let DELTA: number;
 class MainSystem extends System {
   mapSize: number;
   working: boolean;
@@ -145,7 +145,6 @@ class MainSystem extends System {
         console.log("pixi isn't ready");
         res(false);
       } else {
-        console.log("pixi is ready");
         if (firstTick) {
           firstTick = false;
 
@@ -199,13 +198,21 @@ class MainSystem extends System {
 
 const runPlaceImmoveableSetPieces = () => {
   drawables.each(([eid, [did, dic], k]) => {
-    const p = ips.get(did);
-    if (dic.sprite) {
-      dic.sprite.position.x = p.x * TileSize;
-      dic.sprite.position.y = p.y * TileSize;
-    } else {
-      throw "the sprite should be loaded by now";
-    }
+    ips.withIf(did, ([pic, p]) => {
+      if (dic.sprite) {
+        dic.sprite.position.x = p.x * TileSize;
+        dic.sprite.position.y = p.y * TileSize;
+      } else {
+        throw "the sprite should be loaded by now";
+      }
+
+      if (dic.mesh) {
+        dic.mesh.position.x = p.x * TileSize;
+        dic.mesh.position.y = p.y * TileSize;
+      } else {
+        throw "the mesh should be loaded by now";
+      }
+    });
   });
 };
 
@@ -501,15 +508,15 @@ function runInitialMapBoundaryCheck() {
 
 function boundaryCheckBot(fpc: FloatPositionComponent) {
   if (fpc.x < 0) {
-    fpc.x = MapSize * TileSize;
+    fpc.x = MapSize;
   }
-  if (fpc.x > MapSize * TileSize) {
+  if (fpc.x > MapSize) {
     fpc.x = 0;
   }
   if (fpc.y < 0) {
-    fpc.y = MapSize * TileSize;
+    fpc.y = MapSize;
   }
-  if (fpc.y > MapSize * TileSize) {
+  if (fpc.y > MapSize) {
     fpc.y = 0;
   }
 }
@@ -529,18 +536,21 @@ function boundaryCheckTile(ipc: IntegerPositionComponent) {
   }
 }
 
+const FRICTION_CONSTANT = 0.5;
 function updateVelocity(f: number): number {
-  return Math.min(f, 0.5) * 1;
+  return f; //f * DELTA * FRICTION_CONSTANT;
 }
 
 function updateMovement(f: FloatMovingComponent) {
   f.dx = updateVelocity(f.dx);
-  f.dy = updateVelocity(f.dx);
+  f.dy = updateVelocity(f.dy);
 }
 
+const VELOCITY_CONSTANT = 0.001;
+
 function updatePosition(p: FloatPositionComponent, f: FloatMovingComponent) {
-  p.x = p.x + f.dx;
-  p.y = p.y + f.dy;
+  p.x = p.x + f.dx; // * DELTA * VELOCITY_CONSTANT;
+  p.y = p.y + f.dy; // * DELTA * VELOCITY_CONSTANT;
 
   if (Number.isNaN(p.y)) {
     debugger;

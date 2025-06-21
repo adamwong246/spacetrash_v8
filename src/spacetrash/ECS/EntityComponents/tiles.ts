@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { LitableComponent } from "../Components/casting/in";
 
 // import { PhysicsSetPieceComponent } from "../Components/setPiece";
@@ -8,6 +9,24 @@ import { SpaceTrashEntity } from "../Entity";
 import { IntegerPositionComponent } from "../Components/v2/physical";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
+
+const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
+
+var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
+const redMaterial = new THREE.MeshBasicMaterial({
+  color: "red",
+  wireframe: true,
+});
+const blueMaterial = new THREE.MeshBasicMaterial({
+  color: "blue",
+  wireframe: true,
+});
+
+const floorTile = () => {
+  const m = new THREE.Mesh(floorGeometry, redMaterial);
+  m.position.z = -TileSize / 2;
+  return m;
+};
 
 export class Tile extends SpaceTrashEntityComponent {
   tiletype: ITiles;
@@ -38,13 +57,18 @@ export class Tile extends SpaceTrashEntityComponent {
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(x, y, "FloorTile", new DrawableComponent("stone"));
+    super(x, y, "FloorTile", new DrawableComponent("stone", floorTile()));
   }
 }
 
 export class WallTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(x, y, "WallTile",  new DrawableComponent("brick"));
+    super(
+      x,
+      y,
+      "WallTile",
+      new DrawableComponent("brick", new THREE.Mesh(cubeGeo, blueMaterial))
+    );
   }
 }
 

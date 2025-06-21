@@ -27,6 +27,18 @@ export class IntegerPositionStore extends EntityComponentStore<IntegerPositionCo
     super();
   }
 
+  withIf(i: number, arg1: (i: [number, IntegerPositionComponent]) => void) {
+
+    const x = this.store.find((v) => {
+      return v[0] === i;
+    })
+
+    if (x) {
+      return arg1(x);  
+    }
+    
+  }
+
   make(x: number = 0, y: number = 0) {
     return new IntegerPositionComponent(x, y);
   }
@@ -110,8 +122,8 @@ export class FloatMovingComponent extends MovingComponent {
 
   constructor(dx: number = 0, dy: number = 0) {
     super();
-    this.dx = (Math.random() - 0.5) * 5;
-    this.dy = (Math.random() - 0.5) * 5;
+    this.dx = dx
+    this.dy = dx
   }
 }
 

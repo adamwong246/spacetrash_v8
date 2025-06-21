@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Sprite, SpriteSource, Texture } from "pixi.js";
+import { Sprite, Texture } from "pixi.js";
 import { ISpaceTrashComponents } from "..";
 import {
   Component,
@@ -14,15 +14,19 @@ import {
 
 import { ActorComponent } from "../phase1";
 import { FloatPositionComponent, FloatPositionStore } from "./physical";
+import { TileSize } from "../../System";
+
+
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   textureURL: string;
   sprite?: Sprite;
   mesh?: THREE.Mesh;
 
-  constructor(textureURL: string) {
+  constructor(textureURL: string, mesh: THREE.Mesh) {
     super();
     this.textureURL = textureURL;
+    this.mesh = mesh;
   }
 
   setMesh(m: THREE.Mesh) {
@@ -62,12 +66,12 @@ export class DrawableStore extends EntityComponentStore<DrawableComponent> {
     // console.log("mark2", d.sprite)
 
     if (d.sprite) {
-      d.sprite.position.x = p.x;
-      d.sprite.position.y = p.y;
+      d.sprite.position.x = p.x * TileSize;
+      d.sprite.position.y = p.y * TileSize;
     }
     if (d.mesh) {
-      d.mesh.position.x = p.x;
-      d.mesh.position.y = p.y;
+      d.mesh.position.x = p.x / TileSize;
+      d.mesh.position.y = p.y/ TileSize;
     }
     //
     // d.x = p.x;

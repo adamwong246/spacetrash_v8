@@ -1,4 +1,4 @@
-import { Application, Loader, Sprite } from "pixi.js";
+import * as PIXI from "pixi.js";
 
 import { IView } from "../../../engine/VECS.ts/View";
 
@@ -10,7 +10,16 @@ import stone from "./../../Assets/stone.png";
 import { MapSize, TileSize } from "../System";
 import { DrawableStore } from "../Components/v2/drawable";
 
-let pixi2dApp: Application;
+import { Ticker } from 'pixi.js';
+
+const ticker = Ticker.shared;
+ticker.maxFPS = 5;
+// // Set this to prevent starting this ticker when listeners are added.
+// // By default this is true only for the PIXI.Ticker.shared instance.
+// ticker.autoStart = false;
+
+
+let pixi2dApp: PIXI.Application;
 let tick = -1;
 let drawables: DrawableStore;
 
@@ -22,34 +31,30 @@ const render: IView<any> = async (game, canvas) => {
     await firstRender(game, canvas);
     tick++;
   } else {
-    pixi2dApp.render();
+    // pixi2dApp.render();
   }
 
   return;
 };
 
 const firstRender = async (game: SpaceTrash, canvas) => {
-  pixi2dApp = new Application({
+  const pixi2dApp = new PIXI.Application();
+  
+  // pixi2dApp.ticker.stop();
+
+  await pixi2dApp.init({
+    sharedTicker: true,
+    view: canvas.getContext("webgl2")?.canvas,
+    backgroundColor: 0x1099bb,
     width: (MapSize + 7) * TileSize,
     height: (MapSize + 7) * TileSize,
-    antialias: true, // 抗锯齿，圆滑边界
-    resolution: 1,
-    view: canvas.getContext("webgl2")?.canvas,
-    backgroundColor: 0x00ff00,
-    sharedTicker: false,
   });
 
-  pixi2dApp.ticker.stop();
-  pixi2dApp.ticker.destroy();
-  pixi2dApp.renderer.plugins.interaction.useSystemTicker = false;
+  // pixi2dApp.ticker.stop();
+  // pixi2dApp.ticker.destroy();
+  // pixi2dApp.renderer.plugins.interaction.useSystemTicker = false;
 
   const g = game;
-
-  const loader = new Loader();
-  loader.onComplete.add(() => {
-    game.pixiLoaded = true
-  }); 
-
 
   // let binding = mySignal.add(onSignal);
   // mySignal.dispatch("foo", "bar");
@@ -57,29 +62,71 @@ const firstRender = async (game: SpaceTrash, canvas) => {
 
   // loader.onComplete(mySignal);
 
-  loader.add("stone", stone); // Replace with your image path
-  await loader.add("brick", brick); // Replace with your image path
-  await loader.add("bunny", "https://pixijs.com/assets/bunny.png"); // Replace with your image path=
-  await loader.load((loader, resources) => {
-    Object.keys(drawables.store).forEach(async ([i]) => {
-      const d = drawables.store[i][1];
-      let sprite: Sprite;
-      if (d.textureURL === "brick") {
-        sprite = new Sprite(resources.brick.texture);
-      } else if (d.textureURL === "stone") {
-        sprite = new Sprite(resources.stone.texture);
-      } else if (d.textureURL === "bunny") {
-        sprite = new Sprite(resources.bunny.texture);
-      } else {
-        console.error(`I don't recognize this texture ${d.textureURL}`);
-        return;
-      }
-      sprite.width = TileSize;
-      sprite.height = TileSize;
-      pixi2dApp.stage.addChild(sprite);
-      drawables.store[i][1].setSprite(sprite);
+  PIXI.Assets.load([
+    "https://pixijs.com/assets/bunny.png",
+    stone,
+    brick,
+  ])
+    .then(() => {
+      // This code will execute once all assets are loaded
+      console.log("All assets loaded!");
+
+      // You can now access your loaded assets, for example:
+      const texture1 = PIXI.Texture.from("https://pixijs.com/assets/bunny.png");
+      const sprite1 = new PIXI.Sprite(texture1);
+      pixi2dApp.stage.addChild(sprite1);
+      sprite1.position.x = 100;
+      sprite1.position.y = 100;
+
+      // ... more code to use the loaded assets
+    })
+    .then(() => {
+      Object.keys(drawables.store).forEach(async (k, n) => {
+        const d = drawables.store[n][1];
+
+
+        const bunnyTexture = PIXI.Texture.from(
+          "https://pixijs.com/assets/bunny.png"
+        );
+        const stoneTexture = PIXI.Texture.from(stone);
+        const brickTexture = PIXI.Texture.from(brick);
+
+        // const sprite = new PIXI.Sprite(texture);
+
+        let sprite: PIXI.Sprite;
+
+        if (d.textureURL === "brick") {
+          sprite = new PIXI.Sprite(brickTexture);
+        } else if (d.textureURL === "stone") {
+          sprite = new PIXI.Sprite(stoneTexture);
+        } else if (d.textureURL === "bunny") {
+          sprite = new PIXI.Sprite(bunnyTexture);
+        } else {
+          console.error(`I don't recognize this texture ${d.textureURL}`);
+          return;
+        }
+        sprite.width = TileSize;  
+        sprite.height = TileSize;
+        sprite.position.x = 0;
+        sprite.position.y = 0;
+        sprite.visible = true;
+
+        pixi2dApp.stage.addChild(sprite);
+        drawables.store[n][1].setSprite(sprite);
+        // debugger
+        // console.log("n", n, drawables.store.length)
+      });
+    })
+    .then(() => {
+      game.pixiLoaded = true;
     });
-  });
+
+  // game.pixiLoaded = true;
+  // pixi2dApp.render();
+  // pixi2dApp.renderer.on("")
+  // });
+
+  //
 };
 
 ////////////////////////////////////////////////////////

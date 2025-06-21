@@ -168,7 +168,7 @@ export abstract class ECS {
   async start() {
     console.log("start");
     
-    await this.draw();
+    // await this.draw();
     
     let then = performance.now();
     const interval = 1000 / this.fps;
@@ -189,18 +189,23 @@ export abstract class ECS {
 
     setInterval(repeatedFunction, 1);
 
+    let drawing = false
+
     if (!this.headless) {
       // run the render loop at FPS
       while (true) {
         let now = await new Promise(requestAnimationFrame);
-        if (now - then < interval - delta) {
+        if ( !drawing && (now - then < interval - delta)) {
           continue;
         }
         delta = Math.min(interval, delta + now - then - interval);
         then = now;
 
+        
         if (this.ticked) {
+          drawing = true;
           await this.draw();
+          drawing = false;
         }
       }
     } else {

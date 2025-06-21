@@ -22,21 +22,27 @@ const litFloorMaterial = new THREE.MeshBasicMaterial({
 });
 const cubeMaterial = new THREE.MeshBasicMaterial({ color: "red" });
 var cubeGeometry = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
-const cylinderGeometry = new THREE.CylinderGeometry(
-  TileSize / 3,
-  TileSize / 6,
-  TileSize
-);
+let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1);
 var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
 var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
 
 const defToRad = (d: number) => (d * Math.PI) / 180;
 
 camera.rotateX(defToRad(-90));
-camera.rotateZ(defToRad(0));
+camera.rotateZ(defToRad(180));
+
+// Create a basic perspective camera
+// var camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth / window.innerHeight,
+//   0.1,
+//   1000
+// );
+camera.position.z = 5;
+
+let cylinder: THREE.Mesh;
 
 const render: IView<any> = async (game, canvas) => {
-  if (!game) debugger;
   if (tick === -1) {
     drawables = game.componentStores["DrawableComponent"] as DrawableStore;
 
@@ -44,17 +50,18 @@ const render: IView<any> = async (game, canvas) => {
     tick++;
   } else {
     const position = game.videoFeedPosition();
-
     camera.position.x = position.x * TileSize;
     camera.position.y = position.y * TileSize;
+    // console.log("camera", camera.position)
+    
+    // camera.rotation.x = camera.rotation.x + 0.001;
+    camera.rotation.y = camera.rotation.y + 0.001;
+    // camera.rotation.y = camera.rotation.y + 0.001;
 
-    // const p = canvas.parentElement.getBoundingClientRect();
-    // videoRenderer.setSize(p.width, p.height);
-
+    const p = canvas.parentElement.getBoundingClientRect();
+    videoRenderer.setSize(p.width, p.height);
     videoRenderer.render(scene, camera);
   }
-
-  return;
 };
 
 const firstRender = async (game: SpaceTrash, canvas) => {
@@ -64,31 +71,26 @@ const firstRender = async (game: SpaceTrash, canvas) => {
     antialias: true,
   });
 
-  // 
+  // var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
 
-  Object.keys(drawables.store).forEach(async ([k, i]) => {
-    const mesh = new THREE.Mesh(cylinderGeometry, litFloorMaterial)
-    // bunny.x = 100 * Math.random();
-    // bunny.y = 100 * Math.random();
-    // bunny.anchor.set(0.5);
+  // const mesh = new THREE.Mesh(cylinderGeometry, material)
+  // mesh.position.x = 0;
+  // mesh.position.y = 0;
+  // mesh.position.z = 0;
+  // mesh.visible = true;
 
-    scene.add(mesh);
-    await drawables.store[k][1].setMesh(mesh);
+  // scene.add(mesh);
+  // videoRenderer.render(scene, camera);
 
-    // console.log(i);
-    // drawables.store[k][1];
+  // var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
+  // // var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
+  // cylinder = new THREE.Mesh(cylinderGeometry, litFloorMaterial)
+  // var cube = new THREE.Mesh(cubeGeo, litFloorMaterial);
 
-    // if (
-    //   drawables.store[k][1].textureURL === "https://pixijs.com/assets/bunny.png"
-    // ) {
-    //   // const s = Sprite.from(brickTexture);
-    //   // s.position.x = 100 * Math.random();
-    //   // s.position.y = 100 * Math.random();
-    //   await drawables.store[k][1].setSprite(pixi2dApp.stage.addChild(bunny));
-    //   // console.log("pixi", drawables.store[k][1].sprite);
-    // }
-
-    // pixi2dApp.stage.addChild(d.drawable.sprite);
+  Object.entries(drawables.store).forEach(async (n, i) => {
+    if (n[1][1].mesh) {
+      scene.add(n[1][1].mesh);
+    }
   });
 
   // pixi2dApp = new Application({

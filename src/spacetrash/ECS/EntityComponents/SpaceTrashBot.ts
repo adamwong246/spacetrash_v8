@@ -27,8 +27,8 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
 
     super(spe, [
       new FloatPositionComponent(x, y),
-      new DegreesDirectionComponent(0),
-      new FloatMovingComponent(0, 0),
+      new DegreesDirectionComponent(r),
+      new FloatMovingComponent(dx, dy),
       new LitComponent(),
       new LitableComponent(),
       new NameableComponent(RandomMaleNames.generate("male", spe)),
