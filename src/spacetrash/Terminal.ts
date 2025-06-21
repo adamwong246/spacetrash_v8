@@ -153,7 +153,7 @@ export abstract class TerminalGame<IRenderings, II, ICanvases> extends DesktopGa
   booted = false;
   uiHooks: any;
   history: ITerminalLine[] = [initialTerminalHistory];
-  public buffer: string = "";
+  public buffer: string = "login";
   loggedIn = false;
   uiUpdateCallback: any;
 

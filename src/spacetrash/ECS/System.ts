@@ -20,6 +20,7 @@ import {
 } from "./Components/v2/physical.ts";
 import { DrawableStore } from "./Components/v2/drawable.ts";
 import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
+import { TileComponentStore } from "./Components/v2/tileable.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
@@ -37,6 +38,8 @@ const VisRange = 50;
 
 let DELTA: number = 0;
 
+let GAME: SpaceTrash;
+
 let fps: FloatPositionStore;
 let ips: IntegerPositionStore;
 let lightableEntitiesStore: LittableStore;
@@ -44,6 +47,7 @@ let lightingEntitiesStore: LitStore;
 let fmc: FloatMovingStore;
 let classs: ClassificationStore;
 let lights: LightComponentStore;
+let tiles: TileComponentStore;
 
 let setPieces: SetPieceStore;
 let actors: ActorStore;
@@ -93,7 +97,11 @@ const runFirstTick = async (game: SpaceTrash) => {
   // add the tiles
   ips.store.forEach(([eid, s], ndx) => {
     setPieces.store[s.y][s.x].setId = ndx;
-    setPieces.store[s.y][s.x].tileType = s.tileType;
+    const t = tiles.get(eid);
+    if (!t) {
+      throw "why no t?";
+    }
+    setPieces.store[s.y][s.x].tileType = t.tileType;
     // debugger;
     // setPieces.store[s.y][s.x].littableId = lightableEntitiesStore.get(i);
 
@@ -127,9 +135,9 @@ const runFirstTick = async (game: SpaceTrash) => {
 };
 
 function runEveryOtherTick() {
-  // resetIllumination();
+  resetIllumination();
   runPhysics();
-  // runIllumination();
+  runIllumination();
 }
 
 class MainSystem extends System {
@@ -143,6 +151,7 @@ class MainSystem extends System {
 
   tick(delta: number, game: SpaceTrash): Promise<boolean> {
     DELTA = delta;
+    GAME = game;
     return new Promise((res) => {
       if (false) {
         console.log("pixi isn't ready");
@@ -179,6 +188,8 @@ class MainSystem extends System {
           drawables = game.componentStores[
             "DrawableComponent"
           ] as DrawableStore;
+
+          tiles = game.componentStores["TileComponent"] as TileComponentStore;
 
           //////////////////////////////////////////////////////////////////////
 
@@ -395,7 +406,8 @@ function runIlluminationBot(
   lc: LitComponent
 ) {
   // loop over light recivers
-  lightableEntitiesStore.store.forEach(([eidOfLightable, l]) => {
+  lightableEntitiesStore.each(([eidOfLightable, l]) => {
+  // lightableEntitiesStore.store.forEach(([eidOfLightable, l]) => {
     const { classification, floatPosition } = lights.get(eidOfLight);
 
     let p: FloatPositionComponent | IntegerPositionComponent;
@@ -539,9 +551,9 @@ function boundaryCheckTile(ipc: IntegerPositionComponent) {
   }
 }
 
-const FRICTION_CONSTANT = 0.5;
+const FRICTION_CONSTANT = 0.999;
 function updateVelocity(f: number): number {
-  return f; //f * DELTA * FRICTION_CONSTANT;
+  return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
 }
 
 function updateMovement(f: FloatMovingComponent) {
@@ -586,16 +598,21 @@ function runPhysics() {
 
       boundaryCheckBot(position);
       collisionWalls();
+      // collisionBetweenActors();
 
       updateBotPosition(position, f);
 
       drawables.updatePostion(eid, position);
       // actors.update(eid, p)
     } else if (classification === "Tile") {
+      throw "not implemented"
       // const p = ips.get(eidOfClassification);
       // if (!p) throw "integer position component not found";
       // updateTilePosition(p, f);
       // boundaryCheckTile(p);
+    } else {
+      debugger;
+      throw "idk";
     }
   });
 }
@@ -610,28 +627,8 @@ const collisionWalls = () => {
     if (y >= MapSize - 1) y = 0;
     if (y < 0) y = MapSize - 1;
 
-    // collision check with set-pieces
-    // if (!phaseZero[y][x]) debugger;
-
-    // if (phaseZero[y][x].setId === -1) {
-    //   console.error(
-    //     "Spaces should not be empty! X and Y",
-    //     x,
-    //     y,
-    //     " were NOT found"
-    //   );
-    //   console.error(phaseZero);
-    // }
-
-    // if (setPieces.store[
-    // actors.setPieceIdAt(x, y)
-    // ][1].tileType !== "FloorTile") {
-    // if (setPieces.at(x, y, "FloorTile")) {
-    // const aa = actors.setPieceIdAt(x, y);
-    // const aaa = setPieces.tileIsAt(aa, "FloorTile");
-
     // if the look-ahead tile is floor
-    if (!setPieces.tileIsAt(x, y, "FloorTile")) {
+    if (setPieces.tileIsAt(x, y, "FloorTile")) {
       magX = Math.abs(a.motion.dx);
       magY = Math.abs(a.motion.dy);
       roundX = Math.round(a.position.x);
@@ -688,6 +685,44 @@ const collisionWalls = () => {
     } else {
       // no-opt
     }
+
+    actors.each((ii, aa) => {
+      // don't collide against self
+      if (i !== ii) {
+        if (actorsCollide(a.position, aa.position)) {
+          a.position.x = a.position.x - a.motion.dx;
+          a.position.y = a.position.y - a.motion.dy;
+          aa.position.x = aa.position.x - aa.motion.dx;
+          aa.position.y = aa.position.y - aa.motion.dy;
+          temps[0] = a.motion.dx;
+          temps[1] = a.motion.dy;
+          a.motion.dx = aa.motion.dx;
+          a.motion.dy = aa.motion.dy;
+          aa.motion.dx = temps[0];
+          aa.motion.dy = temps[1];
+        }
+      }
+    });
+
+    const SPEED_CONSTANT = 0.0001
+    if (Number(i) === GAME.videoFeed) {
+      if (GAME.forward === true) {
+        a.motion.dy = a.motion.dy - SPEED_CONSTANT;
+      }
+  
+      if (GAME.back === true) {
+        a.motion.dy = a.motion.dy + SPEED_CONSTANT;
+      }
+  
+      if (GAME.left === true) {
+        a.motion.dx = a.motion.dx - SPEED_CONSTANT;
+      }
+  
+      if (GAME.right === true) {
+        a.motion.dx = a.motion.dx + SPEED_CONSTANT;
+      }
+    }
+
   });
 };
 

@@ -6,7 +6,7 @@ import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 import { MapSize, ActorSize, NumberOfActors, TileSize } from "../ECS/System";
 
-const SPEED_CONSTANT = 0.1
+const SPEED_CONSTANT = 0.05
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {

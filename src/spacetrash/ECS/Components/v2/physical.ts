@@ -19,13 +19,17 @@ export abstract class PositionComponent extends Component<
 
 // Gives an entity a position within the grid
 export class IntegerPositionComponent extends PositionComponent {
-  tileType: string;
+  // tileType: string;
+
+  // constructor(x: number, y: number, t: any) {
+  //   debugger
+  //   super();
+  //   // this.tileType = t;
+  // }
 }
 
 export class IntegerPositionStore extends EntityComponentStore<IntegerPositionComponent> {
-  constructor() {
-    super();
-  }
+  
 
   withIf(i: number, arg1: (i: [number, IntegerPositionComponent]) => void) {
 
@@ -39,8 +43,13 @@ export class IntegerPositionStore extends EntityComponentStore<IntegerPositionCo
     
   }
 
-  make(x: number = 0, y: number = 0) {
-    return new IntegerPositionComponent(x, y);
+  make(
+    x: number = 0,
+    y: number = 0,
+    t: any
+  ) {
+    debugger
+    return new IntegerPositionComponent(x, y, t);
   }
 }
 

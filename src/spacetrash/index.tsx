@@ -34,6 +34,7 @@ import { DrawableStore, } from "./ECS/Components/v2/drawable";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
 import { Ticker } from 'pixi.js';
+import { TileComponent, TileComponentStore } from "./ECS/Components/v2/tileable";
 
 const ticker = Ticker.shared;
 ticker.maxFPS = 60;
@@ -161,7 +162,8 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         LitComponent: new LitStore(),
         CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
-        DrawableComponent: Drawings
+        DrawableComponent: Drawings,
+        TileComponent: new TileComponentStore()
       },
       {
         SetPieceComponent: new SetPieceStore(),
@@ -175,7 +177,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       new Set(["2d", "webgl2", "pixi2d", "threejs"]),
       domNode,
       [
-        "Tile", "SpaceTrashBot"
+        "Tile", "SpaceTrashBot", "FloorTile", "WallTile"
       ]
     );
 
@@ -514,8 +516,9 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     camera.rotation.y = camera.rotation.y + 0.01;
     // camera.rotation.y = camera.rotation.y + 0.001;
 
-    const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
-    this.threejsRenderer.setSize(p.width, p.height);
+    // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
+    // this.threejsRenderer.setSize(p.width, p.height)
+    this.threejsRenderer.setSize(500, 500);
     this.threejsRenderer.render(scene, camera);
     // debugger
   }

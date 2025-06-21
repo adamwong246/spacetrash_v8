@@ -70,6 +70,7 @@ export class LittableStore extends Store<any> {
       arg0([Number(k), this.store[k]])
     });
   }
+  
   add(lc: LitableComponent, n: number) {
     return (this.store[n] = lc);
   }

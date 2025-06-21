@@ -14,6 +14,7 @@ import { redMaterial, blueMaterial, blankMaterial } from "../../threejs";
 
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
+import { TileComponent } from "../Components/v2/tileable";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -70,6 +71,7 @@ export class Tile extends SpaceTrashEntityComponent {
         new IntegerPositionComponent(x, y),
         new LitableComponent(),
         new ClassificationComponent("Tile"),
+        new TileComponent(tiletype)
       ],
       d,
     ]);
