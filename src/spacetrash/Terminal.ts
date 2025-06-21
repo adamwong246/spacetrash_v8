@@ -1,7 +1,4 @@
-import { DockviewReadyEvent, IDockviewPanelProps } from "dockview";
-import { FunctionComponent } from "react";
 import { IState } from ".";
-import { WindowedGame } from "../WindowedGame";
 import { StateSpace } from "../engine/StateSpace";
 import { System } from "../engine/VECS.ts/System";
 import { ITermWindowState } from "./UI/terminal";
@@ -145,11 +142,11 @@ export type ITerminalLine = {
   status: IComStatus;
 };
 
-export abstract class TerminalGame<
+export abstract class TerminalGame<IRenderings, II, III> extends DesktopGame<
   IRenderings,
   II,
   III
-> extends DesktopGame<IRenderings, II, III> {
+> {
   booted = false;
   uiHooks: any;
   history: ITerminalLine[] = [initialTerminalHistory];
@@ -157,7 +154,6 @@ export abstract class TerminalGame<
   public buffer: string = "";
   loggedIn = false;
   uiUpdateCallback: any;
-  
 
   constructor(
     stateSpace: StateSpace,
@@ -168,7 +164,6 @@ export abstract class TerminalGame<
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
     archetypeMappings: IArchtypesMapping
-    
   ) {
     super(
       stateSpace,
@@ -198,8 +193,6 @@ export abstract class TerminalGame<
       // uiUpdateCallback: this.uiUpdateCallback,
     };
   }
-
-  
 
   commandNotFound(unknownCommand: string) {
     this.returnCommand(commandNotFoundTermLine(unknownCommand));
@@ -248,19 +241,15 @@ export abstract class TerminalGame<
 
   setBuffer(b: string) {
     if ([`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `0`].includes(b)) {
-      this.focusWindowById('vid', b); 
+      this.focusWindowById("vid", b);
     } else {
-
-
       if (b === "`") {
-        return; 
+        return;
       }
 
       this.buffer = b;
       this.updateTerminalWindow();
     }
-
-    
   }
 
   addToBuffer(b: string) {
@@ -386,7 +375,7 @@ export abstract class TerminalGame<
   // focusWindowById(s: string, p?) {
   //   super.focusWindowById(s)
   // }
-  
+
   alreadyLoggedIn(): void {
     this.returnCommand(alreadyLoggedInTermLine);
   }
@@ -416,9 +405,7 @@ export abstract class TerminalGame<
   }
 
   settings() {
-    this.returnCommand(
-      settingsTermLine
-    );
+    this.returnCommand(settingsTermLine);
   }
 
   // map(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
@@ -463,8 +450,6 @@ export abstract class TerminalGame<
   //   );
   // }
 
-  
-
   // error(state: IState, stateSetter: Dispatch<SetStateAction<IState>>) {
   //   this.returnCommand(
   //     {
@@ -477,33 +462,30 @@ export abstract class TerminalGame<
   //     errorTermLine
   //   );
   // }
-
-  
 }
 
+// terminalAddHistory() {
+//   // throw new Error("Method not implemented.");
+//   // const x: ITermWindowState = {
 
-  // terminalAddHistory() {
-  //   // throw new Error("Method not implemented.");
-  //   // const x: ITermWindowState = {
+//   // }
+//   this.terminalUiHook({
 
-  //   // }
-  //   this.terminalUiHook({
+//   } );
+// }
+// terminalUiHook() {
+//   throw new Error("Method not implemented.");
+// }
+// terminalUiHook() {
+//   throw new Error("Method not implemented.");
+// }
 
-  //   } );
-  // }
-  // terminalUiHook() {
-  //   throw new Error("Method not implemented.");
-  // }
-  // terminalUiHook() {
-  //   throw new Error("Method not implemented.");
-  // }
-
-    // boot() {
-  //   console.log("Terminal boot", this.booted);
-  //   if (this.booted) {
-  //     //
-  //   } else {
-  //     this.booted = true;
-  //     this.addToHistory(bootScreenTermLine);
-  //   }
-  // }
+// boot() {
+//   console.log("Terminal boot", this.booted);
+//   if (this.booted) {
+//     //
+//   } else {
+//     this.booted = true;
+//     this.addToHistory(bootScreenTermLine);
+//   }
+// }
