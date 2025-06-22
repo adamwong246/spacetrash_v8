@@ -1,11 +1,11 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
-import { ActorSize } from "../Constants";
+import { ActorSize, MapSize } from "../Constants";
 
 
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
-import { MapSize } from "../ECS/System/MainSystem";
+
 
 
 const SPEED_CONSTANT = 0.05

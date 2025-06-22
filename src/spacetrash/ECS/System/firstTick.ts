@@ -1,0 +1,268 @@
+import { SpaceTrash } from "../..";
+import {
+  MapBoundHigh, MapBoundLow, MapSize, TileSize
+} from "../../Constants";
+import { LittableStore } from "../Components/casting/in";
+import { LitComponent, LitStore } from "../Components/casting/out";
+import { SetPieceComponent, SetPieceStore } from "../Components/phase0";
+import { ActorStore } from "../Components/phase1";
+import { ClassificationStore } from "../Components/v2/classifiable";
+import { DrawableStore, DrawableComponent } from "../Components/v2/drawable";
+import { Eid2PMStore, Eid2PMComponent } from "../Components/v2/eid2PMC";
+import {
+  LightingComponentStore,
+  LightComponentStore,
+} from "../Components/v2/lights";
+import {
+  IntegerPositionStore,
+  IntegerPositionComponent,
+  FloatMovingStore,
+  FloatPositionStore,
+} from "../Components/v2/physical";
+import { TileComponentStore } from "../Components/v2/tileable";
+import { distanceV2 } from "./MainSystem";
+
+let classs: ClassificationStore;
+let lightingEntitiesStore: LitStore;
+let lightableEntitiesStore: LittableStore;
+let actorsLit: LightingComponentStore;
+let setPieceLit: LightingComponentStore;
+let drawables: DrawableStore;
+let ips: IntegerPositionStore;
+let lights: LightComponentStore;
+let fps: FloatPositionStore;
+let fmc: FloatMovingStore;
+
+const fp2Emitter: Record<number, LitComponent> = {};
+const light2IntegerPosition: Record<number, IntegerPositionComponent> = {};
+const light2Draw: Record<number, DrawableComponent> = {};
+let eid2PMSs: Eid2PMStore;
+let setPieces: SetPieceStore;
+let actors: ActorStore;
+
+export default async (game: SpaceTrash, delta: number) => {
+  fmc = game.componentStores[
+    "FloatMovingComponent"
+  ] as FloatMovingStore;
+  let tiles: TileComponentStore;
+  ips = game.componentStores[
+    "IntegerPositionComponent"
+  ] as IntegerPositionStore;
+  fps = game.componentStores[
+    "FloatPositionComponent"
+  ] as FloatPositionStore;
+  drawables = game.componentStores[
+              "DrawableComponent"
+            ] as DrawableStore;
+  lights = game.stores["LightComponent"] as LightComponentStore;
+  actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
+  setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
+  lightableEntitiesStore = game.componentStores[
+    "LitableComponent"
+  ] as LittableStore;
+
+  setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
+  actors = game.stores["ActorComponent"] as ActorStore;
+
+  lights = game.stores["LightComponent"] as LightComponentStore;
+
+  lightingEntitiesStore = game.componentStores[LitComponent.name] as LitStore;
+
+  classs = game.componentStores[
+    "ClassificationComponent"
+  ] as ClassificationStore;
+
+  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
+
+  drawables = game.componentStores[
+              "DrawableComponent"
+  ] as DrawableStore;
+  
+  tiles = game.componentStores["TileComponent"] as TileComponentStore;
+
+  Object.keys(classs.store).forEach((k) => {
+    const n = Number.parseInt(k);
+    const kk = classs.get(n);
+    const classification = kk;
+    const eid = k;
+
+    if (classification === "SpaceTrashBot") {
+      eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
+    } else if (classification === "Tile") {
+      eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
+    }
+  });
+
+  lightingEntitiesStore.store.forEach(([eid, le]) => {
+    const classification = eid2PMSs.get(eid).classification;
+    lights.add(eid, fps.get(eid), classification);
+  });
+
+  lightableEntitiesStore.each(([eid, le]) => {
+    const classification = eid2PMSs.get(eid).classification;
+
+    if (classification === "Tile") {
+      setPieceLit.add(eid, ips.get(eid), classification);
+    } else {
+      actorsLit.add(eid, fps.get(eid), classification);
+    }
+
+    drawables.each(([n, dc, s]) => {
+      if (n === eid) {
+        light2Draw[n] = dc[1];
+      }
+    });
+
+    ips.each(([n, dc, s]) => {
+      if (n === eid) {
+        light2IntegerPosition[n] = dc[1];
+      }
+    });
+  });
+
+  // setup the setPieces
+  for (let y = 0; y < MapSize; y++) {
+    setPieces.store[y] = [];
+    for (let x = 0; x < MapSize; x++) {
+      setPieces.store[y][x] = new SetPieceComponent();
+
+      for (let yy = 0; yy < MapSize; yy++) {
+        setPieces.store[y][x].FOV[yy] = [];
+        for (let xx = 0; xx < MapSize; xx++) {
+          setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+        }
+      }
+    }
+  }
+
+  // build set pieces grid
+  ips.store.forEach(([eid, s], ndx) => {
+    setPieces.store[s.y][s.x].setId = ndx;
+    const t = tiles.get(eid);
+    if (!t) {
+      throw "why no t?";
+    }
+    setPieces.store[s.y][s.x].tileType = t.tileType;
+
+    drawables.each(([n, dc, ss]) => {
+      if (n === eid) {
+        setPieces.store[s.y][s.x].drawing = dc[1];
+      }
+    });
+  });
+
+  // setup the actors list
+  for (let y = 0; y < fps.store.length; y++) {
+    const aeid = fps.store[y][0];
+
+    // add the actors
+    actors.add({
+      actorId: aeid,
+      // actorX: fps.store[y][1].x,
+      // actorY: fps.store[y][1].y,
+      // rendered2d: "fresh",
+      // renderedWebgl: "fresh",
+      // culled2d: false,
+      // culledWebgl: false,
+      friendly: game.isFriendly(aeid),
+      position: fps.store[y][1],
+      motion: fmc.store[y][1],
+      // sprite: new Sprite,
+      // renderedWebgl: "new",
+      // rendered2d: "new"
+    });
+
+    lightingEntitiesStore.store.forEach(([leid, le]) => {
+      if (aeid === leid) {
+        fp2Emitter[aeid] = le;
+      }
+    });
+  }
+
+  runInitialMapBoundaryCheck();
+  runPlaceImmoveableSetPieces();
+  // runFOV();
+};
+
+// boundary check against level map for objects with position
+function runInitialMapBoundaryCheck() {
+  // actors out of bounds check
+  fps.store.forEach((c) => {
+    if (c[1].x < MapBoundLow) {
+      c[1].x = MapBoundHigh;
+    }
+    if (c[1].x > MapBoundHigh) {
+      c[1].x = MapBoundLow;
+    }
+    if (c[1].y < MapBoundLow) {
+      c[1].y = MapBoundHigh;
+    }
+    if (c[1].y > MapBoundHigh) {
+      c[1].y = MapBoundLow;
+    }
+  });
+
+  // set piece out of bounds check
+  // necessary?
+  ips.store.forEach((c) => {
+    if (c[1].x < 0) {
+      c[1].x = MapSize;
+    }
+    if (c[1].x > MapSize) {
+      c[1].x = 0;
+    }
+    if (c[1].y < 0) {
+      c[1].y = MapSize;
+    }
+    if (c[1].y > MapSize) {
+      c[1].y = 0;
+    }
+  });
+}
+
+// const runFOV = () => {
+//   // var VISION_RANGE = 10;
+//   // var WORLD_SIZ  E = [MapSize, MapSize];
+//   map = new Map([MapSize, MapSize]);
+
+//   map.iter(function (pos, tile) {
+//     const y = pos[1];
+//     const x = pos[0];
+//     (tile.wall = setPieces.store[y][x].tileType === "WallTile"),
+//       (tile.visible = true);
+//   });
+
+//   // setPieces.store.forEach((row) => {
+//   //   row.forEach((setpiece) => {
+//   //     if (setpiece.tileType === "WallTil") {
+
+//   //     }
+//   //   })
+//   // })
+
+//   //player is in the middle
+//   // var player_pos = [MapSize / 2, MapSize / 2];
+//   // map.tiles[player_pos[0]][player_pos[1]].wall = false;
+
+//   // compute(map, player_pos, Infinity);
+// };
+
+const runPlaceImmoveableSetPieces = () => {
+  drawables.each(([eid, [did, dic], k]) => {
+    ips.withIf(did, ([pic, p]) => {
+      if (dic.sprite) {
+        dic.sprite.position.x = p.x * TileSize;
+        dic.sprite.position.y = p.y * TileSize;
+      } else {
+        throw "the sprite should be loaded by now";
+      }
+
+      if (dic.mesh) {
+        dic.mesh.position.x = p.x * TileSize;
+        dic.mesh.position.y = p.y * TileSize;
+      } else {
+        throw "the mesh should be loaded by now";
+      }
+    });
+  });
+};

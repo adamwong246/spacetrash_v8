@@ -4,8 +4,7 @@ import { SpaceTrashEntityComponent } from ".";
 import { Tile, FloorTile, WallTile } from "./tiles";
 
 import { IntegerPositionComponent } from "../Components/v2/physical";
-import { MapSize } from "../System/MainSystem";
-
+import { MapSize } from "../../Constants";
 
 export class SpaceTrashShip extends SpaceTrashEntityComponent {
   map: (Tile)[][];

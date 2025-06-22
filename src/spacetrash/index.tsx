@@ -1,9 +1,12 @@
+import React from "react";
+import { Ticker } from 'pixi.js';
 import * as THREE from "three";
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
 import * as PIXI from "pixi.js";
-import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
-import React from "react";
+import {
+  DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps
+} from "dockview";
 
 import { StateSpace } from "../engine/StateSpace";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
@@ -30,10 +33,10 @@ import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2
 import { DrawableStore, } from "./ECS/Components/v2/drawable";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
-import { Ticker } from 'pixi.js';
+
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
-import { TileSize } from "./Constants";
-import { SpaceTrashMainSystem, MapSize } from "./ECS/System/MainSystem";
+import { TileSize, MapSize } from "./Constants";
+import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 
 const fps = 30;
 const ticker = Ticker.shared;
