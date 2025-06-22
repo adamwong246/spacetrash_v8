@@ -7,35 +7,20 @@ export type LightComponent = FloatPositionComponent;
 
 // map light id to position
 export class LightComponentStore extends Store<any> {
-  store: Record<
-    number,
-    {
-      floatPosition: FloatPositionComponent;
-      classification: string;
-    }
-  >;
+  sstore: Map<number, LightComponentStore>;
 
   constructor() {
     super();
-    this.store = {};
+    this.store = new Map();
   }
 
-  add(
-    n: number,
-    floatPosition: FloatPositionComponent,
-    classification: string
-  ) {
-    return (this.store[n] = {
-      floatPosition,
-      classification,
-    });
+  get(n: number) {
+    return this.store.get(n);
   }
 
-  get(n: number): {
-    floatPosition: FloatPositionComponent;
-    classification: string;
-  } {
-    return this.store[n];
+  add(lc: LightComponentStore, n: number) {
+    this.store.set(n, lc);
+    return;
   }
 
   make() {

@@ -1,6 +1,6 @@
 import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { EntityComponentStore } from "../../../../engine/VECS.ts/types";
+import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
 
 // Gives an entity a position on the map
 export abstract class PositionComponent extends Component<
@@ -27,15 +27,26 @@ export class IntegerPositionComponent extends PositionComponent {
   // }
 }
 
-export class IntegerPositionStore extends EntityComponentStore<IntegerPositionComponent> {
-  withIf(i: number, arg1: (i: [number, IntegerPositionComponent]) => void) {
-    const x = this.store.find((v) => {
-      return v[0] === i;
-    });
+export class IntegerPositionStore extends Store<IntegerPositionComponent> {
+  store: Map<number, IntegerPositionComponent>;
 
-    if (x) {
-      return arg1(x);
-    }
+  constructor() {
+    super();
+    this.store = new Map();
+  }
+
+  get(n: number) {
+    return this.store.get(n);
+  }
+
+  add(lc: IntegerPositionComponent, n: number) {
+    this.store.set(n, lc);
+    return;
+  }
+
+  withIf(i: number, cb: (i: [number, IntegerPositionComponent]) => void) {
+    const x = this.store.get(i)
+    if (x) cb([Number(i), x, i]);
   }
 
   make(x: number, y: number) {
@@ -43,13 +54,41 @@ export class IntegerPositionStore extends EntityComponentStore<IntegerPositionCo
   }
 
   each(
-    arg0: ([eid, le, k]: [number, IntegerPositionComponent, string]) => void
+    cb: (
+      eid,
+      le: [number, IntegerPositionComponent, string],
+      eidAsString
+    ) => void
   ) {
-    Object.keys(this.store).forEach((k) => {
-      arg0([Number(k), this.store[k], k]);
+    this.store.forEach((value, key) => {
+      cb([Number(key), [key, value]]);
     });
   }
 }
+
+// export class IntegerPositionStore extends EntityComponentStore<IntegerPositionComponent> {
+//   withIf(i: number, arg1: (i: [number, IntegerPositionComponent]) => void) {
+//     const x = this.store.find((v) => {
+//       return v[0] === i;
+//     });
+
+//     if (x) {
+//       return arg1(x);
+//     }
+//   }
+
+//   make(x: number, y: number) {
+//     return new IntegerPositionComponent(x, y);
+//   }
+
+//   each(
+//     arg0: ([eid, le, k]: [number, IntegerPositionComponent, string]) => void
+//   ) {
+//     Object.keys(this.store).forEach((k) => {
+//       arg0([Number(k), this.store[k], k]);
+//     });
+//   }
+// }
 
 // Gives an entity a position above the grid
 export class FloatPositionComponent extends PositionComponent {}
@@ -72,7 +111,6 @@ export class FloatPositionStore extends EntityComponentStore<FloatPositionCompon
       // arg0([Number(k), this.store[k], k]);
       arg0(Number(k), this.store[k][1]);
     });
-
   }
 }
 

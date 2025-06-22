@@ -6,7 +6,7 @@ import {
 } from "../../Constants";
 import { SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
-import { DrawableStore } from "../Components/v2/drawable";
+import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
   FloatPositionComponent,
@@ -15,14 +15,14 @@ import {
 } from "../Components/v2/physical";
 
 let actors: ActorStore;
-let drawables: DrawableStore;
+let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
 let setPieces: SetPieceStore;
 
 export default (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
-  drawables = game.componentStores["DrawableComponent"] as DrawableStore;
+  drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
 
   // Level 1 - "Stores"

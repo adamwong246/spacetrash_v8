@@ -66,7 +66,7 @@ export const SpaceTrashMainSystem = new MainSystem(MapSize);
 
 // let actorsLit: LightingComponentStore;
 // let setPieceLit: LightingComponentStore;
-// let drawables: DrawableStore;
+// let drawables: DrawableStoreV2;
 // let eid2PMSs: Eid2PMStore;
 
 // const light2Draw: Record<number, DrawableComponent> = {};

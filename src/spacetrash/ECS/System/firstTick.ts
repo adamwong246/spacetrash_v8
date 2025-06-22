@@ -5,7 +5,7 @@ import { LitComponent, LitStore } from "../Components/casting/out";
 import { SetPieceComponent, SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
 import { ClassificationStore } from "../Components/v2/classifiable";
-import { DrawableStore, DrawableComponent } from "../Components/v2/drawable";
+import { DrawableStoreV2, DrawableComponent } from "../Components/v2/drawable";
 import { Eid2PMStore, Eid2PMComponent } from "../Components/v2/eid2PMC";
 import {
   LightingComponentStore,
@@ -23,7 +23,7 @@ import { distanceV2 } from "./MainSystem";
 let actors: ActorStore;
 let actorsLit: LightingComponentStore;
 let classs: ClassificationStore;
-let drawables: DrawableStore;
+let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
 let fp2Emitter: Record<number, LitComponent> = {};
@@ -40,7 +40,7 @@ let tiles: TileComponentStore;
 
 export default async (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
-  drawables = game.componentStores["DrawableComponent"] as DrawableStore;
+  drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
   fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
   lightingEntitiesStore = game.componentStores[LitComponent.name] as LitStore;
@@ -72,8 +72,10 @@ export default async (game: SpaceTrash, delta: number) => {
     const eid = k;
 
     if (classification === "SpaceTrashBot") {
+      debugger
       eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     } else if (classification === "Tile") {
+      debugger
       eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
     }
   });
@@ -84,6 +86,7 @@ export default async (game: SpaceTrash, delta: number) => {
   });
 
   // 2 deep
+  // according to profile, this is very slow
   lightableEntitiesStore.each(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
 
@@ -93,17 +96,14 @@ export default async (game: SpaceTrash, delta: number) => {
       actorsLit.add(eid, fps.get(eid), classification);
     }
 
-    drawables.each(([n, dc, s]) => {
-      if (n === eid) {
-        light2Draw[n] = dc[1];
-      }
-    });
+    drawables.withIf(eid, ([n, dc, s]) => {
+      light2Draw[n] = dc[1];
+    })
 
-    ips.each(([n, dc, s]) => {
-      if (n === eid) {
-        light2IntegerPosition[n] = dc[1];
-      }
-    });
+    ips.withIf(eid, ([n, dc, s]) => {
+      light2IntegerPosition[n] = dc[1];
+    })
+
   });
 
   // setup the setPieces
@@ -260,18 +260,19 @@ function runInitialMapBoundaryCheck() {
 // };
 
 const runPlaceImmoveableSetPieces = () => {
-  drawables.each(([eid, [did, dic], k]) => {
-    ips.withIf(did, ([pic, p]) => {
-      if (dic.sprite) {
-        dic.sprite.position.x = p.x * TileSize;
-        dic.sprite.position.y = p.y * TileSize;
+  drawables.each(([eid, d, ks]) => {
+    
+    ips.withIf(eid, ([pic, p]) => {
+      if (d.sprite) {
+        d.sprite.position.x = p.x * TileSize;
+        d.sprite.position.y = p.y * TileSize;
       } else {
         throw "the sprite should be loaded by now";
       }
 
-      if (dic.mesh) {
-        dic.mesh.position.x = p.x * TileSize;
-        dic.mesh.position.y = p.y * TileSize;
+      if (d.mesh) {
+        d.mesh.position.x = p.x * TileSize;
+        d.mesh.position.y = p.y * TileSize;
       } else {
         throw "the mesh should be loaded by now";
       }

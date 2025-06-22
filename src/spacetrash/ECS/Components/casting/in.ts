@@ -51,12 +51,6 @@ export class LitableComponent extends InCastingComponent {
   }
 }
 
-// export class LittableStore extends EntityComponentStore<LitableComponent> {
-//   make(...a: any[]): LitableComponent {
-//     return new LitableComponent();
-//   }
-// }
-
 export class LittableStore extends Store<any> {
   store: Record<number, LitableComponent>;
 

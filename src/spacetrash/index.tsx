@@ -30,14 +30,13 @@ import {
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
 import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
-import { DrawableStore, } from "./ECS/Components/v2/drawable";
-import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
+import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
 import { TileSize, MapSize, FPS } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
-
+import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
@@ -106,7 +105,7 @@ function isNumeric(str: string): boolean {
   return /^[1-9]+$/.test(str) && str.length === 1;
 }
 
-const Drawings = new DrawableStore();
+const Drawings = new DrawableStoreV2();
 
 export class SpaceTrash extends TerminalGame<IRenderings, {
   SetPieceComponent: SetPieceStore,
@@ -522,7 +521,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     // this.threejsRenderer.setSize(p.width, p.height)
     this.threejsRenderer.setSize(500, 500);
-    // this.threejsRenderer.render(scene, camera);
+    this.threejsRenderer.render(scene, camera);
   }
 
   async renderShipMap() {
@@ -534,8 +533,8 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.openAllWindows();
 
     Drawings.each(([a, d, c]) => {
-      pixi2dApp.stage.addChild(d[1].sprite)
-      scene.add(d[1].mesh)
+      pixi2dApp.stage.addChild(d.sprite)
+      scene.add(d.mesh)
     })
     
     this.unpause();
