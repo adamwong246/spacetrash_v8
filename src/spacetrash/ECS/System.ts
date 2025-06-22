@@ -33,11 +33,11 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 50;
+export const MapSize = 25;
 
 var map;
 
-const VisRange = 30;
+const VisRange = 10;
 
 let DELTA: number = 1;
 
@@ -63,6 +63,7 @@ let eid2PMSs: Eid2PMStore;
 const light2Draw: Record<number, DrawableComponent> = {};
 const light2IntegerPosition: Record<number, IntegerPositionComponent> = {};
 const fp2Emitter: Record<number, LitComponent> = {};
+const lighting2FloatingPosition: Record<number, FloatPositionComponent> = {};
 
 const runFirstTick = async (game: SpaceTrash) => {
   Object.keys(classs.store).forEach((k) => {
@@ -266,10 +267,10 @@ const runFOV = () => {
   // })
 
   //player is in the middle
-  var player_pos = [MapSize / 2, MapSize / 2];
-  map.tiles[player_pos[0]][player_pos[1]].wall = false;
+  // var player_pos = [MapSize / 2, MapSize / 2];
+  // map.tiles[player_pos[0]][player_pos[1]].wall = false;
 
-  compute(map, player_pos, VisRange);
+  // compute(map, player_pos, Infinity);
 };
 
 const runPlaceImmoveableSetPieces = () => {
@@ -730,32 +731,146 @@ function runIlluminationRandom() {
 //   });
 // }
 
-function runIlluminationV4() {
-  // // for each thing which can receive light
-  // lightableEntitiesStore.each(([rid, reciver]) => {
-  //   const d = light2Draw[rid];
-  //   d.mesh.visible = reciver.luminance > 0;
-  //   d.sprite.visible = reciver.luminance > 0;
-  // });
-  for (let y = 0; y < MapSize; y++) {
-    // setPieces.store[y] = [];
-    for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x].drawing.mesh.visible = map.tiles[y][x].visible;
-      setPieces.store[y][x].drawing.sprite.visible = map.tiles[y][x].visible;
-      // if (setPieces.store[y][x])
-      // setPieces.store[y][x] = new SetPieceComponent();
+// function runIlluminationV4() {
+//   // // for each thing which can receive light
+//   // lightableEntitiesStore.each(([rid, reciver]) => {
+//   //   const d = light2Draw[rid];
+//   //   d.mesh.visible = reciver.luminance > 0;
+//   //   d.sprite.visible = reciver.luminance > 0;
+//   // });
+//   // for (let y = 0; y < MapSize; y++) {
+//   //   // setPieces.store[y] = [];
+//   //   for (let x = 0; x < MapSize; x++) {
+//   //     setPieces.store[y][x].drawing.mesh.visible = map.tiles[y][x].visible;
+//   //     setPieces.store[y][x].drawing.sprite.visible = map.tiles[y][x].visible;
+//   //     // if (setPieces.store[y][x])
+//   //     // setPieces.store[y][x] = new SetPieceComponent();
 
-      // for (let yy = 0; yy < MapSize; yy++) {
-      //   setPieces.store[y][x].FOV[yy] = [];
-      //   for (let xx = 0; xx < MapSize; xx++) {
-      //     setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
-      //   }
-      // }
-    }
-  }
+//   //     // for (let yy = 0; yy < MapSize; yy++) {
+//   //     //   setPieces.store[y][x].FOV[yy] = [];
+//   //     //   for (let xx = 0; xx < MapSize; xx++) {
+//   //     //     setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+//   //     //   }
+//   //     // }
+//   //   }
+//   // }
+// }
+
+function runIlluminationV5() {
+  // for each thing which can receive light
+  lightableEntitiesStore.each(([rid, reciver]) => {
+    // for each thing which can emit light
+    lightingEntitiesStore.each(([emid, emitter, endx]) => {
+      // for each thing with an integer position aka tiles
+      // for each thing with a floating position
+      fps.store.forEach(([fpeid, floatPosition]) => {
+        // if the floating position matches the receiver
+
+        if (fpeid === fps.store[emid][0]) {
+          compute(
+            map,
+            [Math.round(floatPosition.x), Math.round(floatPosition.y)],
+            VisRange
+          );
+
+          for (let y = 0; y < MapSize; y++) {
+            for (let x = 0; x < MapSize; x++) {
+              if (!setPieces.store[y][x].drawing.mesh.visible) {
+                setPieces.store[y][x].drawing.mesh.visible =
+                  map.tiles[x][y].visible;
+              }
+
+              if (!setPieces.store[y][x].drawing.sprite.visible) {
+                setPieces.store[y][x].drawing.sprite.visible =
+                  map.tiles[y][x].visible;
+              }
+
+              // if (setPieces.store[y][x])
+              // setPieces.store[y][x] = new SetPieceComponent();
+
+              // for (let yy = 0; yy < MapSize; yy++) {
+              //   setPieces.store[y][x].FOV[yy] = [];
+              //   for (let xx = 0; xx < MapSize; xx++) {
+              //     setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+              //   }
+              // }
+            }
+          }
+        }
+      });
+    });
+
+    const drawing = light2Draw[rid];
+    drawing.mesh.visible = reciver.luminance > 0;
+    drawing.sprite.visible = reciver.luminance > 0;
+  });
 }
 
+function runIlluminationV6() {
+  lightingEntitiesStore.each(([emid, emitter, endx]) => {
+    const d = light2Draw[emid];
+    if (d) {
+      // for each thing with an integer position aka tiles
+      // for each thing with a floating position
+      fps.store.forEach(([fpeid, floatPosition]) => {
+        // if the floating position matches the receiver
+
+        if (fpeid === fps.store[emid][0]) {
+          compute(
+            map,
+            [Math.round(floatPosition.x), Math.round(floatPosition.y)],
+            VisRange
+          );
+
+          for (let y = 0; y < MapSize; y++) {
+            for (let x = 0; x < MapSize; x++) {
+              if (!setPieces.store[y][x].drawing.mesh.visible) {
+                setPieces.store[y][x].drawing.mesh.visible =
+                  map.tiles[x][y].visible;
+              }
+
+              if (!setPieces.store[y][x].drawing.sprite.visible) {
+                setPieces.store[y][x].drawing.sprite.visible =
+                  map.tiles[y][x].visible;
+              }
+
+              // if (setPieces.store[y][x])
+              // setPieces.store[y][x] = new SetPieceComponent();
+
+              // for (let yy = 0; yy < MapSize; yy++) {
+              //   setPieces.store[y][x].FOV[yy] = [];
+              //   for (let xx = 0; xx < MapSize; xx++) {
+              //     setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+              //   }
+              // }
+            }
+          }
+        }
+      });
+      const drawing = light2Draw[rid];
+    drawing.mesh.visible = reciver.luminance > 0;
+    drawing.sprite.visible = reciver.luminance > 0;
+    }
+  });
+}
+
+// for each thing with an integer position aka tiles
+// ips.each(([ipid, integerPosition]) => {
+//   // if the integer position matches the receiver
+//   if (ipid === rid) {
+//     // for each thing with a floating position
+
+//   }
+// });
+
+//     const d = light2Draw[rid];
+//     d.mesh.visible = reciver.luminance > 0;
+//     d.sprite.visible = reciver.luminance > 0;
+//   });
+// }
+
 // run boundary check for things that move
+
 function runPhysics() {
   fmc.store.forEach(([eid, f]) => {
     const { position, classification } = eid2PMSs.get(eid);
@@ -780,7 +895,7 @@ function runPhysics() {
     }
   });
 
-  runIlluminationV4();
+  // runIlluminationV6();
 }
 
 const withinRange = (

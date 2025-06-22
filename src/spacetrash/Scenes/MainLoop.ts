@@ -6,12 +6,12 @@ import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 import { MapSize, ActorSize, NumberOfActors, TileSize } from "../ECS/System";
 
-const SPEED_CONSTANT = 0.1
+const SPEED_CONSTANT = 0.05
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     
-    const drones = [...new Array(5)].map((n) => {
+    const drones = [...new Array(2)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize,
         // Math.random() * MapSize,
@@ -25,18 +25,18 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
-      return new SpaceTrashBot(
-        // 200, 200,
-        Math.random() * MapSize,
-        Math.random() * MapSize ,
-        // Math.random() * MapSize,
-        // Math.random() * MapSize,
-        ActorSize,
-        (Math.random() - 0.5) * SPEED_CONSTANT,
-        (Math.random() - 0.5) * SPEED_CONSTANT
-      );
-    });
+    // const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
+    //   return new SpaceTrashBot(
+    //     // 200, 200,
+    //     Math.random() * MapSize,
+    //     Math.random() * MapSize ,
+    //     // Math.random() * MapSize,
+    //     // Math.random() * MapSize,
+    //     ActorSize,
+    //     (Math.random() - 0.5) * SPEED_CONSTANT,
+    //     (Math.random() - 0.5) * SPEED_CONSTANT
+    //   );
+    // });
 
     const ship = new SpaceTrashShip();
 

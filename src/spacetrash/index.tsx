@@ -1,3 +1,6 @@
+// import { Ticker } from 'pixi.js';
+    
+    
 import * as THREE from "three";
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
@@ -36,14 +39,15 @@ import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 import { Ticker } from 'pixi.js';
 import { TileComponent, TileComponentStore } from "./ECS/Components/v2/tileable";
 
+const fps = 30;
 const ticker = Ticker.shared;
-ticker.maxFPS = 60;
+ticker.maxFPS = fps;
 
 const pixi2dApp = new PIXI.Application();
 var scene = new THREE.Scene();
 
 const performanceConfig: IPerformanceConfig = {
-  fps: 60,
+  fps,
   performanceLogging: false,
   headless: false
 };
