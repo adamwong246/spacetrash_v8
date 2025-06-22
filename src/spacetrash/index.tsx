@@ -519,7 +519,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     // this.threejsRenderer.setSize(p.width, p.height)
     this.threejsRenderer.setSize(500, 500);
-    // this.threejsRenderer.render(scene, camera);
+    this.threejsRenderer.render(scene, camera);
   }
 
   async renderShipMap() {

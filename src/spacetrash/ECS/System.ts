@@ -675,9 +675,6 @@ const withinRange = (
   i: IntegerPositionComponent
 ): boolean => {
   const d = distanceBetweenFloatAndIntegerPostion(f, i);
-
-  console.log("distanceBetweenFloatAndIntegerPostion", d, VisRange, d < VisRange);
-
   return d < VisRange;
 };
 
