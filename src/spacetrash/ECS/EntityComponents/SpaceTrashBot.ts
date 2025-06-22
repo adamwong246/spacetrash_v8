@@ -34,6 +34,14 @@ const cylinder = () => {
   return m;
 };
 
+const bunnySprite = () => {
+  const s = new PIXI.Sprite(
+    PIXI.Texture.from("https://pixijs.com/assets/bunny.png")
+  )
+  s.width = TileSize;
+  s.height = TileSize;
+  return s
+}
 export class SpaceTrashBot extends SpaceTrashEntityComponent {
   constructor(
     x: number = 0,
@@ -55,9 +63,7 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
       new ClassificationComponent("SpaceTrashBot"),
 
       new DrawableComponent(
-        new PIXI.Sprite(
-          PIXI.Texture.from("https://pixijs.com/assets/bunny.png")
-        ),
+        bunnySprite(),
         cylinder()
       ),
     ]);

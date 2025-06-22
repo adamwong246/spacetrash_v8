@@ -11,7 +11,7 @@ const SPEED_CONSTANT = 0.05
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     
-    const drones = [...new Array(2)].map((n) => {
+    const drones = [...new Array(10)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize,
         // Math.random() * MapSize,

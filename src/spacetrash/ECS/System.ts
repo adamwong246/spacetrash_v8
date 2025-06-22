@@ -171,9 +171,9 @@ const runFirstTick = async (game: SpaceTrash) => {
 };
 
 function runEveryOtherTick() {
-  resetIllumination();
+  // resetIllumination();
   runPhysics();
-  runIllumination();
+  // runIllumination();
 }
 
 class MainSystem extends System {
