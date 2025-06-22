@@ -42,19 +42,19 @@ export class IntegerPositionStore extends EntityComponentStore<IntegerPositionCo
     return new IntegerPositionComponent(x, y);
   }
 
-  each(arg0: ([eid, le, k]: [number, IntegerPositionComponent, string]) => void) {
-      Object.keys(this.store).forEach((k) => {
-        arg0([Number(k), this.store[k], k]);
-      });
+  each(
+    arg0: ([eid, le, k]: [number, IntegerPositionComponent, string]) => void
+  ) {
+    Object.keys(this.store).forEach((k) => {
+      arg0([Number(k), this.store[k], k]);
+    });
   }
-  
 }
 
 // Gives an entity a position above the grid
 export class FloatPositionComponent extends PositionComponent {}
 
 export class FloatPositionStore extends EntityComponentStore<FloatPositionComponent> {
-  
   constructor() {
     super();
   }
@@ -63,8 +63,16 @@ export class FloatPositionStore extends EntityComponentStore<FloatPositionCompon
     return new FloatPositionComponent(x, y);
   }
 
-  at(y: number) {
-    return this.store[y][0]
+  at(y: number): FloatPositionComponent {
+    return this.store[y][1];
+  }
+
+  each(arg0: (aeid: number, y: FloatPositionComponent) => void) {
+    Object.keys(this.store).forEach((k) => {
+      // arg0([Number(k), this.store[k], k]);
+      arg0(Number(k), this.store[k][1]);
+    });
+
   }
 }
 

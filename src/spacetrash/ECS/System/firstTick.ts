@@ -64,7 +64,7 @@ export default async (game: SpaceTrash, delta: number) => {
   setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
 
-
+  // todo reimpliment classification
   Object.keys(classs.store).forEach((k) => {
     const n = Number.parseInt(k);
     const kk = classs.get(n);
@@ -83,6 +83,7 @@ export default async (game: SpaceTrash, delta: number) => {
     lights.add(eid, fps.get(eid), classification);
   });
 
+  // 2 deep
   lightableEntitiesStore.each(([eid, le]) => {
     const classification = eid2PMSs.get(eid).classification;
 
@@ -106,6 +107,7 @@ export default async (game: SpaceTrash, delta: number) => {
   });
 
   // setup the setPieces
+  // runtime - trivial
   for (let y = 0; y < MapSize; y++) {
     setPieces.store[y] = [];
     for (let x = 0; x < MapSize; x++) {
@@ -121,6 +123,7 @@ export default async (game: SpaceTrash, delta: number) => {
     }
   }
 
+  // 3 deep
   // build set pieces grid
   ips.each(([eid, [ndx, s]]) => {
     // setPieces.store[s.y][s.x].setId = ndx;
@@ -141,26 +144,15 @@ export default async (game: SpaceTrash, delta: number) => {
     });
   });
 
+  // 2 deep
   // setup the actors list
-  for (let y = 0; y < fps.store.length; y++) {
-    // const aeid = fps.store[y][0];
-    const aeid = fps.at(y);
-
+  fps.each((aeid, y) => {
     // add the actors
     actors.add({
       actorId: aeid,
-      // actorX: fps.store[y][1].x,
-      // actorY: fps.store[y][1].y,
-      // rendered2d: "fresh",
-      // renderedWebgl: "fresh",
-      // culled2d: false,
-      // culledWebgl: false,
       friendly: game.isFriendly(aeid),
-      position: fps.store[y][1],
-      motion: fmc.store[y][1],
-      // sprite: new Sprite,
-      // renderedWebgl: "new",
-      // rendered2d: "new"
+      position: fps.at(aeid),
+      motion: fmc.store[aeid][1],
     });
 
     lightingEntitiesStore.each(([leid, le]) => {
@@ -168,7 +160,36 @@ export default async (game: SpaceTrash, delta: number) => {
         fp2Emitter[aeid] = le;
       }
     });
-  }
+
+  })
+
+  // for (let y = 0; y < fps.store.length; y++) {
+  //   // const aeid = fps.store[y][0];
+  //   const aeid = fps.at(y);
+
+  //   // add the actors
+  //   actors.add({
+  //     actorId: aeid,
+  //     // actorX: fps.store[y][1].x,
+  //     // actorY: fps.store[y][1].y,
+  //     // rendered2d: "fresh",
+  //     // renderedWebgl: "fresh",
+  //     // culled2d: false,
+  //     // culledWebgl: false,
+  //     friendly: game.isFriendly(aeid),
+  //     position: fps.store[y][1],
+  //     motion: fmc.store[y][1],
+  //     // sprite: new Sprite,
+  //     // renderedWebgl: "new",
+  //     // rendered2d: "new"
+  //   });
+
+  //   lightingEntitiesStore.each(([leid, le]) => {
+  //     if (aeid === leid) {
+  //       fp2Emitter[aeid] = le;
+  //     }
+  //   });
+  // }
 
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
