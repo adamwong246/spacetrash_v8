@@ -15,10 +15,13 @@ import {
 } from "../../../../engine/VECS.ts/types";
 
 import { ActorComponent } from "../phase1";
-import { FloatPositionComponent, FloatPositionStore, PositionComponent } from "./physical";
+import {
+  FloatPositionComponent,
+  FloatPositionStore,
+  PositionComponent,
+} from "./physical";
 import { TileSize } from "../../System";
-
-
+import { LitableComponent } from "../casting/in";
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   sprite: PIXI.Sprite;
@@ -42,7 +45,6 @@ export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
 }
 
 export class DrawableStore extends EntityComponentStore<DrawableComponent> {
-  
   // store: DrawableComponent;
 
   // get(...a: any[]) {
@@ -86,7 +88,7 @@ export class DrawableStore extends EntityComponentStore<DrawableComponent> {
       arg0([Number(k), this.store[k], k]);
     });
   }
-  
+
   updateLuminance(eid: number, illuminated) {
     const d = this.get(eid);
 
@@ -98,4 +100,14 @@ export class DrawableStore extends EntityComponentStore<DrawableComponent> {
     }
   }
 
+  updateLuminanceByLittable(rid: number, reciver: LitableComponent) {
+    const d = this.get(rid);
+
+    if (d.sprite) {
+      d.sprite.visible = reciver.luminance > 0;
+    }
+    if (d.mesh) {
+      d.mesh.visible = reciver.luminance > 0
+    }
+  }
 }

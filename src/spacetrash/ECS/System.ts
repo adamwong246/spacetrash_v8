@@ -6,6 +6,7 @@ import { SetPieceComponent, SetPieceStore } from "./Components/phase0";
 import { ActorComponent, ActorStore } from "./Components/phase1";
 import { ClassificationStore } from "./Components/v2/classifiable.ts";
 import {
+  LightComponent,
   LightComponentStore,
   LightingComponentStore,
 } from "./Components/v2/lights.ts";
@@ -18,13 +19,13 @@ import {
   IntegerPositionStore,
   OridinalMovingComponent,
 } from "./Components/v2/physical.ts";
-import { DrawableStore } from "./Components/v2/drawable.ts";
+import { DrawableComponent, DrawableStore } from "./Components/v2/drawable.ts";
 import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
 import { TileComponentStore } from "./Components/v2/tileable.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
-export const NumberOfActors = 10;
+export const NumberOfActors = 30;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 15;
 export const ActorSize = TileSize / 1;
@@ -32,9 +33,9 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 20;
+export const MapSize = 100;
 
-const VisRange = 10;
+const VisRange = 30;
 
 let DELTA: number = 0;
 
@@ -56,6 +57,10 @@ let actorsLit: LightingComponentStore;
 let setPieceLit: LightingComponentStore;
 let drawables: DrawableStore;
 let eid2PMSs: Eid2PMStore;
+
+const light2Draw: Record<number, DrawableComponent> = {};
+const light2IntegerPosition: Record<number, IntegerPositionComponent> = {};
+const fp2Emitter: Record<number, LitComponent> = {};
 
 const runFirstTick = async (game: SpaceTrash) => {
   Object.keys(classs.store).forEach((k) => {
@@ -84,6 +89,18 @@ const runFirstTick = async (game: SpaceTrash) => {
     } else {
       actorsLit.add(eid, fps.get(eid), classification);
     }
+
+    drawables.each(([n, dc, s]) => {
+      if (n === eid) {
+        light2Draw[n] = dc[1];
+      }
+    });
+
+    ips.each(([n, dc, s]) => {
+      if (n === eid) {
+        light2IntegerPosition[n] = dc[1];
+      }
+    });
   });
 
   // setup the setPieces setPieces
@@ -91,6 +108,13 @@ const runFirstTick = async (game: SpaceTrash) => {
     setPieces.store[y] = [];
     for (let x = 0; x < MapSize; x++) {
       setPieces.store[y][x] = new SetPieceComponent();
+
+      for (let yy = 0; yy < MapSize; yy++) {
+        setPieces.store[y][x].FOV[yy] = [];
+        for (let xx = 0; xx < MapSize; xx++) {
+          setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+        }
+      }
     }
   }
 
@@ -127,6 +151,12 @@ const runFirstTick = async (game: SpaceTrash) => {
       // sprite: new Sprite,
       // renderedWebgl: "new",
       // rendered2d: "new"
+    });
+
+    lightingEntitiesStore.store.forEach(([leid, le]) => {
+      if (aeid === leid) {
+        fp2Emitter[aeid] = le;
+      }
     });
   }
 
@@ -317,7 +347,7 @@ function distanceBetweenFloatAndIntegerPostion(
   ff: FloatPositionComponent
 ): number {
   // debug
-  return distanceV2(i.x , i.y , ff.x, ff.y);
+  return distanceV2(i.x, i.y, ff.x, ff.y);
 }
 
 const actorsCollide = (
@@ -344,7 +374,7 @@ const MapBoundHigh = MapSize - 1;
 function resetIllumination() {
   lightableEntitiesStore.each(([li, z]) => {
     z.luminance = 0;
-  })
+  });
   for (let y = 0; y < MapSize; y++) {
     for (let x = 0; x < MapSize; x++) {
       setPieces.store[y][x].luminance = -1;
@@ -591,52 +621,82 @@ function updateTilePosition(
 
 function runIlluminationRandom() {
   drawables.each(([did, [didd, drawable], k]) => {
-    drawable.sprite.visible = Math.random() > 0.5
+    drawable.sprite.visible = Math.random() > 0.5;
   });
 }
 
-function runIlluminationV2(
-) {
+// function runIlluminationV2() {
+//   // for each thing which can receive light
+//   lightableEntitiesStore.each(([rid, reciver]) => {
+//     // for each thing which can emit light
+//     lightingEntitiesStore.each(([emid, emitter, endx]) => {
+
+//       // for each thing with an integer position aka tiles
+//       ips.each(([ipid, integerPosition]) => {
+//         // if the integer position matches the receiver
+//         if (ipid === rid) {
+//           // for each thing with a floating position
+//           fps.store.forEach(([fpeid, floatPosition]) => {
+
+//             // if the floating position matches the receiver
+//             if (fpeid === fps.store[emid][0]) {
+//               const d = withinRangeV2(floatPosition, integerPosition[1]);
+
+//               if (d) {
+//                 reciver.luminance = reciver.luminance + emitter[1].radiance;
+//               }
+//             }
+//           });
+//         }
+//       });
+//     });
+
+//     const d = light2Draw[rid];
+//     d.mesh.visible = reciver.luminance > 0;
+//     d.sprite.visible = reciver.luminance > 0;
+//   });
+// }
+
+function runIlluminationV3() {
   // for each thing which can receive light
   lightableEntitiesStore.each(([rid, reciver]) => {
-    // for each thing which can emit light
-    lightingEntitiesStore.each(([emid, emitter, endx]) => {
-      // for each thing with an integer position aka tiles
-      ips.each(([ipid, integerPosition]) => {
-        // if the integer position matches the receiver
-        if (ipid === rid) {
-          // for each thing with a floating position
-          fps.store.forEach(([fpeid, floatPosition]) => {
-            // console.log(fpeid, emid)
-            // debugger
+    const integerPositionV2 = light2IntegerPosition[rid];
 
-            // if the floating position matches the receiver
-            if (fpeid === fps.store[emid][0]) {
-              const d = withinRange(floatPosition, integerPosition[1]);
+    if (integerPositionV2) {
+      fps.store.forEach(([fpeid, floatPosition]) => {
+        const d = withinRangeV2(floatPosition, integerPositionV2);
 
+        if (d) {
+          const emitterV2 = fp2Emitter[fpeid];
+          reciver.luminance = reciver.luminance + emitterV2.radiance;
 
-
-              if (d) {
-                reciver.luminance = reciver.luminance + emitter[1].radiance;
-              }
-            }
-          });
+          // for each thing which can emit light
+          // lightingEntitiesStore.each(([emid, emitter, endx]) => {
+          //   // if the floating position matches the receiver
+          //   if (fpeid === fps.store[emid][0]) {
+          //     if (d) {
+          //       reciver.luminance = reciver.luminance + emitter[1].radiance;
+          //     }
+          //   }
+          // });
         }
       });
-    });
+    }
 
-    // for each drawable update it's visibility
-    drawables.each(([did, [didd, drawable], k]) => {
-      // if the drawable matches the receiver
-      if (did === rid) {
-        // debugger
-        drawable.mesh.visible = reciver.luminance > 0;
-        drawable.sprite.visible = reciver.luminance > 0;
-      }
-    });
+    // for each thing with an integer position aka tiles
+    // ips.each(([ipid, integerPosition]) => {
+    //   // if the integer position matches the receiver
+    //   if (ipid === rid) {
+    //     // for each thing with a floating position
+
+    //   }
+    // });
+
+    const d = light2Draw[rid];
+    d.mesh.visible = reciver.luminance > 0;
+    d.sprite.visible = reciver.luminance > 0;
   });
 }
-
 
 // run boundary check for things that move
 function runPhysics() {
@@ -647,7 +707,7 @@ function runPhysics() {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
       boundaryCheckBot(position);
-      // collisions();
+      collisions();
       // collisionBetweenActors();
       updateBotPosition(position, f);
       drawables.updatePostion(eid, position);
@@ -664,11 +724,8 @@ function runPhysics() {
   });
 
   // runIlluminationRandom()
-  runIlluminationV2()
-
-  
+  runIlluminationV3();
 }
-
 
 const withinRange = (
   f: FloatPositionComponent,
@@ -676,6 +733,50 @@ const withinRange = (
 ): boolean => {
   const d = distanceBetweenFloatAndIntegerPostion(f, i);
   return d < VisRange;
+};
+
+const withinRangeV2 = (
+  f: FloatPositionComponent,
+  i: IntegerPositionComponent
+): boolean => {
+  // const d = distanceBetweenFloatAndIntegerPostion(f, i);
+
+  const x = Math.round(f.x);
+  const y = Math.round(f.y);
+  const xx = i.x;
+  const yy = i.y;
+
+  /////////////////////////////
+  if (x >= MapSize) {
+    return false;
+  }
+  if (x < 0) {
+    return false;
+  }
+  if (y >= MapSize) {
+    return false;
+  }
+  if (y < 0) {
+    return false;
+  }
+  /////////////////////////////
+  if (xx >= MapSize) {
+    return false;
+  }
+  if (xx < 0) {
+    return false;
+  }
+  if (yy >= MapSize) {
+    return false;
+  }
+  if (yy < 0) {
+    return false;
+  }
+
+  /////////////////////////////
+
+  const fov = setPieces.store[y][x].FOV[yy][xx];
+  return fov < VisRange;
 };
 
 const collisions = () => {

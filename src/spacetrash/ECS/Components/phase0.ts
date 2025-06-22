@@ -16,12 +16,14 @@ export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashCo
   x: number;
   y: number;
   culledWebgl: boolean;
+  FOV: number[][];
 
   constructor() {
     super();
 
     this.x = -1;
     this.y = -1;
+    this.FOV = [[]]
   }
 }
 
