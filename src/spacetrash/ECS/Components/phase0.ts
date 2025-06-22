@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { ISpaceTrashComponents } from ".";
 import { Component, TwoDOneD_Component } from "../../../engine/VECS.ts/Component";
 import { TwoDStore } from "../../../engine/VECS.ts/types";
+import { DrawableComponent } from "./v2/drawable";
 
 
 export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
@@ -17,6 +18,7 @@ export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashCo
   y: number;
   culledWebgl: boolean;
   FOV: number[][];
+  drawing: DrawableComponent
 
   constructor() {
     super();

@@ -1836,6 +1836,11 @@ mnemonist@^0.39.0:
   dependencies:
     obliterator "^2.0.1"
 
+mrpas@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/mrpas/-/mrpas-2.0.0.tgz#df4fe8a637363aa5e4f2c1b46c04e3fe883cb3a1"
+  integrity sha512-f9Qv0DzYzPfWAIYQWT5zswHen8YDOrQ96KjQ54Nx7Zha8oLCt0c82L/PpmXyAvMNhrciZmQGbvg+m+QaK4B7Uw==
+
 ms@^2.1.2, ms@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"

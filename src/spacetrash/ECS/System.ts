@@ -1,12 +1,13 @@
 import { System } from "../../engine/VECS.ts/System.ts";
+
 import { SpaceTrash } from "../index.tsx";
-import { LitableComponent, LittableStore } from "./Components/casting/in";
+
+import { LittableStore } from "./Components/casting/in";
 import { LitComponent, LitStore } from "./Components/casting/out";
 import { SetPieceComponent, SetPieceStore } from "./Components/phase0";
 import { ActorComponent, ActorStore } from "./Components/phase1";
 import { ClassificationStore } from "./Components/v2/classifiable.ts";
 import {
-  LightComponent,
   LightComponentStore,
   LightingComponentStore,
 } from "./Components/v2/lights.ts";
@@ -22,7 +23,6 @@ import {
 import { DrawableComponent, DrawableStore } from "./Components/v2/drawable.ts";
 import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
 import { TileComponentStore } from "./Components/v2/tileable.ts";
-// import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
 export const NumberOfActors = 10;
@@ -35,9 +35,11 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // );
 export const MapSize = 50;
 
+var map;
+
 const VisRange = 30;
 
-let DELTA: number = 0;
+let DELTA: number = 1;
 
 let GAME: SpaceTrash;
 
@@ -103,7 +105,7 @@ const runFirstTick = async (game: SpaceTrash) => {
     });
   });
 
-  // setup the setPieces setPieces
+  // setup the setPieces
   for (let y = 0; y < MapSize; y++) {
     setPieces.store[y] = [];
     for (let x = 0; x < MapSize; x++) {
@@ -118,7 +120,7 @@ const runFirstTick = async (game: SpaceTrash) => {
     }
   }
 
-  // add the tiles
+  // build set pieces grid
   ips.store.forEach(([eid, s], ndx) => {
     setPieces.store[s.y][s.x].setId = ndx;
     const t = tiles.get(eid);
@@ -126,10 +128,12 @@ const runFirstTick = async (game: SpaceTrash) => {
       throw "why no t?";
     }
     setPieces.store[s.y][s.x].tileType = t.tileType;
-    // debugger;
-    // setPieces.store[s.y][s.x].littableId = lightableEntitiesStore.get(i);
 
-    // setPieces.store[s.y][s.x].littableId = lightableEntitiesStore.keyForEid(i);
+    drawables.each(([n, dc, ss]) => {
+      if (n === eid) {
+        setPieces.store[s.y][s.x].drawing = dc[1];
+      }
+    });
   });
 
   // setup the actors list
@@ -162,6 +166,7 @@ const runFirstTick = async (game: SpaceTrash) => {
 
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
+  runFOV();
 };
 
 function runEveryOtherTick() {
@@ -239,6 +244,33 @@ class MainSystem extends System {
     });
   }
 }
+
+const runFOV = () => {
+  // var VISION_RANGE = 10;
+  // var WORLD_SIZ  E = [MapSize, MapSize];
+  map = new Map([MapSize, MapSize]);
+
+  map.iter(function (pos, tile) {
+    const y = pos[1];
+    const x = pos[0];
+    (tile.wall = setPieces.store[y][x].tileType === "WallTile"),
+      (tile.visible = true);
+  });
+
+  // setPieces.store.forEach((row) => {
+  //   row.forEach((setpiece) => {
+  //     if (setpiece.tileType === "WallTil") {
+
+  //     }
+  //   })
+  // })
+
+  //player is in the middle
+  var player_pos = [MapSize / 2, MapSize / 2];
+  map.tiles[player_pos[0]][player_pos[1]].wall = false;
+
+  compute(map, player_pos, VisRange);
+};
 
 const runPlaceImmoveableSetPieces = () => {
   drawables.each(([eid, [did, dic], k]) => {
@@ -657,45 +689,70 @@ function runIlluminationRandom() {
 //   });
 // }
 
-function runIlluminationV3() {
-  // for each thing which can receive light
-  lightableEntitiesStore.each(([rid, reciver]) => {
-    const integerPositionV2 = light2IntegerPosition[rid];
+// function runIlluminationV3() {
+//   // for each thing which can receive light
+//   lightableEntitiesStore.each(([rid, reciver]) => {
+//     const integerPositionV2 = light2IntegerPosition[rid];
 
-    if (integerPositionV2) {
-      fps.store.forEach(([fpeid, floatPosition]) => {
-        const d = withinRangeV2(floatPosition, integerPositionV2);
+//     if (integerPositionV2) {
+//       fps.store.forEach(([fpeid, floatPosition]) => {
+//         const d = withinRangeV2(floatPosition, integerPositionV2);
 
-        if (d) {
-          const emitterV2 = fp2Emitter[fpeid];
-          reciver.luminance = reciver.luminance + emitterV2.radiance;
+//         if (d) {
+//           const emitterV2 = fp2Emitter[fpeid];
+//           reciver.luminance = reciver.luminance + emitterV2.radiance;
 
-          // for each thing which can emit light
-          // lightingEntitiesStore.each(([emid, emitter, endx]) => {
-          //   // if the floating position matches the receiver
-          //   if (fpeid === fps.store[emid][0]) {
-          //     if (d) {
-          //       reciver.luminance = reciver.luminance + emitter[1].radiance;
-          //     }
-          //   }
-          // });
-        }
-      });
+//           // for each thing which can emit light
+//           // lightingEntitiesStore.each(([emid, emitter, endx]) => {
+//           //   // if the floating position matches the receiver
+//           //   if (fpeid === fps.store[emid][0]) {
+//           //     if (d) {
+//           //       reciver.luminance = reciver.luminance + emitter[1].radiance;
+//           //     }
+//           //   }
+//           // });
+//         }
+//       });
+//     }
+
+//     // for each thing with an integer position aka tiles
+//     // ips.each(([ipid, integerPosition]) => {
+//     //   // if the integer position matches the receiver
+//     //   if (ipid === rid) {
+//     //     // for each thing with a floating position
+
+//     //   }
+//     // });
+
+//     const d = light2Draw[rid];
+//     d.mesh.visible = reciver.luminance > 0;
+//     d.sprite.visible = reciver.luminance > 0;
+//   });
+// }
+
+function runIlluminationV4() {
+  // // for each thing which can receive light
+  // lightableEntitiesStore.each(([rid, reciver]) => {
+  //   const d = light2Draw[rid];
+  //   d.mesh.visible = reciver.luminance > 0;
+  //   d.sprite.visible = reciver.luminance > 0;
+  // });
+  for (let y = 0; y < MapSize; y++) {
+    // setPieces.store[y] = [];
+    for (let x = 0; x < MapSize; x++) {
+      setPieces.store[y][x].drawing.mesh.visible = map.tiles[y][x].visible;
+      setPieces.store[y][x].drawing.sprite.visible = map.tiles[y][x].visible;
+      // if (setPieces.store[y][x])
+      // setPieces.store[y][x] = new SetPieceComponent();
+
+      // for (let yy = 0; yy < MapSize; yy++) {
+      //   setPieces.store[y][x].FOV[yy] = [];
+      //   for (let xx = 0; xx < MapSize; xx++) {
+      //     setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+      //   }
+      // }
     }
-
-    // for each thing with an integer position aka tiles
-    // ips.each(([ipid, integerPosition]) => {
-    //   // if the integer position matches the receiver
-    //   if (ipid === rid) {
-    //     // for each thing with a floating position
-
-    //   }
-    // });
-
-    const d = light2Draw[rid];
-    d.mesh.visible = reciver.luminance > 0;
-    d.sprite.visible = reciver.luminance > 0;
-  });
+  }
 }
 
 // run boundary check for things that move
@@ -723,8 +780,7 @@ function runPhysics() {
     }
   });
 
-  // runIlluminationRandom()
-  runIlluminationV3();
+  runIlluminationV4();
 }
 
 const withinRange = (
@@ -1146,4 +1202,245 @@ export const SpaceTrashMainSystem = new MainSystem(MapSize);
 //       }
 //     }
 //   }
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ *  This is a javascript port of https://github.com/initrl/MRPAS-Python
+ *  I suspect this code could be a lot shorter & cleaner
+ */
+
+var Tile = function () {
+  this.wall = false;
+  this.visible = false;
+};
+
+var Map = function (size) {
+  //size: [x, y]
+  this.size = size;
+  this.tiles = [];
+  for (var x = 0; x < this.size[0]; x++) {
+    var row = [];
+    for (var y = 0; y < this.size[1]; y++) {
+      row.push(new Tile());
+    }
+    this.tiles.push(row);
+  }
+};
+
+Map.prototype.get_tile = function (pos) {
+  if (this.tiles[pos[0]] && this.tiles[pos[0]][pos[1]]) {
+    return this.tiles[pos[0]][pos[1]];
+  }
+  return null;
+};
+
+Map.prototype.iter = function (callback, context) {
+  //iterate over all tiles, callbing callback with position & tile
+  for (var x = 0; x < this.size[0]; x++) {
+    for (var y = 0; y < this.size[1]; y++) {
+      callback.apply(context, [[x, y], this.tiles[x][y]]);
+    }
+  }
+};
+
+Map.prototype.reset_visibility = function () {
+  //sets all tiles as not visible
+  this.iter(function (pos, tile) {
+    tile.visible = false;
+  });
+};
+
+Map.prototype.set_visible = function (pos) {
+  this.tiles[pos[0]][pos[1]].visible = true;
+};
+
+Map.prototype.is_visible = function (pos) {
+  return this.tiles[pos[0]][pos[1]].visible;
+};
+
+Map.prototype.is_transparent = function (pos) {
+  return !this.tiles[pos[0]][pos[1]].wall;
+};
+
+function compute_quadrant(map, position, maxRadius, dx, dy) {
+  var startAngle = new Array();
+  startAngle[99] = undefined;
+  var endAngle = startAngle.slice(0);
+  //octant: vertical edge:
+  var iteration = 1;
+  var done = false;
+  var totalObstacles = 0;
+  var obstaclesInLastLine = 0;
+  var minAngle = 0.0;
+  var x = 0.0;
+  var y = position[1] + dy;
+  var c;
+  var wsize = map.size;
+
+  var slopesPerCell,
+    halfSlopes,
+    processedCell,
+    minx,
+    maxx,
+    pos,
+    visible,
+    startSlope,
+    centerSlope,
+    endSlope,
+    idx;
+  //do while there are unblocked slopes left and the algo is within
+  // the map's boundaries
+  //scan progressive lines/columns from the PC outwards
+  if (y < 0 || y >= wsize[1]) done = true;
+  while (!done) {
+    //process cells in the line
+    slopesPerCell = 1.0 / (iteration + 1);
+    halfSlopes = slopesPerCell * 0.5;
+    processedCell = parseInt(minAngle / slopesPerCell);
+    minx = Math.max(0, position[0] - iteration);
+    maxx = Math.min(wsize[0] - 1, position[0] + iteration);
+    done = true;
+    x = position[0] + processedCell * dx;
+    while (x >= minx && x <= maxx) {
+      pos = [x, y];
+      visible = true;
+      startSlope = processedCell * slopesPerCell;
+      centerSlope = startSlope + halfSlopes;
+      endSlope = startSlope + slopesPerCell;
+      if (obstaclesInLastLine > 0 && !map.is_visible(pos)) {
+        idx = 0;
+        while (visible && idx < obstaclesInLastLine) {
+          if (map.is_transparent(pos)) {
+            if (centerSlope > startAngle[idx] && centerSlope < endAngle[idx])
+              visible = false;
+          } else if (startSlope >= startAngle[idx] && endSlope <= endAngle[idx])
+            visible = false;
+          if (
+            visible &&
+            (!map.is_visible([x, y - dy]) ||
+              !map.is_transparent([x, y - dy])) &&
+            x - dx >= 0 &&
+            x - dx < wsize[0] &&
+            (!map.is_visible([x - dx, y - dy]) ||
+              !map.is_transparent([x - dx, y - dy]))
+          )
+            visible = false;
+          idx += 1;
+        }
+      }
+      if (visible) {
+        map.set_visible(pos);
+        done = false;
+        //if the cell is opaque, block the adjacent slopes
+        if (!map.is_transparent(pos)) {
+          if (minAngle >= startSlope) minAngle = endSlope;
+          else {
+            startAngle[totalObstacles] = startSlope;
+            endAngle[totalObstacles] = endSlope;
+            totalObstacles += 1;
+          }
+        }
+      }
+      processedCell += 1;
+      x += dx;
+    }
+    if (iteration == maxRadius) done = true;
+    iteration += 1;
+    obstaclesInLastLine = totalObstacles;
+    y += dy;
+    if (y < 0 || y >= wsize[1]) done = true;
+    if (minAngle == 1.0) done = true;
+  }
+
+  //octant: horizontal edge
+  iteration = 1; //iteration of the algo for this octant
+  done = false;
+  totalObstacles = 0;
+  obstaclesInLastLine = 0;
+  minAngle = 0.0;
+  x = position[0] + dx; //the outer slope's coordinates (first processed line)
+  y = 0;
+  //do while there are unblocked slopes left and the algo is within the map's boundaries
+  //scan progressive lines/columns from the PC outwards
+  if (x < 0 || x >= wsize[0]) done = true;
+  while (!done) {
+    //process cells in the line
+    slopesPerCell = 1.0 / (iteration + 1);
+    halfSlopes = slopesPerCell * 0.5;
+    processedCell = parseInt(minAngle / slopesPerCell);
+    const miny = Math.max(0, position[1] - iteration);
+    const maxy = Math.min(wsize[1] - 1, position[1] + iteration);
+    done = true;
+    y = position[1] + processedCell * dy;
+    while (y >= miny && y <= maxy) {
+      //calculate slopes per cell
+      pos = [x, y];
+      visible = true;
+      startSlope = processedCell * slopesPerCell;
+      centerSlope = startSlope + halfSlopes;
+      endSlope = startSlope + slopesPerCell;
+      if (obstaclesInLastLine > 0 && !map.is_visible(pos)) {
+        idx = 0;
+        while (visible && idx < obstaclesInLastLine) {
+          if (map.is_transparent(pos)) {
+            if (centerSlope > startAngle[idx] && centerSlope < endAngle[idx])
+              visible = false;
+          } else if (startSlope >= startAngle[idx] && endSlope <= endAngle[idx])
+            visible = false;
+
+          if (
+            visible &&
+            (!map.is_visible([x - dx, y]) ||
+              !map.is_transparent([x - dx, y])) &&
+            y - dy >= 0 &&
+            y - dy < wsize[1] &&
+            (!map.is_visible([x - dx, y - dy]) ||
+              !map.is_transparent([x - dx, y - dy]))
+          )
+            visible = false;
+          idx += 1;
+        }
+      }
+      if (visible) {
+        map.set_visible(pos);
+        done = false;
+        //if the cell is opaque, block the adjacent slopes
+        if (!map.is_transparent(pos)) {
+          if (minAngle >= startSlope) minAngle = endSlope;
+          else {
+            startAngle[totalObstacles] = startSlope;
+            endAngle[totalObstacles] = endSlope;
+            totalObstacles += 1;
+          }
+        }
+      }
+      processedCell += 1;
+      y += dy;
+    }
+    if (iteration == maxRadius) done = true;
+    iteration += 1;
+    obstaclesInLastLine = totalObstacles;
+    x += dx;
+    if (x < 0 || x >= wsize[0]) done = true;
+    if (minAngle == 1.0) done = true;
+  }
+}
+
+function compute(map, position, vision_range) {
+  map.reset_visibility();
+  map.set_visible(position); //player can see himself
+  //compute the 4 quadrants of the map
+  compute_quadrant(map, position, vision_range, 1, 1);
+  compute_quadrant(map, position, vision_range, 1, -1);
+  compute_quadrant(map, position, vision_range, -1, 1);
+  compute_quadrant(map, position, vision_range, -1, -1);
+}
+
+// if (exports !== undefined) {
+//   exports.compute = compute;
+//   exports.Map = Map;
+//   exports.Tile = Tile;
+//   exports.compute_quadrant = compute_quadrant;
 // }
