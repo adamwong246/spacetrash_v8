@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { LitableComponent } from "../Components/casting/in";
 
-
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { SpaceTrashEntity } from "../Entity";
 import { IntegerPositionComponent } from "../Components/v2/physical";
@@ -22,8 +21,16 @@ var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 const floorTile = () => {
   const m = new THREE.Mesh(floorGeometry, redMaterial);
   m.position.z = -TileSize / 2;
+  m.visible = Math.random() > 0.75
   return m;
 };
+
+const randomTile = () => {
+  const m = new THREE.Mesh(cubeGeo, blueMaterial);
+  m.visible = true
+  return m;
+};
+
 
 const blankTile = () => {
   const m = new THREE.Mesh(floorGeometry, blankMaterial);
@@ -46,7 +53,9 @@ const brickSprite = () => {
 };
 
 const bunnySprite = () => {
-  const s = new PIXI.Sprite(PIXI.Texture.from("https://pixijs.com/assets/bunny.png"));
+  const s = new PIXI.Sprite(
+    PIXI.Texture.from("https://pixijs.com/assets/bunny.png")
+  );
   s.width = TileSize;
   s.height = TileSize;
   return s;
@@ -59,10 +68,7 @@ export class Tile extends SpaceTrashEntityComponent {
     x: number,
     y: number,
     tiletype: ITiles,
-    d: DrawableComponent = new DrawableComponent(
-      bunnySprite(),
-      blankTile()
-    )
+    d: DrawableComponent = new DrawableComponent(bunnySprite(), blankTile())
   ) {
     const spe = new SpaceTrashEntity();
     super(spe, [
@@ -70,7 +76,7 @@ export class Tile extends SpaceTrashEntityComponent {
         new IntegerPositionComponent(x, y),
         new LitableComponent(),
         new ClassificationComponent("Tile"),
-        new TileComponent(tiletype)
+        new TileComponent(tiletype),
       ],
       d,
     ]);
@@ -90,17 +96,10 @@ export class Tile extends SpaceTrashEntityComponent {
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(
-      x,
-      y,
-      "FloorTile",
-      new DrawableComponent(
-        stoneSprite(),
-        floorTile()
-      )
-    );
+    super(x, y, "FloorTile", new DrawableComponent(stoneSprite(), floorTile()));
   }
 }
+
 
 export class WallTile extends Tile {
   constructor(x: number = 0, y: number = 0) {

@@ -82,10 +82,6 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
       d.mesh.position.x = p.x * TileSize;
       d.mesh.position.y = p.y * TileSize;
     }
-    //
-    // d.x = p.x;
-    // d.y = p.y;
-    // this.sp
   }
 
   updateLuminance(eid: number, illuminated) {

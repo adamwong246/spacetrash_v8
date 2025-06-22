@@ -19,6 +19,11 @@ let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
 let setPieces: SetPieceStore;
+let magX: number;
+let magY: number;
+let temps: [number, number] = [-1, -1];
+let roundX: number;
+let roundY: number;
 
 export default (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
@@ -177,11 +182,6 @@ const actorsCollide = (
   return distanceBetweenActorsV1(a.x, a.y, b.x, b.y);
   // return distanceBetweenActorsV0(a, b);
 };
-let magX: number;
-let magY: number;
-let temps: [number, number] = [-1, -1];
-let roundX: number;
-let roundY: number;
 
 function boundaryCheckBot(fpc: FloatPositionComponent) {
   if (fpc.x < 0) {

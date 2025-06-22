@@ -1,5 +1,8 @@
 export const FPS = 30;
 
+// 30 FPS is 33.33333 MS.
+// 60 FPS is 16.66666 MS.
+
 // load times
 // MapV9 - 100 = 1.5 seconds
 // MapV9 - 150 = 4.8 seconds
@@ -9,16 +12,31 @@ export const FPS = 30;
 // MapV9 - 190 = 12.2 seconds
 // MapV9 - 300 = minute+
 
-// 3d render times
+// 3d render times baseline
 // MapV9 - 100 = 9.2 ms
 // MapV9 - 150 = 9.9 ms
 // MapV9 - 200 = 32 ms
 // MapV9 - 300 = 54 ms
 
-export const MapSize = 100;
+// occlude 0.0 - 100 - 5.3
+// occlude 10% - 100 - 4.8
+// occlude 50% - 100 - 4.0 ms
+// occlude 90% - 100 - 5.8
+
+// occlude 0.0 - 200 - 45
+// occlude 0.1 - 200 - 20
+// occlude 0.5 - 200 - 20
+// occlude 0.9 - 200 - 13
+
+// chrome debugger can load a full profile at 200
+
+// target
+// 30FPS, map size 250, 75% occlusion - 12 second loadtime, drawtime 14ms
+
+export const MapSize = 50;
 export const NumberOfActors = 50; // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 
-export const TileSize = 10;
+export const TileSize = 30;
 
 export const ActorSize = TileSize / 1;
 export const BotSlots = 9;

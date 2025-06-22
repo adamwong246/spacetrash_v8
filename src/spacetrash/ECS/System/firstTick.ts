@@ -72,10 +72,8 @@ export default async (game: SpaceTrash, delta: number) => {
     const eid = k;
 
     if (classification === "SpaceTrashBot") {
-      debugger
       eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     } else if (classification === "Tile") {
-      debugger
       eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
     }
   });

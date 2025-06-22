@@ -49,11 +49,12 @@ const performanceConfig: IPerformanceConfig = {
   performanceLogging: false,
   headless: false
 };
+
 const defToRad = (d: number) => (d * Math.PI) / 180;
 var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
 camera.rotateX(defToRad(-90));
 camera.rotateZ(defToRad(180));
-camera.position.z = 5;
+camera.position.z = (TileSize/4);
 
 
 let shipMapMouseX = 0;
@@ -520,7 +521,15 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     // this.threejsRenderer.setSize(p.width, p.height)
-    this.threejsRenderer.setSize(500, 500);
+
+    // mapsize 50, 5000, 5000  2.7ms
+    // mapsize 50, 500,  500   1.2ms
+    // mapsize 50, 5,    5     0.8ms
+    this.threejsRenderer.setSize(400, 400);
+
+    // mapsize 50, ratio 0.1 = 1.2ms
+    // mapsize 50, ratio 1.0 = 1.2
+    this.threejsRenderer.setPixelRatio(1)
     this.threejsRenderer.render(scene, camera);
   }
 
