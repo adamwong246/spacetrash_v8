@@ -30,9 +30,14 @@ export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashCo
 }
 
 export class SetPieceStore extends TwoDStore<SetPieceComponent> {
+  
   constructor() {
     super();
     this.store = [[]];
+  }
+
+  at(x: number, y: number) {
+    return this.store[x][y]
   }
 
   tileIsAt(x: number, y: number, t: string): boolean {

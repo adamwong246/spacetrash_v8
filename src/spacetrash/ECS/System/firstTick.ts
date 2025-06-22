@@ -36,10 +36,9 @@ let lightingEntitiesStore: LitStore;
 let lights: LightComponentStore;
 let setPieceLit: LightingComponentStore;
 let setPieces: SetPieceStore;
-let tiles: TileComponentStore
+let tiles: TileComponentStore;
 
 export default async (game: SpaceTrash, delta: number) => {
-
   // Level 0 - "Component Stores"
   drawables = game.componentStores["DrawableComponent"] as DrawableStore;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
@@ -59,12 +58,13 @@ export default async (game: SpaceTrash, delta: number) => {
   // Level 1 - "Stores"
   actors = game.stores["ActorComponent"] as ActorStore;
   actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
-  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;  
+  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
   lights = game.stores["LightComponent"] as LightComponentStore;
   lights = game.stores["LightComponent"] as LightComponentStore;
   setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-  
+
+
   Object.keys(classs.store).forEach((k) => {
     const n = Number.parseInt(k);
     const kk = classs.get(n);
@@ -78,7 +78,7 @@ export default async (game: SpaceTrash, delta: number) => {
     }
   });
 
-  lightingEntitiesStore.store.forEach(([eid, le]) => {
+  lightingEntitiesStore.each(([ndx, [eid, lc]]) => {
     const classification = eid2PMSs.get(eid).classification;
     lights.add(eid, fps.get(eid), classification);
   });
@@ -111,6 +111,7 @@ export default async (game: SpaceTrash, delta: number) => {
     for (let x = 0; x < MapSize; x++) {
       setPieces.store[y][x] = new SetPieceComponent();
 
+      // very expensive!
       // for (let yy = 0; yy < MapSize; yy++) {
       //   setPieces.store[y][x].FOV[yy] = [];
       //   for (let xx = 0; xx < MapSize; xx++) {
@@ -121,24 +122,29 @@ export default async (game: SpaceTrash, delta: number) => {
   }
 
   // build set pieces grid
-  ips.store.forEach(([eid, s], ndx) => {
-    setPieces.store[s.y][s.x].setId = ndx;
-    const t = tiles.get(eid);
+  ips.each(([eid, [ndx, s]]) => {
+    // setPieces.store[s.y][s.x].setId = ndx;
+    setPieces.at(s.x, s.y).setId = ndx;
+
+    const t = tiles.get(ndx);
     if (!t) {
       throw "why no t?";
     }
-    setPieces.store[s.y][s.x].tileType = t.tileType;
+    // setPieces.store[s.y][s.x].tileType = t.tileType;
+    setPieces.at(s.x, s.y).tileType = t.tileType;
 
     drawables.each(([n, dc, ss]) => {
       if (n === eid) {
-        setPieces.store[s.y][s.x].drawing = dc[1];
+        // setPieces.store[s.y][s.x].drawing = dc[1];
+        setPieces.at(s.x, s.y).drawing = dc[1];
       }
     });
   });
 
   // setup the actors list
   for (let y = 0; y < fps.store.length; y++) {
-    const aeid = fps.store[y][0];
+    // const aeid = fps.store[y][0];
+    const aeid = fps.at(y);
 
     // add the actors
     actors.add({
@@ -157,7 +163,7 @@ export default async (game: SpaceTrash, delta: number) => {
       // rendered2d: "new"
     });
 
-    lightingEntitiesStore.store.forEach(([leid, le]) => {
+    lightingEntitiesStore.each(([leid, le]) => {
       if (aeid === leid) {
         fp2Emitter[aeid] = le;
       }
@@ -189,7 +195,7 @@ function runInitialMapBoundaryCheck() {
 
   // set piece out of bounds check
   // necessary?
-  ips.store.forEach((c) => {
+  ips.each((c) => {
     if (c[1].x < 0) {
       c[1].x = MapSize;
     }

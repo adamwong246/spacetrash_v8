@@ -54,12 +54,17 @@ export class IntegerPositionStore extends EntityComponentStore<IntegerPositionCo
 export class FloatPositionComponent extends PositionComponent {}
 
 export class FloatPositionStore extends EntityComponentStore<FloatPositionComponent> {
+  
   constructor() {
     super();
   }
 
   make(x: number = 0, y: number = 0) {
     return new FloatPositionComponent(x, y);
+  }
+
+  at(y: number) {
+    return this.store[y][0]
   }
 }
 
