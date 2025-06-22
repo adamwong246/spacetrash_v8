@@ -56,7 +56,7 @@ export default async (game: SpaceTrash, delta: number) => {
     "ClassificationComponent"
   ] as ClassificationStore;
 
-  // Level 0 - "Stores"
+  // Level 1 - "Stores"
   actors = game.stores["ActorComponent"] as ActorStore;
   actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
   eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;  
@@ -111,12 +111,12 @@ export default async (game: SpaceTrash, delta: number) => {
     for (let x = 0; x < MapSize; x++) {
       setPieces.store[y][x] = new SetPieceComponent();
 
-      for (let yy = 0; yy < MapSize; yy++) {
-        setPieces.store[y][x].FOV[yy] = [];
-        for (let xx = 0; xx < MapSize; xx++) {
-          setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
-        }
-      }
+      // for (let yy = 0; yy < MapSize; yy++) {
+      //   setPieces.store[y][x].FOV[yy] = [];
+      //   for (let xx = 0; xx < MapSize; xx++) {
+      //     setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+      //   }
+      // }
     }
   }
 

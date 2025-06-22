@@ -35,18 +35,18 @@ import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
 
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
-import { TileSize, MapSize } from "./Constants";
+import { TileSize, MapSize, FPS } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 
-const fps = 30;
+
 const ticker = Ticker.shared;
-ticker.maxFPS = fps;
+ticker.maxFPS = FPS;
 
 const pixi2dApp = new PIXI.Application();
 var scene = new THREE.Scene();
 
 const performanceConfig: IPerformanceConfig = {
-  fps,
+  fps: FPS,
   performanceLogging: false,
   headless: false
 };
@@ -522,7 +522,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     // this.threejsRenderer.setSize(p.width, p.height)
     this.threejsRenderer.setSize(500, 500);
-    this.threejsRenderer.render(scene, camera);
+    // this.threejsRenderer.render(scene, camera);
   }
 
   async renderShipMap() {

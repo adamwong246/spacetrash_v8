@@ -7,15 +7,15 @@ import { IntegerPositionComponent } from "../Components/v2/physical";
 import { MapSize } from "../../Constants";
 
 export class SpaceTrashShip extends SpaceTrashEntityComponent {
-  map: (Tile)[][];
+  map: Tile[][];
 
   shipSize = MapSize;
 
   subComponents: SpaceTrashEntityComponent[] = [];
 
-  addToMap(t: Tile){
+  addToMap(t: Tile) {
     if (!t) debugger;
-    
+
     if (t.position().x >= this.shipSize) {
       console.error("Cannot add tile beyond the upper bound of 32");
       return;
@@ -42,11 +42,10 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     const y = p.y;
 
     if (y >= this.shipSize) {
-      console.error("out of bounds")!
-
+      console.error("out of bounds")!;
     }
     if (!this.map[y]) {
-      console.error("idk")!
+      console.error("idk")!;
     }
     // const z = this.map[y][x];
 
@@ -63,7 +62,6 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
   }
 
   make() {
-
     // V0
     // for (let y = 0; y < this.shipSize; y++) {
     //   for (let x = 0; x < this.shipSize; x++) {
@@ -74,33 +72,32 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
 
     // V1
     // the base floor
-    for (let y = 1; y < this.shipSize-1; y++) {
-      for (let x = 1; x < this.shipSize-1; x++) {
+    for (let y = 1; y < this.shipSize - 1; y++) {
+      for (let x = 1; x < this.shipSize - 1; x++) {
         // this.subComponents.push(new FloorTile(x, y));
-        const z = new FloorTile(x, y)
+        const z = new FloorTile(x, y);
         // debugger
         this.addToMap(z);
       }
     }
 
     // 4 walls on the perimenter
-    for (let z = 0; z < this.shipSize-1; z++) {
+    for (let z = 0; z < this.shipSize - 1; z++) {
       this.addToMap(new WallTile(z, 0));
       this.addToMap(new WallTile(this.shipSize - 1, z));
-      this.addToMap(new WallTile(z+1, this.shipSize - 1));
-      this.addToMap(new WallTile(0, z+1));
+      this.addToMap(new WallTile(z + 1, this.shipSize - 1));
+      this.addToMap(new WallTile(0, z + 1));
     }
-
 
     // this.addToMap(new WallTile(15, 15));
 
     // a room
-    this.addToMap(new WallTile(15, 15));
-    this.addToMap(new WallTile(16, 15));
-    this.addToMap(new WallTile(17, 15));
-    this.addToMap(new WallTile(18, 15));
-    this.addToMap(new WallTile(19, 15));
-    this.addToMap(new WallTile(20, 15));
+    // this.addToMap(new WallTile(15, 15));
+    // this.addToMap(new WallTile(16, 15));
+    // this.addToMap(new WallTile(17, 15));
+    // this.addToMap(new WallTile(18, 15));
+    // this.addToMap(new WallTile(19, 15));
+    // this.addToMap(new WallTile(20, 15));
 
     // this.addToMap(new WallTile(20, 16));
     // this.addToMap(new WallTile(20, 17));
@@ -137,18 +134,18 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     // this.addToMap(new WallTile(18, 20));
     // this.addToMap(new WallTile(19, 20));
 
-
-    for (let i = 0; i < 10; i++){
-      this.addToMap(new WallTile(
-        Math.floor(Math.random() * MapSize),
-        Math.floor(Math.random() * MapSize),
-      ));
+    for (let i = 0; i < MapSize * 5; i++) {
+      this.addToMap(
+        new WallTile(
+          Math.floor(Math.random() * MapSize),
+          Math.floor(Math.random() * MapSize)
+        )
+      );
     }
 
     // this should error
     // this.subComponents.push(new WallTile(20, 20));
     // this.subComponents.push(new WallTile(20, 20));
-
   }
 
   constructor() {
@@ -163,7 +160,7 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
       }
     }
 
-    this.make()
+    this.make();
 
     // this.make().then((s) => {
     //   return this
@@ -195,10 +192,6 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     // this.subComponents.push(new WallTile(7, 12));
     // this.subComponents.push(new WallTile(8, 12));
 
-    
-
-    
-
     // new Array(100).fill(true).forEach((i) => {
     //   this.subComponents.push(
     //     new WallTile(
@@ -226,19 +219,18 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
       for (let x = 0; x < this.shipSize; x++) {
         if (this.map[y][x] === null) {
           console.error("Cannot leave blank spaces!");
-          debugger
+          debugger;
         }
         t.push(this.map[y][x]);
         // this.map[y][x]?.components.forEach((c) => {
         //   t.push(c);
         // })
-        
+
         // this.subComponents.push(new FloorTile(x, y));
-      //  this.addToMap(new FloorTile(x, y));
+        //  this.addToMap(new FloorTile(x, y));
       }
     }
 
     return t;
-
   }
 }

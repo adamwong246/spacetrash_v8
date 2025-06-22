@@ -25,7 +25,7 @@ export default (game: SpaceTrash, delta: number) => {
   drawables = game.componentStores["DrawableComponent"] as DrawableStore;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
 
-  // Level 0 - "Stores"
+  // Level 1 - "Stores"
   actors = game.stores["ActorComponent"] as ActorStore;
   eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
