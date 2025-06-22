@@ -1,34 +1,35 @@
 import { SpaceTrash } from "../..";
-import { ActorSize, MapSize, TileSize } from "../../Constants";
+import {
+  ActorSize,
+  FRICTION_CONSTANT,
+  MapSize,
+} from "../../Constants";
 import { SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
 import { DrawableStore } from "../Components/v2/drawable";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
   FloatPositionComponent,
-  IntegerPositionComponent,
   FloatMovingComponent,
-  OridinalMovingComponent,
   FloatMovingStore,
 } from "../Components/v2/physical";
-import { TileComponentStore } from "../Components/v2/tileable";
-import { distanceV2 } from "./MainSystem";
 
-let setPieces: SetPieceStore;
-let fmc: FloatMovingStore;
-let eid2PMSs: Eid2PMStore;
-let drawables: DrawableStore;
-let tiles: TileComponentStore;
 let actors: ActorStore;
+let drawables: DrawableStore;
+let eid2PMSs: Eid2PMStore;
+let fmc: FloatMovingStore;
+let setPieces: SetPieceStore;
 
 export default (game: SpaceTrash, delta: number) => {
+  // Level 0 - "Component Stores"
+  drawables = game.componentStores["DrawableComponent"] as DrawableStore;
+  fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
+
+  // Level 0 - "Stores"
   actors = game.stores["ActorComponent"] as ActorStore;
   eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-  fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
-  drawables = game.componentStores["DrawableComponent"] as DrawableStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-  actors = game.stores["ActorComponent"] as ActorStore;
-  
+
   // resetIllumination();
   runPhysics();
   // runIllumination();
@@ -169,6 +170,63 @@ const collisions = () => {
   });
 };
 
+const actorsCollide = (
+  a: FloatPositionComponent,
+  b: FloatPositionComponent
+) => {
+  return distanceBetweenActorsV1(a.x, a.y, b.x, b.y);
+  // return distanceBetweenActorsV0(a, b);
+};
+let magX: number;
+let magY: number;
+let temps: [number, number] = [-1, -1];
+let roundX: number;
+let roundY: number;
+
+function boundaryCheckBot(fpc: FloatPositionComponent) {
+  if (fpc.x < 0) {
+    fpc.x = MapSize;
+  }
+  if (fpc.x > MapSize) {
+    fpc.x = 0;
+  }
+  if (fpc.y < 0) {
+    fpc.y = MapSize;
+  }
+  if (fpc.y > MapSize) {
+    fpc.y = 0;
+  }
+}
+
+function updateVelocity(f: number): number {
+  return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
+}
+
+function updateMovement(f: FloatMovingComponent) {
+  f.dx = updateVelocity(f.dx);
+  f.dy = updateVelocity(f.dy);
+}
+
+function updatePosition(p: FloatPositionComponent, f: FloatMovingComponent) {
+  p.x = p.x + f.dx; // * DELTA * VELOCITY_CONSTANT;
+  p.y = p.y + f.dy; // * DELTA * VELOCITY_CONSTANT;
+
+  if (Number.isNaN(p.y)) {
+    debugger;
+    throw "position is Nan?FloatMovingComponent";
+  }
+}
+
+function updateBotPosition(p: FloatPositionComponent, f: FloatMovingComponent) {
+  updateMovement(f);
+  updatePosition(p, f);
+}
+
+function distanceBetweenActorsV1(x, y, x0, y0) {
+  const squaredDist = (x - x0) * (x - x0) + (y - y0) * (y - y0);
+  return squaredDist <= Math.sqrt(ActorSize / 2);
+}
+
 // const illuminate = (xFloat: number, yFloat: number): any => {
 //   const x = Math.round(xFloat);
 //   const y = Math.round(yFloat);
@@ -213,8 +271,6 @@ const collisions = () => {
 //   }
 // };
 
-const di3 = Math.sqrt(ActorSize / 2);
-
 // const distanceBetweenActorsV0 = (
 //   a: PhysicsActorComponent,
 //   b: PhysicsActorComponent
@@ -223,125 +279,61 @@ const di3 = Math.sqrt(ActorSize / 2);
 // };
 
 // this implementation is faster and uses less memory, causing fewer GCs
-function distanceBetweenActorsV1(x, y, x0, y0) {
-  const squaredDist = (x - x0) * (x - x0) + (y - y0) * (y - y0);
-  return squaredDist <= di3;
-}
 
-function distanceBetweenFloats(
-  p: FloatPositionComponent,
-  pp: FloatPositionComponent
-): number {
-  return distanceV2(p.x, p.y, pp.x, pp.y);
-}
+// function distanceBetweenFloats(
+//   p: FloatPositionComponent,
+//   pp: FloatPositionComponent
+// ): number {
+//   return distanceV2(p.x, p.y, pp.x, pp.y);
+// }
 
-function distanceBetweenIntegers(
-  p: IntegerPositionComponent,
-  pp: IntegerPositionComponent
-): number {
-  return distanceV2(
-    p.x * TileSize,
-    p.y * TileSize,
-    pp.x * TileSize,
-    pp.y * TileSize
-  );
-}
+// function distanceBetweenIntegers(
+//   p: IntegerPositionComponent,
+//   pp: IntegerPositionComponent
+// ): number {
+//   return distanceV2(
+//     p.x * TileSize,
+//     p.y * TileSize,
+//     pp.x * TileSize,
+//     pp.y * TileSize
+//   );
+// }
 
-function distanceBetweenFloatAndIntegerPostion(
-  i: IntegerPositionComponent,
-  ff: FloatPositionComponent
-): number {
-  // debug
-  return distanceV2(i.x, i.y, ff.x, ff.y);
-}
+// function distanceBetweenFloatAndIntegerPostion(
+//   i: IntegerPositionComponent,
+//   ff: FloatPositionComponent
+// ): number {
+//   // debug
+//   return distanceV2(i.x, i.y, ff.x, ff.y);
+// }
 
-const actorsCollide = (
-  a: FloatPositionComponent,
-  b: FloatPositionComponent
-) => {
-  return distanceBetweenActorsV1(a.x, a.y, b.x, b.y);
-  // return distanceBetweenActorsV0(a, b);
-};
+// function boundaryCheckTile(ipc: IntegerPositionComponent) {
+//   if (ipc.x < 0) {
+//     ipc.x = MapSize;
+//   }
+//   if (ipc.x > MapSize) {
+//     ipc.x = 0;
+//   }
+//   if (ipc.y < 0) {
+//     ipc.y = MapSize;
+//   }
+//   if (ipc.y > MapSize) {
+//     ipc.y = 0;
+//   }
+// }
 
-// let firstTick = true;
-// let phaseZero: SetPieceComponent[][];
-// let phaseOne: ActorComponent[];
+// function updateTilePosition(
+//   p: IntegerPositionComponent,
+//   f: OridinalMovingComponent
+// ) {
+//   throw "method not implemented";
+// }
 
-let magX: number;
-let magY: number;
-let temps: [number, number] = [-1, -1];
-let roundX: number;
-let roundY: number;
-
-function boundaryCheckBot(fpc: FloatPositionComponent) {
-  if (fpc.x < 0) {
-    fpc.x = MapSize;
-  }
-  if (fpc.x > MapSize) {
-    fpc.x = 0;
-  }
-  if (fpc.y < 0) {
-    fpc.y = MapSize;
-  }
-  if (fpc.y > MapSize) {
-    fpc.y = 0;
-  }
-}
-
-function boundaryCheckTile(ipc: IntegerPositionComponent) {
-  if (ipc.x < 0) {
-    ipc.x = MapSize;
-  }
-  if (ipc.x > MapSize) {
-    ipc.x = 0;
-  }
-  if (ipc.y < 0) {
-    ipc.y = MapSize;
-  }
-  if (ipc.y > MapSize) {
-    ipc.y = 0;
-  }
-}
-
-const FRICTION_CONSTANT = 1; //0.999;
-function updateVelocity(f: number): number {
-  return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
-}
-
-function updateMovement(f: FloatMovingComponent) {
-  f.dx = updateVelocity(f.dx);
-  f.dy = updateVelocity(f.dy);
-}
-
-const VELOCITY_CONSTANT = 0.001;
-
-function updatePosition(p: FloatPositionComponent, f: FloatMovingComponent) {
-  p.x = p.x + f.dx; // * DELTA * VELOCITY_CONSTANT;
-  p.y = p.y + f.dy; // * DELTA * VELOCITY_CONSTANT;
-
-  if (Number.isNaN(p.y)) {
-    debugger;
-    throw "position is Nan?FloatMovingComponent";
-  }
-}
-
-function updateBotPosition(p: FloatPositionComponent, f: FloatMovingComponent) {
-  updateMovement(f);
-  updatePosition(p, f);
-}
-
-function updateTilePosition(
-  p: IntegerPositionComponent,
-  f: OridinalMovingComponent
-) {
-  throw "method not implemented";
-}
-
-function runIlluminationRandom() {
-  drawables.each(([did, [didd, drawable], k]) => {
-    drawable.sprite.visible = Math.random() > 0.5;
-  });
-}
+// function runIlluminationRandom() {
+//   drawables.each(([did, [didd, drawable], k]) => {
+//     drawable.sprite.visible = Math.random() > 0.5;
+//   });
+// }
 
 // function runIlluminationV2() {
 //   // for each thing which can receive light

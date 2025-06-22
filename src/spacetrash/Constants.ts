@@ -13,3 +13,6 @@ export const NumberOfActors = 10;
 
 export const MapBoundLow = 0;
 export const MapBoundHigh = MapSize - 1;
+
+export const FRICTION_CONSTANT = 1; //0.999;
+export const VELOCITY_CONSTANT = 0.001;

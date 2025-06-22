@@ -1,7 +1,5 @@
 import { SpaceTrash } from "../..";
-import {
-  MapBoundHigh, MapBoundLow, MapSize, TileSize
-} from "../../Constants";
+import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
 import { LittableStore } from "../Components/casting/in";
 import { LitComponent, LitStore } from "../Components/casting/out";
 import { SetPieceComponent, SetPieceStore } from "../Components/phase0";
@@ -22,64 +20,51 @@ import {
 import { TileComponentStore } from "../Components/v2/tileable";
 import { distanceV2 } from "./MainSystem";
 
-let classs: ClassificationStore;
-let lightingEntitiesStore: LitStore;
-let lightableEntitiesStore: LittableStore;
-let actorsLit: LightingComponentStore;
-let setPieceLit: LightingComponentStore;
-let drawables: DrawableStore;
-let ips: IntegerPositionStore;
-let lights: LightComponentStore;
-let fps: FloatPositionStore;
-let fmc: FloatMovingStore;
-
-const fp2Emitter: Record<number, LitComponent> = {};
-const light2IntegerPosition: Record<number, IntegerPositionComponent> = {};
-const light2Draw: Record<number, DrawableComponent> = {};
-let eid2PMSs: Eid2PMStore;
-let setPieces: SetPieceStore;
 let actors: ActorStore;
+let actorsLit: LightingComponentStore;
+let classs: ClassificationStore;
+let drawables: DrawableStore;
+let eid2PMSs: Eid2PMStore;
+let fmc: FloatMovingStore;
+let fp2Emitter: Record<number, LitComponent> = {};
+let fps: FloatPositionStore;
+let ips: IntegerPositionStore;
+let light2Draw: Record<number, DrawableComponent> = {};
+let light2IntegerPosition: Record<number, IntegerPositionComponent> = {};
+let lightableEntitiesStore: LittableStore;
+let lightingEntitiesStore: LitStore;
+let lights: LightComponentStore;
+let setPieceLit: LightingComponentStore;
+let setPieces: SetPieceStore;
+let tiles: TileComponentStore
 
 export default async (game: SpaceTrash, delta: number) => {
-  fmc = game.componentStores[
-    "FloatMovingComponent"
-  ] as FloatMovingStore;
-  let tiles: TileComponentStore;
-  ips = game.componentStores[
-    "IntegerPositionComponent"
-  ] as IntegerPositionStore;
-  fps = game.componentStores[
-    "FloatPositionComponent"
-  ] as FloatPositionStore;
-  drawables = game.componentStores[
-              "DrawableComponent"
-            ] as DrawableStore;
-  lights = game.stores["LightComponent"] as LightComponentStore;
-  actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
-  setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
+
+  // Level 0 - "Component Stores"
+  drawables = game.componentStores["DrawableComponent"] as DrawableStore;
+  fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
+  fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
+  lightingEntitiesStore = game.componentStores[LitComponent.name] as LitStore;
+  tiles = game.componentStores["TileComponent"] as TileComponentStore;
   lightableEntitiesStore = game.componentStores[
     "LitableComponent"
   ] as LittableStore;
-
-  setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-  actors = game.stores["ActorComponent"] as ActorStore;
-
-  lights = game.stores["LightComponent"] as LightComponentStore;
-
-  lightingEntitiesStore = game.componentStores[LitComponent.name] as LitStore;
-
+  ips = game.componentStores[
+    "IntegerPositionComponent"
+  ] as IntegerPositionStore;
   classs = game.componentStores[
     "ClassificationComponent"
   ] as ClassificationStore;
 
-  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-
-  drawables = game.componentStores[
-              "DrawableComponent"
-  ] as DrawableStore;
+  // Level 0 - "Stores"
+  actors = game.stores["ActorComponent"] as ActorStore;
+  actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
+  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;  
+  lights = game.stores["LightComponent"] as LightComponentStore;
+  lights = game.stores["LightComponent"] as LightComponentStore;
+  setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
+  setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
   
-  tiles = game.componentStores["TileComponent"] as TileComponentStore;
-
   Object.keys(classs.store).forEach((k) => {
     const n = Number.parseInt(k);
     const kk = classs.get(n);
