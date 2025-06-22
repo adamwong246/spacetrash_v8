@@ -116,7 +116,6 @@ export abstract class ECS {
 
   // returns the ids of entities added
   setEntitiesComponent(entityComponents: EntityComponent[]): number[] {
-    debugger
     const toReturn: number[] = [];
     entityComponents.forEach((e) => {
       if (!e) {

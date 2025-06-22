@@ -32,9 +32,9 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 50;
+export const MapSize = 20;
 
-const VisRange = 50;
+const VisRange = 10;
 
 let DELTA: number = 0;
 
@@ -316,7 +316,8 @@ function distanceBetweenFloatAndIntegerPostion(
   i: IntegerPositionComponent,
   ff: FloatPositionComponent
 ): number {
-  return distanceV2(i.x * TileSize, i.y * TileSize, ff.x, ff.y);
+  // debug
+  return distanceV2(i.x , i.y , ff.x, ff.y);
 }
 
 const actorsCollide = (
@@ -341,9 +342,12 @@ const MapBoundLow = 0;
 const MapBoundHigh = MapSize - 1;
 
 function resetIllumination() {
+  lightableEntitiesStore.each(([li, z]) => {
+    z.luminance = 0;
+  })
   for (let y = 0; y < MapSize; y++) {
     for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x].luminance = 0;
+      setPieces.store[y][x].luminance = -1;
       // phaseZero[y][x].rendered2d = "changed";
       // phaseZero[y][x].renderedWebgl = "changed";
     }
@@ -407,14 +411,14 @@ function runIlluminationBot(
 ) {
   // loop over light recivers
   lightableEntitiesStore.each(([eidOfLightable, l]) => {
-  // lightableEntitiesStore.store.forEach(([eidOfLightable, l]) => {
+    // lightableEntitiesStore.store.forEach(([eidOfLightable, l]) => {
     const { classification, floatPosition } = lights.get(eidOfLight);
 
     let p: FloatPositionComponent | IntegerPositionComponent;
     if (classification === "SpaceTrashBot") {
-      runIlluminationBotToBot(fpc, eidOfLight, floatPosition);
+      // runIlluminationBotToBot(fpc, eidOfLight, floatPosition);
     } else if (classification === "Tile") {
-      // runIlluminationBotToTile(fpc, eidOfLightable, floatPosition);
+      runIlluminationBotToTile(fpc, eidOfLightable, floatPosition);
     }
 
     // if (!positionOfLightingEntity)
@@ -551,7 +555,7 @@ function boundaryCheckTile(ipc: IntegerPositionComponent) {
   }
 }
 
-const FRICTION_CONSTANT = 0.999;
+const FRICTION_CONSTANT = 1; //0.999;
 function updateVelocity(f: number): number {
   return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
 }
@@ -585,27 +589,70 @@ function updateTilePosition(
   throw "method not implemented";
 }
 
+function runIlluminationRandom() {
+  drawables.each(([did, [didd, drawable], k]) => {
+    drawable.sprite.visible = Math.random() > 0.5
+  });
+}
+
+function runIlluminationV2(
+) {
+  // for each thing which can receive light
+  lightableEntitiesStore.each(([rid, reciver]) => {
+    // for each thing which can emit light
+    lightingEntitiesStore.each(([emid, emitter, endx]) => {
+      // for each thing with an integer position aka tiles
+      ips.each(([ipid, integerPosition]) => {
+        // if the integer position matches the receiver
+        if (ipid === rid) {
+          // for each thing with a floating position
+          fps.store.forEach(([fpeid, floatPosition]) => {
+            // console.log(fpeid, emid)
+            // debugger
+
+            // if the floating position matches the receiver
+            if (fpeid === fps.store[emid][0]) {
+              const d = withinRange(floatPosition, integerPosition[1]);
+
+
+
+              if (d) {
+                reciver.luminance = reciver.luminance + emitter[1].radiance;
+              }
+            }
+          });
+        }
+      });
+    });
+
+    // for each drawable update it's visibility
+    drawables.each(([did, [didd, drawable], k]) => {
+      // if the drawable matches the receiver
+      if (did === rid) {
+        // debugger
+        drawable.mesh.visible = reciver.luminance > 0;
+        drawable.sprite.visible = reciver.luminance > 0;
+      }
+    });
+  });
+}
+
+
 // run boundary check for things that move
 function runPhysics() {
-  // actors out of bounds check
   fmc.store.forEach(([eid, f]) => {
-    // const classification = classs.get(eid);
     const { position, classification } = eid2PMSs.get(eid);
 
     if (classification === "SpaceTrashBot") {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
-
       boundaryCheckBot(position);
-      collisionWalls();
+      // collisions();
       // collisionBetweenActors();
-
       updateBotPosition(position, f);
-
       drawables.updatePostion(eid, position);
-      // actors.update(eid, p)
     } else if (classification === "Tile") {
-      throw "not implemented"
+      throw "not implemented";
       // const p = ips.get(eidOfClassification);
       // if (!p) throw "integer position component not found";
       // updateTilePosition(p, f);
@@ -615,9 +662,26 @@ function runPhysics() {
       throw "idk";
     }
   });
+
+  // runIlluminationRandom()
+  runIlluminationV2()
+
+  
 }
 
-const collisionWalls = () => {
+
+const withinRange = (
+  f: FloatPositionComponent,
+  i: IntegerPositionComponent
+): boolean => {
+  const d = distanceBetweenFloatAndIntegerPostion(f, i);
+
+  console.log("distanceBetweenFloatAndIntegerPostion", d, VisRange, d < VisRange);
+
+  return d < VisRange;
+};
+
+const collisions = () => {
   actors.each((i, a) => {
     // x and y are the "look ahead" pointer
     let x = Math.round(a.position.x + a.motion.dx);
@@ -704,25 +768,24 @@ const collisionWalls = () => {
       }
     });
 
-    const SPEED_CONSTANT = 0.0001
+    const SPEED_CONSTANT = 0.0001;
     if (Number(i) === GAME.videoFeed) {
       if (GAME.forward === true) {
         a.motion.dy = a.motion.dy - SPEED_CONSTANT;
       }
-  
+
       if (GAME.back === true) {
         a.motion.dy = a.motion.dy + SPEED_CONSTANT;
       }
-  
+
       if (GAME.left === true) {
         a.motion.dx = a.motion.dx - SPEED_CONSTANT;
       }
-  
+
       if (GAME.right === true) {
         a.motion.dx = a.motion.dx + SPEED_CONSTANT;
       }
     }
-
   });
 };
 

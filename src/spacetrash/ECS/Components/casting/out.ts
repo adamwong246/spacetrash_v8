@@ -55,15 +55,22 @@ export class GunComponent extends OutCastingComponent {
 export class LitComponent extends OutCastingComponent {
   radiance: number;
 
-  constructor() {
+  constructor(r: number = -1) {
     super();
-    this.radiance = -1;
+    this.radiance = r;
   }
 }
 
 export class LitStore extends EntityComponentStore<LitComponent> {
+
+  each(arg0: ([eid, le, ndx]: [number, LitComponent, number]) => void) {
+      Object.keys(this.store).forEach((k, ndx) => {
+        arg0([Number(k), this.store[k], ndx])
+      });
+  }
+  
   make(...a: any[]): LitComponent {
-    return new LitComponent();
+    return new LitComponent([...a]);
     // throw new Error("Method not implemented.");
   }
 }

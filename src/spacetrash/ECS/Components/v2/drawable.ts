@@ -15,7 +15,7 @@ import {
 } from "../../../../engine/VECS.ts/types";
 
 import { ActorComponent } from "../phase1";
-import { FloatPositionComponent, FloatPositionStore } from "./physical";
+import { FloatPositionComponent, FloatPositionStore, PositionComponent } from "./physical";
 import { TileSize } from "../../System";
 
 
@@ -42,6 +42,7 @@ export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
 }
 
 export class DrawableStore extends EntityComponentStore<DrawableComponent> {
+  
   // store: DrawableComponent;
 
   // get(...a: any[]) {
@@ -85,4 +86,16 @@ export class DrawableStore extends EntityComponentStore<DrawableComponent> {
       arg0([Number(k), this.store[k], k]);
     });
   }
+  
+  updateLuminance(eid: number, illuminated) {
+    const d = this.get(eid);
+
+    if (d.sprite) {
+      d.sprite.visible = illuminated;
+    }
+    if (d.mesh) {
+      d.mesh.visible = illuminated;
+    }
+  }
+
 }

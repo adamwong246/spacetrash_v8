@@ -20,7 +20,6 @@ export abstract class PositionComponent extends Component<
 // Gives an entity a position within the grid
 export class IntegerPositionComponent extends PositionComponent {
   // tileType: string;
-
   // constructor(x: number, y: number, t: any) {
   //   debugger
   //   super();
@@ -29,28 +28,26 @@ export class IntegerPositionComponent extends PositionComponent {
 }
 
 export class IntegerPositionStore extends EntityComponentStore<IntegerPositionComponent> {
-  
-
   withIf(i: number, arg1: (i: [number, IntegerPositionComponent]) => void) {
-
     const x = this.store.find((v) => {
       return v[0] === i;
-    })
+    });
 
     if (x) {
-      return arg1(x);  
+      return arg1(x);
     }
-    
   }
 
-  make(
-    x: number = 0,
-    y: number = 0,
-    t: any
-  ) {
-    debugger
-    return new IntegerPositionComponent(x, y, t);
+  make(x: number, y: number) {
+    return new IntegerPositionComponent(x, y);
   }
+
+  each(arg0: ([eid, le, k]: [number, IntegerPositionComponent, string]) => void) {
+      Object.keys(this.store).forEach((k) => {
+        arg0([Number(k), this.store[k], k]);
+      });
+  }
+  
 }
 
 // Gives an entity a position above the grid
@@ -131,8 +128,8 @@ export class FloatMovingComponent extends MovingComponent {
 
   constructor(dx: number = 0, dy: number = 0) {
     super();
-    this.dx = dx
-    this.dy = dx
+    this.dx = dx;
+    this.dy = dx;
   }
 }
 

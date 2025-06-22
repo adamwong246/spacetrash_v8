@@ -13,13 +13,15 @@ class MainScene extends SpaceTrashScene {
     
     
 
-    const drones = [...new Array(BotSlots)].map((n) => {
+    const drones = [...new Array(3)].map((n) => {
       return new SpaceTrashBot(
-        Math.random() * MapSize,
-        Math.random() * MapSize,
-        // TileSize * (MapSize / 2 ),
-        // TileSize * (MapSize / 2 ),
+        // Math.random() * MapSize,
+        // Math.random() * MapSize,
+        (MapSize / 2 ),
+        (MapSize / 2 ),
+        // 5, 5,
         ActorSize,
+        // 0.01, 0.01
         (Math.random() - 0.5) * SPEED_CONSTANT,
         (Math.random() - 0.5) * SPEED_CONSTANT
       );
@@ -40,7 +42,9 @@ class MainScene extends SpaceTrashScene {
 
     const ship = new SpaceTrashShip();
 
-    game.setEntitiesComponent([ship, ...ship.toTiles(), ...moreBots]);
+    game.setEntitiesComponent([ship, ...ship.toTiles(),
+      // ...moreBots
+    ]);
 
     const myDoneIds = game.setEntitiesComponent([...drones]);
 
