@@ -25,7 +25,7 @@ import { TileComponentStore } from "./Components/v2/tileable.ts";
 // import { DrawingStore } from "./Components/v2/drawings.ts";
 
 export const ShadowLimit = 1;
-export const NumberOfActors = 30;
+export const NumberOfActors = 10;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 export const TileSize = 15;
 export const ActorSize = TileSize / 1;
@@ -33,7 +33,7 @@ export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)
 // );
-export const MapSize = 100;
+export const MapSize = 50;
 
 const VisRange = 30;
 
