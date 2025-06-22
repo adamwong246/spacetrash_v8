@@ -1,9 +1,10 @@
 import { Entity } from "../../../engine/VECS.ts/Entity";
 
 import { SpaceTrashEntityComponent } from ".";
-import { Tile, FloorTile, WallTile, NorthEast, NorthWest, SouthEast, SouthWest } from "./tiles";
-import { MapSize } from "../System";
+import { Tile, FloorTile, WallTile } from "./tiles";
+
 import { IntegerPositionComponent } from "../Components/v2/physical";
+import { MapSize } from "../System/MainSystem";
 
 
 export class SpaceTrashShip extends SpaceTrashEntityComponent {

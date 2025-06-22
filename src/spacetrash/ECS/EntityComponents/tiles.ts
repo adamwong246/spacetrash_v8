@@ -2,9 +2,7 @@ import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { LitableComponent } from "../Components/casting/in";
 
-// import { PhysicsSetPieceComponent } from "../Components/setPiece";
-import { TileSize } from "../System";
-import { SetPieceComponent } from "../Components/phase0";
+
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { SpaceTrashEntity } from "../Entity";
 import { IntegerPositionComponent } from "../Components/v2/physical";
@@ -15,6 +13,7 @@ import { redMaterial, blueMaterial, blankMaterial } from "../../threejs";
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
 import { TileComponent } from "../Components/v2/tileable";
+import { TileSize } from "../../Constants";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 

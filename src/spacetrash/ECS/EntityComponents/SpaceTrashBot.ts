@@ -10,16 +10,15 @@ import {
   DegreesDirectionComponent,
   FloatMovingComponent,
 } from "../Components/v2/physical";
-import { LitableComponent } from "../Components/casting/in";
 import { NameableComponent } from "../Components/v2/nameable";
 
 import RandomMaleNames from "./../../NameGenerator";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
-import { blueMaterial, greenMaterial } from "../../threejs";
-import { Tiles } from "./tiles";
-import { TileSize } from "../System";
+import { greenMaterial } from "../../threejs";
+
 import { degToRad } from "three/src/math/MathUtils.js";
+import { TileSize } from "../../Constants";
 
 const cylinderGeometry = new THREE.CylinderGeometry(
   TileSize / 4,

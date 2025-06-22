@@ -1,16 +1,16 @@
-import { System } from "../../engine/VECS.ts/System.ts";
+import { System } from "../../../engine/VECS.ts/System.ts";
 
-import { SpaceTrash } from "../index.tsx";
+import { SpaceTrash } from "../../index.tsx";
 
-import { LittableStore } from "./Components/casting/in";
-import { LitComponent, LitStore } from "./Components/casting/out";
-import { SetPieceComponent, SetPieceStore } from "./Components/phase0";
-import { ActorComponent, ActorStore } from "./Components/phase1";
-import { ClassificationStore } from "./Components/v2/classifiable.ts";
+import { LittableStore } from "../Components/casting/in.ts";
+import { LitComponent, LitStore } from "../Components/casting/out.ts";
+import { SetPieceComponent, SetPieceStore } from "../Components/phase0.ts";
+import { ActorComponent, ActorStore } from "../Components/phase1.ts";
+import { ClassificationStore } from "../Components/v2/classifiable.ts";
 import {
   LightComponentStore,
   LightingComponentStore,
-} from "./Components/v2/lights.ts";
+} from "../Components/v2/lights.ts";
 import {
   FloatMovingComponent,
   FloatMovingStore,
@@ -19,16 +19,16 @@ import {
   IntegerPositionComponent,
   IntegerPositionStore,
   OridinalMovingComponent,
-} from "./Components/v2/physical.ts";
-import { DrawableComponent, DrawableStore } from "./Components/v2/drawable.ts";
-import { Eid2PMComponent, Eid2PMStore } from "./Components/v2/eid2PMC.ts";
-import { TileComponentStore } from "./Components/v2/tileable.ts";
+} from "../Components/v2/physical.ts";
+import { DrawableComponent, DrawableStore } from "../Components/v2/drawable.ts";
+import { Eid2PMComponent, Eid2PMStore } from "../Components/v2/eid2PMC.ts";
+import { TileComponentStore } from "../Components/v2/tileable.ts";
+import { ActorSize, TileSize } from "../../Constants.ts";
 
 export const ShadowLimit = 1;
 export const NumberOfActors = 10;
 // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
-export const TileSize = 15;
-export const ActorSize = TileSize / 1;
+
 export type ISpaceTrashSystems = `physical` | "casting";
 // export const MapSize = Math.floor(
 //   Math.sqrt(shipSize * shipSize * numberOfShips)

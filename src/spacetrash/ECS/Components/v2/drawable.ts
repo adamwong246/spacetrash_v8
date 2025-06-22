@@ -1,27 +1,23 @@
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
 
-import { Sprite, Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { ISpaceTrashComponents } from "..";
 import {
   Component,
-  TwoDOneD_Component,
 } from "../../../../engine/VECS.ts/Component";
 import {
-  ComponentStore,
   EntityComponentStore,
-  OneDStore,
-  Store,
 } from "../../../../engine/VECS.ts/types";
 
-import { ActorComponent } from "../phase1";
 import {
   FloatPositionComponent,
   FloatPositionStore,
-  PositionComponent,
 } from "./physical";
-import { TileSize } from "../../System";
+
 import { LitableComponent } from "../casting/in";
+import { TileSize } from "../../../Constants";
+
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   sprite: PIXI.Sprite;

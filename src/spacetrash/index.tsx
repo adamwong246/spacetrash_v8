@@ -1,6 +1,3 @@
-// import { Ticker } from 'pixi.js';
-    
-    
 import * as THREE from "three";
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
@@ -11,8 +8,6 @@ import React from "react";
 import { StateSpace } from "../engine/StateSpace";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 
-import pixiShipMap from "../trash/Views/pixi2d";
-import { MapSize, SpaceTrashMainSystem, TileSize } from "./ECS/System";
 import {
   AttackableStore, CameraStore, LittableStore,
 } from "./ECS/Components/casting/in";
@@ -32,12 +27,13 @@ import {
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
 import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
-import threejsDroneVideo from "../trash/Views/threejs3d";
 import { DrawableStore, } from "./ECS/Components/v2/drawable";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
 import { Ticker } from 'pixi.js';
-import { TileComponent, TileComponentStore } from "./ECS/Components/v2/tileable";
+import { TileComponentStore } from "./ECS/Components/v2/tileable";
+import { TileSize } from "./Constants";
+import { SpaceTrashMainSystem, MapSize } from "./ECS/System/MainSystem";
 
 const fps = 30;
 const ticker = Ticker.shared;
