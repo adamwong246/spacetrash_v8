@@ -1,3 +1,5 @@
+const WarpField = require("warp-field");
+const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 import { SpaceTrash } from "../..";
 import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
 import { LightIncastingComponent, LightIncastingStore } from "../Components/casting/in";
@@ -120,6 +122,8 @@ export default async (game: SpaceTrash, delta: number) => {
     }
   }
 
+  const map1 = new WarpField.FieldOfViewMap('map1', MapSize, MapSize);
+
   // 3 deep
   // build set pieces grid
   ips.each(([eid, [ndx, s]]) => {
@@ -133,6 +137,9 @@ export default async (game: SpaceTrash, delta: number) => {
     setPieces.at(s.x, s.y)
     setPieces.at(s.x, s.y).tileType = t.tileType;
     setPieces.at(s.x, s.y).incasterId = eid
+
+    // if (Math.random() > 0.5) map1.addBody(s.x, s.y);
+    if (t.tileType === "WallTile") map1.addBody(s.x, s.y);
 
     drawables.withIf(eid, (dc) => {
       setPieces.at(s.x, s.y).drawing = dc[1];
@@ -157,9 +164,100 @@ export default async (game: SpaceTrash, delta: number) => {
     });
   });
 
+
+
+  runInitialMapBoundaryCheck();
+  runPlaceImmoveableSetPieces();
+  console.log(map1)
+  return  map1
+};
+
+const runPlaceImmoveableSetPieces = () => {
+  drawables.each(([eid, d, ks]) => {
+    ips.withIf(eid, ([pic, p]) => {
+      if (d.sprite) {
+        d.sprite.position.x = p.x * TileSize;
+        d.sprite.position.y = p.y * TileSize;
+      } else {
+        throw "the sprite should be loaded by now";
+      }
+
+      if (d.mesh) {
+        d.mesh.position.x = p.x * TileSize;
+        d.mesh.position.y = p.y * TileSize;
+      } else {
+        throw "the mesh should be loaded by now";
+      }
+    });
+  });
+};
+
+// boundary check against level map for objects with position
+function runInitialMapBoundaryCheck() {
+  // actors out of bounds check
+  fps.store.forEach((c) => {
+    if (c[1].x < MapBoundLow) {
+      c[1].x = MapBoundHigh;
+    }
+    if (c[1].x > MapBoundHigh) {
+      c[1].x = MapBoundLow;
+    }
+    if (c[1].y < MapBoundLow) {
+      c[1].y = MapBoundHigh;
+    }
+    if (c[1].y > MapBoundHigh) {
+      c[1].y = MapBoundLow;
+    }
+  });
+
+  // set piece out of bounds check
+  // necessary?
+  ips.each((c) => {
+    if (c[1].x < 0) {
+      c[1].x = MapSize;
+    }
+    if (c[1].x > MapSize) {
+      c[1].x = 0;
+    }
+    if (c[1].y < 0) {
+      c[1].y = MapSize;
+    }
+    if (c[1].y > MapSize) {
+      c[1].y = 0;
+    }
+  });
+}
+
+// const runFOV = () => {
+//   // var VISION_RANGE = 10;
+//   // var WORLD_SIZ  E = [MapSize, MapSize];
+//   // map = new Map([MapSize, MapSize]);
+
+//   map.iter(function (pos, tile) {
+//     const y = pos[1];
+//     const x = pos[0];
+//     (tile.wall = setPieces.store[y][x].tileType === "WallTile"),
+//       (tile.visible = true);
+//   });
+
+//   // setPieces.store.forEach((row) => {
+//   //   row.forEach((setpiece) => {
+//   //     if (setpiece.tileType === "WallTil") {
+
+//   //     }
+//   //   })
+//   // })
+
+//   //player is in the middle
+//   // var player_pos = [MapSize / 2, MapSize / 2];
+//   // map.tiles[player_pos[0]][player_pos[1]].wall = false;
+
+//   // compute(map, player_pos, Infinity);
+// };
+
+
   ///////////////////////////////////////////////////////////
-  // const WarpField = require("warp-field");
-  // const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
+
 
   // for (let y = 0; y < MapSize; y++) {
   //   for (let x = 0; x < MapSize; x++) {
@@ -215,91 +313,3 @@ export default async (game: SpaceTrash, delta: number) => {
   //     }
   //   });
   // }
-
-  runInitialMapBoundaryCheck();
-  runPlaceImmoveableSetPieces();
-  // runFOV();
-};
-
-// boundary check against level map for objects with position
-function runInitialMapBoundaryCheck() {
-  // actors out of bounds check
-  fps.store.forEach((c) => {
-    if (c[1].x < MapBoundLow) {
-      c[1].x = MapBoundHigh;
-    }
-    if (c[1].x > MapBoundHigh) {
-      c[1].x = MapBoundLow;
-    }
-    if (c[1].y < MapBoundLow) {
-      c[1].y = MapBoundHigh;
-    }
-    if (c[1].y > MapBoundHigh) {
-      c[1].y = MapBoundLow;
-    }
-  });
-
-  // set piece out of bounds check
-  // necessary?
-  ips.each((c) => {
-    if (c[1].x < 0) {
-      c[1].x = MapSize;
-    }
-    if (c[1].x > MapSize) {
-      c[1].x = 0;
-    }
-    if (c[1].y < 0) {
-      c[1].y = MapSize;
-    }
-    if (c[1].y > MapSize) {
-      c[1].y = 0;
-    }
-  });
-}
-
-// const runFOV = () => {
-//   // var VISION_RANGE = 10;
-//   // var WORLD_SIZ  E = [MapSize, MapSize];
-//   map = new Map([MapSize, MapSize]);
-
-//   map.iter(function (pos, tile) {
-//     const y = pos[1];
-//     const x = pos[0];
-//     (tile.wall = setPieces.store[y][x].tileType === "WallTile"),
-//       (tile.visible = true);
-//   });
-
-//   // setPieces.store.forEach((row) => {
-//   //   row.forEach((setpiece) => {
-//   //     if (setpiece.tileType === "WallTil") {
-
-//   //     }
-//   //   })
-//   // })
-
-//   //player is in the middle
-//   // var player_pos = [MapSize / 2, MapSize / 2];
-//   // map.tiles[player_pos[0]][player_pos[1]].wall = false;
-
-//   // compute(map, player_pos, Infinity);
-// };
-
-const runPlaceImmoveableSetPieces = () => {
-  drawables.each(([eid, d, ks]) => {
-    ips.withIf(eid, ([pic, p]) => {
-      if (d.sprite) {
-        d.sprite.position.x = p.x * TileSize;
-        d.sprite.position.y = p.y * TileSize;
-      } else {
-        throw "the sprite should be loaded by now";
-      }
-
-      if (d.mesh) {
-        d.mesh.position.x = p.x * TileSize;
-        d.mesh.position.y = p.y * TileSize;
-      } else {
-        throw "the mesh should be loaded by now";
-      }
-    });
-  });
-};

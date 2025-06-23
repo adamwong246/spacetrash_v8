@@ -1,6 +1,10 @@
+const WarpField = require("warp-field");
 import { SpaceTrash } from "../..";
 import { ActorSize, FRICTION_CONSTANT, MapSize } from "../../Constants";
-import { LightIncastingComponent, LightIncastingStore } from "../Components/casting/in";
+import {
+  LightIncastingComponent,
+  LightIncastingStore,
+} from "../Components/casting/in";
 import {
   LightOutcastingStore,
   LightOutcastingComponent,
@@ -36,7 +40,7 @@ let temps: [number, number] = [-1, -1];
 let roundX: number;
 let roundY: number;
 
-export default (game: SpaceTrash, delta: number) => {
+export default (game: SpaceTrash, delta: number, fovMap) => {
   // Level 0 - "Component Stores"
   drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
@@ -47,7 +51,7 @@ export default (game: SpaceTrash, delta: number) => {
   ips = game.componentStores[
     "IntegerPositionComponent"
   ] as IntegerPositionStore;
-  
+
   incasters = game.componentStores[
     "LightIncastingComponent"
   ] as LightIncastingStore;
@@ -60,10 +64,10 @@ export default (game: SpaceTrash, delta: number) => {
     "LightPositionComponent"
   ] as LightPositionStore;
 
-  runPhysics();
+  runPhysics(fovMap);
 };
 
-function runPhysics() {
+function runPhysics(fovMap) {
   let repaintLights = false;
 
   fmc.store.forEach(([eid, f]) => {
@@ -72,21 +76,18 @@ function runPhysics() {
     if (classification === "SpaceTrashBot") {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
+
       boundaryCheckBot(position);
       collisions();
-      // collisionBetweenActors();
+
       const lightChanged = updateBotPosition(position, f);
-      console.log("lightchanged", lightChanged);
+
       if (lightChanged) {
         repaintLights = true;
       }
       drawables.updatePostion(eid, position);
     } else if (classification === "Tile") {
       throw "not implemented";
-      // const p = ips.get(eidOfClassification);
-      // if (!p) throw "integer position component not found";
-      // updateTilePosition(p, f);
-      // boundaryCheckTile(p);
     } else {
       debugger;
       throw "idk";
@@ -95,29 +96,16 @@ function runPhysics() {
 
   if (repaintLights) {
     resetIllumination();
-    runIlluminationV7();
+    runIlluminationV7(fovMap);
 
-      for (let y = 0; y < MapSize; y++) {
-        for (let x = 0; x < MapSize; x++) {
-          // drawables.store
-          // debugger
-          setPieces.store[y][x].drawing.mesh.visible = setPieces.store[y][x].luminance > 0
-          setPieces.store[y][x].drawing.sprite.visible = setPieces.store[y][x].luminance > 0
-          // setPieces.store[y][x].drawing.mesh.visible === setPieces.store[y][x].luminance
-          // setPieces.store[y][x].drawing.sprite.visible === setPieces.store[y][x].luminance
-          // for (let yy = 0; yy < MapSize; yy++) {
-          //   setPieces.store[y][x].FOV[yy] = [];
-          //   for (let xx = 0; xx < MapSize; xx++) {
-          //     setPieces.store[y][x].FOV[yy][xx] = [];
-          //   }
-          // }
-        }
+    for (let y = 0; y < MapSize; y++) {
+      for (let x = 0; x < MapSize; x++) {
+        setPieces.store[y][x].drawing.mesh.visible =
+          setPieces.store[y][x].luminance > 0;
+        setPieces.store[y][x].drawing.sprite.visible =
+          setPieces.store[y][x].luminance > 0;
       }
-    
-    // setPieces.store.
-    // drawables.each((eid2PMSs, [x, ds, s]) => {
-
-    // })
+    }
   }
 }
 
@@ -304,74 +292,88 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
   return squaredDist <= Math.sqrt(ActorSize / 2);
 }
 
-function runIlluminationV7() {
+function runIlluminationV7(fovMap) {
   outcasters.each(([ns, [emid, outCaster], n]) => {
     let emitterPostion = fps.get(emid);
-    
-    if (emitterPostion) {
 
+    if (emitterPostion) {
       let x = Math.round(emitterPostion.x);
       if (x >= MapSize - 1) x = 0;
       if (x < 0) x = MapSize - 1;
-  
+
       let y = Math.round(emitterPostion.y);
       if (y >= MapSize - 1) y = 0;
       if (y < 0) y = MapSize - 1;
 
-
       if (setPieces.store[y][x]) {
-      
-      // illuminate the space upon which we stand
-      illuminate(emitterPostion.x, emitterPostion.y);
+        // illuminate the space upon which we stand
+        illuminate(emitterPostion.x, emitterPostion.y);
 
-      // (di, dj) is a vector - direction in which we move right now
-      let di = 1;
-      let dj = 0;
-      // length of current segment
-      let segment_length = 1;
-      // current position (i, j) and how much of current segment we passed
-      let i = 0;
-      let j = 0;
-      let segment_passed = 0;
-      // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
-      for (let k = 0; k < 100; k++) {
-        // make a step, add 'direction' vector (di, dj) to current position (i, j)
-        i += di;
-        j += dj;
-        ++segment_passed;
-        // if (x > MapSize) break;
-        // if (x < 0) break;
-        // if (y > MapSize) break;
-        // if (y < 0) break;
-        // console.log("ensetpiecetity", setpiece(i + e.x, j + e.y))
-        // const eId = littableActorsUpon(x, y)?.entity;
-        // const entity = entities[eId];
-        // if (entity) {
-        //   // console.log("entity", entity)
-        //   if (entity.tileType !== "FloorTile") {
-        //     onTarget = true;
-        //     // console.log("collide!", x, y, entity)
-        //   } else {
-        //     onTarget = false;
-        //   }
-        // } else {
-        //   // console.log("idk", eId, x, y)
-        // }
-        illuminate(i + emitterPostion.x, j + emitterPostion.y);
-        if (segment_passed == segment_length) {
-          // done with current segment
-          segment_passed = 0;
-          // 'rotate' directions
-          let buffer = di;
-          di = -dj;
-          dj = buffer;
-          // increase segment length if necessary
-          if (dj == 0) {
-            ++segment_length;
+        const fov = WarpField.computeFieldOfView(fovMap, x, y, 20);
+
+        // (di, dj) is a vector - direction in which we move right now
+        let di = 1;
+        let dj = 0;
+        // length of current segment
+        let segment_length = 1;
+        // current position (i, j) and how much of current segment we passed
+        let i = 0;
+        let j = 0;
+        let segment_passed = 0;
+        // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
+        for (let k = 0; k < Math.pow(10, 2) - 1; k++) {
+          // make a step, add 'direction' vector (di, dj) to current position (i, j)
+          i += di;
+          j += dj;
+          ++segment_passed;
+          // if (x > MapSize) break;
+          // if (x < 0) break;
+          // if (y > MapSize) break;
+          // if (y < 0) break;
+          // console.log("ensetpiecetity", setpiece(i + e.x, j + e.y))
+          // const eId = littableActorsUpon(x, y)?.entity;
+          // const entity = entities[eId];
+          // if (entity) {
+          //   // console.log("entity", entity)
+          //   if (entity.tileType !== "FloorTile") {
+          //     onTarget = true;
+          //     // console.log("collide!", x, y, entity)
+          //   } else {
+          //     onTarget = false;
+          //   }
+          // } else {
+          //   // console.log("idk", eId, x, y)
+          // }
+
+          const x2 = Math.round(j + x);
+          const y2 = Math.round(i + y);
+          // const isVisible = fov.getVisible(x2, y2);
+          // console.log("x, y", x, y);
+          // console.log("i, j", i, j);
+          // console.log("x2, y2", x2, y2);
+          // console.log(isVisible);
+          // if (x < 0) debugger
+          // illuminate(MapSize / 2, MapSize / 2);
+
+          // TODO 
+          if (true) {
+            illuminate(x2, y2);
+          }
+
+          if (segment_passed == segment_length) {
+            // done with current segment
+            segment_passed = 0;
+            // 'rotate' directions
+            let buffer = di;
+            di = -dj;
+            dj = buffer;
+            // increase segment length if necessary
+            if (dj == 0) {
+              ++segment_length;
+            }
           }
         }
       }
-    }
     }
     // debugger;
 
@@ -383,15 +385,10 @@ function runIlluminationV7() {
     // let y = Math.round(actor.y);
     // if (x >= MapSize) x = 0;
     // if (y >= MapSize) y = 0;
-
-
-
-    
   });
 }
 
 const illuminate = (xFloat: number, yFloat: number): any => {
-  
   const x = Math.round(xFloat);
   const y = Math.round(yFloat);
   const mSize = MapSize;
@@ -419,22 +416,17 @@ const illuminate = (xFloat: number, yFloat: number): any => {
 
   if (!incaster) {
     // console.error("litable not found");
-    
+
     return;
   }
-
-  
-
 
   // const [eid3, litableComponent] = litable;
   incaster.luminance = 2;
 
-
   const s = setPieces.at(x, y);
-  
+
   if (s.luminance !== incaster.luminance) {
     s.luminance = incaster.luminance;
-
   }
 };
 

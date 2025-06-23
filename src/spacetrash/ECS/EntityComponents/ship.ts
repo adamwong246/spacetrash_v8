@@ -92,49 +92,49 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     // this.addToMap(new WallTile(15, 15));
 
     // a room
-    // this.addToMap(new WallTile(15, 15));
-    // this.addToMap(new WallTile(16, 15));
-    // this.addToMap(new WallTile(17, 15));
-    // this.addToMap(new WallTile(18, 15));
-    // this.addToMap(new WallTile(19, 15));
+    this.addToMap(new WallTile(15, 15));
+    this.addToMap(new WallTile(16, 15));
+    this.addToMap(new WallTile(17, 15));
+    this.addToMap(new WallTile(18, 15));
+    this.addToMap(new WallTile(19, 15));
+    this.addToMap(new WallTile(20, 15));
+
+    this.addToMap(new WallTile(20, 16));
+    this.addToMap(new WallTile(20, 17));
+    this.addToMap(new WallTile(20, 18));
+    this.addToMap(new WallTile(20, 19));
+    this.addToMap(new WallTile(20, 20));
+
+    this.addToMap(new WallTile(19, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new WallTile(15, 20));
+
+    this.addToMap(new WallTile(0, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new WallTile(15, 20));
+
+    this.addToMap(new WallTile(15, 16));
+    this.addToMap(new WallTile(15, 17));
+    this.addToMap(new WallTile(15, 18));
+    this.addToMap(new WallTile(15, 19));
+    this.addToMap(new WallTile(15, 20));
     // this.addToMap(new WallTile(20, 15));
+    this.addToMap(new WallTile(20, 16));
+    this.addToMap(new WallTile(20, 17));
+    this.addToMap(new WallTile(20, 18));
+    this.addToMap(new WallTile(20, 19));
+    this.addToMap(new WallTile(20, 20));
+    this.addToMap(new WallTile(15, 20));
+    this.addToMap(new WallTile(16, 20));
+    this.addToMap(new WallTile(17, 20));
+    this.addToMap(new WallTile(18, 20));
+    this.addToMap(new WallTile(19, 20));
 
-    // this.addToMap(new WallTile(20, 16));
-    // this.addToMap(new WallTile(20, 17));
-    // this.addToMap(new WallTile(20, 18));
-    // this.addToMap(new WallTile(20, 19));
-    // this.addToMap(new WallTile(20, 20));
-
-    // this.addToMap(new WallTile(19, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(15, 20));
-
-    // this.addToMap(new WallTile(0, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(15, 20));
-
-    // this.addToMap(new WallTile(15, 16));
-    // this.addToMap(new WallTile(15, 17));
-    // this.addToMap(new WallTile(15, 18));
-    // this.addToMap(new WallTile(15, 19));
-    // this.addToMap(new WallTile(15, 20));
-    // // this.addToMap(new WallTile(20, 15));
-    // this.addToMap(new WallTile(20, 16));
-    // this.addToMap(new WallTile(20, 17));
-    // this.addToMap(new WallTile(20, 18));
-    // this.addToMap(new WallTile(20, 19));
-    // this.addToMap(new WallTile(20, 20));
-    // this.addToMap(new WallTile(15, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(19, 20));
-
-    for (let i = 0; i < MapSize * 1; i++) {
+    for (let i = 0; i < MapSize * 3; i++) {
       this.addToMap(
         new WallTile(
           Math.floor(Math.random() * MapSize),

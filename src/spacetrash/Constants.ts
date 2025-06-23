@@ -38,10 +38,11 @@ export const FPS = 30;
 const numberOfShips = 5
 const shipLength = 35;
 // const shipSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
-export const MapSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
-export const NumberOfActors = 50; // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
+// export const MapSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
+export const MapSize = 15
+export const NumberOfActors = 1; //numberOfShips * 9
 
-export const TileSize = 25;
+export const TileSize = 20;
 const actorScaler = 1
 export const ActorSize = TileSize * actorScaler;
 

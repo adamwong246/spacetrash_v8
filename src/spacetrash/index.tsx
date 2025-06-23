@@ -518,7 +518,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // console.log("camera", camera.position)
 
     // camera.rotation.x = camera.rotation.x + 0.001;
-    camera.rotation.y = camera.rotation.y + 0.01;
+    camera.rotation.y = camera.rotation.y + 0.02;
     // camera.rotation.y = camera.rotation.y + 0.001;
 
     // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();

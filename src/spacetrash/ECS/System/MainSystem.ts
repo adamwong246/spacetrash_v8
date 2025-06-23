@@ -10,6 +10,7 @@ import { MapSize } from "../../Constants.ts";
 export type ISpaceTrashSystems = `physical` | "casting";
 
 let firstTick = true;
+let fovMap;
 
 class MainSystem extends System {
   mapSize: number;
@@ -21,14 +22,14 @@ class MainSystem extends System {
   }
 
   tick(delta: number, game: SpaceTrash): Promise<boolean> {
-    return new Promise((res) => {
+    return new Promise(async (res) => {
       if (firstTick) {
         firstTick = false;
 
-        runFirstTick(game, delta);
+        fovMap = await runFirstTick(game, delta);
         res(true);
       } else {
-        runEveryOtherTick(game, delta);
+        runEveryOtherTick(game, delta, fovMap);
       }
     });
   }
