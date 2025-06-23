@@ -1,7 +1,7 @@
 import { EntityComponent } from "../../../engine/VECS.ts/EntityComponent";
 
 export type ITiles =
-  `Door` | 
+  `VoidTile` | `Door` | 
   'SouthWest' | 'SouthEast' | 'NorthWest' | 'NorthEast' |
   `FloorTile` | `TileA` | `TileB` | `North` |
   `TileC` | `TileD` | `East` | `TileE` |

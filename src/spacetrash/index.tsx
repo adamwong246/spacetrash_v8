@@ -1,8 +1,9 @@
 import React from "react";
-import { Ticker } from 'pixi.js';
+import { Text, TextStyle, Ticker } from 'pixi.js';
 import * as THREE from "three";
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
+import voidPng from "./Assets/void.png";
 import * as PIXI from "pixi.js";
 import {
   DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps
@@ -55,7 +56,7 @@ const defToRad = (d: number) => (d * Math.PI) / 180;
 var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
 camera.rotateX(defToRad(-90));
 camera.rotateZ(defToRad(180));
-camera.position.z = (TileSize/4);
+camera.position.z = (TileSize / 4);
 
 
 let shipMapMouseX = 0;
@@ -113,7 +114,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   SetPieceComponent: SetPieceStore,
   ActorComponent: ActorStore
 }, number> {
-  
+
 
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
@@ -209,6 +210,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         self.turnRight();
       }
       else if (isNumeric((event.key)) && self.buffer === "") {
+        debugger
         self.focusVideoWindow(event.key)
       }
       else if (isAlphabetic(event.key)) {
@@ -247,16 +249,21 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       "https://pixijs.com/assets/bunny.png",
       stone,
       brick,
+      voidPng,
+      'https://pixijs.com/assets/bitmap-font/desyrel.xml'
     ])
-    .then(() => {
+      .then(() => {
 
         PIXI.Texture.from(
           "https://pixijs.com/assets/bunny.png"
         );
         PIXI.Texture.from(stone);
         PIXI.Texture.from(brick);
+        PIXI.Texture.from(voidPng);
 
       })
+
+    
 
 
     super.start()
@@ -286,7 +293,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       );
     },
 
-    vid: (props: IDockviewPanelHeaderProps<IState>) => {
+    bot: (props: IDockviewPanelHeaderProps<IState>) => {
       return (
         <BotWindow game={this} />
       );
@@ -295,7 +302,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
     term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
   }
-
 
   onDockviewReady(event: DockviewReadyEvent) {
     super.onDockviewReady(event);
@@ -327,10 +333,21 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.focusOnTermInput()
   }
 
+
   focusVideoWindow(s: string) {
     const n: number = Number(s);
     if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
+
+    // const drawables = (this.stores['DrawableComponent'] as DrawableStoreV2)
+    // const oldBotId = this.bots[n][0]
+
     this.videoFeed = n;
+    
+    
+    // drawables.updateChar(n);
+
+    
+
 
     this.unFocusOnTermInput();
     super.focusWindowById(`vid`)
@@ -360,48 +377,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
   stopRight() {
     this.right = false;
-  }
-
-  openAllWindows() {
-    this.dockviewAPI.component.addPanel({
-      id: 'bots',
-      component: 'bots',
-      floating: {
-        position: { left: 90, top: 90 },
-        width: 600,
-        height: 400
-      },
-      params: {
-
-      }
-    })
-
-    this.dockviewAPI.component.addPanel({
-      id: 'vid',
-      component: 'vid',
-      floating: {
-        position: { left: 50, top: 50 },
-        width: 1200,
-        height: 1200
-      },
-      params: {
-
-      }
-    })
-
-    this.dockviewAPI.component.addPanel({
-      id: 'map',
-      component: 'map',
-      floating: {
-        position: { left: 100, top: 150 },
-        width: 900,
-        height: 700
-      },
-      params: {
-
-      }
-    })
-
   }
 
   positionOfBot(eid: number): { x: number; y: number } {
@@ -455,7 +430,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // throw new Error("Method not implemented.");
   }
 
-
   focusWindowById(s: string, p: string) {
     if (s == 'map') {
       this.focusMapWindow();
@@ -485,10 +459,22 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     parentComponent: HTMLElement
   ) {
     super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
-    
+
     if (key === "bot") {
       this.threejsBotCanvasRef = canvas;
-      this.threejsBotParentRef = parentComponent;  
+      this.threejsBotParentRef = parentComponent;
+
+      this.threejsRenderer = new THREE.WebGLRenderer({
+        canvas,
+        context: canvas.getContext("webgl2") as WebGL2RenderingContext,
+        antialias: true,
+      });
+
+
+    }
+    if (key === "map") {
+      this.pixijsBotCanvasRef = canvas;
+      this.pixijsBotParentRef = parentComponent;
 
       await pixi2dApp.init({
         sharedTicker: true,
@@ -497,16 +483,13 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         width: (MapSize + 7) * TileSize,
         height: (MapSize + 7) * TileSize,
       });
-    }
-    if (key === "map") {
-      this.pixijsBotCanvasRef = canvas;
-      this.pixijsBotParentRef = parentComponent;
 
-      this.threejsRenderer = new THREE.WebGLRenderer({
-        canvas,
-        context: canvas.getContext("webgl2") as WebGL2RenderingContext,
-        antialias: true,
-      });
+      // const basicText = new Text('Basic text in pixi');
+
+      // basicText.p
+      // basicText.y = 100;
+    
+      
     }
 
   }
@@ -527,7 +510,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // mapsize 50, 5000, 5000  2.7ms
     // mapsize 50, 500,  500   1.2ms
     // mapsize 50, 5,    5     0.8ms
-    this.threejsRenderer.setSize(800, 800);
+    this.threejsRenderer.setSize(500, 500);
 
     // mapsize 50, ratio 0.1 = 1.2ms
     // mapsize 50, ratio 1.0 = 1.2
@@ -545,11 +528,16 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     Drawings.each(([a, d, c]) => {
       pixi2dApp.stage.addChild(d.sprite)
+      
+      // const basicText = new Text('Basic text in pixi');
+      pixi2dApp.stage.addChild(d.char);
+      // pixi2dApp.stage.addChild(basicText);
+
       scene.add(d.mesh)
     })
-    
+
     this.unpause();
-    
+
   }
 
 }

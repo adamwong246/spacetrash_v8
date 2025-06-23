@@ -1,3 +1,5 @@
+import { Text, TextStyle, Ticker } from 'pixi.js';
+
 const WarpField = require("warp-field");
 const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 import { SpaceTrash } from "../..";
@@ -7,7 +9,7 @@ import { LightOutcastingComponent, LightOutcastingStore } from "../Components/ca
 import { SetPieceComponent, SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
 import { ClassificationStore } from "../Components/v2/classifiable";
-import { DrawableStoreV2, DrawableComponent } from "../Components/v2/drawable";
+import { DrawableStoreV2, DrawableComponent, IChars } from "../Components/v2/drawable";
 import { Eid2PMStore, Eid2PMComponent } from "../Components/v2/eid2PMC";
 import {
   LightingComponentStore,
@@ -41,6 +43,8 @@ let setPieceLit: LightingComponentStore;
 let setPieces: SetPieceStore;
 let tiles: TileComponentStore;
 let incasters: LightIncastingStore;
+
+let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
@@ -168,9 +172,20 @@ export default async (game: SpaceTrash, delta: number) => {
 
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
-  console.log(map1)
+  runSetupBotFleet(game);
   return  map1
 };
+
+// Turn our bot fleet into drawables.
+const runSetupBotFleet = (game: SpaceTrash) => {
+  Object.entries(game.bots).forEach(([b, bb], x, [xx, [s, [eid, s2]]]) => {
+    
+    drawables.updateChar(eid, new Text("!!!"));
+    // game.pixijsRenderer.stage.addChild(drawables.get(eid).char);
+    // game.pixijsRenderer.render
+
+  })
+}
 
 const runPlaceImmoveableSetPieces = () => {
   drawables.each(([eid, d, ks]) => {
@@ -188,6 +203,9 @@ const runPlaceImmoveableSetPieces = () => {
       } else {
         throw "the mesh should be loaded by now";
       }
+
+      d.char.position.x = p.x * TileSize;
+      d.char.position.y = p.y * TileSize;
     });
   });
 };

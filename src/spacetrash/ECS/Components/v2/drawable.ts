@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
+import { Text, TextStyle, Ticker } from 'pixi.js';
 
 import { Sprite } from "pixi.js";
 import { ISpaceTrashComponents } from "..";
@@ -10,15 +11,34 @@ import { FloatPositionComponent, FloatPositionStore } from "./physical";
 
 import { LightIncastingComponent } from "../casting/in";
 import { TileSize } from "../../../Constants";
+import { SpaceTrash } from "../../..";
+
+export type IChars = Text;
+
+const style = new PIXI.TextStyle({
+  fontFamily: "\"Courier New\", Courier, monospace",
+  "fontSize": TileSize
+});
+
+const character = (s: string) => {
+  const t = new Text(s, style);
+  return t;
+}
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   sprite: PIXI.Sprite;
   mesh: THREE.Mesh;
+  char: IChars = new Text('mark 3');
 
-  constructor(sprite: PIXI.Sprite, mesh: THREE.Mesh) {
+  constructor(
+    sprite: PIXI.Sprite,
+    mesh: THREE.Mesh,
+    char: IChars = character('?')
+  ) {
     super();
     this.mesh = mesh;
     this.sprite = sprite;
+    this.char = char;
   }
 
   setMesh(m: THREE.Mesh) {
@@ -27,6 +47,10 @@ export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
 
   setSprite(s: Sprite) {
     this.sprite = s;
+  }
+
+  setChar(s: IChars) {
+    this.char = s;
   }
 }
 
@@ -39,7 +63,7 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
   }
 
   withIf(i: number, cb: (i: [number, DrawableComponent, string]) => void) {
-    const x = this.store.get(i)
+    const x = this.store.get(i);
     if (x) cb([Number(i), x, i]);
   }
 
@@ -69,11 +93,15 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
     throw new Error("Method not implemented.");
   }
 
-  updatePostion(eid: number, p: FloatPositionComponent) {
+  updateChar(eid: number, p: IChars) {
     const d = this.get(eid);
+    d.char = p;
+    debugger
+    return
+  }
 
-    // console.log("mark2", d.sprite)
-
+  updatePostion(eid: number, p: FloatPositionComponent, updateChars: boolean) {
+    const d = this.get(eid);
     if (d.sprite) {
       d.sprite.position.x = p.x * TileSize;
       d.sprite.position.y = p.y * TileSize;
@@ -81,6 +109,10 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
     if (d.mesh) {
       d.mesh.position.x = p.x * TileSize;
       d.mesh.position.y = p.y * TileSize;
+    }
+    if (updateChars) {
+      d.char.position.x = Math.round(p.x) * TileSize;
+      d.char.position.y = Math.round(p.y) * TileSize;
     }
   }
 

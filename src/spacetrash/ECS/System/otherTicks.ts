@@ -1,6 +1,6 @@
 const WarpField = require("warp-field");
 import { SpaceTrash } from "../..";
-import { ActorSize, FRICTION_CONSTANT, MapSize } from "../../Constants";
+import { ActorSize, FRICTION_CONSTANT, MapSize, SPEED_CONSTANT } from "../../Constants";
 import {
   LightIncastingComponent,
   LightIncastingStore,
@@ -40,7 +40,10 @@ let temps: [number, number] = [-1, -1];
 let roundX: number;
 let roundY: number;
 
+let GAME;
 export default (game: SpaceTrash, delta: number, fovMap) => {
+  GAME = game;
+
   // Level 0 - "Component Stores"
   drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
@@ -65,7 +68,16 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   ] as LightPositionStore;
 
   runPhysics(fovMap);
+  // runCharacters()
 };
+
+// function runCharacters() {
+//   actors.each((n, a) => {
+//     if GAME.videoFeed
+//   })
+  
+  
+
 
 function runPhysics(fovMap) {
   let repaintLights = false;
@@ -78,14 +90,16 @@ function runPhysics(fovMap) {
       // if (!p) throw "floating position component not found";
 
       boundaryCheckBot(position);
-      collisions();
+      collisionsAndVideoControls();
 
-      const lightChanged = updateBotPosition(position, f);
+      const gridChanges = updateBotPosition(position, f);
 
-      if (lightChanged) {
+      if (gridChanges) {
         repaintLights = true;
       }
-      drawables.updatePostion(eid, position);
+
+      drawables.updatePostion(eid, position, gridChanges);
+
     } else if (classification === "Tile") {
       throw "not implemented";
     } else {
@@ -104,23 +118,25 @@ function runPhysics(fovMap) {
           setPieces.store[y][x].luminance > 0;
         setPieces.store[y][x].drawing.sprite.visible =
           setPieces.store[y][x].luminance > 0;
+        
+
       }
     }
   }
 }
 
 function resetIllumination() {
-  incasters.each(([li, z]) => {
-    z.luminance = 0;
-  });
-  for (let y = 0; y < MapSize; y++) {
-    for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x].luminance = -1;
-    }
-  }
+    // incasters.each(([li, z]) => {
+    //   z.luminance = 0;
+    // });
+    // for (let y = 0; y < MapSize; y++) {
+    //   for (let x = 0; x < MapSize; x++) {
+    //     setPieces.store[y][x].luminance = -1;
+    //   }
+    // }
 }
 
-const collisions = () => {
+const collisionsAndVideoControls = () => {
   actors.each((i, a) => {
     // x and y are the "look ahead" pointer
     let x = Math.round(a.position.x + a.motion.dx);
@@ -130,101 +146,101 @@ const collisions = () => {
     if (y >= MapSize - 1) y = 0;
     if (y < 0) y = MapSize - 1;
 
-    // if the look-ahead tile is floor
-    if (setPieces.tileIsAt(x, y, "FloorTile")) {
-      magX = Math.abs(a.motion.dx);
-      magY = Math.abs(a.motion.dy);
-      roundX = Math.round(a.position.x);
-      roundY = Math.round(a.position.y);
+    // // if the look-ahead tile is floor
+    // if (setPieces.tileIsAt(x, y, "FloorTile")) {
+    //   magX = Math.abs(a.motion.dx);
+    //   magY = Math.abs(a.motion.dy);
+    //   roundX = Math.round(a.position.x);
+    //   roundY = Math.round(a.position.y);
 
-      if (x < roundX) {
-        if (y < roundY) {
-          // NorthWest
-          if (magX < magY) {
-            a.motion.dy = a.motion.dy * -1;
-          } else {
-            a.motion.dx = a.motion.dx * -1;
-          }
-        } else if (y > roundY) {
-          // SouthWest
-          if (magX > magY) {
-            a.motion.dx = a.motion.dx * -1;
-          } else {
-            a.motion.dy = a.motion.dy * -1;
-          }
-        } else {
-          // West
-          a.motion.dx = a.motion.dx * -1;
-        }
-      } else if (x > roundX) {
-        if (y < roundY) {
-          // NorthEast
-          if (magX > magY) {
-            a.motion.dx = a.motion.dx * -1;
-          } else {
-            a.motion.dy = a.motion.dy * -1;
-          }
-        } else if (roundY) {
-          // SouthEast
+    //   if (x < roundX) {
+    //     if (y < roundY) {
+    //       // NorthWest
+    //       if (magX < magY) {
+    //         a.motion.dy = a.motion.dy * -1;
+    //       } else {
+    //         a.motion.dx = a.motion.dx * -1;
+    //       }
+    //     } else if (y > roundY) {
+    //       // SouthWest
+    //       if (magX > magY) {
+    //         a.motion.dx = a.motion.dx * -1;
+    //       } else {
+    //         a.motion.dy = a.motion.dy * -1;
+    //       }
+    //     } else {
+    //       // West
+    //       a.motion.dx = a.motion.dx * -1;
+    //     }
+    //   } else if (x > roundX) {
+    //     if (y < roundY) {
+    //       // NorthEast
+    //       if (magX > magY) {
+    //         a.motion.dx = a.motion.dx * -1;
+    //       } else {
+    //         a.motion.dy = a.motion.dy * -1;
+    //       }
+    //     } else if (roundY) {
+    //       // SouthEast
 
-          if (magX > magY) {
-            a.motion.dy = a.motion.dy * -1;
-          } else {
-            a.motion.dx = a.motion.dx * -1;
-          }
-        } else {
-          // East
-          a.motion.dx = a.motion.dx * -1;
-        }
-      } else {
-        if (y < roundY) {
-          // North
-          a.motion.dy = a.motion.dy * -1;
-        } else {
-          // South
-          a.motion.dy = a.motion.dy * -1;
-        }
-      }
-    } else {
-      // no-opt
-    }
-
-    actors.each((ii, aa) => {
-      // don't collide against self
-      if (i !== ii) {
-        if (actorsCollide(a.position, aa.position)) {
-          a.position.x = a.position.x - a.motion.dx;
-          a.position.y = a.position.y - a.motion.dy;
-          aa.position.x = aa.position.x - aa.motion.dx;
-          aa.position.y = aa.position.y - aa.motion.dy;
-          temps[0] = a.motion.dx;
-          temps[1] = a.motion.dy;
-          a.motion.dx = aa.motion.dx;
-          a.motion.dy = aa.motion.dy;
-          aa.motion.dx = temps[0];
-          aa.motion.dy = temps[1];
-        }
-      }
-    });
-
-    // const SPEED_CONSTANT = 0.0001;
-    // if (Number(i) === GAME.videoFeed) {
-    //   if (GAME.forward === true) {
-    //     a.motion.dy = a.motion.dy - SPEED_CONSTANT;
+    //       if (magX > magY) {
+    //         a.motion.dy = a.motion.dy * -1;
+    //       } else {
+    //         a.motion.dx = a.motion.dx * -1;
+    //       }
+    //     } else {
+    //       // East
+    //       a.motion.dx = a.motion.dx * -1;
+    //     }
+    //   } else {
+    //     if (y < roundY) {
+    //       // North
+    //       a.motion.dy = a.motion.dy * -1;
+    //     } else {
+    //       // South
+    //       a.motion.dy = a.motion.dy * -1;
+    //     }
     //   }
-
-    //   if (GAME.back === true) {
-    //     a.motion.dy = a.motion.dy + SPEED_CONSTANT;
-    //   }
-
-    //   if (GAME.left === true) {
-    //     a.motion.dx = a.motion.dx - SPEED_CONSTANT;
-    //   }
-
-    //   if (GAME.right === true) {
-    //     a.motion.dx = a.motion.dx + SPEED_CONSTANT;
-    //   }
+    // } else {
+    //   // no-opt
     // }
+
+    // actors.each((ii, aa) => {
+    //   // don't collide against self
+    //   if (i !== ii) {
+    //     if (actorsCollide(a.position, aa.position)) {
+    //       a.position.x = a.position.x - a.motion.dx;
+    //       a.position.y = a.position.y - a.motion.dy;
+    //       aa.position.x = aa.position.x - aa.motion.dx;
+    //       aa.position.y = aa.position.y - aa.motion.dy;
+    //       temps[0] = a.motion.dx;
+    //       temps[1] = a.motion.dy;
+    //       a.motion.dx = aa.motion.dx;
+    //       a.motion.dy = aa.motion.dy;
+    //       aa.motion.dx = temps[0];
+    //       aa.motion.dy = temps[1];
+    //     }
+    //   }
+    // });
+
+
+    if (Number(i) === GAME.videoFeed) {
+      if (GAME.forward === true) {
+        a.motion.dy = a.motion.dy - SPEED_CONSTANT;
+      }
+
+      if (GAME.back === true) {
+        a.motion.dy = a.motion.dy + SPEED_CONSTANT;
+      }
+
+      if (GAME.left === true) {
+        a.motion.dx = a.motion.dx - SPEED_CONSTANT;
+      }
+
+      if (GAME.right === true) {
+        a.motion.dx = a.motion.dx + SPEED_CONSTANT;
+      }
+    }
   });
 };
 
@@ -274,6 +290,7 @@ function updatePosition(
   const hasChangedPosition = prevY !== nextY || prevX !== nextX;
   return hasChangedPosition;
 
+
   // if (Number.isNaN(p.y)) {
   //   throw "position is Nan?FloatMovingComponent";
   // }
@@ -321,7 +338,7 @@ function runIlluminationV7(fovMap) {
         let j = 0;
         let segment_passed = 0;
         // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
-        for (let k = 0; k < Math.pow(10, 2) - 1; k++) {
+        for (let k = 0; k < Math.pow(25, 2) - 1; k++) {
           // make a step, add 'direction' vector (di, dj) to current position (i, j)
           i += di;
           j += dj;

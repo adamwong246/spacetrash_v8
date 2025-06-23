@@ -109,8 +109,55 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
   }
 
 
+  openAllWindows() {
 
-  focusWindowById(s: string, p?: any) {
+
+
+    this.dockviewAPI.component.addPanel({
+      id: 'bots',
+      component: 'bots',
+      floating: {
+        position: { left: 90, top: 90 },
+        width: 500,
+        height: 500
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'vid',
+      component: 'vid',
+      floating: {
+        position: { left: 50, top: 50 },
+        width: 500,
+        height: 500
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'map',
+      component: 'map',
+      floating: {
+        position: { left: 100, top: 150 },
+        width: 600,
+        height: 600
+      },
+      params: {
+
+      }
+    })
+
+
+
+  }
+
+
+  focusWindowById(s: string) {
     this.dockviewAPI.panels.forEach((p) => {
       if (p.id === s) {
         p.focus();

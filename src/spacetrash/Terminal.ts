@@ -196,6 +196,7 @@ export abstract class TerminalGame<IRenderings, II, ICanvases> extends DesktopGa
     };
   }
 
+  
   commandNotFound(unknownCommand: string) {
     this.returnCommand(commandNotFoundTermLine(unknownCommand));
     this.updateTerminalWindow();

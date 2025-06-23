@@ -2,7 +2,23 @@ import React, { useEffect } from "react";
 import { SpaceTrash } from "..";
 
 const TableCell = (props: { name: string }) => {
-  return <td>{props.name}</td>
+  return <td
+    style={{
+      width: '150px',
+      height: '150px',
+      border: "1px solid white"
+    }}
+
+  >
+    <div
+      style={{
+        aspectRatio: '1/1',
+      }}
+
+    >
+      {props.name}
+    </div>
+  </td>
 }
 
 export const BotsWindow = (props: { game: SpaceTrash }) => {
@@ -14,7 +30,7 @@ export const BotsWindow = (props: { game: SpaceTrash }) => {
   }, []);
 
   if (!state) return <pre>loading...</pre>
-  
+
   const botNamer = (n: number) => {
     const s: string = n.toString();
 
@@ -31,15 +47,24 @@ export const BotsWindow = (props: { game: SpaceTrash }) => {
     [botNamer(7), botNamer(8), botNamer(9)],
   ];
 
-  return (<div>
+  return (<div
+    style={{
+      color: "white",
+    }}
+  >
     <table>
       {
         ...(([0, 1, 2]).map((i, n) => {
           return (<tr>{
             ...(([0, 1, 2]).map((ii, nn) => {
-              return (<td> <TableCell name={
-                `${asTable[nn][n]}`
-              } /> </td>);
+              return (
+
+
+                <TableCell name={
+                  `${asTable[nn][n]}`
+                } />
+
+              );
             }))
           }</tr>)
 
