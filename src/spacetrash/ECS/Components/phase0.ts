@@ -10,7 +10,7 @@ export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashCo
   setId = -1;
   actorIds = [];
   litIds = [];
-  littableId = -1;
+  incasterId = -1;
   tileType: string;
   luminance: number;
   mesh?: THREE.Mesh;

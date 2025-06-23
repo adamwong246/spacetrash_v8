@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
-import { LitComponent } from "../Components/casting/out";
+import { LightOutcastingComponent } from "../Components/casting/out";
 import { SpaceTrashEntity } from "../Entity";
 
 import { SpaceTrashEntityComponent } from ".";
@@ -18,7 +18,8 @@ import { DrawableComponent } from "../Components/v2/drawable";
 import { greenMaterial } from "../../threejs";
 
 import { degToRad } from "three/src/math/MathUtils.js";
-import { TileSize } from "../../Constants";
+import { ActorSize, TileSize } from "../../Constants";
+import { LightIncastingComponent } from "../Components/casting/in";
 
 const cylinderGeometry = new THREE.CylinderGeometry(
   TileSize / 4,
@@ -37,8 +38,8 @@ const bunnySprite = () => {
   const s = new PIXI.Sprite(
     PIXI.Texture.from("https://pixijs.com/assets/bunny.png")
   )
-  s.width = TileSize;
-  s.height = TileSize;
+  s.width = ActorSize;
+  s.height = ActorSize;
   return s
 }
 export class SpaceTrashBot extends SpaceTrashEntityComponent {
@@ -56,8 +57,8 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
       new FloatPositionComponent(x, y),
       new DegreesDirectionComponent(r),
       new FloatMovingComponent(dx, dy),
-      new LitComponent(1),
-      // new LitableComponent(),
+      new LightOutcastingComponent(1),
+      new LightIncastingComponent(1),
       new NameableComponent(RandomMaleNames.generate("male", spe)),
       new ClassificationComponent("SpaceTrashBot"),
 

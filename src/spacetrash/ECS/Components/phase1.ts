@@ -46,7 +46,7 @@ export class ActorStore extends OneDStore<any> {
   }
 
   positionOf(eidOfLight: number): FloatPositionComponent {
-    throw new Error("Method not implemented.");
+    this.store.length()
   }
   update(n: number, p: FloatPositionComponent) {
     this.get(n).floatPosition = p;

@@ -1,6 +1,6 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
-import { ActorSize, MapSize } from "../Constants";
+import { ActorSize, MapSize, NumberOfActors } from "../Constants";
 
 
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
@@ -13,7 +13,7 @@ const SPEED_CONSTANT = 0.05
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     
-    const drones = [...new Array(10)].map((n) => {
+    const drones = [...new Array(NumberOfActors)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize,
         // Math.random() * MapSize,

@@ -8,7 +8,7 @@ import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
 
 import { FloatPositionComponent, FloatPositionStore } from "./physical";
 
-import { LitableComponent } from "../casting/in";
+import { LightIncastingComponent } from "../casting/in";
 import { TileSize } from "../../../Constants";
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
@@ -95,7 +95,7 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
     }
   }
 
-  updateLuminanceByLittable(rid: number, reciver: LitableComponent) {
+  updateLuminanceByLittable(rid: number, reciver: LightIncastingComponent) {
     const d = this.get(rid);
 
     if (d.sprite) {
@@ -170,7 +170,7 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
 //     }
 //   }
 
-//   updateLuminanceByLittable(rid: number, reciver: LitableComponent) {
+//   updateLuminanceByLittable(rid: number, reciver: LightOutcastingComponent) {
 //     const d = this.get(rid);
 
 //     if (d.sprite) {
@@ -239,7 +239,7 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
 //     }
 //   }
 
-//   updateLuminanceByLittable(rid: number, reciver: LitableComponent) {
+//   updateLuminanceByLittable(rid: number, reciver: LightOutcastingComponent) {
 //     const d = this.get(rid);
 
 //     if (d.sprite) {

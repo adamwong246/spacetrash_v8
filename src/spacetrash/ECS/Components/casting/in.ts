@@ -42,7 +42,7 @@ export class ThermalComponent extends InCastingComponent {}
 
 export class MovementComponent extends InCastingComponent {}
 
-export class LitableComponent extends InCastingComponent {
+export class LightIncastingComponent extends InCastingComponent {
   luminance: number;
 
   constructor(luminance = -1) {
@@ -51,30 +51,31 @@ export class LitableComponent extends InCastingComponent {
   }
 }
 
-export class LittableStore extends Store<any> {
-  store: Record<number, LitableComponent>;
+export class LightIncastingStore extends Store<any> {
+  store: Record<number, LightIncastingComponent>;
 
   constructor() {
     super();
     this.store = {};
   }
 
-  each(arg0: ([eid, le]: [number, LitableComponent]) => void) {
+  each(arg0: ([eid, le]: [number, LightIncastingComponent]) => void) {
+
     Object.keys(this.store).forEach((k) => {
       arg0([Number(k), this.store[k]])
     });
   }
   
-  add(lc: LitableComponent, n: number) {
+  add(lc: LightIncastingComponent, n: number) {
     return (this.store[n] = lc);
   }
 
-  get(n: number): LitableComponent {
+  get(n: number): LightIncastingComponent {
     return this.store[n];
   }
 
-  make(...a: any[]): LitableComponent {
-    return new LitableComponent();
+  make(...a: any[]): LightIncastingComponent {
+    return new LightIncastingComponent();
   }
 
   keyForEid(i: number) {

@@ -11,10 +11,8 @@ import {
 import { StateSpace } from "../engine/StateSpace";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 
-import {
-  AttackableStore, CameraStore, LittableStore,
-} from "./ECS/Components/casting/in";
-import { LitStore } from "./ECS/Components/casting/out";
+import { AttackableStore, CameraStore, LightIncastingStore } from "./ECS/Components/casting/in";
+
 import { SetPieceStore } from "./ECS/Components/phase0";
 import { ActorStore } from "./ECS/Components/phase1";
 import { ITermWindowState, TerminalWindow } from "./UI/terminal";
@@ -37,6 +35,9 @@ import { TileComponentStore } from "./ECS/Components/v2/tileable";
 import { TileSize, MapSize, FPS } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
+import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
+import { LightOutcastingStore } from "./ECS/Components/casting/out";
+
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
@@ -161,8 +162,8 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         OridinalMovingComponent: new OridinalMovingStore(),
         NameableComponent: new NameableStore(),
         ClassificationComponent: new ClassificationStore(),
-        LitableComponent: new LittableStore(),
-        LitComponent: new LitStore(),
+        LightOutcastingComponent: new LightOutcastingStore(),
+        LightIncastingComponent: new LightIncastingStore(),
         CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
         DrawableComponent: Drawings,
@@ -175,6 +176,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         ActorsLit: new LightingComponentStore(),
         SetPiecesLit: new LightingComponentStore(),
         Eid2PMComponent: new Eid2PMStore(),
+        LightPositionComponent: new LightPositionStore()
       },
       performanceConfig,
       new Set(["2d", "webgl2", "pixi2d", "threejs"]),
@@ -525,7 +527,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // mapsize 50, 5000, 5000  2.7ms
     // mapsize 50, 500,  500   1.2ms
     // mapsize 50, 5,    5     0.8ms
-    this.threejsRenderer.setSize(400, 400);
+    this.threejsRenderer.setSize(800, 800);
 
     // mapsize 50, ratio 0.1 = 1.2ms
     // mapsize 50, ratio 1.0 = 1.2

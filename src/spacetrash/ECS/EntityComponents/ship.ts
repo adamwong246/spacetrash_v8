@@ -134,7 +134,7 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     // this.addToMap(new WallTile(18, 20));
     // this.addToMap(new WallTile(19, 20));
 
-    for (let i = 0; i < MapSize * 5; i++) {
+    for (let i = 0; i < MapSize * 1; i++) {
       this.addToMap(
         new WallTile(
           Math.floor(Math.random() * MapSize),

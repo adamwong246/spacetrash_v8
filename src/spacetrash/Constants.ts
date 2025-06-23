@@ -33,12 +33,18 @@ export const FPS = 30;
 // target
 // 30FPS, map size 250, 75% occlusion - 12 second loadtime, drawtime 14ms
 
-export const MapSize = 50;
+// const shipsize = (Math.pow(25, 2) * 5) 
+
+const numberOfShips = 5
+const shipLength = 35;
+// const shipSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
+export const MapSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
 export const NumberOfActors = 50; // BotSlots * numberOfShips + numberOfRooms * numberOfShips;
 
-export const TileSize = 30;
+export const TileSize = 25;
+const actorScaler = 1
+export const ActorSize = TileSize * actorScaler;
 
-export const ActorSize = TileSize / 1;
 export const BotSlots = 9;
 export const FRICTION_CONSTANT = 1; //0.999;
 export const MapBoundHigh = MapSize - 1;

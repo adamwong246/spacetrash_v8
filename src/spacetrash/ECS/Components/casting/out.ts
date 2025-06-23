@@ -52,7 +52,7 @@ export class GunComponent extends OutCastingComponent {
   fov = 0.25;
 }
 
-export class LitComponent extends OutCastingComponent {
+export class LightOutcastingComponent extends OutCastingComponent {
   radiance: number;
 
   constructor(r: number = -1) {
@@ -61,16 +61,16 @@ export class LitComponent extends OutCastingComponent {
   }
 }
 
-export class LitStore extends EntityComponentStore<LitComponent> {
+export class LightOutcastingStore extends EntityComponentStore<LightOutcastingComponent> {
 
-  each(arg0: ([eid, le, ndx]: [number, LitComponent, number]) => void) {
-      Object.keys(this.store).forEach((k, ndx) => {
+  each(arg0: ([eid, le, ndx]: [number, LightOutcastingComponent, number]) => void) {
+    Object.keys(this.store).forEach((k, ndx) => {
         arg0([Number(k), this.store[k], ndx])
       });
   }
   
-  make(...a: any[]): LitComponent {
-    return new LitComponent([...a]);
+  make(...a: any[]): LightOutcastingComponent {
+    return new LightOutcastingComponent([...a]);
     // throw new Error("Method not implemented.");
   }
 }

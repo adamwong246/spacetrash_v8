@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
-import { LitableComponent } from "../Components/casting/in";
 
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { SpaceTrashEntity } from "../Entity";
@@ -13,6 +12,7 @@ import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
 import { TileComponent } from "../Components/v2/tileable";
 import { TileSize } from "../../Constants";
+import { LightIncastingComponent, LightIncastingStore } from "../Components/casting/in";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -21,7 +21,7 @@ var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 const floorTile = () => {
   const m = new THREE.Mesh(floorGeometry, redMaterial);
   m.position.z = -TileSize / 2;
-  m.visible = Math.random() > 0.75
+  // m.visible = Math.random() > 0.75
   return m;
 };
 
@@ -74,7 +74,7 @@ export class Tile extends SpaceTrashEntityComponent {
     super(spe, [
       ...[
         new IntegerPositionComponent(x, y),
-        new LitableComponent(),
+        new LightIncastingComponent(),
         new ClassificationComponent("Tile"),
         new TileComponent(tiletype),
       ],
@@ -260,7 +260,7 @@ export const Tiles = [
 //       // new UnmovingComponent(spe),
 //       // new PowerConsumingComponent(spe),
 //       new SolidityComponent(spe, 0),
-//       new LitableComponent(spe)
+//       new LightOutcastingComponent(spe)
 //       ],
 //     );
 //   }

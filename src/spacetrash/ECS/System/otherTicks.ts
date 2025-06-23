@@ -1,24 +1,35 @@
 import { SpaceTrash } from "../..";
+import { ActorSize, FRICTION_CONSTANT, MapSize } from "../../Constants";
+import { LightIncastingComponent, LightIncastingStore } from "../Components/casting/in";
 import {
-  ActorSize,
-  FRICTION_CONSTANT,
-  MapSize,
-} from "../../Constants";
+  LightOutcastingStore,
+  LightOutcastingComponent,
+} from "../Components/casting/out";
 import { SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
-import { DrawableStoreV2 } from "../Components/v2/drawable";
+import { DrawableComponent, DrawableStoreV2 } from "../Components/v2/drawable";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
   FloatPositionComponent,
   FloatMovingComponent,
   FloatMovingStore,
+  FloatPositionStore,
+  IntegerPositionStore,
 } from "../Components/v2/physical";
+import { LightPositionStore } from "../Components/v3/LightPosition";
 
 let actors: ActorStore;
 let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
 let setPieces: SetPieceStore;
+let outcasters: LightOutcastingStore;
+let light2Draw: Record<number, DrawableComponent> = {};
+let fps: FloatPositionStore;
+let ips: IntegerPositionStore;
+let incasters: LightIncastingStore;
+let light2IntegerPosition: LightPositionStore;
+
 let magX: number;
 let magY: number;
 let temps: [number, number] = [-1, -1];
@@ -29,18 +40,32 @@ export default (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
   drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
+  outcasters = game.componentStores[
+    LightOutcastingComponent.name
+  ] as LightOutcastingStore;
+  fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
+  ips = game.componentStores[
+    "IntegerPositionComponent"
+  ] as IntegerPositionStore;
+  
+  incasters = game.componentStores[
+    "LightIncastingComponent"
+  ] as LightIncastingStore;
 
   // Level 1 - "Stores"
   actors = game.stores["ActorComponent"] as ActorStore;
   eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
+  light2IntegerPosition = game.stores[
+    "LightPositionComponent"
+  ] as LightPositionStore;
 
-  // resetIllumination();
   runPhysics();
-  // runIllumination();
 };
 
 function runPhysics() {
+  let repaintLights = false;
+
   fmc.store.forEach(([eid, f]) => {
     const { position, classification } = eid2PMSs.get(eid);
 
@@ -50,7 +75,11 @@ function runPhysics() {
       boundaryCheckBot(position);
       collisions();
       // collisionBetweenActors();
-      updateBotPosition(position, f);
+      const lightChanged = updateBotPosition(position, f);
+      console.log("lightchanged", lightChanged);
+      if (lightChanged) {
+        repaintLights = true;
+      }
       drawables.updatePostion(eid, position);
     } else if (classification === "Tile") {
       throw "not implemented";
@@ -64,7 +93,43 @@ function runPhysics() {
     }
   });
 
-  // runIlluminationV6();
+  if (repaintLights) {
+    resetIllumination();
+    runIlluminationV7();
+
+      for (let y = 0; y < MapSize; y++) {
+        for (let x = 0; x < MapSize; x++) {
+          // drawables.store
+          // debugger
+          setPieces.store[y][x].drawing.mesh.visible = setPieces.store[y][x].luminance > 0
+          setPieces.store[y][x].drawing.sprite.visible = setPieces.store[y][x].luminance > 0
+          // setPieces.store[y][x].drawing.mesh.visible === setPieces.store[y][x].luminance
+          // setPieces.store[y][x].drawing.sprite.visible === setPieces.store[y][x].luminance
+          // for (let yy = 0; yy < MapSize; yy++) {
+          //   setPieces.store[y][x].FOV[yy] = [];
+          //   for (let xx = 0; xx < MapSize; xx++) {
+          //     setPieces.store[y][x].FOV[yy][xx] = [];
+          //   }
+          // }
+        }
+      }
+    
+    // setPieces.store.
+    // drawables.each((eid2PMSs, [x, ds, s]) => {
+
+    // })
+  }
+}
+
+function resetIllumination() {
+  incasters.each(([li, z]) => {
+    z.luminance = 0;
+  });
+  for (let y = 0; y < MapSize; y++) {
+    for (let x = 0; x < MapSize; x++) {
+      setPieces.store[y][x].luminance = -1;
+    }
+  }
 }
 
 const collisions = () => {
@@ -207,19 +272,31 @@ function updateMovement(f: FloatMovingComponent) {
   f.dy = updateVelocity(f.dy);
 }
 
-function updatePosition(p: FloatPositionComponent, f: FloatMovingComponent) {
+function updatePosition(
+  p: FloatPositionComponent,
+  f: FloatMovingComponent
+): boolean {
+  const prevX = Math.round(p.x);
+  const prevY = Math.round(p.y);
   p.x = p.x + f.dx; // * DELTA * VELOCITY_CONSTANT;
   p.y = p.y + f.dy; // * DELTA * VELOCITY_CONSTANT;
+  const nextX = Math.round(p.x);
+  const nextY = Math.round(p.y);
 
-  if (Number.isNaN(p.y)) {
-    debugger;
-    throw "position is Nan?FloatMovingComponent";
-  }
+  const hasChangedPosition = prevY !== nextY || prevX !== nextX;
+  return hasChangedPosition;
+
+  // if (Number.isNaN(p.y)) {
+  //   throw "position is Nan?FloatMovingComponent";
+  // }
 }
 
-function updateBotPosition(p: FloatPositionComponent, f: FloatMovingComponent) {
+function updateBotPosition(
+  p: FloatPositionComponent,
+  f: FloatMovingComponent
+): boolean {
   updateMovement(f);
-  updatePosition(p, f);
+  return updatePosition(p, f);
 }
 
 function distanceBetweenActorsV1(x, y, x0, y0) {
@@ -227,49 +304,139 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
   return squaredDist <= Math.sqrt(ActorSize / 2);
 }
 
-// const illuminate = (xFloat: number, yFloat: number): any => {
-//   const x = Math.round(xFloat);
-//   const y = Math.round(yFloat);
-//   const mSize = MapSize;
-//   // console.log("illuminate", x, y, mSize);
-//   // if (!spaces[Math.round(y)]) {
-//   //   return null;
-//   // }
-//   if (x < 0) {
-//     return null;
-//   }
-//   if (x > mSize - 1) {
-//     return null;
-//   }
-//   if (y < 0) {
-//     return null;
-//   }
-//   if (y > mSize - 1) {
-//     return null;
-//   }
-//   // const litableComponent = lightableEntitiesStore[eid];
+function runIlluminationV7() {
+  outcasters.each(([ns, [emid, outCaster], n]) => {
+    let emitterPostion = fps.get(emid);
+    
+    if (emitterPostion) {
 
-//   const space = setPieces[y][x];
-//   const lightableIdOfSpace = space.littableId;
-//   const litable = lightableEntitiesStore.store[lightableIdOfSpace]; //(lightableEntitiesStore.find((a) => a[0] === lightableIdOfSpace) as [string, LitableComponent]);
+      let x = Math.round(emitterPostion.x);
+      if (x >= MapSize - 1) x = 0;
+      if (x < 0) x = MapSize - 1;
+  
+      let y = Math.round(emitterPostion.y);
+      if (y >= MapSize - 1) y = 0;
+      if (y < 0) y = MapSize - 1;
 
-//   if (!litable) {
-//     console.error("litable not found");
-//     return;
-//   }
-//   const [eid3, litableComponent] = litable;
-//   litableComponent.luminance = 2;
 
-//   if (setPieces[y][x].luminance !== litableComponent.luminance) {
-//     setPieces[y][x].luminance = litableComponent.luminance;
-//     setPieces[y][x].culledWebgl = false;
+      if (setPieces.store[y][x]) {
+      
+      // illuminate the space upon which we stand
+      illuminate(emitterPostion.x, emitterPostion.y);
 
-//     if (setPieces[y][x].rendered2d !== "fresh") {
-//       setPieces[y][x].rendered2d = "changed";
-//       setPieces[y][x].renderedWebgl = "changed";
-//     }
-//   }
-// };
+      // (di, dj) is a vector - direction in which we move right now
+      let di = 1;
+      let dj = 0;
+      // length of current segment
+      let segment_length = 1;
+      // current position (i, j) and how much of current segment we passed
+      let i = 0;
+      let j = 0;
+      let segment_passed = 0;
+      // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
+      for (let k = 0; k < 100; k++) {
+        // make a step, add 'direction' vector (di, dj) to current position (i, j)
+        i += di;
+        j += dj;
+        ++segment_passed;
+        // if (x > MapSize) break;
+        // if (x < 0) break;
+        // if (y > MapSize) break;
+        // if (y < 0) break;
+        // console.log("ensetpiecetity", setpiece(i + e.x, j + e.y))
+        // const eId = littableActorsUpon(x, y)?.entity;
+        // const entity = entities[eId];
+        // if (entity) {
+        //   // console.log("entity", entity)
+        //   if (entity.tileType !== "FloorTile") {
+        //     onTarget = true;
+        //     // console.log("collide!", x, y, entity)
+        //   } else {
+        //     onTarget = false;
+        //   }
+        // } else {
+        //   // console.log("idk", eId, x, y)
+        // }
+        illuminate(i + emitterPostion.x, j + emitterPostion.y);
+        if (segment_passed == segment_length) {
+          // done with current segment
+          segment_passed = 0;
+          // 'rotate' directions
+          let buffer = di;
+          di = -dj;
+          dj = buffer;
+          // increase segment length if necessary
+          if (dj == 0) {
+            ++segment_length;
+          }
+        }
+      }
+    }
+    }
+    // debugger;
+
+    // if (!phaseZero[Math.round(actor.y)]) {
+    //   phaseZero[Math.round(actor.y)] = [];
+    // }
+    // find the floor underneath and any entities on top
+    // let x = Math.round(actor.x);
+    // let y = Math.round(actor.y);
+    // if (x >= MapSize) x = 0;
+    // if (y >= MapSize) y = 0;
+
+
+
+    
+  });
+}
+
+const illuminate = (xFloat: number, yFloat: number): any => {
+  
+  const x = Math.round(xFloat);
+  const y = Math.round(yFloat);
+  const mSize = MapSize;
+  // console.log("illuminate", x, y, mSize);
+  // if (!spaces[Math.round(y)]) {
+  //   return null;
+  // }
+  if (x < 0) {
+    return null;
+  }
+  if (x > mSize - 1) {
+    return null;
+  }
+  if (y < 0) {
+    return null;
+  }
+  if (y > mSize - 1) {
+    return null;
+  }
+  // const litableComponent = incasters[eid];
+
+  const space = setPieces.at(x, y);
+  const lightableIdOfSpace = space.incasterId;
+  const incaster = incasters.store[lightableIdOfSpace]; //(incasters.find((a) => a[0] === lightableIdOfSpace) as [string, LightOutcastingComponent]);
+
+  if (!incaster) {
+    // console.error("litable not found");
+    
+    return;
+  }
+
+  
+
+
+  // const [eid3, litableComponent] = litable;
+  incaster.luminance = 2;
+
+
+  const s = setPieces.at(x, y);
+  
+  if (s.luminance !== incaster.luminance) {
+    s.luminance = incaster.luminance;
+
+  }
+};
 
 // const distanceBetweenActorsV0 = (
 //   a: PhysicsActorComponent,
@@ -337,9 +504,9 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 
 // function runIlluminationV2() {
 //   // for each thing which can receive light
-//   lightableEntitiesStore.each(([rid, reciver]) => {
+//   incasters.each(([rid, reciver]) => {
 //     // for each thing which can emit light
-//     lightingEntitiesStore.each(([emid, emitter, endx]) => {
+//     outcasters.each(([emid, emitter, endx]) => {
 
 //       // for each thing with an integer position aka tiles
 //       ips.each(([ipid, integerPosition]) => {
@@ -369,7 +536,7 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 
 // function runIlluminationV3() {
 //   // for each thing which can receive light
-//   lightableEntitiesStore.each(([rid, reciver]) => {
+//   incasters.each(([rid, reciver]) => {
 //     const integerPositionV2 = light2IntegerPosition[rid];
 
 //     if (integerPositionV2) {
@@ -381,7 +548,7 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 //           reciver.luminance = reciver.luminance + emitterV2.radiance;
 
 //           // for each thing which can emit light
-//           // lightingEntitiesStore.each(([emid, emitter, endx]) => {
+//           // outcasters.each(([emid, emitter, endx]) => {
 //           //   // if the floating position matches the receiver
 //           //   if (fpeid === fps.store[emid][0]) {
 //           //     if (d) {
@@ -410,7 +577,7 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 
 // function runIlluminationV4() {
 //   // // for each thing which can receive light
-//   // lightableEntitiesStore.each(([rid, reciver]) => {
+//   // incasters.each(([rid, reciver]) => {
 //   //   const d = light2Draw[rid];
 //   //   d.mesh.visible = reciver.luminance > 0;
 //   //   d.sprite.visible = reciver.luminance > 0;
@@ -435,9 +602,9 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 
 // function runIlluminationV5() {
 //   // for each thing which can receive light
-//   lightableEntitiesStore.each(([rid, reciver]) => {
+//   incasters.each(([rid, reciver]) => {
 //     // for each thing which can emit light
-//     lightingEntitiesStore.each(([emid, emitter, endx]) => {
+//     outcasters.each(([emid, emitter, endx]) => {
 //       // for each thing with an integer position aka tiles
 //       // for each thing with a floating position
 //       fps.store.forEach(([fpeid, floatPosition]) => {
@@ -484,7 +651,7 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // }
 
 // function runIlluminationV6() {
-//   lightingEntitiesStore.each(([emid, emitter, endx]) => {
+//   outcasters.each(([emid, emitter, endx]) => {
 //     const d = light2Draw[emid];
 //     if (d) {
 //       // for each thing with an integer position aka tiles
@@ -603,11 +770,11 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // actorsStore.store.forEach(([i, a], n) => {
 //   // x and y are the "look ahead" pointer
 //   let x = Math.round(a.x + a.dx);
-//   if (x >= this.mapSize - 1) x = 0;
-//   if (x < 0) x = this.mapSize - 1;
+//   if (x >= MapSize - 1) x = 0;
+//   if (x < 0) x = MapSize - 1;
 //   let y = Math.round(a.y + a.dy);
-//   if (y >= this.mapSize - 1) y = 0;
-//   if (y < 0) y = this.mapSize - 1;
+//   if (y >= MapSize - 1) y = 0;
+//   if (y < 0) y = MapSize - 1;
 
 //   // collision check with set-pieces
 //   if (!phaseZero[y][x]) debugger;
@@ -788,76 +955,6 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // });
 
 // if (lightingComponent.radiance) {
-//   // if (!phaseZero[Math.round(actor.y)]) {
-//   //   phaseZero[Math.round(actor.y)] = [];
-//   // }
-//   // find the floor underneath and any entities on top
-//   // let x = Math.round(actor.x);
-//   // let y = Math.round(actor.y);
-//   // if (x >= MapSize) x = 0;
-//   // if (y >= MapSize) y = 0;
-
-//   let x = Math.round(actor.x);
-//   if (x >= this.mapSize - 1) x = 0;
-//   if (x < 0) x = this.mapSize - 1;
-
-//   let y = Math.round(actor.y);
-//   if (y >= this.mapSize - 1) y = 0;
-//   if (y < 0) y = this.mapSize - 1;
-
-//   if (setPieces.store[y][x]) {
-//     // illuminate the space upon which we stand
-//     illuminate(actor.x, actor.y);
-
-//     // (di, dj) is a vector - direction in which we move right now
-//     let di = 1;
-//     let dj = 0;
-//     // length of current segment
-//     let segment_length = 1;
-//     // current position (i, j) and how much of current segment we passed
-//     let i = 0;
-//     let j = 0;
-//     let segment_passed = 0;
-//     // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
-//     for (let k = 0; k < ShadowLimit; k++) {
-//       // make a step, add 'direction' vector (di, dj) to current position (i, j)
-//       i += di;
-//       j += dj;
-//       ++segment_passed;
-//       // if (x > this.mapSize) break;
-//       // if (x < 0) break;
-//       // if (y > this.mapSize) break;
-//       // if (y < 0) break;
-//       // console.log("ensetpiecetity", setpiece(i + e.x, j + e.y))
-//       // const eId = littableActorsUpon(x, y)?.entity;
-//       // const entity = entities[eId];
-//       // if (entity) {
-//       //   // console.log("entity", entity)
-//       //   if (entity.tileType !== "FloorTile") {
-//       //     onTarget = true;
-//       //     // console.log("collide!", x, y, entity)
-//       //   } else {
-//       //     onTarget = false;
-//       //   }
-//       // } else {
-//       //   // console.log("idk", eId, x, y)
-//       // }
-//       illuminate(i + actor.x, j + actor.y);
-//       if (segment_passed == segment_length) {
-//         // done with current segment
-//         segment_passed = 0;
-//         // 'rotate' directions
-//         let buffer = di;
-//         di = -dj;
-//         dj = buffer;
-//         // increase segment length if necessary
-//         if (dj == 0) {
-//           ++segment_length;
-//         }
-//       }
-//     }
-//   }
-// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1096,24 +1193,11 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // //
 // // const MapBoundHigh = MapSize - 1;
 
-// // function resetIllumination() {
-// //   lightableEntitiesStore.each(([li, z]) => {
-// //     z.luminance = 0;
-// //   });
-// //   for (let y = 0; y < MapSize; y++) {
-// //     for (let x = 0; x < MapSize; x++) {
-// //       setPieces.store[y][x].luminance = -1;
-// //       // phaseZero[y][x].rendered2d = "changed";
-// //       // phaseZero[y][x].renderedWebgl = "changed";
-// //     }
-// //   }
-// // }
-
 // // let eidOfActorsLightToPostion: Record<number, FloatPositionComponent> = {};
 
 // // function runIllumination() {
 // //   // loop over light emitters
-// //   lightingEntitiesStore.store.forEach(([eidOfLight, lightingComponent]) => {
+// //   outcasters.store.forEach(([eidOfLight, lightingComponent]) => {
 // //     const { classification, floatPosition } = lights.get(eidOfLight);
 
 // //     if (classification === "SpaceTrashBot") {
@@ -1145,7 +1229,7 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // //     //   positionOfLightingEntity[1];
 
 // //     // loop over light receivers
-// //     // lightableEntitiesStore.store.forEach(([eid, littableComponent]) => {
+// //     // incasters.store.forEach(([eid, littableComponent]) => {
 // //     //   const positionOfLittableEntity = fps.store.find(
 // //     //     (a) => a[0] === eid
 // //     //   );
@@ -1162,11 +1246,11 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // // function runIlluminationBot(
 // //   eidOfLight: number,
 // //   fpc: FloatPositionComponent,
-// //   lc: LitComponent
+// //   lc: LightOutcastingComponent
 // // ) {
 // //   // loop over light recivers
-// //   lightableEntitiesStore.each(([eidOfLightable, l]) => {
-// //     // lightableEntitiesStore.store.forEach(([eidOfLightable, l]) => {
+// //   incasters.each(([eidOfLightable, l]) => {
+// //     // incasters.store.forEach(([eidOfLightable, l]) => {
 // //     const { classification, floatPosition } = lights.get(eidOfLight);
 
 // //     let p: FloatPositionComponent | IntegerPositionComponent;
@@ -1182,7 +1266,7 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // //     //   positionOfLightingEntity[1];
 
 // //     // loop over light receivers
-// //     // lightableEntitiesStore.store.forEach(([eid, littableComponent]) => {
+// //     // incasters.store.forEach(([eid, littableComponent]) => {
 // //     //   const positionOfLittableEntity = fps.store.find(
 // //     //     (a) => a[0] === eid
 // //     //   );
@@ -1198,10 +1282,10 @@ function distanceBetweenActorsV1(x, y, x0, y0) {
 // // function runIlluminationTile(
 // //   eidOfLight: number,
 // //   p: IntegerPositionComponent,
-// //   l: LitComponent
+// //   l: LightOutcastingComponent
 // // ) {
 // //   throw "method not implemented";
-// //   // lightableEntitiesStore.store.forEach(([eid, littableComponent]) => { })
+// //   // incasters.store.forEach(([eid, littableComponent]) => { })
 // // }
 
 // // function runIlluminationBotToBot(
