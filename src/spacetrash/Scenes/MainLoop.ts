@@ -6,7 +6,7 @@ import { ActorSize, MapSize, NumberOfActors } from "../Constants";
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
 import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 
-
+import NAMES from "./../NameGenerator"
 
 const SPEED_CONSTANT = 0.05
 
@@ -20,7 +20,7 @@ class MainScene extends SpaceTrashScene {
         (MapSize / 2 ),
         (MapSize / 2 ),
         // 5, 5,
-        ActorSize,
+        0,
         // 0.01, 0.01
         (Math.random() - 0.5) * SPEED_CONSTANT,
         (Math.random() - 0.5) * SPEED_CONSTANT

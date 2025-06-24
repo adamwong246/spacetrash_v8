@@ -20,6 +20,7 @@ import {
   IntegerPositionComponent,
   FloatMovingStore,
   FloatPositionStore,
+  TankMovingStore,
 } from "../Components/v2/physical";
 import { TileComponentStore } from "../Components/v2/tileable";
 import { LightPositionStore } from "../Components/v3/LightPosition";
@@ -43,11 +44,13 @@ let setPieceLit: LightingComponentStore;
 let setPieces: SetPieceStore;
 let tiles: TileComponentStore;
 let incasters: LightIncastingStore;
+let tms: TankMovingStore;
 
 let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
+  tms = game.componentStores["TankMovingComponent"] as TankMovingStore;
   drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
   fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
@@ -153,12 +156,29 @@ export default async (game: SpaceTrash, delta: number) => {
   // 2 deep
   // setup the actors list
   fps.each((aeid, y) => {
+
+    const mf = fmc.store[aeid]
+    const mt = tms.store[aeid]
+
+    if (mf && mt) throw "an entity can't have both floating and tank motion"
+
+    // const motionFloating = mf[1]
+    // const motionTank = tms.store[aeid][1]
+
+    let motion;
+    if (mf) {
+      motion = mf[1];
+    } else {
+      motion = mt[1]
+    }
+      
+
     // add the actors
     actors.add({
       actorId: aeid,
       friendly: game.isFriendly(aeid),
       position: fps.at(aeid),
-      motion: fmc.store[aeid][1],
+      motion,
     });
 
     outcasters.each(([leid, le]) => {
@@ -180,7 +200,7 @@ export default async (game: SpaceTrash, delta: number) => {
 const runSetupBotFleet = (game: SpaceTrash) => {
   Object.entries(game.bots).forEach(([b, bb], x, [xx, [s, [eid, s2]]]) => {
     
-    drawables.updateChar(eid, new Text("!!!"));
+    // drawables.updateChar(eid, new Text("!!!"));
     // game.pixijsRenderer.stage.addChild(drawables.get(eid).char);
     // game.pixijsRenderer.render
 

@@ -1,7 +1,7 @@
 import { Entity } from "../../../engine/VECS.ts/Entity";
 
 import { SpaceTrashEntityComponent } from ".";
-import { Tile, FloorTile, WallTile, VoidTile } from "./tiles";
+import { Tile, FloorTile, WallTile, VoidTile, WireframeWallTile } from "./tiles";
 
 import { IntegerPositionComponent } from "../Components/v2/physical";
 import { MapSize } from "../../Constants";
@@ -134,8 +134,12 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     this.makeRoom(4, 0, 12, 2, 10, [], [6], [], [0]);
 
     this.makeRoom(5, 20, 20, 16, 16, [0], [0], [0], [0]);
+    this.addToMap(new WireframeWallTile(24, 22));
+    this.addToMap(new WireframeWallTile(30, 22));
+    this.addToMap(new WireframeWallTile(31, 22));
+    
 
-    this.makeRoom(6, 16, 16, 3, 4, [0], [0], [0], [0]);
+    // this.makeRoom(6, 16, 16, 3, 4, [0], [0], [0], [0]);
 
     // // 4 walls on the perimenter
     // for (let z = 0; z < this.shipSize - 1; z++) {

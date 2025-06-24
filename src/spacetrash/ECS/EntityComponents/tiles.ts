@@ -22,22 +22,22 @@ const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 
 const floorTile = () => {
-  const m = new THREE.Mesh(floorGeometry, redMaterial);
-  m.position.z = -TileSize / 2;
+  const m = new THREE.Mesh(floorGeometry, voidMaterial);
+  m.position.z = TileSize/2;
   // m.visible = Math.random() > 0.75
   return m;
 };
 
 const voidTile = () => {
   const m = new THREE.Mesh(floorGeometry, voidMaterial);
-  m.position.z = -TileSize / 2;
+  m.position.z = TileSize/2;
   return m;
 };
 
 
 const blankTile = () => {
   const m = new THREE.Mesh(floorGeometry, blankMaterial);
-  m.position.z = -TileSize / 2;
+  m.position.z = TileSize/2;
   return m;
 };
 
@@ -110,6 +110,21 @@ export class FloorTile extends Tile {
   }
 }
 
+
+export class WireframeWallTile extends Tile {
+  constructor(x: number = 0, y: number = 0) {
+    super(
+      x,
+      y,
+      "WallTile",
+      new DrawableComponent(
+        brickSprite(),
+        new THREE.Mesh(cubeGeo, voidMaterial),
+        new PIXI.Text('░')
+      )
+    );
+  }
+}
 
 export class WallTile extends Tile {
   constructor(x: number = 0, y: number = 0) {

@@ -42,9 +42,9 @@ export const MapSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfSh
 // export const MapSize = 50
 console.log("MapSize: ", MapSize);
 
-export const NumberOfActors = 9; //numberOfShips * 9
+export const NumberOfActors = 1; //numberOfShips * 9
 
-export const TileSize = 20;
+export const TileSize = 30;
 const actorScaler = 1
 export const ActorSize = TileSize * actorScaler;
 

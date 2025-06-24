@@ -24,7 +24,9 @@ import { MapWindow } from "./UI/map";
 import { BotsWindow } from "./UI/BotsWindow";
 import { ITerminalLine, TerminalGame } from "./Terminal";
 import {
-  IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore
+  IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore,
+  TankMovingStore,
+  DirectionComponent
 } from "./ECS/Components/v2/physical";
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
@@ -55,8 +57,9 @@ const performanceConfig: IPerformanceConfig = {
 const defToRad = (d: number) => (d * Math.PI) / 180;
 var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
 camera.rotateX(defToRad(-90));
-camera.rotateZ(defToRad(180));
-camera.position.z = (TileSize / 4);
+camera.rotateY(defToRad(90));
+// camera.rotateZ(defToRad(180));
+// camera.position.z = (TileSize / 4);
 
 
 let shipMapMouseX = 0;
@@ -127,6 +130,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   public pixiLoaded: boolean = false;
   public videoFeed: number = 1;
 
+
   public bots: {
     1: [number, string];
     2: [number, string];
@@ -139,10 +143,10 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     9: [number, string];
   };
   terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
-  forward: boolean;
-  back: boolean;
-  left: boolean;
-  right: boolean;
+  forward: boolean = false;
+  back: boolean = false;
+  left: boolean = false;
+  right: boolean = false;
 
   constructor(domNode: HTMLElement) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -168,7 +172,8 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
         DrawableComponent: Drawings,
-        TileComponent: new TileComponentStore()
+        TileComponent: new TileComponentStore(),
+        TankMovingComponent: new TankMovingStore(),
       },
       {
         SetPieceComponent: new SetPieceStore(),
@@ -210,7 +215,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         self.turnRight();
       }
       else if (isNumeric((event.key)) && self.buffer === "") {
-        debugger
+
         self.focusVideoWindow(event.key)
       }
       else if (isAlphabetic(event.key)) {
@@ -263,7 +268,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
       })
 
-    
+
 
 
     super.start()
@@ -337,16 +342,17 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   focusVideoWindow(s: string) {
     const n: number = Number(s);
     if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
+    console.log("focusVideoWindow", s)
 
     // const drawables = (this.stores['DrawableComponent'] as DrawableStoreV2)
     // const oldBotId = this.bots[n][0]
 
     this.videoFeed = n;
-    
-    
+
+
     // drawables.updateChar(n);
 
-    
+
 
 
     this.unFocusOnTermInput();
@@ -379,6 +385,69 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.right = false;
   }
 
+  movingForward(): boolean {
+    if ((this.back === false) && (this.forward === true)) {
+      return true
+    } else if ((this.back === true) && (this.forward === false)) {
+      return false;
+    } else if (!this.back && !this.forward) {
+      return false;// no-op
+    }
+    else {
+      return false;
+    }
+  }
+
+  movingBack(): boolean {
+    if ((this.back === true) && (this.forward === false)) {
+      return true
+    } else if ((this.back === false) && (this.forward === true)) {
+      return false;
+    } else if (!this.back && !this.forward) {
+      return false;
+    } else {
+      return false;
+    }
+  }
+
+  movingLeft(): boolean {
+    if ((this.left === true) && (this.right === false)) {
+      return true
+    } else if ((this.left === false) && (this.right === true)) {
+      return false;
+    } else if (!this.left && !this.right) {
+      return false;
+    } else {
+      return false;
+    }
+  }
+
+  movingRight(): boolean {
+    if ((this.right === true) && (this.left === false)) {
+      return true
+    } else if ((this.right === false) && (this.left === true)) {
+      return false;
+    } else if (!this.left && !this.right) {
+      return false;
+    } else {
+      return false;
+    }
+  }
+
+
+  rotationOfBot(eid: number): { r: number; } {
+    const storeName = "DegreesDirectionComponent";
+
+    if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
+
+    const c = this.componentStores[storeName].get(eid);
+    if (!c) throw "missing entity";
+
+    return {
+      r: c.r,
+    };
+  }
+
   positionOfBot(eid: number): { x: number; y: number } {
     const storeName = "FloatPositionComponent";
 
@@ -391,6 +460,13 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       x: c.x,
       y: c.y,
     };
+  }
+
+  videoFeedRotation(): DirectionComponent {
+    const p = this.rotationOfBot(
+      (this.bots[this.videoFeed] as [number, string])[0]
+    );
+    return p;
   }
 
   public videoFeedPosition(): { x: number; y: number } {
@@ -488,35 +564,54 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
       // basicText.p
       // basicText.y = 100;
-    
-      
+
+
     }
 
   }
 
+  
   async renderBotCanvas() {
+    const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
+    this.threejsRenderer.setSize(p.width, p.height)
+    
     const position = this.videoFeedPosition();
     camera.position.x = position.x * TileSize;
     camera.position.y = position.y * TileSize;
+    const rotation = this.videoFeedRotation();
+    camera.rotation.y = (-rotation.r);
+    this.threejsRenderer.render(scene, camera);
+
     // console.log("camera", camera.position)
 
     // camera.rotation.x = camera.rotation.x + 0.001;
-    camera.rotation.y = camera.rotation.y + 0.02;
-    // camera.rotation.y = camera.rotation.y + 0.001;
+    // camera.rotation.y = camera.rotation.y + 0.02;updateChar
 
-    // const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
-    // this.threejsRenderer.setSize(p.width, p.height)
+    // function degreesToRadians(degrees) {
+    //   return degrees * (Math.PI / 180);
+    // }
+
+    // function radiansToDegrees(radians) {
+    //   return radians * (180 / Math.PI);
+    // }
+
+    // camera.rotation.y = (rotation.r)
+
+    // console.log("camera", camera.position, camera.rotation)
+
+    
 
     // mapsize 50, 5000, 5000  2.7ms
     // mapsize 50, 500,  500   1.2ms
     // mapsize 50, 5,    5     0.8ms
-    this.threejsRenderer.setSize(500, 500);
+    // this.threejsRenderer.setSize(1000, 1000);
 
     // mapsize 50, ratio 0.1 = 1.2ms
     // mapsize 50, ratio 1.0 = 1.2
-    this.threejsRenderer.setPixelRatio(1)
-    this.threejsRenderer.render(scene, camera);
+    // this.threejsRenderer.setPixelRatio(1)
+    
   }
+
 
   async renderShipMap() {
     // todo
@@ -528,7 +623,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     Drawings.each(([a, d, c]) => {
       pixi2dApp.stage.addChild(d.sprite)
-      
+
       // const basicText = new Text('Basic text in pixi');
       pixi2dApp.stage.addChild(d.char);
       // pixi2dApp.stage.addChild(basicText);

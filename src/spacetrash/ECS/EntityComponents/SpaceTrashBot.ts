@@ -10,6 +10,7 @@ import {
   FloatPositionComponent,
   DegreesDirectionComponent,
   FloatMovingComponent,
+  TankMovingComponent,
 } from "../Components/v2/physical";
 import { NameableComponent } from "../Components/v2/nameable";
 
@@ -42,6 +43,7 @@ const bunnySprite = () => {
   );
   s.width = ActorSize;
   s.height = ActorSize;
+  s.anchor = 0.5;
   return s;
 };
 
@@ -59,7 +61,7 @@ export class SpaceTrashBot extends SpaceTrashEntityComponent {
     super(spe, [
       new FloatPositionComponent(x, y),
       new DegreesDirectionComponent(r),
-      new FloatMovingComponent(dx, dy),
+      new TankMovingComponent(dx, dy),
       new LightOutcastingComponent(1),
       new LightIncastingComponent(1),
       new NameableComponent(name || RandomMaleNames.generate("male", spe)),

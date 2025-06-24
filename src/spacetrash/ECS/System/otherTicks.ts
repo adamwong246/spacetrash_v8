@@ -1,6 +1,9 @@
 const WarpField = require("warp-field");
+
+import { MapSize, TileSize } from "../../Constants";
+import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
-import { ActorSize, FRICTION_CONSTANT, MapSize, SPEED_CONSTANT } from "../../Constants";
+import { ActorSize, FRICTION_CONSTANT, SPEED_CONSTANT } from "../../Constants";
 import {
   LightIncastingComponent,
   LightIncastingStore,
@@ -14,37 +17,40 @@ import { ActorStore } from "../Components/phase1";
 import { DrawableComponent, DrawableStoreV2 } from "../Components/v2/drawable";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
-  FloatPositionComponent,
   FloatMovingComponent,
   FloatMovingStore,
   FloatPositionStore,
   IntegerPositionStore,
+  TankMovingStore,
+  TankMovingComponent,
+  DegreesDirectionStore,
+  DegreesDirectionComponent,
 } from "../Components/v2/physical";
 import { LightPositionStore } from "../Components/v3/LightPosition";
 
 let actors: ActorStore;
+let dds: DegreesDirectionStore;
 let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
-let setPieces: SetPieceStore;
-let outcasters: LightOutcastingStore;
-let light2Draw: Record<number, DrawableComponent> = {};
 let fps: FloatPositionStore;
-let ips: IntegerPositionStore;
 let incasters: LightIncastingStore;
+let ips: IntegerPositionStore;
 let light2IntegerPosition: LightPositionStore;
+let outcasters: LightOutcastingStore;
+let setPieces: SetPieceStore;
+let tms: TankMovingStore;
 
-let magX: number;
-let magY: number;
-let temps: [number, number] = [-1, -1];
-let roundX: number;
-let roundY: number;
+let GAME: SpaceTrash;
 
-let GAME;
 export default (game: SpaceTrash, delta: number, fovMap) => {
   GAME = game;
 
   // Level 0 - "Component Stores"
+  dds = game.componentStores[
+    "DegreesDirectionComponent"
+  ] as DegreesDirectionStore;
+  tms = game.componentStores["TankMovingComponent"] as TankMovingStore;
   drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
   outcasters = game.componentStores[
@@ -68,18 +74,9 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   ] as LightPositionStore;
 
   runPhysics(fovMap);
-  // runCharacters()
 };
 
-// function runCharacters() {
-//   actors.each((n, a) => {
-//     if GAME.videoFeed
-//   })
-  
-  
-
-
-function runPhysics(fovMap) {
+export function runFloatingPhysics() {
   let repaintLights = false;
 
   fmc.store.forEach(([eid, f]) => {
@@ -92,14 +89,13 @@ function runPhysics(fovMap) {
       boundaryCheckBot(position);
       collisionsAndVideoControls();
 
-      const gridChanges = updateBotPosition(position, f);
+      const gridChanges = updateFloatPosition(position, f);
 
       if (gridChanges) {
         repaintLights = true;
       }
 
       drawables.updatePostion(eid, position, gridChanges);
-
     } else if (classification === "Tile") {
       throw "not implemented";
     } else {
@@ -118,22 +114,75 @@ function runPhysics(fovMap) {
           setPieces.store[y][x].luminance > 0;
         setPieces.store[y][x].drawing.sprite.visible =
           setPieces.store[y][x].luminance > 0;
-        
-
       }
     }
   }
 }
 
+function boundaryCheckBot(fpc: FloatPositionComponent) {
+  if (fpc.x < 0) {
+    fpc.x = MapSize;
+  }
+  if (fpc.x > MapSize) {
+    fpc.x = 0;
+  }
+  if (fpc.y < 0) {
+    fpc.y = MapSize;
+  }
+  if (fpc.y > MapSize) {
+    fpc.y = 0;
+  }
+}
+
+function runTankPhysics() {
+  tms.store.forEach(([eid, t]) => {
+    const { position, classification } = eid2PMSs.get(eid);
+
+    if (classification === "SpaceTrashBot") {
+      const direction = dds.get(eid);
+      const oldDir = direction.r;
+      const oldX = position.x;
+      const oldY = position.y;
+      // const p = fps.get(eid);
+      // if (!p) throw "floating position component not found";
+
+      boundaryCheckBot(position);
+      collisionsAndVideoControls();
+      updateTankPosition(position, t, direction);
+
+      if ((oldDir !== direction.r) || (oldX !== position.x) || (oldY !== position.y)) {
+        drawables.updatePostionAndRotation(eid, position, direction);
+      }
+
+      // if (gridChanges) {
+      //   // repaintLights = true;
+      // }
+
+      
+      
+    } else if (classification === "Tile") {
+      throw "not implemented";
+    } else {
+      debugger;
+      throw "idk";
+    }
+  });
+}
+
+function runPhysics(fovMap) {
+  // runFloatingPhysics();
+  runTankPhysics();
+}
+
 function resetIllumination() {
-    // incasters.each(([li, z]) => {
-    //   z.luminance = 0;
-    // });
-    // for (let y = 0; y < MapSize; y++) {
-    //   for (let x = 0; x < MapSize; x++) {
-    //     setPieces.store[y][x].luminance = -1;
-    //   }
-    // }
+  // incasters.each(([li, z]) => {
+  //   z.luminance = 0;
+  // });
+  // for (let y = 0; y < MapSize; y++) {
+  //   for (let x = 0; x < MapSize; x++) {
+  //     setPieces.store[y][x].luminance = -1;
+  //   }
+  // }
 }
 
 const collisionsAndVideoControls = () => {
@@ -223,7 +272,6 @@ const collisionsAndVideoControls = () => {
     //   }
     // });
 
-
     if (Number(i) === GAME.videoFeed) {
       if (GAME.forward === true) {
         a.motion.dy = a.motion.dy - SPEED_CONSTANT;
@@ -252,34 +300,36 @@ const actorsCollide = (
   // return distanceBetweenActorsV0(a, b);
 };
 
-function boundaryCheckBot(fpc: FloatPositionComponent) {
-  if (fpc.x < 0) {
-    fpc.x = MapSize;
-  }
-  if (fpc.x > MapSize) {
-    fpc.x = 0;
-  }
-  if (fpc.y < 0) {
-    fpc.y = MapSize;
-  }
-  if (fpc.y > MapSize) {
-    fpc.y = 0;
-  }
-}
-
 function updateVelocity(f: number): number {
   return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
 }
 
-function updateMovement(f: FloatMovingComponent) {
+const TANK_CONSTANT = 0.1;
+function updateTankMovement(f: TankMovingComponent) {
+  if (GAME.movingForward()) {
+    f.j = "forth";
+  } else if (GAME.movingBack()) {
+    f.j = "back";
+  } else if (GAME.movingLeft()) {
+    f.i = "left";
+  } else if (GAME.movingRight()) {
+    f.i = "right";
+  } else {
+    f.i = "none";
+    f.j = "none";
+  }
+}
+
+function updateFloatingMovement(f: FloatMovingComponent) {
   f.dx = updateVelocity(f.dx);
   f.dy = updateVelocity(f.dy);
 }
 
-function updatePosition(
+function updateFloatPosition(
   p: FloatPositionComponent,
   f: FloatMovingComponent
 ): boolean {
+  updateFloatingMovement(f);
   const prevX = Math.round(p.x);
   const prevY = Math.round(p.y);
   p.x = p.x + f.dx; // * DELTA * VELOCITY_CONSTANT;
@@ -289,19 +339,53 @@ function updatePosition(
 
   const hasChangedPosition = prevY !== nextY || prevX !== nextX;
   return hasChangedPosition;
-
-
-  // if (Number.isNaN(p.y)) {
-  //   throw "position is Nan?FloatMovingComponent";
-  // }
 }
 
-function updateBotPosition(
+const TANK_VELOCITY = 0.01;
+
+function radiansToDegrees(radians) {
+  return radians * (180 / Math.PI);
+}
+
+function updateTankPosition(
   p: FloatPositionComponent,
-  f: FloatMovingComponent
+  f: TankMovingComponent,
+  d: DegreesDirectionComponent
 ): boolean {
-  updateMovement(f);
-  return updatePosition(p, f);
+  let isMoving: boolean;
+  if (f.i === "none" && f.j === "none") {
+    isMoving = false;
+  } else {
+    isMoving = true;
+  }
+
+  updateTankMovement(f);
+
+
+  const radians = d.r;  //radiansToDegrees(d.r);
+  if (f.i === "left") {
+    d.r = d.r - TANK_VELOCITY;
+  }
+  if (f.i === "right") {
+    d.r = d.r + TANK_VELOCITY;
+  }
+  if (f.i === "none") {
+    // d.r = 0;
+  }
+
+  if (f.j === "forth") {
+    p.x += Math.cos(radians-1.5708) * TANK_VELOCITY;
+    p.y += Math.sin(radians-1.5708) * TANK_VELOCITY;
+  }
+  if (f.j === "back") {
+    p.x -= Math.cos(radians-1.5708) * TANK_VELOCITY;
+    p.y -= Math.sin(radians-1.5708) * TANK_VELOCITY;
+  }
+  if (f.j === "none") {
+    // d.r = 0;
+  }
+
+  return isMoving;
 }
 
 function distanceBetweenActorsV1(x, y, x0, y0) {
@@ -372,7 +456,7 @@ function runIlluminationV7(fovMap) {
           // if (x < 0) debugger
           // illuminate(MapSize / 2, MapSize / 2);
 
-          // TODO 
+          // TODO
           if (true) {
             illuminate(x2, y2);
           }

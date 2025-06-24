@@ -1,13 +1,18 @@
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
-import { Text, TextStyle, Ticker } from 'pixi.js';
+import { Text, TextStyle, Ticker } from "pixi.js";
 
 import { Sprite } from "pixi.js";
 import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
 
-import { FloatPositionComponent, FloatPositionStore } from "./physical";
+import {
+  DegreesDirectionComponent,
+  FloatPositionComponent,
+  FloatPositionStore,
+  PositionComponent,
+} from "./physical";
 
 import { LightIncastingComponent } from "../casting/in";
 import { TileSize } from "../../../Constants";
@@ -16,41 +21,50 @@ import { SpaceTrash } from "../../..";
 export type IChars = Text;
 
 const style = new PIXI.TextStyle({
-  fontFamily: "\"Courier New\", Courier, monospace",
-  "fontSize": TileSize
+  fontFamily: '"Courier New", Courier, monospace',
+  fontSize: TileSize,
 });
 
 const character = (s: string) => {
   const t = new Text(s, style);
   return t;
-}
+};
 
 export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   sprite: PIXI.Sprite;
   mesh: THREE.Mesh;
-  char: IChars = new Text('mark 3');
+  char: IChars = new Text("mark 3");
+  dirty: boolean;
 
   constructor(
     sprite: PIXI.Sprite,
     mesh: THREE.Mesh,
-    char: IChars = character('?')
+    char: IChars = character("?")
   ) {
     super();
     this.mesh = mesh;
     this.sprite = sprite;
     this.char = char;
+    this.dirty = true;
   }
 
   setMesh(m: THREE.Mesh) {
     this.mesh = m;
+    this.dirty = true;
   }
 
   setSprite(s: Sprite) {
     this.sprite = s;
+    this.dirty = true;
   }
 
   setChar(s: IChars) {
     this.char = s;
+    this.dirty = true;
+  }
+
+  makeDirty() {
+    this.dirty = true;
   }
 }
 
@@ -96,8 +110,36 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
   updateChar(eid: number, p: IChars) {
     const d = this.get(eid);
     d.char = p;
-    debugger
-    return
+    return;
+  }
+
+  updatePostionAndRotation(
+    eid: number,
+    p: PositionComponent,
+
+    direction: DegreesDirectionComponent
+  ) {
+    const d = this.get(eid);
+    if (d.sprite) {
+      d.sprite.position.x = p.x * TileSize + (TileSize/2);
+      d.sprite.position.y = p.y * TileSize + (TileSize/2);
+      d.sprite.rotation = direction.r;
+    }
+    if (d.mesh) {
+      d.mesh.position.x = p.x * TileSize;
+      d.mesh.position.y = p.y * TileSize;
+      d.mesh.rotateY = direction.r;
+    }
+    if (d.char) {
+      d.char.position.x = Math.round(p.x) * TileSize;
+      d.char.position.y = Math.round(p.y) * TileSize;
+    }
+
+    console.log("sprite", d.sprite.position, d.sprite.rotation)
+    // console.log("mesh", d.mesh.position, d.mesh.rotation)
+
+    d.dirty = false;
+
   }
 
   updatePostion(eid: number, p: FloatPositionComponent, updateChars: boolean) {

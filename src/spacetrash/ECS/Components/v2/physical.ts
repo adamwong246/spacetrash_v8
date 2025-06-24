@@ -45,7 +45,7 @@ export class IntegerPositionStore extends Store<IntegerPositionComponent> {
   }
 
   withIf(i: number, cb: (i: [number, IntegerPositionComponent]) => void) {
-    const x = this.store.get(i)
+    const x = this.store.get(i);
     if (x) cb([Number(i), x, i]);
   }
 
@@ -65,30 +65,6 @@ export class IntegerPositionStore extends Store<IntegerPositionComponent> {
     });
   }
 }
-
-// export class IntegerPositionStore extends EntityComponentStore<IntegerPositionComponent> {
-//   withIf(i: number, arg1: (i: [number, IntegerPositionComponent]) => void) {
-//     const x = this.store.find((v) => {
-//       return v[0] === i;
-//     });
-
-//     if (x) {
-//       return arg1(x);
-//     }
-//   }
-
-//   make(x: number, y: number) {
-//     return new IntegerPositionComponent(x, y);
-//   }
-
-//   each(
-//     arg0: ([eid, le, k]: [number, IntegerPositionComponent, string]) => void
-//   ) {
-//     Object.keys(this.store).forEach((k) => {
-//       arg0([Number(k), this.store[k], k]);
-//     });
-//   }
-// }
 
 // Gives an entity a position above the grid
 export class FloatPositionComponent extends PositionComponent {}
@@ -171,6 +147,35 @@ export abstract class MovingComponent extends Component<
   ISpaceTrashComponents
 > {}
 
+export type ITankDirections = {
+  i: `left` | `right` | 'none';
+  j: `back` | `forth`| 'none';
+};
+
+// Gives the entity movement above the grid
+// moves by dx and dy every tick
+export class TankMovingComponent extends MovingComponent {
+  i: `left` | `right`| 'none';
+  j: `back` | `forth`| 'none';
+
+  constructor(i, j) {
+    super();
+    this.i = i;
+    this.j = j;
+  }
+}
+
+export class TankMovingStore extends EntityComponentStore<TankMovingComponent> {
+  constructor() {
+    super();
+  }
+
+  make(i, j) {
+    return new TankMovingComponent(i, j);
+  }
+}
+
+//////////////////////////////////////////////////////
 // Gives the entity movement above the grid
 // moves by dx and dy every tick
 export class FloatMovingComponent extends MovingComponent {
