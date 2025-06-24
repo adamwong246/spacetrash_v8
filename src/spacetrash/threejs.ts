@@ -6,21 +6,27 @@ export const blankMaterial = new THREE.MeshBasicMaterial({
 });
 
 export const voidMaterial = new THREE.MeshBasicMaterial({
-  color: "orange",
-  wireframe: true,
-});
-
-export const redMaterial = new THREE.MeshBasicMaterial({
   color: "red",
   // wireframe: true,
 });
 
+export const redMaterial = new THREE.MeshBasicMaterial({
+  color: "red",
+  wireframe: true,
+});
+
 export const blueMaterial = new THREE.MeshBasicMaterial({
   color: "blue",
-  // wireframe: true,
+  wireframe: true,
 });
 
 export const greenMaterial = new THREE.MeshBasicMaterial({
   color: "green",
+  wireframe: true,
+});
+
+
+export const orangeMaterial = new THREE.MeshBasicMaterial({
+  color: "orange",
   wireframe: true,
 });

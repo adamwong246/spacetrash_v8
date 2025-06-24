@@ -1,7 +1,15 @@
+import {Map as rotMap, RNG as rotRng} from "rot-js";
+
 import { Entity } from "../../../engine/VECS.ts/Entity";
 
 import { SpaceTrashEntityComponent } from ".";
-import { Tile, FloorTile, WallTile, VoidTile, WireframeWallTile } from "./tiles";
+import {
+  Tile,
+  FloorTile,
+  WallTile,
+  VoidTile,
+  WireframeWallTile,
+} from "./tiles";
 
 import { IntegerPositionComponent } from "../Components/v2/physical";
 import { MapSize } from "../../Constants";
@@ -50,8 +58,8 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
       this.addToMap(new FloorTile(x, h + y - d - 2));
     }
 
-    for (let yy = y+1; yy < h + y-1; yy++) {
-      for (let xx = x+1; xx < w + x; xx++) {
+    for (let yy = y + 1; yy < h + y - 1; yy++) {
+      for (let xx = x + 1; xx < w + x; xx++) {
         this.addToMap(new FloorTile(xx, yy));
       }
     }
@@ -113,31 +121,68 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
   }
 
   make() {
-    // the base floor
-    for (let y = 0; y < this.shipSize; y++) {
-      for (let x = 0; x < this.shipSize; x++) {
-        // this.subComponents.push(new FloorTile(x, y));
-        // const z = new FloorTile(x, y);
-        const z = new VoidTile(x, y);
-        this.addToMap(z);
-      }
-    }
+    rotRng.setSeed(1234);
+    var map = new rotMap.Digger(MapSize, MapSize);
+    map.create((x, y, v) => {
+      let t: Tile;
+      // console.log("value", v)
+      if (v === 0) {
+        this.addToMap(new FloorTile(x, y));  
+      } else {
+        this.addToMap(new WallTile(x, y));  
+      }      
+    });
+    // debugger
+    // var display = new ROT.Display({ fontSize: 8 });
+    // SHOW(display.getContainer());
+    // map.create(display.DEBUG);
 
-    this.makeRoom(0, 1, 1, 7, 8, [0], [0], [0], [0, 3]);
+    // var drawDoor =  (x, y) => {
+    //   // display.draw(x, y, "", "", "red");
+    //   this.addToMap(new WireframeWallTile(x, y));
+    // };
 
-    this.makeRoom(1, 4, 10, 10, 13, [2], [2, 7], [2], [2]);
+    // var rooms = map.getRooms();
+    // for (var i = 0; i < rooms.length; i++) {
+    //   var room = rooms[i];
+    //   SHOW(
+    //     ROT.Util.format(
+    //       "Room #%s: [%s, %s] => [%s, %s]",
+    //       i + 1,
+    //       room.getLeft(),
+    //       room.getTop(),
+    //       room.getRight(),
+    //       room.getBottom()
+    //     )
+    //   );
 
-    this.makeRoom(2, 16, 12, 10, 3, [], [0], [], [0]);
+    //   room.getDoors(drawDoor);
+    // }
 
-    this.makeRoom(3, 0, 24, 12, 4, [10], [0], [], [0]);
+    // // the base floor
+    // for (let y = 0; y < this.shipSize; y++) {
+    //   for (let x = 0; x < this.shipSize; x++) {
+    //     // this.subComponents.push(new FloorTile(x, y));
+    //     // const z = new FloorTile(x, y);
+    //     const z = new VoidTile(x, y);
+    //     this.addToMap(z);
+    //   }
+    // }
 
-    this.makeRoom(4, 0, 12, 2, 10, [], [6], [], [0]);
+    // this.makeRoom(0, 1, 1, 7, 8, [0], [0], [0], [0, 3]);
 
-    this.makeRoom(5, 20, 20, 16, 16, [0], [0], [0], [0]);
-    this.addToMap(new WireframeWallTile(24, 22));
-    this.addToMap(new WireframeWallTile(30, 22));
-    this.addToMap(new WireframeWallTile(31, 22));
-    
+    // this.makeRoom(1, 4, 10, 10, 13, [2], [2, 7], [2], [2]);
+
+    // this.makeRoom(2, 16, 12, 10, 3, [], [0], [], [0]);
+
+    // this.makeRoom(3, 0, 24, 12, 4, [10], [0], [], [0]);
+
+    // this.makeRoom(4, 0, 12, 2, 10, [], [6], [], [0]);
+
+    // this.makeRoom(5, 20, 20, 16, 16, [0], [0], [0], [0]);
+    // this.addToMap(new WireframeWallTile(24, 22));
+    // this.addToMap(new WireframeWallTile(30, 22));
+    // this.addToMap(new WireframeWallTile(31, 22));
 
     // this.makeRoom(6, 16, 16, 3, 4, [0], [0], [0], [0]);
 
@@ -236,7 +281,6 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
       for (let x = 0; x < this.shipSize; x++) {
         if (this.map[y][x] === null) {
           console.error("Cannot leave blank spaces!");
-          debugger;
         }
         t.push(this.map[y][x]);
         // this.map[y][x]?.components.forEach((c) => {

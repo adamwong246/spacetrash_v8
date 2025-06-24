@@ -2333,6 +2333,11 @@ retry@^0.12.0:
   resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
   integrity sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==
 
+rot-js@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/rot-js/-/rot-js-2.2.1.tgz#b80b94836f09ad805e9e600664c4560df8f67ede"
+  integrity sha512-lItXH31vj4ebdypayCx9dh98qPr57E7jGW2lVMKxtBHooU3xpGRtLS8kdJIni232tvPJ8Sl0+aqXZj8c6W0MGw==
+
 safe-identifier@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/safe-identifier/-/safe-identifier-0.4.2.tgz#cf6bfca31c2897c588092d1750d30ef501d59fcb"

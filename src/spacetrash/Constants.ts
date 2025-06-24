@@ -13,10 +13,11 @@ export const FPS = 30;
 // MapV9 - 300 = minute+
 
 // 3d render times baseline
-// MapV9 - 100 = 9.2 ms
-// MapV9 - 150 = 9.9 ms
-// MapV9 - 200 = 32 ms
-// MapV9 - 300 = 54 ms
+// MapV9  - 100 = 9.2 ms
+// MapV9  - 150 = 9.9 ms
+// MapV9  - 200 = 32 ms
+// MapV9  - 300 = 54 ms
+// MapV10 - 50 = 1.73ms
 
 // occlude 0.0 - 100 - 5.3
 // occlude 10% - 100 - 4.8
@@ -42,10 +43,10 @@ export const MapSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfSh
 // export const MapSize = 50
 console.log("MapSize: ", MapSize);
 
-export const NumberOfActors = 1; //numberOfShips * 9
+export const NumberOfActors = 9; //numberOfShips * 9
 
 export const TileSize = 30;
-const actorScaler = 1
+const actorScaler = 0.9
 export const ActorSize = TileSize * actorScaler;
 
 export const BotSlots = 9;

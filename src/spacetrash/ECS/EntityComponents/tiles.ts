@@ -6,7 +6,12 @@ import { SpaceTrashEntity } from "../Entity";
 import { IntegerPositionComponent } from "../Components/v2/physical";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
-import { redMaterial, blueMaterial, blankMaterial, voidMaterial } from "../../threejs";
+import {
+  redMaterial,
+  blueMaterial,
+  blankMaterial, voidMaterial, greenMaterial,
+  orangeMaterial
+} from "../../threejs";
 
 
 import { TileComponent } from "../Components/v2/tileable";
@@ -22,24 +27,34 @@ const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 
 const floorTile = () => {
-  const m = new THREE.Mesh(floorGeometry, voidMaterial);
+  const m = new THREE.Mesh(floorGeometry, redMaterial);
   m.position.z = TileSize/2;
-  // m.visible = Math.random() > 0.75
+  // m.visible = false; //Math.random() > 0.75
   return m;
 };
 
 const voidTile = () => {
   const m = new THREE.Mesh(floorGeometry, voidMaterial);
-  m.position.z = TileSize/2;
+  m.position.z = TileSize / 2;
+  // m.visible = false; //Math.random() > 0.75
   return m;
 };
-
 
 const blankTile = () => {
-  const m = new THREE.Mesh(floorGeometry, blankMaterial);
-  m.position.z = TileSize/2;
+  const m = new THREE.Mesh(floorGeometry, blueMaterial);
+  m.position.z = TileSize / 2;
+  // m.visible = false; //Math.random() > 0.75
   return m;
 };
+
+const wallTile = () => {
+  const m = new THREE.Mesh(cubeGeo, orangeMaterial);
+  // m.visible = false; //Math.random() > 0.75
+  return m;
+}
+
+
+
 
 const voidSprite = () => {
   const s = new PIXI.Sprite(PIXI.Texture.from(voidPng));
@@ -111,20 +126,20 @@ export class FloorTile extends Tile {
 }
 
 
-export class WireframeWallTile extends Tile {
-  constructor(x: number = 0, y: number = 0) {
-    super(
-      x,
-      y,
-      "WallTile",
-      new DrawableComponent(
-        brickSprite(),
-        new THREE.Mesh(cubeGeo, voidMaterial),
-        new PIXI.Text('░')
-      )
-    );
-  }
-}
+// export class WireframeWallTile extends Tile {
+//   constructor(x: number = 0, y: number = 0) {
+//     super(
+//       x,
+//       y,
+//       "WallTile",
+//       new DrawableComponent(
+//         brickSprite(),
+//         new THREE.Mesh(cubeGeo, blueMaterial),
+//         new PIXI.Text('░')
+//       )
+//     );
+//   }
+// }
 
 export class WallTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
@@ -134,7 +149,8 @@ export class WallTile extends Tile {
       "WallTile",
       new DrawableComponent(
         brickSprite(),
-        new THREE.Mesh(cubeGeo, blueMaterial),
+        wallTile(),
+        
         new PIXI.Text('░')
       )
     );

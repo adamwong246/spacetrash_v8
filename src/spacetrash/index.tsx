@@ -215,7 +215,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         self.turnRight();
       }
       else if (isNumeric((event.key)) && self.buffer === "") {
-
         self.focusVideoWindow(event.key)
       }
       else if (isAlphabetic(event.key)) {
@@ -349,7 +348,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     this.videoFeed = n;
 
-
     // drawables.updateChar(n);
 
 
@@ -456,6 +454,8 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const c = this.componentStores[storeName].get(eid);
     if (!c) throw "missing entity";
 
+    // debugger
+
     return {
       x: c.x,
       y: c.y,
@@ -473,6 +473,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const p = this.positionOfBot(
       (this.bots[this.videoFeed] as [number, string])[0]
     );
+    
     return p;
   }
 
