@@ -1,8 +1,8 @@
-import {Map as rotMap, RNG as rotRng} from "rot-js";
+import { Map as rotMap, RNG as rotRng } from "rot-js";
 
 import { Entity } from "../../../engine/VECS.ts/Entity";
 
-import { SpaceTrashEntityComponent } from ".";
+import { ITiles, SpaceTrashEntityComponent } from ".";
 import {
   Tile,
   FloorTile,
@@ -15,7 +15,7 @@ import { IntegerPositionComponent } from "../Components/v2/physical";
 import { MapSize } from "../../Constants";
 
 export class SpaceTrashShip extends SpaceTrashEntityComponent {
-  map: Tile[][];
+  map: Tile|null[][];
 
   shipSize = MapSize;
 
@@ -124,14 +124,13 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     rotRng.setSeed(1234);
     var map = new rotMap.Digger(MapSize, MapSize);
     map.create((x, y, v) => {
-      let t: Tile;
-      // console.log("value", v)
       if (v === 0) {
-        this.addToMap(new FloorTile(x, y));  
+        this.addToMap(new FloorTile(x, y));
       } else {
-        this.addToMap(new WallTile(x, y));  
-      }      
+        this.addToMap(new WallTile(x, y));
+      }
     });
+    this.cullInteriorWall();
     // debugger
     // var display = new ROT.Display({ fontSize: 8 });
     // SHOW(display.getContainer());
@@ -253,6 +252,58 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
     // this.subComponents.push(new WallTile(20, 20));
   }
 
+  cullInteriorWall() {
+
+    const facing = (x: number, y: number): boolean => {
+      if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true
+      return this.map[y][x].tiletype === "WallTile";
+    };
+
+    const northFacing = (x: number, y: number): boolean => {
+      if (facing(x, y - 1)) return true;
+      return false;
+    };
+
+    const southFacing = (x: number, y: number): boolean => {
+      if (facing(x, y + 1)) return true;
+      return false;
+    };
+
+    const eastFacing = (x: number, y: number): boolean => {
+      if (facing(x - 1, y)) return true;
+      return false;
+    };
+
+    const westFacing = (x: number, y: number): boolean => {
+      if (facing(x + 1, y)) return true;
+      return false;
+    };
+
+    const cullings: [number, number][] = [];
+
+    for (let y = 0; y < this.shipSize; y++) {
+      for (let x = 0; x < this.shipSize; x++) {
+        const s = this.map[y][x];
+
+        if (s.tiletype === "WallTile") {
+          let interiorFaces = 0;
+          if (
+            northFacing(x, y) &&
+            southFacing(x, y) &&
+            eastFacing(x, y) &&
+            westFacing(x, y)
+          ) {
+            cullings.push([x, y])
+          }
+        }
+      }
+    }
+
+    cullings.forEach((c) => {
+      this.map[c[1]][c[0]] = null
+    })
+  }
+
   constructor() {
     super(new Entity(), []);
 
@@ -273,68 +324,16 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
   }
 
   toTiles(): SpaceTrashEntityComponent[] {
-    // return this.subComponents;
-
     const t: SpaceTrashEntityComponent[] = [];
 
     for (let y = 0; y < this.shipSize; y++) {
       for (let x = 0; x < this.shipSize; x++) {
-        if (this.map[y][x] === null) {
-          console.error("Cannot leave blank spaces!");
+        if (this.map[y][x] !== null) {
+          t.push(this.map[y][x]);
         }
-        t.push(this.map[y][x]);
-        // this.map[y][x]?.components.forEach((c) => {
-        //   t.push(c);
-        // })
-
-        // this.subComponents.push(new FloorTile(x, y));
-        //  this.addToMap(new FloorTile(x, y));
       }
     }
 
     return t;
   }
 }
-
-// this.make().then((s) => {
-//   return this
-// })
-
-// // some geometry
-// this.subComponents.push(new SouthEast(1, 1));
-// // this.subComponents.push(new TileB(2, 1))
-// this.subComponents.push(new SouthWest(3, 1));
-// this.subComponents.push(new WallTile(4, 1));
-// // this.subComponents.push(new NorthWest(5, 1))
-// // this.subComponents.push(new NorthEast(6, 1))
-
-// this.subComponents.push(new NorthWest(5, 4));
-// this.subComponents.push(new WallTile(5, 5));
-// this.subComponents.push(new SouthWest(5, 6));
-// this.subComponents.push(new WallTile(6, 6));
-// this.subComponents.push(new SouthEast(7, 6));
-// this.subComponents.push(new WallTile(7, 5));
-// this.subComponents.push(new NorthEast(7, 4));
-// this.subComponents.push(new WallTile(6, 4));
-
-// this.subComponents.push(new WallTile(6, 7));
-// this.subComponents.push(new WallTile(6, 8));
-// this.subComponents.push(new WallTile(6, 9));
-// this.subComponents.push(new WallTile(6, 10));
-// this.subComponents.push(new WallTile(6, 11));
-// this.subComponents.push(new SouthWest(6, 12));
-// this.subComponents.push(new WallTile(7, 12));
-// this.subComponents.push(new WallTile(8, 12));
-
-// new Array(100).fill(true).forEach((i) => {
-//   this.subComponents.push(
-//     new WallTile(
-//       Math.round(Math.random() * (this.shipSize - 1)),
-//       Math.round(Math.random() * (this.shipSize - 1))
-//     )
-//   );
-// });
-
-// this.subComponents.push(new DoorTile(6, 6, 1))
-// this.subComponents.push(new DoorTile(16, 16, 1))
-// return e;

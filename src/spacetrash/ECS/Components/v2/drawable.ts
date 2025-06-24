@@ -135,7 +135,7 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
       d.char.position.y = Math.round(p.y) * TileSize;
     }
 
-    console.log("sprite", d.sprite.position, d.sprite.rotation)
+    // console.log("sprite", d.sprite.position, d.sprite.rotation)
     // console.log("mesh", d.mesh.position, d.mesh.rotation)
 
     d.dirty = false;

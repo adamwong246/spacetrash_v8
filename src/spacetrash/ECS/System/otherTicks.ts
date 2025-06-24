@@ -170,7 +170,7 @@ function runTankPhysics() {
 }
 
 function runPhysics(fovMap) {
-  // runFloatingPhysics();
+  runFloatingPhysics();
   runTankPhysics();
 }
 

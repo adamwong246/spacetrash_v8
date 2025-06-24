@@ -36,14 +36,15 @@ export const FPS = 30;
 
 // const shipsize = (Math.pow(25, 2) * 5) 
 
-const numberOfShips = 1
+const numberOfShips = 5
+// const shipLength = 83;
 const shipLength = 50;
 // const shipSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
 export const MapSize = Math.round(Math.sqrt(Math.pow(shipLength, 2) * numberOfShips))
 // export const MapSize = 50
 console.log("MapSize: ", MapSize);
 
-export const NumberOfActors = 9; //numberOfShips * 9
+export const NumberOfActors = numberOfShips * 9
 
 export const TileSize = 30;
 const actorScaler = 0.9
