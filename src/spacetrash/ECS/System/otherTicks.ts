@@ -1,6 +1,17 @@
-const WarpField = require("warp-field");
+import * as THREE from "three";
+const raycaster = new THREE.Raycaster();
 
-import { MapSize, TANK_VELOCITY_ANGULAR, TANK_VELOCITY as TANK_VELOCITY_LINEAR, TileSize } from "../../Constants";
+const frustum = new THREE.Frustum();
+const matrix = new THREE.Matrix4();
+
+// const WarpField = require("warp-field");
+
+import {
+  MapSize,
+  TANK_VELOCITY_ANGULAR,
+  TANK_VELOCITY as TANK_VELOCITY_LINEAR,
+  TileSize,
+} from "../../Constants";
 import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
 import { ActorSize, FRICTION_CONSTANT, SPEED_CONSTANT } from "../../Constants";
@@ -27,6 +38,7 @@ import {
   DegreesDirectionComponent,
 } from "../Components/v2/physical";
 import { LightPositionStore } from "../Components/v3/LightPosition";
+import { Object3DEventMap } from "three";
 
 let actors: ActorStore;
 let dds: DegreesDirectionStore;
@@ -48,7 +60,8 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   GAME = game;
   DELTA = delta;
 
-  console.log("DELTA", DELTA)
+  // console.log("DELTA", DELTA)
+
   // Level 0 - "Component Stores"
   dds = game.componentStores[
     "DegreesDirectionComponent"
@@ -76,50 +89,104 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
     "LightPositionComponent"
   ] as LightPositionStore;
 
-  runPhysics(fovMap);
+  // runFloatingPhysics();
+  resetIllumination();
+  runTankPhysics();
+  // scanFrustum();
 };
 
-export function runFloatingPhysics() {
-  let repaintLights = false;
+function scanFrustum() {
+  GAME.camera.updateMatrix();
+  GAME.camera.updateMatrixWorld();
+  matrix.multiplyMatrices(
+    GAME.camera.projectionMatrix,
+    GAME.camera.matrixWorldInverse
+  );
+  frustum.setFromProjectionMatrix(matrix);
 
-  fmc.store.forEach(([eid, f]) => {
-    const { position, classification } = eid2PMSs.get(eid);
+  let itemsInFrustum: THREE.Object3D<Object3DEventMap>[] = [];
 
-    if (classification === "SpaceTrashBot") {
-      // const p = fps.get(eid);
-      // if (!p) throw "floating position component not found";
-
-      boundaryCheckBot(position);
-      collisionsAndVideoControls();
-
-      const gridChanges = updateFloatPosition(position, f);
-
-      if (gridChanges) {
-        repaintLights = true;
+  GAME.scene.traverse(function (object) {
+    if (object.isMesh) {
+      if (
+        frustum.containsPoint(object.position) ||
+        frustum.intersectsObject(object)
+      ) {
+        itemsInFrustum.push(object);
       }
-
-      drawables.updatePostion(eid, position, gridChanges);
-    } else if (classification === "Tile") {
-      throw "not implemented";
-    } else {
-      debugger;
-      throw "idk";
     }
   });
 
-  if (repaintLights) {
-    resetIllumination();
-    runIlluminationV7(fovMap);
+  const origin = GAME.camera.position.clone();
 
-    for (let y = 0; y < MapSize; y++) {
-      for (let x = 0; x < MapSize; x++) {
-        setPieces.store[y][x].drawing.mesh.visible =
-          setPieces.store[y][x].luminance > 0;
-        setPieces.store[y][x].drawing.sprite.visible =
-          setPieces.store[y][x].luminance > 0;
-      }
-    }
-  }
+  itemsInFrustum.forEach((object3d) => {
+
+    
+    
+    ////////////////////////////////////////////
+
+    const vis = drawables.findByMeshId(object3d.uuid);
+    vis.sprite.visible = true;
+
+    ////////////////////////////////////////////
+    // const direction = object3d.position.clone().sub(origin).normalize(); // Calculate direction from object1 to object2 and normalize it
+    // raycaster.set(origin, direction);
+    // // raycaster.params.Mesh = 10;
+    // // raycaster.params.LOD = 0.1;
+    // const intersects = raycaster.intersectObjects(itemsInFrustum, true); // Check for intersection with object2
+
+    // intersects.forEach((i, n) => { 
+    //   if (n < 2) {
+    //     const vis = drawables.findByMeshId(i.object.uuid);
+    //     vis.sprite.visible = true;    
+    //   }      
+    // })
+
+    // if (intersects.length > 0) {
+    //   if (intersects[0].object.uuid === object3d.uuid) {
+    //     vis.sprite.visible = true;
+    //   }
+    // }
+
+    ////////////////////////////////////////////
+
+  });
+
+}
+
+export function runFloatingPhysics() {
+  // let repaintLights = false;
+  // fmc.store.forEach(([eid, f]) => {
+  //   const { position, classification } = eid2PMSs.get(eid);
+  //   if (classification === "SpaceTrashBot") {
+  //     // const p = fps.get(eid);
+  //     // if (!p) throw "floating position component not found";
+  //     boundaryCheckBot(position);
+  //     collisionsAndVideoControls();
+  //     const gridChanges = updateFloatPosition(position, f);
+  //     if (gridChanges) {
+  //       repaintLights = true;
+  //     }
+  //     drawables.updatePostion(eid, position, gridChanges);
+  //   } else if (classification === "Tile") {
+  //     throw "not implemented";
+  //   } else {
+  //     debugger;
+  //     throw "idk";
+  //   }
+  // });
+  // if (repaintLights) {
+  //   resetIllumination();
+  //   // runIlluminationV7(fovMap);
+  //   for (let y = 0; y < MapSize; y++) {
+  //     for (let x = 0; x < MapSize; x++) {
+  //       setPieces.store[y][x].drawing.mesh.visible =
+  //         setPieces.store[y][x].luminance > 0;
+  //       setPieces.store[y][x].drawing.sprite.visible =
+  //         setPieces.store[y][x].luminance > 0;
+  //     }
+  //   }
+  // }
 }
 
 function boundaryCheckBot(fpc: FloatPositionComponent) {
@@ -146,23 +213,22 @@ function runTankPhysics() {
       const oldDir = direction.r;
       const oldX = position.x;
       const oldY = position.y;
-      // const p = fps.get(eid);
-      // if (!p) throw "floating position component not found";
 
       boundaryCheckBot(position);
       collisionsAndVideoControls();
       updateTankPosition(position, t, direction);
 
-      if ((oldDir !== direction.r) || (oldX !== position.x) || (oldY !== position.y)) {
+      if (
+        oldDir !== direction.r ||
+        oldX !== position.x ||
+        oldY !== position.y
+      ) {
         drawables.updatePostionAndRotation(eid, position, direction);
       }
 
       // if (gridChanges) {
       //   // repaintLights = true;
       // }
-
-      
-      
     } else if (classification === "Tile") {
       throw "not implemented";
     } else {
@@ -172,20 +238,19 @@ function runTankPhysics() {
   });
 }
 
-function runPhysics(fovMap) {
-  runFloatingPhysics();
-  runTankPhysics();
-}
-
 function resetIllumination() {
-  // incasters.each(([li, z]) => {
-  //   z.luminance = 0;
-  // });
-  // for (let y = 0; y < MapSize; y++) {
-  //   for (let x = 0; x < MapSize; x++) {
-  //     setPieces.store[y][x].luminance = -1;
-  //   }
-  // }
+  drawables.each(([eid, d, eid2]) => {
+    d.sprite.visible = false;
+  });
+  incasters.each(([li, z]) => {
+    z.luminance = 0;
+  });
+  for (let y = 0; y < MapSize; y++) {
+    for (let x = 0; x < MapSize; x++) {
+      setPieces.store[y][x].luminance = -1;
+      // setPieces.store[y][x].s
+    }
+  }
 }
 
 const collisionsAndVideoControls = () => {
@@ -307,7 +372,6 @@ function updateVelocity(f: number): number {
   return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
 }
 
-const TANK_CONSTANT = 0.1;
 function updateTankMovement(f: TankMovingComponent) {
   if (GAME.movingForward()) {
     f.j = "forth";
@@ -344,8 +408,6 @@ function updateFloatPosition(
   return hasChangedPosition;
 }
 
-
-
 function radiansToDegrees(radians) {
   return radians * (180 / Math.PI);
 }
@@ -364,8 +426,7 @@ function updateTankPosition(
 
   updateTankMovement(f);
 
-
-  const radians = d.r;  //radiansToDegrees(d.r);
+  const radians = d.r; //radiansToDegrees(d.r);
   if (f.i === "left") {
     d.r = d.r - TANK_VELOCITY_ANGULAR;
   }
@@ -377,12 +438,12 @@ function updateTankPosition(
   }
 
   if (f.j === "forth") {
-    p.x += Math.cos(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
-    p.y += Math.sin(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.x += Math.cos(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.y += Math.sin(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
   }
   if (f.j === "back") {
-    p.x -= Math.cos(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
-    p.y -= Math.sin(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.x -= Math.cos(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.y -= Math.sin(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
   }
   if (f.j === "none") {
     // d.r = 0;
@@ -413,7 +474,7 @@ function runIlluminationV7(fovMap) {
         // illuminate the space upon which we stand
         illuminate(emitterPostion.x, emitterPostion.y);
 
-        const fov = WarpField.computeFieldOfView(fovMap, x, y, 20);
+        // const fov = WarpField.computeFieldOfView(fovMap, x, y, 20);
 
         // (di, dj) is a vector - direction in which we move right now
         let di = 1;

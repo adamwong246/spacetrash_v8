@@ -44,12 +44,10 @@ import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
 import { LightOutcastingStore } from "./ECS/Components/casting/out";
 
-
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
 
 const pixi2dApp = new PIXI.Application();
-var scene = new THREE.Scene();
 
 const performanceConfig: IPerformanceConfig = {
   fps: FPS,
@@ -58,12 +56,6 @@ const performanceConfig: IPerformanceConfig = {
 };
 
 const defToRad = (d: number) => (d * Math.PI) / 180;
-var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.5, TileSize * shipLength);
-camera.rotateX(defToRad(-90));
-camera.rotateY(defToRad(90));
-// camera.rotateZ(defToRad(180));
-// camera.position.z = (TileSize / 4);
-
 
 let shipMapMouseX = 0;
 let shipMapMouseY = 0;
@@ -121,18 +113,19 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   ActorComponent: ActorStore
 }, number> {
 
-
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
   threejsRenderer: THREE.WebGLRenderer;
+  camera: THREE.Camera;
+  scene: THREE.Scene;
 
   pixijsBotCanvasRef: HTMLCanvasElement;
   pixijsBotParentRef: HTMLElement;
   pixijsRenderer: PIXI.Application;
 
   public pixiLoaded: boolean = false;
+  
   public videoFeed: number = 1;
-
 
   public bots: {
     1: [number, string];
@@ -145,11 +138,17 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     8: [number, string];
     9: [number, string];
   };
+
   terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
+
+  bufferRef: React.MutableRefObject<null>;
+  
   forward: boolean = false;
   back: boolean = false;
   left: boolean = false;
   right: boolean = false;
+
+  botsHook: React.Dispatch<any>;
 
   constructor(domNode: HTMLElement) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -195,6 +194,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       ]
     );
 
+    this.camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.5, TileSize * 20);
+    this.camera.rotateX(defToRad(-90));
+    this.camera.rotateY(defToRad(90));
+
+    this.scene = new THREE.Scene();
+    
     this.addToHistory(bootScreenTermLine)
 
     const self = this;
@@ -258,7 +263,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   start() {
-
     PIXI.Assets.load([
       "https://pixijs.com/assets/bunny.png",
       stone,
@@ -276,14 +280,8 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         PIXI.Texture.from(voidPng);
 
       })
-
-
-
-
     super.start()
   }
-
-  bufferRef: React.MutableRefObject<null>;
 
   registerTerminalBuffer(inputRef: React.MutableRefObject<null>) {
     this.bufferRef = inputRef;
@@ -347,25 +345,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.focusOnTermInput()
   }
 
-
   focusVideoWindow(s: string) {
     const n: number = Number(s);
     if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
-    console.log("focusVideoWindow", s)
-
-    // const drawables = (this.stores['DrawableComponent'] as DrawableStoreV2)
-    // const oldBotId = this.bots[n][0]
-
     this.videoFeed = n;
-
-    // drawables.updateChar(n);
-
-
-
-
     this.unFocusOnTermInput();
     super.focusWindowById(`vid`)
-
   }
 
   driveForward() {
@@ -399,7 +384,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     } else if ((this.back === true) && (this.forward === false)) {
       return false;
     } else if (!this.back && !this.forward) {
-      return false;// no-op
+      return false;
     }
     else {
       return false;
@@ -464,8 +449,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const c = this.componentStores[storeName].get(eid);
     if (!c) throw "missing entity";
 
-    // debugger
-
     return {
       x: c.x,
       y: c.y,
@@ -487,7 +470,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     return p;
   }
 
-  botsHook: React.Dispatch<any>;
+  
   registerBotsHook(stateSetter: React.Dispatch<any>) {
     this.botsHook = stateSetter;
     this.fireBotsHook()
@@ -498,9 +481,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   isFriendly(aeid: number): boolean {
-    // return Math.random() > 0.5
-    let isFriend: boolean = false;
-
     if (!this.bots) throw "no bots?!";
 
     return Object.keys(this.bots).find((b) => {
@@ -514,7 +494,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         return false;
       }
     }) !== undefined || false
-    // throw new Error("Method not implemented.");
   }
 
   focusWindowById(s: string, p: string) {
@@ -557,7 +536,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         antialias: true,
       });
 
-
     }
     if (key === "map") {
       this.pixijsBotCanvasRef = canvas;
@@ -571,101 +549,32 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         height: (MapSize + 7) * TileSize,
       });
 
-      // const basicText = new Text('Basic text in pixi');
-
-      // basicText.p
-      // basicText.y = 100;
-
-
     }
-
   }
-
   
   async renderBotCanvas() {
     const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
-    this.threejsRenderer.setSize(p.width, p.height)
-
-        
-    
+    this.threejsRenderer.setSize(p.width, p.height)    
     const position = this.videoFeedPosition();
-    camera.position.x = position.x * TileSize;
-    camera.position.y = position.y * TileSize;
+    this.camera.position.x = position.x * TileSize;
+    this.camera.position.y = position.y * TileSize;
     const rotation = this.videoFeedRotation();
-    camera.rotation.y = (-rotation.r);
-
-
-    // In your render loop or update function:
-    // camera.updateMatrix(); // Update camera's local matrix
-    // camera.updateMatrixWorld(); // Update camera's world matrix
-
-    // matrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-    // frustum.setFromProjectionMatrix(matrix);
-
-    // const visibleObjects = [];
-    // scene.traverse(function(object) {
-    //     if (object.isMesh) { // Or check for other types of objects like Lights, etc.
-    //         // You can check for point containment or object intersection
-    //         if (frustum.containsPoint(object.position) || frustum.intersectsObject(object)) {
-    //             visibleObjects.push(object);
-    //         }
-    //     }
-    // });
-    // console.log("visible object", visibleObjects)
-
-    this.threejsRenderer.render(scene, camera);
-
-    // console.log("camera", camera.position)
-
-    // camera.rotation.x = camera.rotation.x + 0.001;
-    // camera.rotation.y = camera.rotation.y + 0.02;updateChar
-
-    // function degreesToRadians(degrees) {
-    //   return degrees * (Math.PI / 180);
-    // }
-
-    // function radiansToDegrees(radians) {
-    //   return radians * (180 / Math.PI);
-    // }
-
-    // camera.rotation.y = (rotation.r)
-
-    // console.log("camera", camera.position, camera.rotation)
-
-    
-
-    // mapsize 50, 5000, 5000  2.7ms
-    // mapsize 50, 500,  500   1.2ms
-    // mapsize 50, 5,    5     0.8ms
-    // this.threejsRenderer.setSize(1000, 1000);
-
-    // mapsize 50, ratio 0.1 = 1.2ms
-    // mapsize 50, ratio 1.0 = 1.2
-    // this.threejsRenderer.setPixelRatio(1)
-    
+    this.camera.rotation.y = (-rotation.r);
+    this.threejsRenderer.render(this.scene, this.camera);
   }
-
 
   async renderShipMap() {
     // todo
   }
 
   BeginTheGame() {
-
     this.openAllWindows();
-
     Drawings.each(([a, d, c]) => {
       pixi2dApp.stage.addChild(d.sprite)
-
-      // const basicText = new Text('Basic text in pixi');
       pixi2dApp.stage.addChild(d.char);
-      // pixi2dApp.stage.addChild(basicText);
-
-      scene.add(d.mesh)
+      this.scene.add(d.mesh)
     })
-
     this.unpause();
-
   }
 
 }

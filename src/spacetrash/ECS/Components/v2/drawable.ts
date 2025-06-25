@@ -113,6 +113,28 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
     return;
   }
 
+  findByMeshId(uuid: string) {
+
+    for (const [eid, dc] of this.store) {
+      // let qq = this.store.get(vs[k]);
+      // if (!qq) break;
+
+      if (dc.mesh.uuid === uuid) {
+        return dc;
+      }
+    }
+
+    // const vs = this.store.keys().next
+
+    // for (let i = 0; i < vs.length; i++) {
+
+    //   const k = i.toString();
+    //   console.log(k)
+      
+    // }
+    throw "You tried to find a mesh but it could not be found";
+  }
+
   updatePostionAndRotation(
     eid: number,
     p: PositionComponent,
@@ -121,8 +143,8 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
   ) {
     const d = this.get(eid);
     if (d.sprite) {
-      d.sprite.position.x = p.x * TileSize + (TileSize/2);
-      d.sprite.position.y = p.y * TileSize + (TileSize/2);
+      d.sprite.position.x = p.x * TileSize + TileSize / 2;
+      d.sprite.position.y = p.y * TileSize + TileSize / 2;
       d.sprite.rotation = direction.r;
     }
     if (d.mesh) {
@@ -139,7 +161,6 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
     // console.log("mesh", d.mesh.position, d.mesh.rotation)
 
     d.dirty = false;
-
   }
 
   updatePostion(eid: number, p: FloatPositionComponent, updateChars: boolean) {
