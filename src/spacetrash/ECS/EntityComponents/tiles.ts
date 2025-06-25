@@ -3,24 +3,35 @@ import * as THREE from "three";
 
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { SpaceTrashEntity } from "../Entity";
-import { IntegerPositionComponent } from "../Components/v2/physical";
+import {
+  DirectionComponent,
+  IDirs,
+  IntegerPositionComponent,
+  OrdinalDirectionComponent,
+} from "../Components/v2/physical";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
 import {
   redMaterial,
   blueMaterial,
-  blankMaterial, voidMaterial, greenMaterial,
-  orangeMaterial
+  blankMaterial,
+  voidMaterial,
+  greenMaterial,
+  orangeMaterial,
 } from "../../threejs";
-
 
 import { TileComponent } from "../Components/v2/tileable";
 import { TileSize } from "../../Constants";
-import { LightIncastingComponent, LightIncastingStore } from "../Components/casting/in";
+import {
+  LightIncastingComponent,
+  LightIncastingStore,
+} from "../Components/casting/in";
 
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
 import voidPng from "./../../Assets/void.png";
+import { Component } from "../../../engine/VECS.ts/Component";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -28,31 +39,36 @@ var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 
 const floorTile = () => {
   const m = new THREE.Mesh(floorGeometry, redMaterial);
-  m.position.z = TileSize/2;
-  // m.visible = false; //Math.random() > 0.75
+  m.position.z = TileSize / 2;
+
   return m;
 };
+
+const wallTile = () => {
+  const m = new THREE.Mesh(cubeGeo, blueMaterial);
+
+  return m;
+};
+
+// const wallTile = () => {
+//   const m = new THREE.Mesh(cubeGeo, orangeMaterial);
+//   // m.visible = false; //Math.random() > 0.75
+//   return m;
+// };
 
 const voidTile = () => {
   const m = new THREE.Mesh(floorGeometry, voidMaterial);
   m.position.z = TileSize / 2;
-  // m.visible = false; //Math.random() > 0.75
+  // m.visible = Math.random() > 0.9
   return m;
 };
 
 const blankTile = () => {
   const m = new THREE.Mesh(floorGeometry, blueMaterial);
   m.position.z = TileSize / 2;
-  // m.visible = false; //Math.random() > 0.75
+  // m.visible = Math.random() > 0.9
   return m;
 };
-
-const wallTile = () => {
-  const m = new THREE.Mesh(cubeGeo, orangeMaterial);
-  // m.visible = false; //Math.random() > 0.75
-  return m;
-}
-
 
 
 
@@ -93,18 +109,25 @@ export class Tile extends SpaceTrashEntityComponent {
     x: number,
     y: number,
     tiletype: ITiles,
-    d: DrawableComponent = new DrawableComponent(bunnySprite(), blankTile())
+    d: DrawableComponent = new DrawableComponent(bunnySprite(), blankTile()),
+    dir?: DirectionComponent
   ) {
     const spe = new SpaceTrashEntity();
-    super(spe, [
-      ...[
-        new IntegerPositionComponent(x, y),
-        new LightIncastingComponent(),
-        new ClassificationComponent("Tile"),
-        new TileComponent(tiletype),
-      ],
-      d,
-    ]);
+
+    const comps: Component<any, any>[] = [
+      d, 
+      new IntegerPositionComponent(x, y),
+      new LightIncastingComponent(),
+      new ClassificationComponent("Tile"),
+      new TileComponent(tiletype),
+    ];
+    
+    if (dir !== undefined) {
+      comps.push(dir);
+    }
+
+    super(spe, comps);
+    
     this.tiletype = tiletype;
   }
 
@@ -121,10 +144,14 @@ export class Tile extends SpaceTrashEntityComponent {
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(x, y, "FloorTile", new DrawableComponent(stoneSprite(), floorTile(), new PIXI.Text(' ')));
+    super(
+      x,
+      y,
+      "FloorTile",
+      new DrawableComponent(stoneSprite(), floorTile(), new PIXI.Text(" "))
+    );
   }
 }
-
 
 // export class WireframeWallTile extends Tile {
 //   constructor(x: number = 0, y: number = 0) {
@@ -142,17 +169,13 @@ export class FloorTile extends Tile {
 // }
 
 export class WallTile extends Tile {
-  constructor(x: number = 0, y: number = 0) {
+  constructor(x: number = 0, y: number = 0, d: IDirs) {
     super(
       x,
       y,
       "WallTile",
-      new DrawableComponent(
-        brickSprite(),
-        wallTile(),
-        
-        new PIXI.Text('░')
-      )
+      new DrawableComponent(brickSprite(), wallTile(), new PIXI.Text("░")),
+      // new OrdinalDirectionComponent(d)
     );
   }
 }
@@ -163,11 +186,7 @@ export class VoidTile extends Tile {
       x,
       y,
       "VoidTile",
-      new DrawableComponent(
-        voidSprite(),
-        voidTile(),
-        new PIXI.Text('█')
-      )
+      new DrawableComponent(voidSprite(), voidTile(), new PIXI.Text("█"))
     );
   }
 }

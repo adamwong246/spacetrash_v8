@@ -176,38 +176,36 @@ export abstract class ECS {
     let delta = 0;
 
     // run the logic loop as fast as possible
-    let d;
-    let p = performance.now();
-    const repeatedFunction = () => {
-      d = performance.now();
-      const timeDelta = d - p;
-      this.tick(timeDelta);
-      if (this.performanceLogging) {
-        console.debug("ECS tick time delta", timeDelta);
-      }
-      p = d;
-    };
+    // let d;
+    // let p = performance.now();
+    // const repeatedFunction = () => {
+    //   d = performance.now();
+    //   const timeDelta = d - p;
+    //   this.tick(timeDelta);
+    //   if (this.performanceLogging) {
+    //     console.debug("ECS tick time delta", timeDelta);
+    //   }
+    //   p = d;
+    // };
 
-    setInterval(repeatedFunction, 1);
+    // setInterval(repeatedFunction, 1);
 
     let drawing = false
+    let thenn;
 
     if (!this.headless) {
       // run the render loop at FPS
       while (true) {
         let now = await new Promise(requestAnimationFrame);
-        if ( !drawing && (now - then < interval - delta)) {
-          continue;
-        }
-        delta = Math.min(interval, delta + now - then - interval);
-        then = now;
+        // if ( !drawing && (now - then < interval - delta)) {
+        //   continue;
+        // }
+        // delta = delta + now - then;
+        // then = now;
 
-        
-        if (this.ticked) {
-          drawing = true;
-          await this.draw();
-          drawing = false;
-        }
+        this.tick(now - then);
+        await this.draw();
+        then = now;
       }
     } else {
       console.log("running in headless mode")

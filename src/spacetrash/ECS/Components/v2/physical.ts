@@ -124,12 +124,16 @@ export class DegreesDirectionStore extends EntityComponentStore<DegreesDirection
 
 // Gives an entity a rotation in ordinal direction
 export class OrdinalDirectionComponent extends DirectionComponent {
+  r: IDirs;
+  
   constructor(r: IDirs) {
     super(r);
   }
 }
 
 export class OrdinalDirectionStore extends EntityComponentStore<OrdinalDirectionComponent> {
+  
+
   constructor() {
     super();
   }

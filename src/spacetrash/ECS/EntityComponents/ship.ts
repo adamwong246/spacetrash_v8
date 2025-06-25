@@ -72,7 +72,6 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
   }
 
   addToMap(t: Tile) {
-    console.log("adding", t);
     if (!t) debugger;
 
     if (t.position().x >= this.shipSize) {

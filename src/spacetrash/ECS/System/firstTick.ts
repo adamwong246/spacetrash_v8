@@ -1,15 +1,25 @@
-import { Text, TextStyle, Ticker } from 'pixi.js';
+import { Text, TextStyle, Ticker } from "pixi.js";
 
 const WarpField = require("warp-field");
 const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 import { SpaceTrash } from "../..";
 import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
-import { LightIncastingComponent, LightIncastingStore } from "../Components/casting/in";
-import { LightOutcastingComponent, LightOutcastingStore } from "../Components/casting/out";
+import {
+  LightIncastingComponent,
+  LightIncastingStore,
+} from "../Components/casting/in";
+import {
+  LightOutcastingComponent,
+  LightOutcastingStore,
+} from "../Components/casting/out";
 import { SetPieceComponent, SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
 import { ClassificationStore } from "../Components/v2/classifiable";
-import { DrawableStoreV2, DrawableComponent, IChars } from "../Components/v2/drawable";
+import {
+  DrawableStoreV2,
+  DrawableComponent,
+  IChars,
+} from "../Components/v2/drawable";
 import { Eid2PMStore, Eid2PMComponent } from "../Components/v2/eid2PMC";
 import {
   LightingComponentStore,
@@ -21,11 +31,10 @@ import {
   FloatMovingStore,
   FloatPositionStore,
   TankMovingStore,
+  OrdinalDirectionStore,
 } from "../Components/v2/physical";
 import { TileComponentStore } from "../Components/v2/tileable";
 import { LightPositionStore } from "../Components/v3/LightPosition";
-
-import { distanceV2 } from "./MainSystem";
 
 let actors: ActorStore;
 let actorsLit: LightingComponentStore;
@@ -45,17 +54,25 @@ let setPieces: SetPieceStore;
 let tiles: TileComponentStore;
 let incasters: LightIncastingStore;
 let tms: TankMovingStore;
+let ods: OrdinalDirectionStore;
 
 let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
+  ods = game.componentStores[
+    "OrdinalDirectionComponent"
+  ] as OrdinalDirectionStore;
   tms = game.componentStores["TankMovingComponent"] as TankMovingStore;
   drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
   fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
   fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
-  outcasters = game.componentStores[LightOutcastingComponent.name] as LightOutcastingStore;
-  incasters = game.componentStores[LightIncastingComponent.name] as LightIncastingStore;
+  outcasters = game.componentStores[
+    LightOutcastingComponent.name
+  ] as LightOutcastingStore;
+  incasters = game.componentStores[
+    LightIncastingComponent.name
+  ] as LightIncastingStore;
   tiles = game.componentStores["TileComponent"] as TileComponentStore;
   ips = game.componentStores[
     "IntegerPositionComponent"
@@ -72,7 +89,9 @@ export default async (game: SpaceTrash, delta: number) => {
   lights = game.stores["LightComponent"] as LightComponentStore;
   setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-  light2IntegerPosition = game.stores["LightPositionComponent"] as LightPositionStore;
+  light2IntegerPosition = game.stores[
+    "LightPositionComponent"
+  ] as LightPositionStore;
 
   // todo reimpliment classification
   Object.keys(classs.store).forEach((k) => {
@@ -97,7 +116,6 @@ export default async (game: SpaceTrash, delta: number) => {
   // according to profile, this is very slow
   outcasters.each(([n, [eid, _lx]]) => {
     const classification = eid2PMSs.store[eid].classification;
-    
 
     if (classification === "Tile") {
       setPieceLit.add(eid, ips.get(eid), classification);
@@ -129,7 +147,7 @@ export default async (game: SpaceTrash, delta: number) => {
     }
   }
 
-  const map1 = new WarpField.FieldOfViewMap('map1', MapSize, MapSize);
+  const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 
   // 3 deep
   // build set pieces grid
@@ -141,9 +159,9 @@ export default async (game: SpaceTrash, delta: number) => {
       throw "why no t?";
     }
 
-    setPieces.at(s.x, s.y)
+    setPieces.at(s.x, s.y);
     setPieces.at(s.x, s.y).tileType = t.tileType;
-    setPieces.at(s.x, s.y).incasterId = eid
+    setPieces.at(s.x, s.y).incasterId = eid;
 
     // if (Math.random() > 0.5) map1.addBody(s.x, s.y);
     if (t.tileType === "WallTile") map1.addBody(s.x, s.y);
@@ -156,11 +174,10 @@ export default async (game: SpaceTrash, delta: number) => {
   // 2 deep
   // setup the actors list
   fps.each((aeid, y) => {
+    const mf = fmc.store[aeid];
+    const mt = tms.store[aeid];
 
-    const mf = fmc.store[aeid]
-    const mt = tms.store[aeid]
-
-    if (mf && mt) throw "an entity can't have both floating and tank motion"
+    if (mf && mt) throw "an entity can't have both floating and tank motion";
 
     // const motionFloating = mf[1]
     // const motionTank = tms.store[aeid][1]
@@ -169,9 +186,8 @@ export default async (game: SpaceTrash, delta: number) => {
     if (mf) {
       motion = mf[1];
     } else {
-      motion = mt[1]
+      motion = mt[1];
     }
-      
 
     // add the actors
     actors.add({
@@ -188,24 +204,20 @@ export default async (game: SpaceTrash, delta: number) => {
     });
   });
 
-
-
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
   runSetupBotFleet(game);
-  return  map1
+  return map1;
 };
 
 // Turn our bot fleet into drawables.
 const runSetupBotFleet = (game: SpaceTrash) => {
   Object.entries(game.bots).forEach(([b, bb], x, [xx, [s, [eid, s2]]]) => {
-    
     // drawables.updateChar(eid, new Text("!!!"));
     // game.pixijsRenderer.stage.addChild(drawables.get(eid).char);
     // game.pixijsRenderer.render
-
-  })
-}
+  });
+};
 
 const runPlaceImmoveableSetPieces = () => {
   drawables.each(([eid, d, ks]) => {
@@ -226,6 +238,12 @@ const runPlaceImmoveableSetPieces = () => {
 
       d.char.position.x = p.x * TileSize;
       d.char.position.y = p.y * TileSize;
+
+      // const ordinalDirection = ods.get(eid);
+
+      // if (ordinalDirection) {
+      //   d.mesh.rotateY(90)
+      // }
     });
   });
 };
@@ -293,61 +311,59 @@ function runInitialMapBoundaryCheck() {
 //   // compute(map, player_pos, Infinity);
 // };
 
+///////////////////////////////////////////////////////////
 
-  ///////////////////////////////////////////////////////////
+// for (let y = 0; y < MapSize; y++) {
+//   for (let x = 0; x < MapSize; x++) {
+//     if (setPieces.tileIsAt(x, y, "FloorTile")) {
+//       map1.addBody(x, y);
+//     }
+//   }
+// }
 
+// for (let y = 0; y < MapSize; y++) {
+//   for (let x = 0; x < MapSize; x++) {
+//     const fov = WarpField.computeFieldOfView(map1, x, y, 1000);
 
-  // for (let y = 0; y < MapSize; y++) {
-  //   for (let x = 0; x < MapSize; x++) {
-  //     if (setPieces.tileIsAt(x, y, "FloorTile")) {
-  //       map1.addBody(x, y);
-  //     }
-  //   }
-  // }
+//     for (let yy = MapSize / -2; yy < MapSize / 2; yy++) {
+//       for (let xx = MapSize / -2; xx < MapSize / -2; xx++) {
+//         // const targetX =
+//         const isVisible = fov.getVisible(xx, yy);
+//         if (isVisible) {
+//           setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
+//         }
+//       }
+//     }
+//   }
+// }
 
-  // for (let y = 0; y < MapSize; y++) {
-  //   for (let x = 0; x < MapSize; x++) {
-  //     const fov = WarpField.computeFieldOfView(map1, x, y, 1000);
+// setPieces.store[y][x].FOV[yy][xx];
 
-  //     for (let yy = MapSize / -2; yy < MapSize / 2; yy++) {
-  //       for (let xx = MapSize / -2; xx < MapSize / -2; xx++) {
-  //         // const targetX =
-  //         const isVisible = fov.getVisible(xx, yy);
-  //         if (isVisible) {
-  //           setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+///////////////////////////////////////////////////////////////////////
 
-  // setPieces.store[y][x].FOV[yy][xx];
+// for (let y = 0; y < fps.store.length; y++) {
+//   // const aeid = fps.store[y][0];
+//   const aeid = fps.at(y);
+//   // add the actors
+//   actors.add({
+//     actorId: aeid,
+//     // actorX: fps.store[y][1].x,
+//     // actorY: fps.store[y][1].y,
+//     // rendered2d: "fresh",
+//     // renderedWebgl: "fresh",
+//     // culled2d: false,
+//     // culledWebgl: false,
+//     friendly: game.isFriendly(aeid),
+//     position: fps.store[y][1],
+//     motion: fmc.store[y][1],
+//     // sprite: new Sprite,
+//     // renderedWebgl: "new",
+//     // rendered2d: "new"
+//   });
 
-  ///////////////////////////////////////////////////////////////////////
-
-  // for (let y = 0; y < fps.store.length; y++) {
-  //   // const aeid = fps.store[y][0];
-  //   const aeid = fps.at(y);
-  //   // add the actors
-  //   actors.add({
-  //     actorId: aeid,
-  //     // actorX: fps.store[y][1].x,
-  //     // actorY: fps.store[y][1].y,
-  //     // rendered2d: "fresh",
-  //     // renderedWebgl: "fresh",
-  //     // culled2d: false,
-  //     // culledWebgl: false,
-  //     friendly: game.isFriendly(aeid),
-  //     position: fps.store[y][1],
-  //     motion: fmc.store[y][1],
-  //     // sprite: new Sprite,
-  //     // renderedWebgl: "new",
-  //     // rendered2d: "new"
-  //   });
-
-  //   outcasters.each(([leid, le]) => {
-  //     if (aeid === leid) {
-  //       fp2Emitter[aeid] = le;
-  //     }
-  //   });
-  // }
+//   outcasters.each(([leid, le]) => {
+//     if (aeid === leid) {
+//       fp2Emitter[aeid] = le;
+//     }
+//   });
+// }

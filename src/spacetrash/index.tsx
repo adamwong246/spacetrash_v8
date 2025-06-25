@@ -1,3 +1,6 @@
+const frustum = new THREE.Frustum();
+const matrix = new THREE.Matrix4();
+
 import React from "react";
 import { Text, TextStyle, Ticker } from 'pixi.js';
 import * as THREE from "three";
@@ -35,7 +38,7 @@ import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
-import { TileSize, MapSize, FPS } from "./Constants";
+import { TileSize, MapSize, FPS, shipLength } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
@@ -55,7 +58,7 @@ const performanceConfig: IPerformanceConfig = {
 };
 
 const defToRad = (d: number) => (d * Math.PI) / 180;
-var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 10000);
+var camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.5, TileSize * shipLength);
 camera.rotateX(defToRad(-90));
 camera.rotateY(defToRad(90));
 // camera.rotateZ(defToRad(180));
@@ -196,6 +199,9 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     const self = this;
     document.addEventListener('keydown', function (event) {
+      if (event.repeat) return;
+
+
       if (event.key === 'Escape') {
         self.focusMapWindow();
       }
@@ -204,15 +210,19 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       }
       else if (event.key === 'ArrowUp') {
         self.driveForward();
+        return
       }
       else if (event.key === 'ArrowDown') {
         self.driveBack();
+        return
       }
       else if (event.key === 'ArrowLeft') {
         self.turnLeft();
+        return
       }
       else if (event.key === 'ArrowRight') {
         self.turnRight();
+        return
       }
       else if (isNumeric((event.key)) && self.buffer === "") {
         self.focusVideoWindow(event.key)
@@ -575,12 +585,34 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   async renderBotCanvas() {
     const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     this.threejsRenderer.setSize(p.width, p.height)
+
+        
     
     const position = this.videoFeedPosition();
     camera.position.x = position.x * TileSize;
     camera.position.y = position.y * TileSize;
     const rotation = this.videoFeedRotation();
     camera.rotation.y = (-rotation.r);
+
+
+    // In your render loop or update function:
+    // camera.updateMatrix(); // Update camera's local matrix
+    // camera.updateMatrixWorld(); // Update camera's world matrix
+
+    // matrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+    // frustum.setFromProjectionMatrix(matrix);
+
+    // const visibleObjects = [];
+    // scene.traverse(function(object) {
+    //     if (object.isMesh) { // Or check for other types of objects like Lights, etc.
+    //         // You can check for point containment or object intersection
+    //         if (frustum.containsPoint(object.position) || frustum.intersectsObject(object)) {
+    //             visibleObjects.push(object);
+    //         }
+    //     }
+    // });
+    // console.log("visible object", visibleObjects)
+
     this.threejsRenderer.render(scene, camera);
 
     // console.log("camera", camera.position)

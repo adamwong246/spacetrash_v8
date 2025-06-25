@@ -1,6 +1,6 @@
 const WarpField = require("warp-field");
 
-import { MapSize, TileSize } from "../../Constants";
+import { MapSize, TANK_VELOCITY_ANGULAR, TANK_VELOCITY as TANK_VELOCITY_LINEAR, TileSize } from "../../Constants";
 import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
 import { ActorSize, FRICTION_CONSTANT, SPEED_CONSTANT } from "../../Constants";
@@ -42,10 +42,13 @@ let setPieces: SetPieceStore;
 let tms: TankMovingStore;
 
 let GAME: SpaceTrash;
+let DELTA: number;
 
 export default (game: SpaceTrash, delta: number, fovMap) => {
   GAME = game;
+  DELTA = delta;
 
+  console.log("DELTA", DELTA)
   // Level 0 - "Component Stores"
   dds = game.componentStores[
     "DegreesDirectionComponent"
@@ -274,19 +277,19 @@ const collisionsAndVideoControls = () => {
 
     if (Number(i) === GAME.videoFeed) {
       if (GAME.forward === true) {
-        a.motion.dy = a.motion.dy - SPEED_CONSTANT;
+        a.motion.dy = a.motion.dy - SPEED_CONSTANT * DELTA;
       }
 
       if (GAME.back === true) {
-        a.motion.dy = a.motion.dy + SPEED_CONSTANT;
+        a.motion.dy = a.motion.dy + SPEED_CONSTANT * DELTA;
       }
 
       if (GAME.left === true) {
-        a.motion.dx = a.motion.dx - SPEED_CONSTANT;
+        a.motion.dx = a.motion.dx - SPEED_CONSTANT * DELTA;
       }
 
       if (GAME.right === true) {
-        a.motion.dx = a.motion.dx + SPEED_CONSTANT;
+        a.motion.dx = a.motion.dx + SPEED_CONSTANT * DELTA;
       }
     }
   });
@@ -341,7 +344,7 @@ function updateFloatPosition(
   return hasChangedPosition;
 }
 
-const TANK_VELOCITY = 0.01;
+
 
 function radiansToDegrees(radians) {
   return radians * (180 / Math.PI);
@@ -364,22 +367,22 @@ function updateTankPosition(
 
   const radians = d.r;  //radiansToDegrees(d.r);
   if (f.i === "left") {
-    d.r = d.r - TANK_VELOCITY;
+    d.r = d.r - TANK_VELOCITY_ANGULAR;
   }
   if (f.i === "right") {
-    d.r = d.r + TANK_VELOCITY;
+    d.r = d.r + TANK_VELOCITY_ANGULAR;
   }
   if (f.i === "none") {
     // d.r = 0;
   }
 
   if (f.j === "forth") {
-    p.x += Math.cos(radians-1.5708) * TANK_VELOCITY;
-    p.y += Math.sin(radians-1.5708) * TANK_VELOCITY;
+    p.x += Math.cos(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.y += Math.sin(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
   }
   if (f.j === "back") {
-    p.x -= Math.cos(radians-1.5708) * TANK_VELOCITY;
-    p.y -= Math.sin(radians-1.5708) * TANK_VELOCITY;
+    p.x -= Math.cos(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.y -= Math.sin(radians-1.5708) * TANK_VELOCITY_LINEAR * DELTA;
   }
   if (f.j === "none") {
     // d.r = 0;
