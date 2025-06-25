@@ -104,6 +104,8 @@ export default async (game: SpaceTrash, delta: number) => {
       eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     } else if (classification === "Tile") {
       eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
+    }else if (classification === "PuckBot") {
+      eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     }
   });
 
@@ -147,7 +149,7 @@ export default async (game: SpaceTrash, delta: number) => {
     }
   }
 
-  const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
+  // const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 
   // 3 deep
   // build set pieces grid
@@ -173,27 +175,28 @@ export default async (game: SpaceTrash, delta: number) => {
 
   // 2 deep
   // setup the actors list
-  fps.each((aeid, y) => {
-    const mf = fmc.store[aeid];
-    const mt = tms.store[aeid];
-
-    if (mf && mt) throw "an entity can't have both floating and tank motion";
-
-    // const motionFloating = mf[1]
-    // const motionTank = tms.store[aeid][1]
+  fps.each((ndx, y, aeid) => {
+    const mf = fmc.store.find((x) => x[0] === aeid);
+    const mt = tms.store.find((x) => x[0] === aeid);
 
     let motion;
     if (mf) {
       motion = mf[1];
-    } else {
+    } else if (mt) {
       motion = mt[1];
+    } else if (!mf && !mt) {
+      motion = null;
+    } else if (mf && mt)
+      throw "an entity cannot have both tank motion and floating motion";
+    else {
+      throw "IDK";
     }
 
     // add the actors
     actors.add({
-      actorId: aeid,
-      friendly: game.isFriendly(aeid),
-      position: fps.at(aeid),
+      actorId: ndx,
+      friendly: game.isFriendly(ndx),
+      position: y,
       motion,
     });
 
@@ -204,9 +207,12 @@ export default async (game: SpaceTrash, delta: number) => {
     });
   });
 
+  debugger;
+
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
   runSetupBotFleet(game);
+  // runPutDrawablesIntoPosition();
   return map1;
 };
 
@@ -221,6 +227,25 @@ const runSetupBotFleet = (game: SpaceTrash) => {
 
 const runPlaceImmoveableSetPieces = () => {
   drawables.each(([eid, d, ks]) => {
+    fps.withIf(eid, (pndx, peid, p) => {
+      if (d.sprite) {
+        d.sprite.position.x = p.x * TileSize;
+        d.sprite.position.y = p.y * TileSize;
+      } else {
+        throw "the sprite should be loaded by now";
+      }
+
+      if (d.mesh) {
+        d.mesh.position.x = p.x * TileSize;
+        d.mesh.position.y = p.y * TileSize;
+      } else {
+        throw "the mesh should be loaded by now";
+      }
+
+      d.char.position.x = p.x * TileSize;
+      d.char.position.y = p.y * TileSize;
+    });
+
     ips.withIf(eid, ([pic, p]) => {
       if (d.sprite) {
         d.sprite.position.x = p.x * TileSize;
@@ -238,12 +263,6 @@ const runPlaceImmoveableSetPieces = () => {
 
       d.char.position.x = p.x * TileSize;
       d.char.position.y = p.y * TileSize;
-
-      // const ordinalDirection = ods.get(eid);
-
-      // if (ordinalDirection) {
-      //   d.mesh.rotateY(90)
-      // }
     });
   });
 };

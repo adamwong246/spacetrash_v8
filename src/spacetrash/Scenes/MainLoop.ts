@@ -1,24 +1,26 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
 import { ActorSize, MapSize, NumberOfActors } from "../Constants";
+import { PuckBot } from "../ECS/EntityComponents/actors/PuckBot";
+import { SpaceTrashBot } from "../ECS/EntityComponents/actors/TankBot";
 
 
 import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
-import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
+// import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 
-import NAMES from "./../NameGenerator"
+// import NAMES from "./../NameGenerator"
 
 const SPEED_CONSTANT = 0.05
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     
-    const drones = [...new Array(NumberOfActors)].map((n) => {
+    const drones = [...new Array(9)].map((n) => {
       return new SpaceTrashBot(
-        // Math.random() * MapSize,
-        // Math.random() * MapSize,
-        (MapSize / 2 ),
-        (MapSize / 2 ),
+        Math.random() * MapSize,
+        Math.random() * MapSize,
+        // (MapSize / 2 ),
+        // (MapSize / 2 ),
         // 5, 5,
         0,
         // 0.01, 0.01
@@ -27,23 +29,25 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    // const moreBots = [...new Array(NumberOfActors - BotSlots)].map((n) => {
-    //   return new SpaceTrashBot(
-    //     // 200, 200,
-    //     Math.random() * MapSize,
-    //     Math.random() * MapSize ,
-    //     // Math.random() * MapSize,
-    //     // Math.random() * MapSize,
-    //     ActorSize,
-    //     (Math.random() - 0.5) * SPEED_CONSTANT,
-    //     (Math.random() - 0.5) * SPEED_CONSTANT
-    //   );
-    // });
+    const moreBots = [...new Array(3)].map((n) => {
+      return new PuckBot(
+        // 200, 200,
+        Math.random() * MapSize,
+        Math.random() * MapSize ,
+        // Math.random() * MapSize,
+        // Math.random() * MapSize,
+        ActorSize,
+        (Math.random() - 0.5) * SPEED_CONSTANT,
+        (Math.random() - 0.5) * SPEED_CONSTANT
+      );
+    });
+
+    debugger
 
     const ship = new SpaceTrashShip();
 
     game.setEntitiesComponent([ship, ...ship.toTiles(),
-      // ...moreBots
+      ...moreBots
     ]);
 
     const myDoneIds = game.setEntitiesComponent([...drones]);

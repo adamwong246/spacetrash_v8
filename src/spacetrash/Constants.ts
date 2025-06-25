@@ -35,7 +35,7 @@
 // const shipsize = (Math.pow(25, 2) * 5)
 
 export const FPS = 60;
-export const shipLength = 128;
+export const shipLength =32;
 const numberOfShips = 1;
 export const MapSize = Math.round(
   Math.sqrt(Math.pow(shipLength, 2) * numberOfShips)
@@ -51,7 +51,7 @@ const actorScaler = 0.9;
 export const ActorSize = TileSize * actorScaler;
 
 export const BotSlots = 9;
-export const FRICTION_CONSTANT = 0.999;
+export const FRICTION_CONSTANT = 1; //0.999;
 export const MapBoundHigh = MapSize - 1;
 export const MapBoundLow = 0;
 

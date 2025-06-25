@@ -74,6 +74,20 @@ export class FloatPositionStore extends EntityComponentStore<FloatPositionCompon
     super();
   }
 
+  withIf(i: number, cb: (i: number, n: number,  ipc: IntegerPositionComponent) => void) {
+    // const x = this.store.get(i);
+    // if (x) cb([i, x]);
+    Object.keys(this.store).forEach((k, ndx) => {
+      if (k === String(i)) {
+        cb(i, this.store[k][0], this.store[k][1]);
+        return;
+        
+      }
+      
+    });
+  }
+
+  
   make(x: number = 0, y: number = 0) {
     return new FloatPositionComponent(x, y);
   }
@@ -82,10 +96,10 @@ export class FloatPositionStore extends EntityComponentStore<FloatPositionCompon
     return this.store[y][1];
   }
 
-  each(arg0: (aeid: number, y: FloatPositionComponent) => void) {
+  each(arg0: (ndx: number, y: FloatPositionComponent, aeid: number) => void) {
     Object.keys(this.store).forEach((k) => {
       // arg0([Number(k), this.store[k], k]);
-      arg0(Number(k), this.store[k][1]);
+      arg0(Number(k), this.store[k][1], this.store[k][0]);
     });
   }
 }

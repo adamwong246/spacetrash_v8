@@ -88,8 +88,8 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
     "LightPositionComponent"
   ] as LightPositionStore;
 
-  // runFloatingPhysics();
   // resetIllumination();
+  runFloatingPhysics();
   runTankPhysics();
   // scanFrustum();
   // rotLighting();
@@ -151,7 +151,7 @@ function scanFrustum() {
 
 function rotLighting() {
   function lightPasses(x, y) {
-    if (x > 0 && x <= MapSize-1 && y > 0 && y <= MapSize-1) {
+    if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
       const z = setPieces.at(x, y);
 
       if (z && z.tileType === "WallTile") {
@@ -178,7 +178,7 @@ function rotLighting() {
     Math.round(GAME.camera.position.y / TileSize),
     Infinity,
     function (x, y, r, visibility) {
-      if (x > 0 && x <= MapSize-1 && y > 0 && y <= MapSize-1) {
+      if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
         const z = setPieces.at(x, y);
         if (visibility === 1 && z && z.drawing) {
           z.drawing.sprite.visible = true;
@@ -191,32 +191,31 @@ function rotLighting() {
           // z.drawing.mesh.visible = false; // 14.7
         }
       }
-
     }
   );
 }
 
 export function runFloatingPhysics() {
   // let repaintLights = false;
-  // fmc.store.forEach(([eid, f]) => {
-  //   const { position, classification } = eid2PMSs.get(eid);
-  //   if (classification === "SpaceTrashBot") {
-  //     // const p = fps.get(eid);
-  //     // if (!p) throw "floating position component not found";
-  //     boundaryCheckBot(position);
-  //     collisionsAndVideoControls();
-  //     const gridChanges = updateFloatPosition(position, f);
-  //     if (gridChanges) {
-  //       repaintLights = true;
-  //     }
-  //     drawables.updatePostion(eid, position, gridChanges);
-  //   } else if (classification === "Tile") {
-  //     throw "not implemented";
-  //   } else {
-  //     debugger;
-  //     throw "idk";
-  //   }
-  // });
+  fmc.store.forEach(([eid, f]) => {
+    const { position, classification } = eid2PMSs.get(eid);
+    if (classification === "PuckBot") {
+      // const p = fps.get(eid);
+      // if (!p) throw "floating position component not found";
+      boundaryCheckBot(position);
+      collisionsAndVideoControls();
+      const gridChanges = updateFloatPosition(position, f);
+      // if (gridChanges) {
+      //   repaintLights = true;
+      // }
+      drawables.updatePostion(eid, position, gridChanges);
+    } else if (classification === "Tile") {
+      throw "not implemented";
+    } else {
+      debugger;
+      throw "idk";
+    }
+  });
   // if (repaintLights) {
   //   resetIllumination();
   //   // runIlluminationV7(fovMap);
@@ -258,7 +257,7 @@ function runTankPhysics() {
 
       boundaryCheckBot(position);
       collisionsAndVideoControls();
-      updateTankPosition(position, t, direction);
+      updateTankPosition(position, t, direction, eid);
 
       if (
         oldDir !== direction.r ||
@@ -268,9 +267,6 @@ function runTankPhysics() {
         drawables.updatePostionAndRotation(eid, position, direction);
       }
 
-      // if (gridChanges) {
-      //   // repaintLights = true;
-      // }
     } else if (classification === "Tile") {
       throw "not implemented";
     } else {
@@ -296,109 +292,111 @@ function resetIllumination() {
   }
 }
 
+// if (Number(i) === GAME.videoFeed) {
+//   if (GAME.forward === true) {
+//     a.motion.dy = a.motion.dy - SPEED_CONSTANT * DELTA;
+//   }
+
+//   if (GAME.back === true) {
+//     a.motion.dy = a.motion.dy + SPEED_CONSTANT * DELTA;
+//   }
+
+//   if (GAME.left === true) {
+//     a.motion.dx = a.motion.dx - SPEED_CONSTANT * DELTA;
+//   }
+
+//   if (GAME.right === true) {
+//     a.motion.dx = a.motion.dx + SPEED_CONSTANT * DELTA;
+//   }
+// }
+
 const collisionsAndVideoControls = () => {
   actors.each((i, a) => {
-    // x and y are the "look ahead" pointer
-    let x = Math.round(a.position.x + a.motion.dx);
-    if (x >= MapSize - 1) x = 0;
-    if (x < 0) x = MapSize - 1;
-    let y = Math.round(a.position.y + a.motion.dy);
-    if (y >= MapSize - 1) y = 0;
-    if (y < 0) y = MapSize - 1;
+    if (a.motion) {
+      // x and y are the "look ahead" pointer
+      let x = Math.round(a.position.x + a.motion.dx);
+      if (x >= MapSize - 1) x = 0;
+      if (x < 0) x = MapSize - 1;
+      let y = Math.round(a.position.y + a.motion.dy);
+      if (y >= MapSize - 1) y = 0;
+      if (y < 0) y = MapSize - 1;
 
-    // // if the look-ahead tile is floor
-    // if (setPieces.tileIsAt(x, y, "FloorTile")) {
-    //   magX = Math.abs(a.motion.dx);
-    //   magY = Math.abs(a.motion.dy);
-    //   roundX = Math.round(a.position.x);
-    //   roundY = Math.round(a.position.y);
+      // // if the look-ahead tile is floor
+      // if (setPieces.tileIsAt(x, y, "FloorTile")) {
+      //   magX = Math.abs(a.motion.dx);
+      //   magY = Math.abs(a.motion.dy);
+      //   roundX = Math.round(a.position.x);
+      //   roundY = Math.round(a.position.y);
 
-    //   if (x < roundX) {
-    //     if (y < roundY) {
-    //       // NorthWest
-    //       if (magX < magY) {
-    //         a.motion.dy = a.motion.dy * -1;
-    //       } else {
-    //         a.motion.dx = a.motion.dx * -1;
-    //       }
-    //     } else if (y > roundY) {
-    //       // SouthWest
-    //       if (magX > magY) {
-    //         a.motion.dx = a.motion.dx * -1;
-    //       } else {
-    //         a.motion.dy = a.motion.dy * -1;
-    //       }
-    //     } else {
-    //       // West
-    //       a.motion.dx = a.motion.dx * -1;
-    //     }
-    //   } else if (x > roundX) {
-    //     if (y < roundY) {
-    //       // NorthEast
-    //       if (magX > magY) {
-    //         a.motion.dx = a.motion.dx * -1;
-    //       } else {
-    //         a.motion.dy = a.motion.dy * -1;
-    //       }
-    //     } else if (roundY) {
-    //       // SouthEast
+      //   if (x < roundX) {
+      //     if (y < roundY) {
+      //       // NorthWest
+      //       if (magX < magY) {
+      //         a.motion.dy = a.motion.dy * -1;
+      //       } else {
+      //         a.motion.dx = a.motion.dx * -1;
+      //       }
+      //     } else if (y > roundY) {
+      //       // SouthWest
+      //       if (magX > magY) {
+      //         a.motion.dx = a.motion.dx * -1;
+      //       } else {
+      //         a.motion.dy = a.motion.dy * -1;
+      //       }
+      //     } else {
+      //       // West
+      //       a.motion.dx = a.motion.dx * -1;
+      //     }
+      //   } else if (x > roundX) {
+      //     if (y < roundY) {
+      //       // NorthEast
+      //       if (magX > magY) {
+      //         a.motion.dx = a.motion.dx * -1;
+      //       } else {
+      //         a.motion.dy = a.motion.dy * -1;
+      //       }
+      //     } else if (roundY) {
+      //       // SouthEast
 
-    //       if (magX > magY) {
-    //         a.motion.dy = a.motion.dy * -1;
-    //       } else {
-    //         a.motion.dx = a.motion.dx * -1;
-    //       }
-    //     } else {
-    //       // East
-    //       a.motion.dx = a.motion.dx * -1;
-    //     }
-    //   } else {
-    //     if (y < roundY) {
-    //       // North
-    //       a.motion.dy = a.motion.dy * -1;
-    //     } else {
-    //       // South
-    //       a.motion.dy = a.motion.dy * -1;
-    //     }
-    //   }
-    // } else {
-    //   // no-opt
-    // }
+      //       if (magX > magY) {
+      //         a.motion.dy = a.motion.dy * -1;
+      //       } else {
+      //         a.motion.dx = a.motion.dx * -1;
+      //       }
+      //     } else {
+      //       // East
+      //       a.motion.dx = a.motion.dx * -1;
+      //     }
+      //   } else {
+      //     if (y < roundY) {
+      //       // North
+      //       a.motion.dy = a.motion.dy * -1;
+      //     } else {
+      //       // South
+      //       a.motion.dy = a.motion.dy * -1;
+      //     }
+      //   }
+      // } else {
+      //   // no-opt
+      // }
 
-    // actors.each((ii, aa) => {
-    //   // don't collide against self
-    //   if (i !== ii) {
-    //     if (actorsCollide(a.position, aa.position)) {
-    //       a.position.x = a.position.x - a.motion.dx;
-    //       a.position.y = a.position.y - a.motion.dy;
-    //       aa.position.x = aa.position.x - aa.motion.dx;
-    //       aa.position.y = aa.position.y - aa.motion.dy;
-    //       temps[0] = a.motion.dx;
-    //       temps[1] = a.motion.dy;
-    //       a.motion.dx = aa.motion.dx;
-    //       a.motion.dy = aa.motion.dy;
-    //       aa.motion.dx = temps[0];
-    //       aa.motion.dy = temps[1];
-    //     }
-    //   }
-    // });
-
-    if (Number(i) === GAME.videoFeed) {
-      if (GAME.forward === true) {
-        a.motion.dy = a.motion.dy - SPEED_CONSTANT * DELTA;
-      }
-
-      if (GAME.back === true) {
-        a.motion.dy = a.motion.dy + SPEED_CONSTANT * DELTA;
-      }
-
-      if (GAME.left === true) {
-        a.motion.dx = a.motion.dx - SPEED_CONSTANT * DELTA;
-      }
-
-      if (GAME.right === true) {
-        a.motion.dx = a.motion.dx + SPEED_CONSTANT * DELTA;
-      }
+      // actors.each((ii, aa) => {
+      //   // don't collide against self
+      //   if (i !== ii) {
+      //     if (actorsCollide(a.position, aa.position)) {
+      //       a.position.x = a.position.x - a.motion.dx;
+      //       a.position.y = a.position.y - a.motion.dy;
+      //       aa.position.x = aa.position.x - aa.motion.dx;
+      //       aa.position.y = aa.position.y - aa.motion.dy;
+      //       temps[0] = a.motion.dx;
+      //       temps[1] = a.motion.dy;
+      //       a.motion.dx = aa.motion.dx;
+      //       a.motion.dy = aa.motion.dy;
+      //       aa.motion.dx = temps[0];
+      //       aa.motion.dy = temps[1];
+      //     }
+      //   }
+      // });
     }
   });
 };
@@ -415,19 +413,32 @@ function updateVelocity(f: number): number {
   return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
 }
 
-function updateTankMovement(f: TankMovingComponent) {
-  if (GAME.movingForward()) {
-    f.j = "forth";
-  } else if (GAME.movingBack()) {
-    f.j = "back";
-  } else if (GAME.movingLeft()) {
-    f.i = "left";
-  } else if (GAME.movingRight()) {
-    f.i = "right";
-  } else {
-    f.i = "none";
-    f.j = "none";
+function updateTankMovement(f: TankMovingComponent, eid: number) {
+  console.log("updateTankMovement", eid)
+  const videoBot = Object.entries(GAME.bots).find((v, n, o) => {
+    return v[1][0] === eid && Number(v[0]) === GAME.videoFeed
+  })
+
+  console.log(videoBot)
+  if (!videoBot) return;
+
+  if (videoBot) {
+    if (GAME.movingForward()) {
+      
+      f.j = "forth";
+    } else if (GAME.movingBack()) {
+      f.j = "back";
+    } else if (GAME.movingLeft()) {
+      f.i = "left";
+    } else if (GAME.movingRight()) {
+      f.i = "right";
+    } else {
+      f.i = "none";
+      f.j = "none";
+    }
   }
+    
+
 }
 
 function updateFloatingMovement(f: FloatMovingComponent) {
@@ -458,7 +469,8 @@ function radiansToDegrees(radians) {
 function updateTankPosition(
   p: FloatPositionComponent,
   f: TankMovingComponent,
-  d: DegreesDirectionComponent
+  d: DegreesDirectionComponent,
+  eid: number,
 ): boolean {
   let isMoving: boolean;
   if (f.i === "none" && f.j === "none") {
@@ -467,7 +479,7 @@ function updateTankPosition(
     isMoving = true;
   }
 
-  updateTankMovement(f);
+  updateTankMovement(f, eid);
 
   const radians = d.r; //radiansToDegrees(d.r);
   if (f.i === "left") {
