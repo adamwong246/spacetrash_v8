@@ -4,6 +4,7 @@ const matrix = new THREE.Matrix4();
 import React from "react";
 import { Text, TextStyle, Ticker } from 'pixi.js';
 import * as THREE from "three";
+import * as Matter from "matter-js";
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
 import voidPng from "./Assets/void.png";
@@ -43,16 +44,24 @@ import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
 import { LightOutcastingStore } from "./ECS/Components/casting/out";
+import { MatterStore } from "./ECS/Components/v2/matter";
 
 
-const spotlight = new THREE.SpotLight(  0xff0000, 1000 );
+// module aliases
+var Engine = Matter.Engine,
+  Render = Matter.Render,
+  Runner = Matter.Runner,
+  Bodies = Matter.Bodies,
+  Composite = Matter.Composite;
+
+//////////////////////////////////////////////////////////////////////
+
+const spotlight = new THREE.SpotLight(0xff0000, 1000);
 const pointlight = new THREE.PointLight(0xffffff, 1000, 0, 2)
 // const light = new THREE.RectAreaLight( 0xff0000, 1000);
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
-
-const pixi2dApp = new PIXI.Application();
 
 const performanceConfig: IPerformanceConfig = {
   fps: FPS,
@@ -100,7 +109,7 @@ export type IState = {
   game: SpaceTrash;
 };
 
-export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | null;
+export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | "matter" | null;
 
 function isAlphabetic(str: string): boolean {
   if (!str) return false;
@@ -127,9 +136,13 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   pixijsBotCanvasRef: HTMLCanvasElement;
   pixijsBotParentRef: HTMLElement;
   pixijsRenderer: PIXI.Application;
+  pixi2dApp: PIXI.Application;
+
+  matterEngine: Matter.Engine;
+  matterRenderer: Matter.Render;
 
   public pixiLoaded: boolean = false;
-  
+
   public videoFeed: number = 1;
 
   public bots: {
@@ -147,7 +160,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
 
   bufferRef: React.MutableRefObject<null>;
-  
+
   forward: boolean = false;
   back: boolean = false;
   left: boolean = false;
@@ -166,21 +179,22 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       stateSpace,
       SpaceTrashMainSystem,
       {
-        IntegerPositionComponent: new IntegerPositionStore(),
-        FloatPositionComponent: new FloatPositionStore(),
-        DegreesDirectionComponent: new DegreesDirectionStore(),
-        OrdinalDirectionComponent: new OrdinalDirectionStore(),
-        FloatMovingComponent: new FloatMovingStore(),
-        OridinalMovingComponent: new OridinalMovingStore(),
-        NameableComponent: new NameableStore(),
-        ClassificationComponent: new ClassificationStore(),
-        LightOutcastingComponent: new LightOutcastingStore(),
-        LightIncastingComponent: new LightIncastingStore(),
-        CameraComponent: new CameraStore(),
         AttackableComponent: new AttackableStore(),
+        CameraComponent: new CameraStore(),
+        ClassificationComponent: new ClassificationStore(),
+        DegreesDirectionComponent: new DegreesDirectionStore(),
         DrawableComponent: Drawings,
-        TileComponent: new TileComponentStore(),
+        FloatMovingComponent: new FloatMovingStore(),
+        FloatPositionComponent: new FloatPositionStore(),
+        IntegerPositionComponent: new IntegerPositionStore(),
+        LightIncastingComponent: new LightIncastingStore(),
+        LightOutcastingComponent: new LightOutcastingStore(),
+        MatterComponent: new MatterStore(),
+        NameableComponent: new NameableStore(),
+        OrdinalDirectionComponent: new OrdinalDirectionStore(),
+        OridinalMovingComponent: new OridinalMovingStore(),
         TankMovingComponent: new TankMovingStore(),
+        TileComponent: new TileComponentStore(),
       },
       {
         SetPieceComponent: new SetPieceStore(),
@@ -192,7 +206,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         LightPositionComponent: new LightPositionStore()
       },
       performanceConfig,
-      new Set(["2d", "webgl2", "pixi2d", "threejs"]),
+      new Set(["2d", "webgl2", "pixi2d", "threejs", "matter"]),
       domNode,
       [
         "Tile", "SpaceTrashBot", "FloorTile", "WallTile"
@@ -204,7 +218,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.camera.rotateY(defToRad(90));
 
     this.scene = new THREE.Scene();
-    
+
+    this.pixi2dApp = new PIXI.Application();
+
+    this.matterEngine = Engine.create();
+    this.matterEngine.gravity.scale = 0.000001;
+
     this.addToHistory(bootScreenTermLine)
 
     const self = this;
@@ -471,11 +490,11 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const p = this.positionOfBot(
       (this.bots[this.videoFeed] as [number, string])[0]
     );
-    
+
     return p;
   }
 
-  
+
   registerBotsHook(stateSetter: React.Dispatch<any>) {
     this.botsHook = stateSetter;
     this.fireBotsHook()
@@ -546,37 +565,112 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       this.pixijsBotCanvasRef = canvas;
       this.pixijsBotParentRef = parentComponent;
 
-      await pixi2dApp.init({
+      await this.pixi2dApp.init({
         sharedTicker: true,
         view: canvas.getContext("webgl2")?.canvas,
         backgroundColor: 0x1099bb,
-        width: (MapSize + 7) * TileSize,
-        height: (MapSize + 7) * TileSize,
+        width: (MapSize) * TileSize,
+        height: (MapSize) * TileSize,
       });
 
     }
+    if (key === "matter") {
+
+      var width = (MapSize) * TileSize,
+        height = (MapSize) * TileSize;
+      canvas.width = width;
+      canvas.height = height;
+
+      this.matterRenderer = Render.create({
+        canvas, 
+        element: parentComponent,
+        engine: this.matterEngine,
+        options: {
+          width,
+          height,
+          wireframes: false
+        }
+      });
+
+
+    }
+
+    if (this.pixi2dApp && this.threejsRenderer && this.matterRenderer) {
+      // create two boxes and a ground
+      // var boxA = Bodies.rectangle(400, 200, 80, 80);
+      // var boxB = Bodies.rectangle(450, 50, 80, 80);
+      // var ground = Bodies.rectangle(400, 610, 810, 60, {
+      //   isStatic: true, render: {
+      //     fillStyle: "green",
+      //     strokeStyle: "orange",
+      //     lineWidth: 3
+      //   }
+      // });
+
+      const bodies: Matter.Body[] = [];
+      for (let b of this.componentStores['MatterComponent'].store) {
+        bodies.push(b[1].matterBody)
+      }
+      console.log(bodies)
+      Composite.add(this.matterEngine.world, [
+        ...bodies,
+      ]);
+
+      let runner = Matter.Runner.create();
+      Matter.Render.run(this.matterRenderer);
+      Matter.Runner.run(runner, this.matterEngine);
+
+      // // create runner
+      // var runner = Runner.create();
+
+      // // run the engine
+      // Runner.run(runner, this.matterEngine);
+
+
+      // fit the render viewport to the scene
+      Render.lookAt(this.matterRenderer, {
+        min: { x: 0, y: 0 },
+        max: { x: 800, y: 600 }
+      });
+
+      // Render.r
+
+      ////////////////////////////////////////////////////////////////
+
+      Drawings.each(([a, d, c]) => {
+        this.pixi2dApp.stage.addChild(d.sprite)
+        this.pixi2dApp.stage.addChild(d.char);
+        this.scene.add(d.mesh)
+      })
+      // this.scene.add(spotlight);
+      this.scene.add(pointlight);
+
+      // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+      // this.scene.add(ambientLight);
+
+      this.unpause();
+    }
   }
-  
+
   async renderBotCanvas() {
     const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
-    this.threejsRenderer.setSize(p.width, p.height)    
+    this.threejsRenderer.setSize(p.width, p.height)
     const position = this.videoFeedPosition();
     this.camera.position.x = position.x * TileSize;
     this.camera.position.y = position.y * TileSize;
     const rotation = this.videoFeedRotation();
-    
+
     this.camera.rotation.y = (-rotation.r);
 
-    let spotlightRot= (-rotation.r);
+    let spotlightRot = (-rotation.r);
     if (this.camera.rotation.y < -Math.PI / 2) {
       spotlightRot = Math.PI / 2;
-    }else if (this.camera.rotation.y > Math.PI / 2) {
+    } else if (this.camera.rotation.y > Math.PI / 2) {
       spotlightRot = -Math.PI / 2;
-    } 
+    }
 
     spotlight.rotation.y = spotlightRot;
-    console.log(Math.PI/2, spotlightRot);
-    
+
     spotlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
     pointlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
 
@@ -587,22 +681,37 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     // todo
   }
 
+  async renderMatterJs() {
+    // todo
+    console.log("renderMatterJs")
+    Engine.update(this.matterEngine);
+  }
+
   BeginTheGame() {
     this.openAllWindows();
-    Drawings.each(([a, d, c]) => {
-      pixi2dApp.stage.addChild(d.sprite)
-      pixi2dApp.stage.addChild(d.char);
-      this.scene.add(d.mesh)
-    })
-    // this.scene.add(spotlight);
-    this.scene.add(pointlight);
 
-    // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-    // this.scene.add(ambientLight);
-    
-    this.unpause();
+    // // create two boxes and a ground
+    // var boxA = Bodies.rectangle(400, 200, 80, 80);
+    // var boxB = Bodies.rectangle(450, 50, 80, 80);
+    // var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+
+    // // add all of the bodies to the world
+    // Composite.add(this.matterEngine.world, [boxA, boxB, ground]);
+
+    // Drawings.each(([a, d, c]) => {
+    //   this.pixi2dApp.stage.addChild(d.sprite)
+    //   this.pixi2dApp.stage.addChild(d.char);
+    //   this.scene.add(d.mesh)
+    // })
+    // // this.scene.add(spotlight);
+    // this.scene.add(pointlight);
+
+    // // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    // // this.scene.add(ambientLight);
+
+    // this.unpause();
   }
 
 }
 
-export type ICanvases = "map" | "bot";
+export type ICanvases = "map" | "bot" | "matter";

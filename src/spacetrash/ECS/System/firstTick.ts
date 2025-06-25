@@ -207,8 +207,6 @@ export default async (game: SpaceTrash, delta: number) => {
     });
   });
 
-  debugger;
-
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
   runSetupBotFleet(game);

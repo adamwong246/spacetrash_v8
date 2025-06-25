@@ -414,12 +414,10 @@ function updateVelocity(f: number): number {
 }
 
 function updateTankMovement(f: TankMovingComponent, eid: number) {
-  console.log("updateTankMovement", eid)
   const videoBot = Object.entries(GAME.bots).find((v, n, o) => {
     return v[1][0] === eid && Number(v[0]) === GAME.videoFeed
   })
 
-  console.log(videoBot)
   if (!videoBot) return;
 
   if (videoBot) {

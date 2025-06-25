@@ -1,10 +1,10 @@
-import { DockviewReadyEvent, IDockviewPanelHeaderProps } from "dockview";
 // Allows a game with multiple windows
 // It is specific to the browser because it relies upon react and dockview
 
 import * as React from 'react'
 import { createRoot } from 'react-dom/client';
 
+import { DockviewReadyEvent, IDockviewPanelHeaderProps } from "dockview";
 import { DockviewApi, DockviewReact } from 'dockview';
 
 import { StateSpace } from "./engine/StateSpace";
@@ -16,8 +16,10 @@ import { BotWindow } from "./spacetrash/UI/BotWindow";
 import { MapWindow } from "./spacetrash/UI/map";
 import { TerminalWindow } from "./spacetrash/UI/terminal";
 import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
+import { MatterWindow } from './spacetrash/UI/MatterWindow';
 
 let self: DesktopGame<any, any, any>;
+
 export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfaceGame<IRenderings, II> {
   registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
     super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
@@ -103,6 +105,8 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
 
           bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
           term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
+
+          matter: (props: IDockviewPanelHeaderProps<any>) => <MatterWindow game={self} />,
         }}
       />
     </div >)
@@ -110,9 +114,6 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
 
 
   openAllWindows() {
-
-
-
     this.dockviewAPI.component.addPanel({
       id: 'bots',
       component: 'bots',
@@ -152,10 +153,19 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
       }
     })
 
+    this.dockviewAPI.component.addPanel({
+      id: 'matter',
+      component: 'matter',
+      floating: {
+        position: { left: 100, top: 150 },
+        width: 600,
+        height: 600
+      },
+      params: {
 
-
+      }
+    })
   }
-
 
   focusWindowById(s: string) {
     this.dockviewAPI.panels.forEach((p) => {
@@ -165,7 +175,4 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
       }
     })
   }
-
-
-
 }

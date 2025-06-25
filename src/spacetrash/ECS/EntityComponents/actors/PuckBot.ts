@@ -1,28 +1,20 @@
-import { Text, TextStyle, Ticker } from 'pixi.js';
+import * as Matter from "matter-js";
+import { Text } from "pixi.js";
 
-
-import { LightOutcastingComponent } from "../../Components/casting/out";
 import { SpaceTrashEntity } from "../../Entity";
 
-import { SpaceTrashEntityComponent } from "..";
 import {
   FloatPositionComponent,
-  DegreesDirectionComponent,
   FloatMovingComponent,
-  TankMovingComponent,
 } from "../../Components/v2/physical";
-import { NameableComponent } from "../../Components/v2/nameable";
 
-import RandomMaleNames from "../../../NameGenerator";
 import { ClassificationComponent } from "../../Components/v2/classifiable";
 import { DrawableComponent } from "../../Components/v2/drawable";
-import { greenMaterial } from "../../../threejs";
 
-import { degToRad } from "three/src/math/MathUtils.js";
-import { ActorSize, TileSize } from "../../../Constants";
 import { LightIncastingComponent } from "../../Components/casting/in";
-import { SpaceTrash } from "../../..";
-import { Actor, bunnySprite, cylinder, spike } from '.';
+import { Actor, bunnySprite, spike } from ".";
+import { MatterComponent } from "../../Components/v2/matter";
+import { MapSize, TileSize } from "../../../Constants";
 
 export class PuckBot extends Actor {
   constructor(
@@ -44,13 +36,21 @@ export class PuckBot extends Actor {
       // // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
       new ClassificationComponent("PuckBot"),
 
-      new DrawableComponent(
-        bunnySprite(),
-        spike(),
-        new Text('?')
-
+      new MatterComponent(
+        Matter.Bodies.circle(x * TileSize/4, y * TileSize/4, TileSize / 3 / 4, {
+          isStatic: false,
+          // collisionFilter: {
+          //   category: 0,
+          // },
+          render: {
+            fillStyle: "red",
+            strokeStyle: "blue",
+            lineWidth: 3,
+          },
+        })
       ),
+
+      new DrawableComponent(bunnySprite(), spike(), new Text("?")),
     ]);
   }
-
 }

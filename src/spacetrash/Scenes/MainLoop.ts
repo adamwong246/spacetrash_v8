@@ -29,7 +29,7 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const moreBots = [...new Array(3)].map((n) => {
+    const moreBots = [...new Array(5)].map((n) => {
       return new PuckBot(
         // 200, 200,
         Math.random() * MapSize,
@@ -41,8 +41,6 @@ class MainScene extends SpaceTrashScene {
         (Math.random() - 0.5) * SPEED_CONSTANT
       );
     });
-
-    debugger
 
     const ship = new SpaceTrashShip();
 
@@ -268,6 +266,30 @@ const scene = new MainScene({
       // workerPostMessage([`drones-update`, 'hello']);
     },
     "html",
+  ],
+
+
+  matter: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game: SpaceTrash) => {
+          await game.renderMatterJs();
+        },
+      ];
+    },
+    (ecs, event: any) => {
+      // if (event.type === "mousemove") {
+      //   var rect = event.boundingClient;
+      //   var x = event.clientX - rect.left;
+      //   var y = event.clientY - rect.top;
+      //   shipMapMouseX = x;
+      //   shipMapMouseY = y;
+      // }
+    },
+    "2d",
   ],
 });
 

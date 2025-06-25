@@ -1,3 +1,4 @@
+import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
@@ -32,6 +33,7 @@ import stone from "./../../Assets/stone.png";
 import voidPng from "./../../Assets/void.png";
 import { Component } from "../../../engine/VECS.ts/Component";
 import { degToRad } from "three/src/math/MathUtils.js";
+import { MatterComponent } from "../Components/v2/matter";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -70,8 +72,6 @@ const blankTile = () => {
   return m;
 };
 
-
-
 const voidSprite = () => {
   const s = new PIXI.Sprite(PIXI.Texture.from(voidPng));
   s.width = TileSize;
@@ -104,31 +104,43 @@ const bunnySprite = () => {
 
 export class Tile extends SpaceTrashEntityComponent {
   tiletype: ITiles;
+  // matter: MatterComponent;
 
   constructor(
     x: number,
     y: number,
     tiletype: ITiles,
     d: DrawableComponent = new DrawableComponent(bunnySprite(), blankTile()),
-    dir?: DirectionComponent
+    dir: DirectionComponent,
+
+    componentsV4?: {
+      matter?: MatterComponent;
+    }
   ) {
     const spe = new SpaceTrashEntity();
 
     const comps: Component<any, any>[] = [
-      d, 
+      d,
       new IntegerPositionComponent(x, y),
       new LightIncastingComponent(),
       new ClassificationComponent("Tile"),
       new TileComponent(tiletype),
     ];
-    
+
     if (dir !== undefined) {
       comps.push(dir);
     }
 
     super(spe, comps);
-    
+
     this.tiletype = tiletype;
+
+    if (componentsV4) {
+      if (componentsV4.matter) {
+        // this.matter = componentsV4.matter;
+        comps.push(componentsV4.matter);
+      }
+    }
   }
 
   position(): IntegerPositionComponent {
@@ -175,7 +187,29 @@ export class WallTile extends Tile {
       y,
       "WallTile",
       new DrawableComponent(brickSprite(), wallTile(), new PIXI.Text("░")),
-      // new OrdinalDirectionComponent(d)
+      new OrdinalDirectionComponent(d),
+      {
+        matter: new MatterComponent(
+          // Matter.Bodies.rectangle((MapSize * TileSize) / 2, (MapSize * TileSize) / 2, TileSize, TileSize, {
+          Matter.Bodies.rectangle(
+            x * TileSize/4,
+            y * TileSize/4,
+            TileSize/4,
+            TileSize/4,
+            {
+              isStatic: true,
+              // collisionFilter: {
+              //   category: 0,
+              // },
+              render: {
+                fillStyle: "green",
+                strokeStyle: "orange",
+                lineWidth: 3,
+              },
+            }
+          )
+        ),
+      }
     );
   }
 }
@@ -186,7 +220,11 @@ export class VoidTile extends Tile {
       x,
       y,
       "VoidTile",
-      new DrawableComponent(voidSprite(), voidTile(), new PIXI.Text("█"))
+      new DrawableComponent(voidSprite(), voidTile(), new PIXI.Text("█")),
+      new OrdinalDirectionComponent("north"),
+      {
+        matter: undefined,
+      }
     );
   }
 }
