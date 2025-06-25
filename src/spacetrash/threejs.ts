@@ -15,10 +15,23 @@ export const redMaterial = new THREE.MeshBasicMaterial({
   wireframe: true,
 });
 
-export const blueMaterial = new THREE.MeshBasicMaterial({
-  color: "blue",
-  // wireframe: true,
+// export const blueMaterial = new THREE.MeshBasicMaterial({
+//   color: "blue",
+//   // wireframe: true,
+// });
+
+// export const blueMaterial = new THREE.MeshStandardMaterial({
+//   roughness: 1,
+//   metalness: 1,
+//   color: "blue"
+//   // wireframe: true,
+// });
+
+export const blueMaterial = new THREE.MeshPhongMaterial({
+  // color: "blue",
 });
+
+
 
 export const greenMaterial = new THREE.MeshBasicMaterial({
   color: "green",

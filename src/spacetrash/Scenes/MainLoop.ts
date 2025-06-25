@@ -15,10 +15,10 @@ class MainScene extends SpaceTrashScene {
     
     const drones = [...new Array(NumberOfActors)].map((n) => {
       return new SpaceTrashBot(
-        Math.random() * MapSize,
-        Math.random() * MapSize,
-        // (MapSize / 2 ),
-        // (MapSize / 2 ),
+        // Math.random() * MapSize,
+        // Math.random() * MapSize,
+        (MapSize / 2 ),
+        (MapSize / 2 ),
         // 5, 5,
         0,
         // 0.01, 0.01

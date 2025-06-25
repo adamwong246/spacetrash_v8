@@ -44,6 +44,11 @@ import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
 import { LightOutcastingStore } from "./ECS/Components/casting/out";
 
+
+const spotlight = new THREE.SpotLight(  0xff0000, 1000 );
+const pointlight = new THREE.PointLight(0xffffff, 1000, 0, 2)
+// const light = new THREE.RectAreaLight( 0xff0000, 1000);
+
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
 
@@ -559,7 +564,22 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.camera.position.x = position.x * TileSize;
     this.camera.position.y = position.y * TileSize;
     const rotation = this.videoFeedRotation();
+    
     this.camera.rotation.y = (-rotation.r);
+
+    let spotlightRot= (-rotation.r);
+    if (this.camera.rotation.y < -Math.PI / 2) {
+      spotlightRot = Math.PI / 2;
+    }else if (this.camera.rotation.y > Math.PI / 2) {
+      spotlightRot = -Math.PI / 2;
+    } 
+
+    spotlight.rotation.y = spotlightRot;
+    console.log(Math.PI/2, spotlightRot);
+    
+    spotlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+    pointlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+
     this.threejsRenderer.render(this.scene, this.camera);
   }
 
@@ -574,6 +594,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       pixi2dApp.stage.addChild(d.char);
       this.scene.add(d.mesh)
     })
+    // this.scene.add(spotlight);
+    this.scene.add(pointlight);
+
+    // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    // this.scene.add(ambientLight);
+    
     this.unpause();
   }
 

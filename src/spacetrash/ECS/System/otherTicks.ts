@@ -1,10 +1,9 @@
+import * as ROT from "rot-js";
 import * as THREE from "three";
 const raycaster = new THREE.Raycaster();
 
 const frustum = new THREE.Frustum();
 const matrix = new THREE.Matrix4();
-
-// const WarpField = require("warp-field");
 
 import {
   MapSize,
@@ -90,9 +89,10 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   ] as LightPositionStore;
 
   // runFloatingPhysics();
-  resetIllumination();
+  // resetIllumination();
   runTankPhysics();
   // scanFrustum();
+  // rotLighting();
 };
 
 function scanFrustum() {
@@ -120,9 +120,6 @@ function scanFrustum() {
   const origin = GAME.camera.position.clone();
 
   itemsInFrustum.forEach((object3d) => {
-
-    
-    
     ////////////////////////////////////////////
 
     const vis = drawables.findByMeshId(object3d.uuid);
@@ -135,11 +132,11 @@ function scanFrustum() {
     // // raycaster.params.LOD = 0.1;
     // const intersects = raycaster.intersectObjects(itemsInFrustum, true); // Check for intersection with object2
 
-    // intersects.forEach((i, n) => { 
+    // intersects.forEach((i, n) => {
     //   if (n < 2) {
     //     const vis = drawables.findByMeshId(i.object.uuid);
-    //     vis.sprite.visible = true;    
-    //   }      
+    //     vis.sprite.visible = true;
+    //   }
     // })
 
     // if (intersects.length > 0) {
@@ -149,9 +146,54 @@ function scanFrustum() {
     // }
 
     ////////////////////////////////////////////
-
   });
+}
 
+function rotLighting() {
+  function lightPasses(x, y) {
+    if (x > 0 && x <= MapSize-1 && y > 0 && y <= MapSize-1) {
+      const z = setPieces.at(x, y);
+
+      if (z && z.tileType === "WallTile") {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    return false;
+
+    // var key = x + "," + y;
+    // if (key in data) {
+    //   return data[key] == 0;
+    // }
+    // return false;
+  }
+
+  // var fov = new ROT.FOV.PreciseShadowcasting(lightPasses);
+  var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
+
+  /* output callback */
+  fov.compute(
+    Math.round(GAME.camera.position.x / TileSize),
+    Math.round(GAME.camera.position.y / TileSize),
+    Infinity,
+    function (x, y, r, visibility) {
+      if (x > 0 && x <= MapSize-1 && y > 0 && y <= MapSize-1) {
+        const z = setPieces.at(x, y);
+        if (visibility === 1 && z && z.drawing) {
+          z.drawing.sprite.visible = true;
+          z.drawing.mesh.visible = true;
+        }
+        if (visibility === 0 && z && z.drawing) {
+          z.drawing.sprite.visible = false;
+          z.drawing.mesh.visible = true;
+          // z.drawing.mesh.visible = true; // 2.25 ms
+          // z.drawing.mesh.visible = false; // 14.7
+        }
+      }
+
+    }
+  );
 }
 
 export function runFloatingPhysics() {
@@ -241,6 +283,7 @@ function runTankPhysics() {
 function resetIllumination() {
   drawables.each(([eid, d, eid2]) => {
     d.sprite.visible = false;
+    d.mesh.visible = false;
   });
   incasters.each(([li, z]) => {
     z.luminance = 0;

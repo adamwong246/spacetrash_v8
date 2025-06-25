@@ -35,7 +35,7 @@
 // const shipsize = (Math.pow(25, 2) * 5)
 
 export const FPS = 60;
-export const shipLength = 32;
+export const shipLength = 128;
 const numberOfShips = 1;
 export const MapSize = Math.round(
   Math.sqrt(Math.pow(shipLength, 2) * numberOfShips)
