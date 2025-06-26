@@ -1,12 +1,14 @@
+import { ArcadePhysics } from "arcade-physics";
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { Store } from "../../../../engine/VECS.ts/types";
 
 export class ArcadePhysicsComponent extends Component<any, any> {
-  ArcadePhysicsBody: any
+  creator: (a: ArcadePhysics) => any;
+  arcadeObject: any;
 
-  constructor(ArcadePhysicsBody: any) {
+  constructor(creator: any) {
     super();
-    this.ArcadePhysicsBody = ArcadePhysicsBody;
+    this.creator = creator;
   }
 
 }
@@ -42,15 +44,14 @@ export class ArcadePhysicsStore extends Store<ArcadePhysicsComponent> {
   //   return new IntegerPositionComponent(x, y);
   // }
 
-  // each(
-  //   cb: (
-  //     eid,
-  //     le: [number, IntegerPositionComponent, string],
-  //     eidAsString
-  //   ) => void
-  // ) {
-  //   this.store.forEach((value, key) => {
-  //     cb([Number(key), [key, value]]);
-  //   });
-  // }
+  each(
+    cb: (
+      eid,
+      apo: ArcadePhysicsComponent
+    ) => void
+  ) {
+    this.store.forEach((value, key) => {
+      cb(Number(key), value);
+    });
+  }
 }

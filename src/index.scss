@@ -34,3 +34,7 @@ td {
   // position: absolute;
   // cursor: se-resize;
 }
+
+html, body {
+  overscroll-behavior-x: none;
+}

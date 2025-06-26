@@ -1,6 +1,8 @@
 import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
+// import ArcadePhysics from "arcade-physics";
+// import type { Body } from 'arcade-physics';
 
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { SpaceTrashEntity } from "../Entity";
@@ -144,7 +146,7 @@ export class Tile extends SpaceTrashEntityComponent {
         comps.push(componentsV4.matter);
       }
       if (componentsV4.arcadePhysics) {
-        comps.push(componentsV4.arcadePhysics());
+        comps.push(componentsV4.arcadePhysics);
       }
     }
   }
@@ -215,14 +217,15 @@ export class WallTile extends Tile {
             }
           )
         ),
-        arcadePhysics: () => {
-          return new ArcadePhysicsComponent(
+        arcadePhysics: 
+          new ArcadePhysicsComponent(
             (ap: ArcadePhysics) => {
               const cube = ap.add.staticBody(x * TileSize, y * TileSize, TileSize, TileSize);
-              // cube.setCollideWorldBounds(true);
+              return cube
+
             }
-          );
-        },
+          )
+        
       }
     );
   }

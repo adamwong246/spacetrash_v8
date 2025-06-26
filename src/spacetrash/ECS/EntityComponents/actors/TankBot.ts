@@ -19,10 +19,12 @@ import { DrawableComponent } from "../../Components/v2/drawable";
 import { greenMaterial } from "../../../threejs";
 
 import { degToRad } from "three/src/math/MathUtils.js";
-import { ActorSize, TileSize } from "../../../Constants";
+import { ActorSize, SPEED_CONSTANT, TileSize } from "../../../Constants";
 import { LightIncastingComponent } from "../../Components/casting/in";
 import { SpaceTrash } from "../../..";
 import { Actor, bunnySprite, cylinder } from '.';
+import { ArcadePhysics } from 'arcade-physics';
+import { ArcadePhysicsComponent } from '../../Components/v2/arcadePhysics';
 
 export class SpaceTrashBot extends Actor {
   constructor(
@@ -36,8 +38,8 @@ export class SpaceTrashBot extends Actor {
     const spe = new SpaceTrashEntity();
 
     super(spe, [
-      new FloatPositionComponent(x, y),
-      new DegreesDirectionComponent(r),
+      // new FloatPositionComponent(x, y),
+      // new DegreesDirectionComponent(r),
       new TankMovingComponent(dx, dy),
       new LightOutcastingComponent(1),
       new LightIncastingComponent(1),
@@ -48,8 +50,18 @@ export class SpaceTrashBot extends Actor {
         bunnySprite(),
         cylinder(),
         new Text('?')
-
       ),
+
+      new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+        const ball = ap.add.body(x * TileSize, y * TileSize);
+        ball.setCircle((TileSize/2) * 0.51)
+        ball.setBounce(0.1)
+        ball.setCollideWorldBounds(true)
+        ball.setFriction(-1, -1)
+
+        return ball
+      }),
+        
     ]);
   }
 

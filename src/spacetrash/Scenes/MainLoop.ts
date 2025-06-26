@@ -1,6 +1,6 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
-import { ActorSize, MapSize, NumberOfActors } from "../Constants";
+import { ActorSize, MapSize, NumberOfActors, TileSize } from "../Constants";
 import { PuckBot } from "../ECS/EntityComponents/actors/PuckBot";
 import { SpaceTrashBot } from "../ECS/EntityComponents/actors/TankBot";
 
@@ -17,19 +17,21 @@ class MainScene extends SpaceTrashScene {
     
     const drones = [...new Array(9)].map((n) => {
       return new SpaceTrashBot(
-        Math.random() * MapSize,
-        Math.random() * MapSize,
+        Math.random() * MapSize * TileSize,
+        Math.random() * MapSize * TileSize,
         // (MapSize / 2 ),
         // (MapSize / 2 ),
         // 5, 5,
         0,
+        0,
+        0
         // 0.01, 0.01
-        (Math.random() - 0.5) * SPEED_CONSTANT,
-        (Math.random() - 0.5) * SPEED_CONSTANT
+        // (Math.random() - 0.5) * SPEED_CONSTANT,
+        // (Math.random() - 0.5) * SPEED_CONSTANT
       );
     });
 
-    const moreBots = [...new Array(5)].map((n) => {
+    const moreBots = [...new Array(55)].map((n) => {
       return new PuckBot(
         // 200, 200,
         Math.random() * MapSize,

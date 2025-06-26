@@ -460,29 +460,31 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   rotationOfBot(eid: number): { r: number; } {
-    const storeName = "DegreesDirectionComponent";
+    // const storeName = "DegreesDirectionComponent";
 
-    if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
+    // if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
 
-    const c = this.componentStores[storeName].get(eid);
-    if (!c) throw "missing entity";
+    // const c = this.componentStores[storeName].get(eid);
+    // if (!c) throw "missing entity";
+
+    const arcadeObjects = this.componentStores['ArcadePhysicsComponent'] as ArcadePhysicsStore;
+
+    const arcadeObjectComponent = arcadeObjects.get(eid);
 
     return {
-      r: c.r,
+      r: arcadeObjectComponent?.arcadeObject.rotation,
     };
   }
 
   positionOfBot(eid: number): { x: number; y: number } {
-    const storeName = "FloatPositionComponent";
 
-    if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
+    const arcadeObjects = this.componentStores['ArcadePhysicsComponent'] as ArcadePhysicsStore;
 
-    const c = this.componentStores[storeName].get(eid);
-    if (!c) throw "missing entity";
+    const arcadeObjectComponent = arcadeObjects.get(eid);
 
     return {
-      x: c.x,
-      y: c.y,
+      x: arcadeObjectComponent.arcadeObject.position.x,
+      y: arcadeObjectComponent.arcadeObject.position.y,
     };
   }
 
@@ -564,7 +566,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       this.threejsRenderer = new THREE.WebGLRenderer({
         canvas,
         context: canvas.getContext("webgl2") as WebGL2RenderingContext,
-        antialias: true,
+        antialias: false,
       });
 
     }
@@ -609,11 +611,11 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       canvas.height = 800;
 
       const config = {
-        width: 800,
-        height: 800,
+        width: 1200,
+        height: 1200,
         gravity: {
-          x: 1,
-          y: 1
+          x: 0,
+          y: 0
         }
       }
 
@@ -670,11 +672,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     this.threejsRenderer.setSize(p.width, p.height)
     const position = this.videoFeedPosition();
-    this.camera.position.x = position.x * TileSize;
-    this.camera.position.y = position.y * TileSize;
+    this.camera.position.x = position.x;
+    this.camera.position.y = position.y;
     const rotation = this.videoFeedRotation();
 
     this.camera.rotation.y = (-rotation.r);
+    // console.log(this.camera.position, this.camera.rotation)
 
     // let spotlightRot = (-rotation.r);
     // if (this.camera.rotation.y < -Math.PI / 2) {
@@ -703,15 +706,15 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.arcadePhysics.world.postUpdate(this.arcadePhysicsTick * 1000, 1000 / 60)
     this.arcadePhysicsTick++
 
-    this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
+    // this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
 
-    // draw debug
-    this.arcadePhysics.world.bodies.forEach(b => {
-      b.drawDebug(this.arcadePhysicsCanvasContext)
-    })
-    this.arcadePhysics.world.staticBodies.forEach(b => {
-      b.drawDebug(this.arcadePhysicsCanvasContext)
-    })
+    // // draw debug
+    // this.arcadePhysics.world.bodies.forEach(b => {
+    //   b.drawDebug(this.arcadePhysicsCanvasContext)
+    // })
+    // this.arcadePhysics.world.staticBodies.forEach(b => {
+    //   b.drawDebug(this.arcadePhysicsCanvasContext)
+    // })
   }
 
   BeginTheGame() {

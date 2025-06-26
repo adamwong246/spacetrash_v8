@@ -116,18 +116,18 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
 
 
   openAllWindows() {
-    this.dockviewAPI.component.addPanel({
-      id: 'bots',
-      component: 'bots',
-      floating: {
-        position: { left: 90, top: 90 },
-        width: 500,
-        height: 500
-      },
-      params: {
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'bots',
+    //   component: 'bots',
+    //   floating: {
+    //     position: { left: 90, top: 90 },
+    //     width: 500,
+    //     height: 500
+    //   },
+    //   params: {
 
-      }
-    })
+    //   }
+    // })
 
     this.dockviewAPI.component.addPanel({
       id: 'vid',
@@ -155,18 +155,18 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
       }
     })
 
-    this.dockviewAPI.component.addPanel({
-      id: 'matter',
-      component: 'matter',
-      floating: {
-        position: { left: 100, top: 150 },
-        width: 600,
-        height: 600
-      },
-      params: {
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'matter',
+    //   component: 'matter',
+    //   floating: {
+    //     position: { left: 100, top: 150 },
+    //     width: 600,
+    //     height: 600
+    //   },
+    //   params: {
 
-      }
-    })
+    //   }
+    // })
 
     this.dockviewAPI.component.addPanel({
       id: 'arcadePhysics',

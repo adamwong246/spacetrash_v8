@@ -1192,3 +1192,7 @@ td {
   right: -8px;
   bottom: -8px;
 }
+html,
+body {
+  overscroll-behavior-x: none;
+}

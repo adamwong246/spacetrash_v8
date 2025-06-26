@@ -1,4 +1,4 @@
-// import { Body } from "arcade-physics";
+import  ArcadePhysics  from "arcade-physics";
 
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
@@ -19,6 +19,7 @@ import {
 import { LightIncastingComponent } from "../casting/in";
 import { TileSize } from "../../../Constants";
 import { SpaceTrash } from "../../..";
+import { ArcadePhysicsComponent } from "./arcadePhysics";
 
 export type IChars = Text;
 
@@ -72,6 +73,101 @@ export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
 }
 
 export class DrawableStoreV2 extends Store<DrawableComponent> {
+  //   }
+  //   updatePostion(eid: number, p: FloatPositionComponent) {
+  //     const d = this.get(eid);
+  //     // console.log("mark2", d.sprite)
+  //     if (d.sprite) {
+  //       d.sprite.position.x = p.x * TileSize;
+  //       d.sprite.position.y = p.y * TileSize;
+  //     }
+  //     if (d.mesh) {
+  //       d.mesh.position.x = p.x * TileSize;
+  //       d.mesh.position.y = p.y * TileSize;
+  //     }
+  //     //
+  //     // d.x = p.x;
+  //     // d.y = p.y;
+  //     // this.sp
+  //   }
+  //   updateLuminance(eid: number, illuminated) {
+  //     const d = this.get(eid);
+  //     if (d.sprite) {
+  //       d.sprite.visible = illuminated;
+  //     }
+  //     if (d.mesh) {
+  //       d.mesh.visible = illuminated;
+  //     }
+  //   }
+  //   updateLuminanceByLittable(rid: number, reciver: LightOutcastingComponent) {
+  //     const d = this.get(rid);
+  //     if (d.sprite) {
+  //       d.sprite.visible = reciver.luminance > 0;
+  //     }
+  //     if (d.mesh) {
+  //       d.mesh.visible = reciver.luminance > 0
+  //     }
+  //   }
+  // }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // export class DrawableStoreV0 extends EntityComponentStore<DrawableComponent> {
+  //   // store: DrawableComponent;
+  //   // get(...a: any[]) {
+  //   //   throw new Error("Method not implemented.");
+  //   // }
+  //   // add(a: DrawableComponent) {
+  //   //   // super.add(a);
+  //   // }
+  //   make() {
+  //     throw new Error("Method not implemented.");
+  //     return new DrawableComponent();
+  //   }
+  //   positionOf(eidOfLight: number): FloatPositionStore {
+  //     throw new Error("Method not implemented.");
+  //   }
+  //   updatePostion(eid: number, p: FloatPositionComponent) {
+  //     const d = this.get(eid);
+  //     // console.log("mark2", d.sprite)
+  //     if (d.sprite) {
+  //       d.sprite.position.x = p.x * TileSize;
+  //       d.sprite.position.y = p.y * TileSize;
+  //     }
+  //     if (d.mesh) {
+  //       d.mesh.position.x = p.x * TileSize;
+  //       d.mesh.position.y = p.y * TileSize;
+  //     }
+  //     //
+  //     // d.x = p.x;
+  //     // d.y = p.y;
+  //     // this.sp
+  //   }
+  //   each(arg0: ([eid, le, k]: [number, DrawableComponent, string]) => void) {
+  //     Object.keys(this.store).forEach((k) => {
+  //       arg0([Number(k), this.store[k], k]);
+  //     });
+  //   }
+  //   updateLuminance(eid: number, illuminated) {
+  //     const d = this.get(eid);
+  //     if (d.sprite) {
+  //       d.sprite.visible = illuminated;
+  //     }
+  //     if (d.mesh) {
+  //       d.mesh.visible = illuminated;
+  //     }
+  //   }
+  //   updateLuminanceByLittable(rid: number, reciver: LightOutcastingComponent) {
+  //     const d = this.get(rid);
+  //     if (d.sprite) {
+  //       d.sprite.visible = reciver.luminance > 0;
+  //     }
+  //     if (d.mesh) {
+  //       d.mesh.visible = reciver.luminance > 0
+  //     }
+  //   }
+  // }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  
   store: Map<number, DrawableComponent>;
 
   constructor() {
@@ -180,6 +276,27 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
       d.char.position.x = Math.round(p.x) * TileSize;
       d.char.position.y = Math.round(p.y) * TileSize;
     }
+  }
+
+  updateFromArcadePhysics(eid: any, f: ArcadePhysicsComponent) {
+    const d = this.get(eid);
+
+    // debugger
+    if (d.sprite) {
+      // debugger
+      d.sprite.position.x = f.arcadeObject.position.x + (TileSize/2)
+      d.sprite.position.y = f.arcadeObject.position.y + (TileSize/2)
+      d.sprite.rotation = f.arcadeObject.rotation;
+    }
+    if (d.mesh) {
+      d.mesh.position.x = f.arcadeObject.position.x;
+      d.mesh.position.y = f.arcadeObject.position.y;
+    }
+    // if (updateChars) {
+    //   d.char.position.x = Math.round(p.x) * TileSize;
+    //   d.char.position.y = Math.round(p.y) * TileSize;
+    // }
+    // throw new Error("Method not implemented.");
   }
 
   updateLuminance(eid: number, illuminated) {

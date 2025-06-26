@@ -1,30 +1,20 @@
-import * as ROT from "rot-js";
-import * as THREE from "three";
-const raycaster = new THREE.Raycaster();
-
-const frustum = new THREE.Frustum();
-const matrix = new THREE.Matrix4();
-
 import {
   MapSize,
+  SPEED_CONSTANT,
   TANK_VELOCITY_ANGULAR,
   TANK_VELOCITY as TANK_VELOCITY_LINEAR,
-  TileSize,
 } from "../../Constants";
 import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
-import { ActorSize, FRICTION_CONSTANT, SPEED_CONSTANT } from "../../Constants";
-import {
-  LightIncastingComponent,
-  LightIncastingStore,
-} from "../Components/casting/in";
+import { FRICTION_CONSTANT } from "../../Constants";
+import { LightIncastingStore } from "../Components/casting/in";
 import {
   LightOutcastingStore,
   LightOutcastingComponent,
 } from "../Components/casting/out";
 import { SetPieceStore } from "../Components/phase0";
 import { ActorStore } from "../Components/phase1";
-import { DrawableComponent, DrawableStoreV2 } from "../Components/v2/drawable";
+import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
   FloatMovingComponent,
@@ -37,9 +27,10 @@ import {
   DegreesDirectionComponent,
 } from "../Components/v2/physical";
 import { LightPositionStore } from "../Components/v3/LightPosition";
-import { Object3DEventMap } from "three";
+import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
 
 let actors: ActorStore;
+let arcadeObjects: ArcadePhysicsStore;
 let dds: DegreesDirectionStore;
 let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
@@ -59,9 +50,11 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   GAME = game;
   DELTA = delta;
 
-  // console.log("DELTA", DELTA)
-
   // Level 0 - "Component Stores"
+  arcadeObjects = game.componentStores[
+    "ArcadePhysicsComponent"
+  ] as ArcadePhysicsStore;
+
   dds = game.componentStores[
     "DegreesDirectionComponent"
   ] as DegreesDirectionStore;
@@ -89,110 +82,53 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   ] as LightPositionStore;
 
   // resetIllumination();
-  runFloatingPhysics();
+  // runFloatingPhysics();
+  
   runTankPhysics();
+  runArcadePhysics();
+  
   // scanFrustum();
   // rotLighting();
 };
 
-function scanFrustum() {
-  GAME.camera.updateMatrix();
-  GAME.camera.updateMatrixWorld();
-  matrix.multiplyMatrices(
-    GAME.camera.projectionMatrix,
-    GAME.camera.matrixWorldInverse
-  );
-  frustum.setFromProjectionMatrix(matrix);
+export function runArcadePhysics() {
+  // let repaintLights = false;
+  arcadeObjects.each((eid, f) => {
 
-  let itemsInFrustum: THREE.Object3D<Object3DEventMap>[] = [];
 
-  GAME.scene.traverse(function (object) {
-    if (object.isMesh) {
-      if (
-        frustum.containsPoint(object.position) ||
-        frustum.intersectsObject(object)
-      ) {
-        itemsInFrustum.push(object);
-      }
+    // f.arcadeObject.velocity.x = 100
+    // f.arcadeObject.velocity.x = 100
+    
+    const { position, classification } = eid2PMSs.get(eid);
+    if (classification === "PuckBot") {
+      // const p = fps.get(eid);
+      // if (!p) throw "floating position component not found";
+      // boundaryCheckBot(position);
+      // collisionsAndVideoControls();
+      // const gridChanges = upsdateFloatPosition(position, f);
+      // if (gridChanges) {
+      //   repaintLights = true;
+      // }
+      // drawables.updatePostion(eid, position, true);
+      drawables.updateFromArcadePhysics(eid, f);
+    } else if (classification === "Tile") {
+      // throw "not implemented";
+    } else {
+      drawables.updateFromArcadePhysics(eid, f);
     }
   });
-
-  const origin = GAME.camera.position.clone();
-
-  itemsInFrustum.forEach((object3d) => {
-    ////////////////////////////////////////////
-
-    const vis = drawables.findByMeshId(object3d.uuid);
-    vis.sprite.visible = true;
-
-    ////////////////////////////////////////////
-    // const direction = object3d.position.clone().sub(origin).normalize(); // Calculate direction from object1 to object2 and normalize it
-    // raycaster.set(origin, direction);
-    // // raycaster.params.Mesh = 10;
-    // // raycaster.params.LOD = 0.1;
-    // const intersects = raycaster.intersectObjects(itemsInFrustum, true); // Check for intersection with object2
-
-    // intersects.forEach((i, n) => {
-    //   if (n < 2) {
-    //     const vis = drawables.findByMeshId(i.object.uuid);
-    //     vis.sprite.visible = true;
-    //   }
-    // })
-
-    // if (intersects.length > 0) {
-    //   if (intersects[0].object.uuid === object3d.uuid) {
-    //     vis.sprite.visible = true;
-    //   }
-    // }
-
-    ////////////////////////////////////////////
-  });
-}
-
-function rotLighting() {
-  function lightPasses(x, y) {
-    if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-      const z = setPieces.at(x, y);
-
-      if (z && z.tileType === "WallTile") {
-        return false;
-      } else {
-        return true;
-      }
-    }
-    return false;
-
-    // var key = x + "," + y;
-    // if (key in data) {
-    //   return data[key] == 0;
-    // }
-    // return false;
-  }
-
-  // var fov = new ROT.FOV.PreciseShadowcasting(lightPasses);
-  var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
-
-  /* output callback */
-  fov.compute(
-    Math.round(GAME.camera.position.x / TileSize),
-    Math.round(GAME.camera.position.y / TileSize),
-    Infinity,
-    function (x, y, r, visibility) {
-      if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-        const z = setPieces.at(x, y);
-        if (visibility === 1 && z && z.drawing) {
-          z.drawing.sprite.visible = true;
-          z.drawing.mesh.visible = true;
-        }
-        if (visibility === 0 && z && z.drawing) {
-          z.drawing.sprite.visible = false;
-          z.drawing.mesh.visible = true;
-          // z.drawing.mesh.visible = true; // 2.25 ms
-          // z.drawing.mesh.visible = false; // 14.7
-        }
-      }
-    }
-  );
+  // if (repaintLights) {
+  //   resetIllumination();
+  //   // runIlluminationV7(fovMap);
+  //   for (let y = 0; y < MapSize; y++) {
+  //     for (let x = 0; x < MapSize; x++) {
+  //       setPieces.store[y][x].drawing.mesh.visible =
+  //         setPieces.store[y][x].luminance > 0;
+  //       setPieces.store[y][x].drawing.sprite.visible =
+  //         setPieces.store[y][x].luminance > 0;
+  //     }
+  //   }
+  // }
 }
 
 export function runFloatingPhysics() {
@@ -203,7 +139,7 @@ export function runFloatingPhysics() {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
       boundaryCheckBot(position);
-      collisionsAndVideoControls();
+      // collisionsAndVideoControls();
       const gridChanges = updateFloatPosition(position, f);
       // if (gridChanges) {
       //   repaintLights = true;
@@ -230,6 +166,40 @@ export function runFloatingPhysics() {
   // }
 }
 
+function runTankPhysics() {
+  tms.store.forEach(([eid, t]) => {
+    const { position, classification } = eid2PMSs.get(eid) as unknown as {position: ArcadePhysicsComponent, classification:string}
+    
+
+    if (classification === "SpaceTrashBot") {
+      // const direction = dds.get(eid);
+      const direction = arcadeObjects.get(eid)?.arcadeObject.rotation;
+      const oldDir = direction;
+      const oldX = arcadeObjects.get(eid)?.arcadeObject.x;
+      const oldY = arcadeObjects.get(eid)?.arcadeObject.y;
+
+      // boundaryCheckBot(position);
+      // collisionsAndVideoControls();
+      updateTankPosition(position, t, eid);
+
+      drawables.updateFromArcadePhysics(eid, position);
+      
+      // if (
+      //   oldDir !== direction.r ||
+      //   oldX !== position.arcadeObject.position.x ||
+      //   oldY !== position.arcadeObject.position.y
+      // ) {
+      //   drawables.updateFromArcadePhysics(eid, position);
+      // }
+    } else if (classification === "Tile") {
+      throw "not implemented";
+    } else {
+      debugger;
+      throw "idk";
+    }
+  });
+}
+
 function boundaryCheckBot(fpc: FloatPositionComponent) {
   if (fpc.x < 0) {
     fpc.x = MapSize;
@@ -245,184 +215,19 @@ function boundaryCheckBot(fpc: FloatPositionComponent) {
   }
 }
 
-function runTankPhysics() {
-  tms.store.forEach(([eid, t]) => {
-    const { position, classification } = eid2PMSs.get(eid);
-
-    if (classification === "SpaceTrashBot") {
-      const direction = dds.get(eid);
-      const oldDir = direction.r;
-      const oldX = position.x;
-      const oldY = position.y;
-
-      boundaryCheckBot(position);
-      collisionsAndVideoControls();
-      updateTankPosition(position, t, direction, eid);
-
-      if (
-        oldDir !== direction.r ||
-        oldX !== position.x ||
-        oldY !== position.y
-      ) {
-        drawables.updatePostionAndRotation(eid, position, direction);
-      }
-
-    } else if (classification === "Tile") {
-      throw "not implemented";
-    } else {
-      debugger;
-      throw "idk";
-    }
-  });
-}
-
-function resetIllumination() {
-  drawables.each(([eid, d, eid2]) => {
-    d.sprite.visible = false;
-    d.mesh.visible = false;
-  });
-  incasters.each(([li, z]) => {
-    z.luminance = 0;
-  });
-  for (let y = 0; y < MapSize; y++) {
-    for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x].luminance = -1;
-      // setPieces.store[y][x].s
-    }
-  }
-}
-
-// if (Number(i) === GAME.videoFeed) {
-//   if (GAME.forward === true) {
-//     a.motion.dy = a.motion.dy - SPEED_CONSTANT * DELTA;
-//   }
-
-//   if (GAME.back === true) {
-//     a.motion.dy = a.motion.dy + SPEED_CONSTANT * DELTA;
-//   }
-
-//   if (GAME.left === true) {
-//     a.motion.dx = a.motion.dx - SPEED_CONSTANT * DELTA;
-//   }
-
-//   if (GAME.right === true) {
-//     a.motion.dx = a.motion.dx + SPEED_CONSTANT * DELTA;
-//   }
-// }
-
-const collisionsAndVideoControls = () => {
-  actors.each((i, a) => {
-    if (a.motion) {
-      // x and y are the "look ahead" pointer
-      let x = Math.round(a.position.x + a.motion.dx);
-      if (x >= MapSize - 1) x = 0;
-      if (x < 0) x = MapSize - 1;
-      let y = Math.round(a.position.y + a.motion.dy);
-      if (y >= MapSize - 1) y = 0;
-      if (y < 0) y = MapSize - 1;
-
-      // // if the look-ahead tile is floor
-      // if (setPieces.tileIsAt(x, y, "FloorTile")) {
-      //   magX = Math.abs(a.motion.dx);
-      //   magY = Math.abs(a.motion.dy);
-      //   roundX = Math.round(a.position.x);
-      //   roundY = Math.round(a.position.y);
-
-      //   if (x < roundX) {
-      //     if (y < roundY) {
-      //       // NorthWest
-      //       if (magX < magY) {
-      //         a.motion.dy = a.motion.dy * -1;
-      //       } else {
-      //         a.motion.dx = a.motion.dx * -1;
-      //       }
-      //     } else if (y > roundY) {
-      //       // SouthWest
-      //       if (magX > magY) {
-      //         a.motion.dx = a.motion.dx * -1;
-      //       } else {
-      //         a.motion.dy = a.motion.dy * -1;
-      //       }
-      //     } else {
-      //       // West
-      //       a.motion.dx = a.motion.dx * -1;
-      //     }
-      //   } else if (x > roundX) {
-      //     if (y < roundY) {
-      //       // NorthEast
-      //       if (magX > magY) {
-      //         a.motion.dx = a.motion.dx * -1;
-      //       } else {
-      //         a.motion.dy = a.motion.dy * -1;
-      //       }
-      //     } else if (roundY) {
-      //       // SouthEast
-
-      //       if (magX > magY) {
-      //         a.motion.dy = a.motion.dy * -1;
-      //       } else {
-      //         a.motion.dx = a.motion.dx * -1;
-      //       }
-      //     } else {
-      //       // East
-      //       a.motion.dx = a.motion.dx * -1;
-      //     }
-      //   } else {
-      //     if (y < roundY) {
-      //       // North
-      //       a.motion.dy = a.motion.dy * -1;
-      //     } else {
-      //       // South
-      //       a.motion.dy = a.motion.dy * -1;
-      //     }
-      //   }
-      // } else {
-      //   // no-opt
-      // }
-
-      // actors.each((ii, aa) => {
-      //   // don't collide against self
-      //   if (i !== ii) {
-      //     if (actorsCollide(a.position, aa.position)) {
-      //       a.position.x = a.position.x - a.motion.dx;
-      //       a.position.y = a.position.y - a.motion.dy;
-      //       aa.position.x = aa.position.x - aa.motion.dx;
-      //       aa.position.y = aa.position.y - aa.motion.dy;
-      //       temps[0] = a.motion.dx;
-      //       temps[1] = a.motion.dy;
-      //       a.motion.dx = aa.motion.dx;
-      //       a.motion.dy = aa.motion.dy;
-      //       aa.motion.dx = temps[0];
-      //       aa.motion.dy = temps[1];
-      //     }
-      //   }
-      // });
-    }
-  });
-};
-
-const actorsCollide = (
-  a: FloatPositionComponent,
-  b: FloatPositionComponent
-) => {
-  return distanceBetweenActorsV1(a.x, a.y, b.x, b.y);
-  // return distanceBetweenActorsV0(a, b);
-};
-
 function updateVelocity(f: number): number {
   return f * FRICTION_CONSTANT; //f * DELTA * FRICTION_CONSTANT;
 }
 
 function updateTankMovement(f: TankMovingComponent, eid: number) {
   const videoBot = Object.entries(GAME.bots).find((v, n, o) => {
-    return v[1][0] === eid && Number(v[0]) === GAME.videoFeed
-  })
+    return v[1][0] === eid && Number(v[0]) === GAME.videoFeed;
+  });
 
   if (!videoBot) return;
 
   if (videoBot) {
     if (GAME.movingForward()) {
-      
       f.j = "forth";
     } else if (GAME.movingBack()) {
       f.j = "back";
@@ -435,8 +240,6 @@ function updateTankMovement(f: TankMovingComponent, eid: number) {
       f.j = "none";
     }
   }
-    
-
 }
 
 function updateFloatingMovement(f: FloatMovingComponent) {
@@ -460,15 +263,10 @@ function updateFloatPosition(
   return hasChangedPosition;
 }
 
-function radiansToDegrees(radians) {
-  return radians * (180 / Math.PI);
-}
-
 function updateTankPosition(
-  p: FloatPositionComponent,
+  p: ArcadePhysicsComponent,
   f: TankMovingComponent,
-  d: DegreesDirectionComponent,
-  eid: number,
+  eid: number
 ): boolean {
   let isMoving: boolean;
   if (f.i === "none" && f.j === "none") {
@@ -479,174 +277,209 @@ function updateTankPosition(
 
   updateTankMovement(f, eid);
 
-  const radians = d.r; //radiansToDegrees(d.r);
   if (f.i === "left") {
-    d.r = d.r - TANK_VELOCITY_ANGULAR;
+    p.arcadeObject.rotation = p.arcadeObject.rotation - TANK_VELOCITY_ANGULAR;
   }
   if (f.i === "right") {
-    d.r = d.r + TANK_VELOCITY_ANGULAR;
+    p.arcadeObject.rotation = p.arcadeObject.rotation + TANK_VELOCITY_ANGULAR;
   }
   if (f.i === "none") {
-    // d.r = 0;
   }
 
   if (f.j === "forth") {
-    p.x += Math.cos(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
-    p.y += Math.sin(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.arcadeObject.setAccelerationX(Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA);
+    p.arcadeObject.setAccelerationY(Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA);
   }
   if (f.j === "back") {
-    p.x -= Math.cos(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
-    p.y -= Math.sin(radians - 1.5708) * TANK_VELOCITY_LINEAR * DELTA;
+    p.arcadeObject.setAccelerationX(Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA) * -1;
+    p.arcadeObject.setAccelerationY(Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA) * -1;
   }
   if (f.j === "none") {
-    // d.r = 0;
+    p.arcadeObject.setAccelerationX(0);
+    p.arcadeObject.setAccelerationY(0);
   }
 
   return isMoving;
 }
 
-function distanceBetweenActorsV1(x, y, x0, y0) {
-  const squaredDist = (x - x0) * (x - x0) + (y - y0) * (y - y0);
-  return squaredDist <= Math.sqrt(ActorSize / 2);
-}
+// function radiansToDegrees(radians) {
+//   return radians * (180 / Math.PI);
+// }
 
-function runIlluminationV7(fovMap) {
-  outcasters.each(([ns, [emid, outCaster], n]) => {
-    let emitterPostion = fps.get(emid);
+// function resetIllumination() {
+//   drawables.each(([eid, d, eid2]) => {
+//     d.sprite.visible = false;
+//     d.mesh.visible = false;
+//   });
+//   incasters.each(([li, z]) => {
+//     z.luminance = 0;
+//   });
+//   for (let y = 0; y < MapSize; y++) {
+//     for (let x = 0; x < MapSize; x++) {
+//       setPieces.store[y][x].luminance = -1;
+//       // setPieces.store[y][x].s
+//     }
+//   }
+// }
 
-    if (emitterPostion) {
-      let x = Math.round(emitterPostion.x);
-      if (x >= MapSize - 1) x = 0;
-      if (x < 0) x = MapSize - 1;
+// const collisionsAndVideoControls = () => {
+//   actors.each((i, a) => {
+//     if (a.motion) {
+//       // x and y are the "look ahead" pointer
+//       let x = Math.round(a.position.x + a.motion.dx);
+//       if (x >= MapSize - 1) x = 0;
+//       if (x < 0) x = MapSize - 1;
+//       let y = Math.round(a.position.y + a.motion.dy);
+//       if (y >= MapSize - 1) y = 0;
+//       if (y < 0) y = MapSize - 1;
 
-      let y = Math.round(emitterPostion.y);
-      if (y >= MapSize - 1) y = 0;
-      if (y < 0) y = MapSize - 1;
+//       // // if the look-ahead tile is floor
+//       // if (setPieces.tileIsAt(x, y, "FloorTile")) {
+//       //   magX = Math.abs(a.motion.dx);
+//       //   magY = Math.abs(a.motion.dy);
+//       //   roundX = Math.round(a.position.x);
+//       //   roundY = Math.round(a.position.y);
 
-      if (setPieces.store[y][x]) {
-        // illuminate the space upon which we stand
-        illuminate(emitterPostion.x, emitterPostion.y);
+//       //   if (x < roundX) {
+//       //     if (y < roundY) {
+//       //       // NorthWest
+//       //       if (magX < magY) {
+//       //         a.motion.dy = a.motion.dy * -1;
+//       //       } else {
+//       //         a.motion.dx = a.motion.dx * -1;
+//       //       }
+//       //     } else if (y > roundY) {
+//       //       // SouthWest
+//       //       if (magX > magY) {
+//       //         a.motion.dx = a.motion.dx * -1;
+//       //       } else {
+//       //         a.motion.dy = a.motion.dy * -1;
+//       //       }
+//       //     } else {
+//       //       // West
+//       //       a.motion.dx = a.motion.dx * -1;
+//       //     }
+//       //   } else if (x > roundX) {
+//       //     if (y < roundY) {
+//       //       // NorthEast
+//       //       if (magX > magY) {
+//       //         a.motion.dx = a.motion.dx * -1;
+//       //       } else {
+//       //         a.motion.dy = a.motion.dy * -1;
+//       //       }
+//       //     } else if (roundY) {
+//       //       // SouthEast
 
-        // const fov = WarpField.computeFieldOfView(fovMap, x, y, 20);
+//       //       if (magX > magY) {
+//       //         a.motion.dy = a.motion.dy * -1;
+//       //       } else {
+//       //         a.motion.dx = a.motion.dx * -1;
+//       //       }
+//       //     } else {
+//       //       // East
+//       //       a.motion.dx = a.motion.dx * -1;
+//       //     }
+//       //   } else {
+//       //     if (y < roundY) {
+//       //       // North
+//       //       a.motion.dy = a.motion.dy * -1;
+//       //     } else {
+//       //       // South
+//       //       a.motion.dy = a.motion.dy * -1;
+//       //     }
+//       //   }
+//       // } else {
+//       //   // no-opt
+//       // }
 
-        // (di, dj) is a vector - direction in which we move right now
-        let di = 1;
-        let dj = 0;
-        // length of current segment
-        let segment_length = 1;
-        // current position (i, j) and how much of current segment we passed
-        let i = 0;
-        let j = 0;
-        let segment_passed = 0;
-        // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
-        for (let k = 0; k < Math.pow(25, 2) - 1; k++) {
-          // make a step, add 'direction' vector (di, dj) to current position (i, j)
-          i += di;
-          j += dj;
-          ++segment_passed;
-          // if (x > MapSize) break;
-          // if (x < 0) break;
-          // if (y > MapSize) break;
-          // if (y < 0) break;
-          // console.log("ensetpiecetity", setpiece(i + e.x, j + e.y))
-          // const eId = littableActorsUpon(x, y)?.entity;
-          // const entity = entities[eId];
-          // if (entity) {
-          //   // console.log("entity", entity)
-          //   if (entity.tileType !== "FloorTile") {
-          //     onTarget = true;
-          //     // console.log("collide!", x, y, entity)
-          //   } else {
-          //     onTarget = false;
-          //   }
-          // } else {
-          //   // console.log("idk", eId, x, y)
-          // }
+//       // actors.each((ii, aa) => {
+//       //   // don't collide against self
+//       //   if (i !== ii) {
+//       //     if (actorsCollide(a.position, aa.position)) {
+//       //       a.position.x = a.position.x - a.motion.dx;
+//       //       a.position.y = a.position.y - a.motion.dy;
+//       //       aa.position.x = aa.position.x - aa.motion.dx;
+//       //       aa.position.y = aa.position.y - aa.motion.dy;
+//       //       temps[0] = a.motion.dx;
+//       //       temps[1] = a.motion.dy;
+//       //       a.motion.dx = aa.motion.dx;
+//       //       a.motion.dy = aa.motion.dy;
+//       //       aa.motion.dx = temps[0];
+//       //       aa.motion.dy = temps[1];
+//       //     }
+//       //   }
+//       // });
+//     }
+//   });
+// };
 
-          const x2 = Math.round(j + x);
-          const y2 = Math.round(i + y);
-          // const isVisible = fov.getVisible(x2, y2);
-          // console.log("x, y", x, y);
-          // console.log("i, j", i, j);
-          // console.log("x2, y2", x2, y2);
-          // console.log(isVisible);
-          // if (x < 0) debugger
-          // illuminate(MapSize / 2, MapSize / 2);
+// if (Number(i) === GAME.videoFeed) {
+//   if (GAME.forward === true) {
+//     a.motion.dy = a.motion.dy - SPEED_CONSTANT * DELTA;
+//   }
 
-          // TODO
-          if (true) {
-            illuminate(x2, y2);
-          }
+//   if (GAME.back === true) {
+//     a.motion.dy = a.motion.dy + SPEED_CONSTANT * DELTA;
+//   }
 
-          if (segment_passed == segment_length) {
-            // done with current segment
-            segment_passed = 0;
-            // 'rotate' directions
-            let buffer = di;
-            di = -dj;
-            dj = buffer;
-            // increase segment length if necessary
-            if (dj == 0) {
-              ++segment_length;
-            }
-          }
-        }
-      }
-    }
-    // debugger;
+//   if (GAME.left === true) {
+//     a.motion.dx = a.motion.dx - SPEED_CONSTANT * DELTA;
+//   }
 
-    // if (!phaseZero[Math.round(actor.y)]) {
-    //   phaseZero[Math.round(actor.y)] = [];
-    // }
-    // find the floor underneath and any entities on top
-    // let x = Math.round(actor.x);
-    // let y = Math.round(actor.y);
-    // if (x >= MapSize) x = 0;
-    // if (y >= MapSize) y = 0;
-  });
-}
+//   if (GAME.right === true) {
+//     a.motion.dx = a.motion.dx + SPEED_CONSTANT * DELTA;
+//   }
+// }
 
-const illuminate = (xFloat: number, yFloat: number): any => {
-  const x = Math.round(xFloat);
-  const y = Math.round(yFloat);
-  const mSize = MapSize;
-  // console.log("illuminate", x, y, mSize);
-  // if (!spaces[Math.round(y)]) {
-  //   return null;
-  // }
-  if (x < 0) {
-    return null;
-  }
-  if (x > mSize - 1) {
-    return null;
-  }
-  if (y < 0) {
-    return null;
-  }
-  if (y > mSize - 1) {
-    return null;
-  }
-  // const litableComponent = incasters[eid];
+// const actorsCollide = (
+//   a: FloatPositionComponent,
+//   b: FloatPositionComponent
+// ) => {
+//   return distanceBetweenActorsV1(a.x, a.y, b.x, b.y);
+//   // return distanceBetweenActorsV0(a, b);
+// };
 
-  const space = setPieces.at(x, y);
-  const lightableIdOfSpace = space.incasterId;
-  const incaster = incasters.store[lightableIdOfSpace]; //(incasters.find((a) => a[0] === lightableIdOfSpace) as [string, LightOutcastingComponent]);
+// const illuminate = (xFloat: number, yFloat: number): any => {
+//   const x = Math.round(xFloat);
+//   const y = Math.round(yFloat);
+//   const mSize = MapSize;
+//   // console.log("illuminate", x, y, mSize);
+//   // if (!spaces[Math.round(y)]) {
+//   //   return null;
+//   // }
+//   if (x < 0) {
+//     return null;
+//   }
+//   if (x > mSize - 1) {
+//     return null;
+//   }
+//   if (y < 0) {
+//     return null;
+//   }
+//   if (y > mSize - 1) {
+//     return null;
+//   }
+//   // const litableComponent = incasters[eid];
 
-  if (!incaster) {
-    // console.error("litable not found");
+//   const space = setPieces.at(x, y);
+//   const lightableIdOfSpace = space.incasterId;
+//   const incaster = incasters.store[lightableIdOfSpace]; //(incasters.find((a) => a[0] === lightableIdOfSpace) as [string, LightOutcastingComponent]);
 
-    return;
-  }
+//   if (!incaster) {
+//     // console.error("litable not found");
 
-  // const [eid3, litableComponent] = litable;
-  incaster.luminance = 2;
+//     return;
+//   }
 
-  const s = setPieces.at(x, y);
+//   // const [eid3, litableComponent] = litable;
+//   incaster.luminance = 2;
 
-  if (s.luminance !== incaster.luminance) {
-    s.luminance = incaster.luminance;
-  }
-};
+//   const s = setPieces.at(x, y);
+
+//   if (s.luminance !== incaster.luminance) {
+//     s.luminance = incaster.luminance;
+//   }
+// };
 
 // const distanceBetweenActorsV0 = (
 //   a: PhysicsActorComponent,
@@ -1537,3 +1370,203 @@ const illuminate = (xFloat: number, yFloat: number): any => {
 // //     setPieces[eidOfLitable].luminance = 1;
 // //   }
 // // }
+
+// function scanFrustum() {
+//   GAME.camera.updateMatrix();
+//   GAME.camera.updateMatrixWorld();
+//   matrix.multiplyMatrices(
+//     GAME.camera.projectionMatrix,
+//     GAME.camera.matrixWorldInverse
+//   );
+//   frustum.setFromProjectionMatrix(matrix);
+
+//   let itemsInFrustum: THREE.Object3D<Object3DEventMap>[] = [];
+
+//   GAME.scene.traverse(function (object) {
+//     if (object.isMesh) {
+//       if (
+//         frustum.containsPoint(object.position) ||
+//         frustum.intersectsObject(object)
+//       ) {
+//         itemsInFrustum.push(object);
+//       }
+//     }
+//   });
+
+//   const origin = GAME.camera.position.clone();
+
+//   itemsInFrustum.forEach((object3d) => {
+//     ////////////////////////////////////////////
+
+//     const vis = drawables.findByMeshId(object3d.uuid);
+//     vis.sprite.visible = true;
+
+//     ////////////////////////////////////////////
+//     // const direction = object3d.position.clone().sub(origin).normalize(); // Calculate direction from object1 to object2 and normalize it
+//     // raycaster.set(origin, direction);
+//     // // raycaster.params.Mesh = 10;
+//     // // raycaster.params.LOD = 0.1;
+//     // const intersects = raycaster.intersectObjects(itemsInFrustum, true); // Check for intersection with object2
+
+//     // intersects.forEach((i, n) => {
+//     //   if (n < 2) {
+//     //     const vis = drawables.findByMeshId(i.object.uuid);
+//     //     vis.sprite.visible = true;
+//     //   }
+//     // })
+
+//     // if (intersects.length > 0) {
+//     //   if (intersects[0].object.uuid === object3d.uuid) {
+//     //     vis.sprite.visible = true;
+//     //   }
+//     // }
+
+//     ////////////////////////////////////////////
+//   });
+// }
+
+// function rotLighting() {
+//   function lightPasses(x, y) {
+//     if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
+//       const z = setPieces.at(x, y);
+
+//       if (z && z.tileType === "WallTile") {
+//         return false;
+//       } else {
+//         return true;
+//       }
+//     }
+//     return false;
+
+//     // var key = x + "," + y;
+//     // if (key in data) {
+//     //   return data[key] == 0;
+//     // }
+//     // return false;
+//   }
+
+//   // var fov = new ROT.FOV.PreciseShadowcasting(lightPasses);
+//   var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
+
+//   /* output callback */
+//   fov.compute(
+//     Math.round(GAME.camera.position.x / TileSize),
+//     Math.round(GAME.camera.position.y / TileSize),
+//     Infinity,
+//     function (x, y, r, visibility) {
+//       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
+//         const z = setPieces.at(x, y);
+//         if (visibility === 1 && z && z.drawing) {
+//           z.drawing.sprite.visible = true;
+//           z.drawing.mesh.visible = true;
+//         }
+//         if (visibility === 0 && z && z.drawing) {
+//           z.drawing.sprite.visible = false;
+//           z.drawing.mesh.visible = true;
+//           // z.drawing.mesh.visible = true; // 2.25 ms
+//           // z.drawing.mesh.visible = false; // 14.7
+//         }
+//       }
+//     }
+//   );
+// }
+// function distanceBetweenActorsV1(x, y, x0, y0) {
+//   const squaredDist = (x - x0) * (x - x0) + (y - y0) * (y - y0);
+//   return squaredDist <= Math.sqrt(ActorSize / 2);
+// }
+
+// function runIlluminationV7(fovMap) {
+//   outcasters.each(([ns, [emid, outCaster], n]) => {
+//     let emitterPostion = fps.get(emid);
+
+//     if (emitterPostion) {
+//       let x = Math.round(emitterPostion.x);
+//       if (x >= MapSize - 1) x = 0;
+//       if (x < 0) x = MapSize - 1;
+
+//       let y = Math.round(emitterPostion.y);
+//       if (y >= MapSize - 1) y = 0;
+//       if (y < 0) y = MapSize - 1;
+
+//       if (setPieces.store[y][x]) {
+//         // illuminate the space upon which we stand
+//         illuminate(emitterPostion.x, emitterPostion.y);
+
+//         // const fov = WarpField.computeFieldOfView(fovMap, x, y, 20);
+
+//         // (di, dj) is a vector - direction in which we move right now
+//         let di = 1;
+//         let dj = 0;
+//         // length of current segment
+//         let segment_length = 1;
+//         // current position (i, j) and how much of current segment we passed
+//         let i = 0;
+//         let j = 0;
+//         let segment_passed = 0;
+//         // for (int k = 0; k < NUMBER_OF_POINTS; ++k) {
+//         for (let k = 0; k < Math.pow(25, 2) - 1; k++) {
+//           // make a step, add 'direction' vector (di, dj) to current position (i, j)
+//           i += di;
+//           j += dj;
+//           ++segment_passed;
+//           // if (x > MapSize) break;
+//           // if (x < 0) break;
+//           // if (y > MapSize) break;
+//           // if (y < 0) break;
+//           // console.log("ensetpiecetity", setpiece(i + e.x, j + e.y))
+//           // const eId = littableActorsUpon(x, y)?.entity;
+//           // const entity = entities[eId];
+//           // if (entity) {
+//           //   // console.log("entity", entity)
+//           //   if (entity.tileType !== "FloorTile") {
+//           //     onTarget = true;
+//           //     // console.log("collide!", x, y, entity)
+//           //   } else {
+//           //     onTarget = false;
+//           //   }
+//           // } else {
+//           //   // console.log("idk", eId, x, y)
+//           // }
+
+//           const x2 = Math.round(j + x);
+//           const y2 = Math.round(i + y);
+//           // const isVisible = fov.getVisible(x2, y2);
+//           // console.log("x, y", x, y);
+//           // console.log("i, j", i, j);
+//           // console.log("x2, y2", x2, y2);
+//           // console.log(isVisible);
+//           // if (x < 0) debugger
+//           // illuminate(MapSize / 2, MapSize / 2);
+
+//           // TODO
+//           if (true) {
+//             illuminate(x2, y2);
+//           }
+
+//           if (segment_passed == segment_length) {
+//             // done with current segment
+//             segment_passed = 0;
+//             // 'rotate' directions
+//             let buffer = di;
+//             di = -dj;
+//             dj = buffer;
+//             // increase segment length if necessary
+//             if (dj == 0) {
+//               ++segment_length;
+//             }
+//           }
+//         }
+//       }
+//     }
+//     // debugger;
+
+//     // if (!phaseZero[Math.round(actor.y)]) {
+//     //   phaseZero[Math.round(actor.y)] = [];
+//     // }
+//     // find the floor underneath and any entities on top
+//     // let x = Math.round(actor.x);
+//     // let y = Math.round(actor.y);
+//     // if (x >= MapSize) x = 0;
+//     // if (y >= MapSize) y = 0;
+//   });
+// }

@@ -120,7 +120,7 @@ export class SpaceTrashShip extends SpaceTrashEntityComponent {
   }
 
   make() {
-    rotRng.setSeed(1234);
+    rotRng.setSeed(performance.now());
     var map = new rotMap.Digger(MapSize, MapSize);
     map.create((x, y, v) => {
       if (v === 0) {

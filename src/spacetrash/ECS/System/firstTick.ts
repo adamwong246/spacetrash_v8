@@ -1,10 +1,11 @@
+import { ArcadePhysics } from "arcade-physics/";
 import * as THREE from "three";
 import { Text, TextStyle, Ticker } from "pixi.js";
 
 const WarpField = require("warp-field");
 const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 import { SpaceTrash } from "../..";
-import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
+import { MapBoundHigh, MapBoundLow, MapSize, SPEED_CONSTANT, TileSize } from "../../Constants";
 import {
   LightIncastingComponent,
   LightIncastingStore,
@@ -40,24 +41,25 @@ import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arc
 
 let actors: ActorStore;
 let actorsLit: LightingComponentStore;
+let arcadeObjects: ArcadePhysicsStore;
 let classs: ClassificationStore;
 let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
 let fp2Emitter: Record<number, LightOutcastingComponent> = {};
 let fps: FloatPositionStore;
+let incasters: LightIncastingStore;
 let ips: IntegerPositionStore;
 let light2Draw: Record<number, DrawableComponent> = {};
 let light2IntegerPosition: LightPositionStore;
-let outcasters: LightOutcastingStore;
 let lights: LightComponentStore;
+let ods: OrdinalDirectionStore;
+let outcasters: LightOutcastingStore;
 let setPieceLit: LightingComponentStore;
 let setPieces: SetPieceStore;
 let tiles: TileComponentStore;
-let incasters: LightIncastingStore;
 let tms: TankMovingStore;
-let ods: OrdinalDirectionStore;
-let arcadeObjects: ArcadePhysicsStore;
+
 let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
@@ -107,11 +109,13 @@ export default async (game: SpaceTrash, delta: number) => {
     const eid = k;
 
     if (classification === "SpaceTrashBot") {
-      eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
+      eid2PMSs.add(new Eid2PMComponent(arcadeObjects.get(n), kk), n);
     } else if (classification === "Tile") {
       eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
     } else if (classification === "PuckBot") {
-      eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
+      eid2PMSs.add(new Eid2PMComponent(
+        arcadeObjects.get(n),
+        kk), n);
     }
   });
 
@@ -128,7 +132,7 @@ export default async (game: SpaceTrash, delta: number) => {
     if (classification === "Tile") {
       setPieceLit.add(eid, ips.get(eid), classification);
     } else {
-      actorsLit.add(eid, fps.get(eid), classification);
+      // actorsLit.add(eid, fps.get(eid), classification);
     }
 
     drawables.withIf(eid, ([n, dc, s]) => {
@@ -232,13 +236,42 @@ export default async (game: SpaceTrash, delta: number) => {
   );
   game.scene.add(pointlight);
 
-
-  arcadeObjects.store.forEach((v, k) => {
-    v.ArcadePhysicsBody(game.arcadePhysics);
-  })
+  const staticGroup: any[] = []
+  const dynamicGroup: any[] = []
   
+  arcadeObjects.store.forEach((v, k) => {
+    v.arcadeObject = v.creator(game.arcadePhysics);
+    if (v.arcadeObject.immovable) staticGroup.push(v.arcadeObject)
+    else dynamicGroup.push(v.arcadeObject);
+  })
+
+  dynamicGroup.forEach((s) => {
+    s.position.x = Math.random() * MapSize * TileSize;
+    s.position.y = Math.random() * MapSize * TileSize;
+    // s.setVelocityX((Math.random() - 0.5) * SPEED_CONSTANT)
+    // s.setVelocityY((Math.random() - 0.5) * SPEED_CONSTANT)
+    // s.setAccelerationX((Math.random() - 0.5) * SPEED_CONSTANT)
+    // s.setAccelerationY((Math.random() - 0.5) * SPEED_CONSTANT)
+  })  
+
+  dynamicGroup.forEach((d) => {
+    staticGroup.forEach((s) => {
+      game.arcadePhysics.add.collider(s, d)
+    })  
+  })
+
+  dynamicGroup.forEach((s) => {
+    dynamicGroup.forEach((s2) => {
+      if (s !== s2){
+        game.arcadePhysics.add.collider(s, s2)
+      }
+      
+    })  
+  })  
+
   return map1;
 };
+
 
 // Turn our bot fleet into drawables.
 const runSetupBotFleet = (game: SpaceTrash) => {

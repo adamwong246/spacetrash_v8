@@ -15,7 +15,7 @@ import { DrawableComponent } from "../../Components/v2/drawable";
 import { LightIncastingComponent } from "../../Components/casting/in";
 import { Actor, bunnySprite, spike } from ".";
 import { MatterComponent } from "../../Components/v2/matter";
-import { MapSize, TileSize } from "../../../Constants";
+import { MapSize, SPEED_CONSTANT, TileSize } from "../../../Constants";
 import { ArcadePhysicsComponent } from "../../Components/v2/arcadePhysics";
 
 export class PuckBot extends Actor {
@@ -30,9 +30,9 @@ export class PuckBot extends Actor {
     const spe = new SpaceTrashEntity();
 
     super(spe, [
-      new FloatPositionComponent(x, y),
+      // new FloatPositionComponent(x, y),
       // new DegreesDirectionComponent(r),
-      new FloatMovingComponent(dx, dy),
+      // new FloatMovingComponent(dx, dy),
       // // new LightOutcastingComponent(1),
       new LightIncastingComponent(1),
       // // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
@@ -54,11 +54,18 @@ export class PuckBot extends Actor {
 
       new DrawableComponent(bunnySprite(), spike(), new Text("?")),
 
-      new ArcadePhysicsComponent((ap: ArcadePhysics, x: number, y: number) => {
-        const ball = ap.add.body(x, y)
-        ball.setCircle(TileSize/2)
-        ball.setBounce(0.8)
+      new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+        const ball = ap.add.body(x*TileSize, y*TileSize);
+        ball.setCircle(TileSize * 0.4)
+        // ball.setBounce(0.8)
         ball.setCollideWorldBounds(true)
+        
+        // ball.setVelocityX(100)
+        // ball.setVelocityY(100)
+        // ball.setAccelerationX(100)
+        // ball.setAccelerationY(100)
+        // debugger
+        return ball
       })
     ]);
   }
