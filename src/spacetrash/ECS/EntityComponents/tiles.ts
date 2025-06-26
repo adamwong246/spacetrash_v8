@@ -1,10 +1,22 @@
+import { ArcadePhysics } from "arcade-physics";
 import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
-// import ArcadePhysics from "arcade-physics";
-// import type { Body } from 'arcade-physics';
 
-import { SpaceTrashEntityComponent, ITiles } from ".";
+import { Component } from "../../../engine/VECS.ts/Component";
+
+import {
+  blueMaterial,
+  voidMaterial,
+  wallTexture,
+  floorTexture,
+} from "../../threejs";
+import brick from "./../../Assets/brick.png";
+import stone from "./../../Assets/stone.png";
+import voidPng from "./../../Assets/void.png";
+
+import { TileSize } from "../../Constants";
+
 import { SpaceTrashEntity } from "../Entity";
 import {
   DirectionComponent,
@@ -14,44 +26,29 @@ import {
 } from "../Components/v2/physical";
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
-import {
-  redMaterial,
-  blueMaterial,
-  blankMaterial,
-  voidMaterial,
-  greenMaterial,
-  orangeMaterial,
-} from "../../threejs";
 
+import { LightIncastingComponent } from "../Components/casting/in";
 import { TileComponent } from "../Components/v2/tileable";
-import { TileSize } from "../../Constants";
-import {
-  LightIncastingComponent,
-  LightIncastingStore,
-} from "../Components/casting/in";
-
-import brick from "./../../Assets/brick.png";
-import stone from "./../../Assets/stone.png";
-import voidPng from "./../../Assets/void.png";
-import { Component } from "../../../engine/VECS.ts/Component";
-import { degToRad } from "three/src/math/MathUtils.js";
 import { MatterComponent } from "../Components/v2/matter";
-import { ArcadePhysics } from "arcade-physics";
 import { ArcadePhysicsComponent } from "../Components/v2/arcadePhysics";
+
+import { SpaceTrashEntityComponent, ITiles } from ".";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
 var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 
 const floorTile = () => {
-  const m = new THREE.Mesh(floorGeometry, redMaterial);
+  const m = new THREE.Mesh(floorGeometry, floorTexture);
   m.position.z = TileSize / 2;
+  m.rotateY(degToRad(180))
 
   return m;
 };
 
 const wallTile = () => {
-  const m = new THREE.Mesh(cubeGeo, blueMaterial);
+  const m = new THREE.Mesh(cubeGeo, wallTexture);
 
   return m;
 };
@@ -217,15 +214,15 @@ export class WallTile extends Tile {
             }
           )
         ),
-        arcadePhysics: 
-          new ArcadePhysicsComponent(
-            (ap: ArcadePhysics) => {
-              const cube = ap.add.staticBody(x * TileSize, y * TileSize, TileSize, TileSize);
-              return cube
-
-            }
-          )
-        
+        arcadePhysics: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+          const cube = ap.add.staticBody(
+            x * TileSize,
+            y * TileSize,
+            TileSize,
+            TileSize
+          );
+          return cube;
+        }),
       }
     );
   }
