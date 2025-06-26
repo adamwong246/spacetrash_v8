@@ -14,7 +14,7 @@ import {
 import { IntegerPositionComponent } from "../Components/v2/physical";
 import { MapSize } from "../../Constants";
 
-export class SpaceTrashShip extends SpaceTrashEntityComponent {
+export class RotDiggerShip extends SpaceTrashEntityComponent {
   map: Tile|null[][];
 
   shipSize = MapSize;

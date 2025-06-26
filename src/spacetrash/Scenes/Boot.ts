@@ -48,7 +48,7 @@ export default new BootScene();
 //     );
 //   });
 
-//   const ship = new SpaceTrashShip();
+//   const ship = new RotDiggerShip();
 
 //   ecs.setEntitiesComponent([
 //     ship,

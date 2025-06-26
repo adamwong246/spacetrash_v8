@@ -3,9 +3,10 @@ import { SpaceTrash } from "..";
 import { ActorSize, MapSize, NumberOfActors, TileSize } from "../Constants";
 import { PuckBot } from "../ECS/EntityComponents/actors/PuckBot";
 import { SpaceTrashBot } from "../ECS/EntityComponents/actors/TankBot";
+import { RotCellularrShip as RotCellularShip } from "../ECS/EntityComponents/RotCellularyShi";
 
 
-import { SpaceTrashShip } from "../ECS/EntityComponents/ship";
+import { RotDiggerShip } from "../ECS/EntityComponents/ship";
 // import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
 
 // import NAMES from "./../NameGenerator"
@@ -44,7 +45,7 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const ship = new SpaceTrashShip();
+    const ship = new RotCellularShip();
 
     game.setEntitiesComponent([ship, ...ship.toTiles(),
       ...moreBots
