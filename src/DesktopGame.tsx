@@ -17,6 +17,7 @@ import { MapWindow } from "./spacetrash/UI/map";
 import { TerminalWindow } from "./spacetrash/UI/terminal";
 import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 import { MatterWindow } from './spacetrash/UI/MatterWindow';
+import { ArcadePhysicsWindow } from './spacetrash/UI/ArcadePhysicsWindow';
 
 let self: DesktopGame<any, any, any>;
 
@@ -107,6 +108,7 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
           term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
 
           matter: (props: IDockviewPanelHeaderProps<any>) => <MatterWindow game={self} />,
+          arcadePhysics: (props: IDockviewPanelHeaderProps<any>) => <ArcadePhysicsWindow game={self} />,
         }}
       />
     </div >)
@@ -165,6 +167,20 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
 
       }
     })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'arcadePhysics',
+      component: 'arcadePhysics',
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600
+      },
+      params: {
+
+      }
+    })
+
   }
 
   focusWindowById(s: string) {

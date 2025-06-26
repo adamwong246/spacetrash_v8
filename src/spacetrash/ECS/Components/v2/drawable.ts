@@ -1,3 +1,5 @@
+// import { Body } from "arcade-physics";
+
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
 import { Text, TextStyle, Ticker } from "pixi.js";
@@ -39,13 +41,14 @@ export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   constructor(
     sprite: PIXI.Sprite,
     mesh: THREE.Mesh,
-    char: IChars = character("?")
+    char: IChars = character("?"),
   ) {
     super();
     this.mesh = mesh;
     this.sprite = sprite;
     this.char = char;
     this.dirty = true;
+    
   }
 
   setMesh(m: THREE.Mesh) {

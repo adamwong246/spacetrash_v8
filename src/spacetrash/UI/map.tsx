@@ -8,7 +8,13 @@ export const MapWindow = (props: {game: SpaceTrash}) => {
 
   useEffect(() => {
     if (canvasRef.current && parentRef.current) {
-      props.game.registerCanvas("map", false, canvasRef.current, () => { }, "pixi2d", parentRef.current)
+      props.game.registerCanvas("map", false, canvasRef.current, () => { }, "pixi2d", parentRef.current);
+      parentRef.current.addEventListener("keydown", function(e) {
+        // Check if the pressed key is an arrow key (e.code values)
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
+          e.preventDefault(); // Prevent the default scrolling behavior
+        }
+      });
     }
   }, [canvasRef, parentRef]);
 

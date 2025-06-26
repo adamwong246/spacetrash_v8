@@ -1,3 +1,4 @@
+import { ArcadePhysics } from "arcade-physics";
 import * as Matter from "matter-js";
 import { Text } from "pixi.js";
 
@@ -15,6 +16,7 @@ import { LightIncastingComponent } from "../../Components/casting/in";
 import { Actor, bunnySprite, spike } from ".";
 import { MatterComponent } from "../../Components/v2/matter";
 import { MapSize, TileSize } from "../../../Constants";
+import { ArcadePhysicsComponent } from "../../Components/v2/arcadePhysics";
 
 export class PuckBot extends Actor {
   constructor(
@@ -36,21 +38,28 @@ export class PuckBot extends Actor {
       // // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
       new ClassificationComponent("PuckBot"),
 
-      new MatterComponent(
-        Matter.Bodies.circle(x * TileSize/4, y * TileSize/4, TileSize / 3 / 4, {
-          isStatic: false,
-          // collisionFilter: {
-          //   category: 0,
-          // },
-          render: {
-            fillStyle: "red",
-            strokeStyle: "blue",
-            lineWidth: 3,
-          },
-        })
-      ),
+      // new MatterComponent(
+      //   Matter.Bodies.circle(x * TileSize/4, y * TileSize/4, TileSize / 3 / 4, {
+      //     isStatic: false,
+      //     // collisionFilter: {
+      //     //   category: 0,
+      //     // },
+      //     render: {
+      //       fillStyle: "red",
+      //       strokeStyle: "blue",
+      //       lineWidth: 3,
+      //     },
+      //   })
+      // ),
 
       new DrawableComponent(bunnySprite(), spike(), new Text("?")),
+
+      new ArcadePhysicsComponent((ap: ArcadePhysics, x: number, y: number) => {
+        const ball = ap.add.body(x, y)
+        ball.setCircle(TileSize/2)
+        ball.setBounce(0.8)
+        ball.setCollideWorldBounds(true)
+      })
     ]);
   }
 }

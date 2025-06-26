@@ -4,7 +4,10 @@ const matrix = new THREE.Matrix4();
 import React from "react";
 import { Text, TextStyle, Ticker } from 'pixi.js';
 import * as THREE from "three";
+
 import * as Matter from "matter-js";
+import { ArcadePhysics } from "arcade-physics";
+
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
 import voidPng from "./Assets/void.png";
@@ -41,13 +44,12 @@ import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
 import { TileSize, MapSize, FPS, shipLength } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
-import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
+import { DrawableComponent, DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
 import { LightOutcastingStore } from "./ECS/Components/casting/out";
 import { MatterStore } from "./ECS/Components/v2/matter";
+import { ArcadePhysicsStore } from "./ECS/Components/v2/arcadePhysics";
 
-
-// module aliases
 var Engine = Matter.Engine,
   Render = Matter.Render,
   Runner = Matter.Runner,
@@ -56,8 +58,8 @@ var Engine = Matter.Engine,
 
 //////////////////////////////////////////////////////////////////////
 
-const spotlight = new THREE.SpotLight(0xff0000, 1000);
-const pointlight = new THREE.PointLight(0xffffff, 1000, 0, 2)
+// const spotlight = new THREE.SpotLight(0xff0000, 1000);
+// const pointlight = new THREE.PointLight(0xffffff, 1000, 0, 2)
 // const light = new THREE.RectAreaLight( 0xff0000, 1000);
 
 const ticker = Ticker.shared;
@@ -105,11 +107,13 @@ boot sequence complete!
   `,
 };
 
+export type ICanvases = "map" | "bot" | "matter" | "arcadePhysics";
+
 export type IState = {
   game: SpaceTrash;
 };
 
-export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | "matter" | null;
+export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | "matter" | "arcadePhysics" | null;
 
 function isAlphabetic(str: string): boolean {
   if (!str) return false;
@@ -167,6 +171,9 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   right: boolean = false;
 
   botsHook: React.Dispatch<any>;
+  arcadePhysics: ArcadePhysics;
+  arcadePhysicsTick: any;
+  arcadePhysicsCanvasContext: any;
 
   constructor(domNode: HTMLElement) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -195,6 +202,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         OridinalMovingComponent: new OridinalMovingStore(),
         TankMovingComponent: new TankMovingStore(),
         TileComponent: new TileComponentStore(),
+        ArcadePhysicsComponent: new ArcadePhysicsStore(),
       },
       {
         SetPieceComponent: new SetPieceStore(),
@@ -206,7 +214,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
         LightPositionComponent: new LightPositionStore()
       },
       performanceConfig,
-      new Set(["2d", "webgl2", "pixi2d", "threejs", "matter"]),
+      new Set(["2d", "webgl2", "pixi2d", "threejs", "matter", "arcadePhysics"]),
       domNode,
       [
         "Tile", "SpaceTrashBot", "FloorTile", "WallTile"
@@ -451,7 +459,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     }
   }
 
-
   rotationOfBot(eid: number): { r: number; } {
     const storeName = "DegreesDirectionComponent";
 
@@ -576,77 +583,84 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     }
     if (key === "matter") {
 
-      var width = (MapSize) * TileSize,
-        height = (MapSize) * TileSize;
-      canvas.width = width;
-      canvas.height = height;
+      // var width = (MapSize) * TileSize,
+      //   height = (MapSize) * TileSize;
+      // canvas.width = width;
+      // canvas.height = height;
 
-      this.matterRenderer = Render.create({
-        canvas, 
-        element: parentComponent,
-        engine: this.matterEngine,
-        options: {
-          width,
-          height,
-          wireframes: false
-        }
-      });
+      // this.matterRenderer = Render.create({
+      //   canvas,
+      //   element: parentComponent,
+      //   engine: this.matterEngine,
+      //   options: {
+      //     width,
+      //     height,
+      //     wireframes: false
+      //   }
+      // });
 
 
     }
 
-    if (this.pixi2dApp && this.threejsRenderer && this.matterRenderer) {
-      // create two boxes and a ground
-      // var boxA = Bodies.rectangle(400, 200, 80, 80);
-      // var boxB = Bodies.rectangle(450, 50, 80, 80);
-      // var ground = Bodies.rectangle(400, 610, 810, 60, {
-      //   isStatic: true, render: {
-      //     fillStyle: "green",
-      //     strokeStyle: "orange",
-      //     lineWidth: 3
+    if (key === "arcadePhysics") {
+
+      this.arcadePhysicsCanvasContext = canvas.getContext('2d')
+      canvas.width = 800;
+      canvas.height = 800;
+
+      const config = {
+        width: 800,
+        height: 800,
+        gravity: {
+          x: 1,
+          y: 1
+        }
+      }
+
+      this.arcadePhysics = new ArcadePhysics(config)
+
+      // box
+      // const box = this.arcadePhysics.add.body(20, 20, 64, 64)
+      // box.setVelocityX(20)
+      // box.setBounce(0.6)
+      // box.setCollideWorldBounds(true)
+
+      // // ball
+
+
+      // // platform
+      // const platform = this.arcadePhysics.add.staticBody(60, 350, 160, 32)
+
+      // // colliders
+      // this.arcadePhysics.add.collider(box, ball)
+      // this.arcadePhysics.add.collider(box, platform)
+      // this.arcadePhysics.add.collider(ball, platform)
+
+
+      // var width = (MapSize) * TileSize,
+      //   height = (MapSize) * TileSize;
+      // canvas.width = width;
+      // canvas.height = height;
+
+      // this.matterRenderer = Render.create({
+      //   canvas,
+      //   element: parentComponent,
+      //   engine: this.matterEngine,
+      //   options: {
+      //     width,
+      //     height,
+      //     wireframes: false
       //   }
       // });
 
-      const bodies: Matter.Body[] = [];
-      for (let b of this.componentStores['MatterComponent'].store) {
-        bodies.push(b[1].matterBody)
-      }
-      console.log(bodies)
-      Composite.add(this.matterEngine.world, [
-        ...bodies,
-      ]);
+    }
 
-      let runner = Matter.Runner.create();
-      Matter.Render.run(this.matterRenderer);
-      Matter.Runner.run(runner, this.matterEngine);
+    if (
+      this.pixi2dApp &&
+      this.threejsRenderer &&
+      // this.matterRenderer &&
+      this.arcadePhysics) {
 
-      // // create runner
-      // var runner = Runner.create();
-
-      // // run the engine
-      // Runner.run(runner, this.matterEngine);
-
-
-      // fit the render viewport to the scene
-      Render.lookAt(this.matterRenderer, {
-        min: { x: 0, y: 0 },
-        max: { x: 800, y: 600 }
-      });
-
-      // Render.r
-
-      ////////////////////////////////////////////////////////////////
-
-      Drawings.each(([a, d, c]) => {
-        this.pixi2dApp.stage.addChild(d.sprite)
-        this.pixi2dApp.stage.addChild(d.char);
-        this.scene.add(d.mesh)
-      })
-      // this.scene.add(spotlight);
-      this.scene.add(pointlight);
-
-      // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-      // this.scene.add(ambientLight);
 
       this.unpause();
     }
@@ -662,17 +676,16 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     this.camera.rotation.y = (-rotation.r);
 
-    let spotlightRot = (-rotation.r);
-    if (this.camera.rotation.y < -Math.PI / 2) {
-      spotlightRot = Math.PI / 2;
-    } else if (this.camera.rotation.y > Math.PI / 2) {
-      spotlightRot = -Math.PI / 2;
-    }
+    // let spotlightRot = (-rotation.r);
+    // if (this.camera.rotation.y < -Math.PI / 2) {
+    //   spotlightRot = Math.PI / 2;
+    // } else if (this.camera.rotation.y > Math.PI / 2) {
+    //   spotlightRot = -Math.PI / 2;
+    // }
 
-    spotlight.rotation.y = spotlightRot;
+    // spotlight.rotation.y = spotlightRot;
+    // spotlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
 
-    spotlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
-    pointlight.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
 
     this.threejsRenderer.render(this.scene, this.camera);
   }
@@ -682,36 +695,28 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   async renderMatterJs() {
-    // todo
-    console.log("renderMatterJs")
-    Engine.update(this.matterEngine);
+    // Engine.update(this.matterEngine);
+  }
+
+  async renderArcadePhysics() {
+    this.arcadePhysics.world.update(this.arcadePhysicsTick * 1000, 1000 / 60)
+    this.arcadePhysics.world.postUpdate(this.arcadePhysicsTick * 1000, 1000 / 60)
+    this.arcadePhysicsTick++
+
+    this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
+
+    // draw debug
+    this.arcadePhysics.world.bodies.forEach(b => {
+      b.drawDebug(this.arcadePhysicsCanvasContext)
+    })
+    this.arcadePhysics.world.staticBodies.forEach(b => {
+      b.drawDebug(this.arcadePhysicsCanvasContext)
+    })
   }
 
   BeginTheGame() {
     this.openAllWindows();
-
-    // // create two boxes and a ground
-    // var boxA = Bodies.rectangle(400, 200, 80, 80);
-    // var boxB = Bodies.rectangle(450, 50, 80, 80);
-    // var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
-
-    // // add all of the bodies to the world
-    // Composite.add(this.matterEngine.world, [boxA, boxB, ground]);
-
-    // Drawings.each(([a, d, c]) => {
-    //   this.pixi2dApp.stage.addChild(d.sprite)
-    //   this.pixi2dApp.stage.addChild(d.char);
-    //   this.scene.add(d.mesh)
-    // })
-    // // this.scene.add(spotlight);
-    // this.scene.add(pointlight);
-
-    // // const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-    // // this.scene.add(ambientLight);
-
-    // this.unpause();
   }
 
 }
 
-export type ICanvases = "map" | "bot" | "matter";

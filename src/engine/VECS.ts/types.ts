@@ -44,6 +44,17 @@ export abstract class EntityComponentStore<
 
     return toReturn[1];
   }
+
+  exists(i: number) {
+    const toReturn = this.store.find((v) => {
+      return v[0] === i;
+    });
+
+    if (!toReturn) return false
+    if (!toReturn[1]) false;
+
+    return true
+  }
 }
 
 export abstract class OneDStore<I extends []> extends Store<I> {

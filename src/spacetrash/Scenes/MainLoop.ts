@@ -291,6 +291,29 @@ const scene = new MainScene({
     },
     "2d",
   ],
+
+  arcadePhysics: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game: SpaceTrash) => {
+          await game.renderArcadePhysics();
+        },
+      ];
+    },
+    (ecs, event: any) => {
+      // if (event.type === "mousemove") {
+      //   var rect = event.boundingClient;
+      //   var x = event.clientX - rect.left;
+      //   var y = event.clientY - rect.top;
+      //   shipMapMouseX = x;
+      //   shipMapMouseY = y;
+      // }
+    },
+    "2d",
+  ],
 });
 
 export default scene;

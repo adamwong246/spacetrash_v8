@@ -34,6 +34,8 @@ import voidPng from "./../../Assets/void.png";
 import { Component } from "../../../engine/VECS.ts/Component";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { MatterComponent } from "../Components/v2/matter";
+import { ArcadePhysics } from "arcade-physics";
+import { ArcadePhysicsComponent } from "../Components/v2/arcadePhysics";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -115,6 +117,7 @@ export class Tile extends SpaceTrashEntityComponent {
 
     componentsV4?: {
       matter?: MatterComponent;
+      arcadePhysics?: ArcadePhysicsComponent;
     }
   ) {
     const spe = new SpaceTrashEntity();
@@ -139,6 +142,9 @@ export class Tile extends SpaceTrashEntityComponent {
       if (componentsV4.matter) {
         // this.matter = componentsV4.matter;
         comps.push(componentsV4.matter);
+      }
+      if (componentsV4.arcadePhysics) {
+        comps.push(componentsV4.arcadePhysics());
       }
     }
   }
@@ -192,10 +198,10 @@ export class WallTile extends Tile {
         matter: new MatterComponent(
           // Matter.Bodies.rectangle((MapSize * TileSize) / 2, (MapSize * TileSize) / 2, TileSize, TileSize, {
           Matter.Bodies.rectangle(
-            x * TileSize/4,
-            y * TileSize/4,
-            TileSize/4,
-            TileSize/4,
+            (x * TileSize) / 4,
+            (y * TileSize) / 4,
+            TileSize / 4,
+            TileSize / 4,
             {
               isStatic: true,
               // collisionFilter: {
@@ -209,6 +215,14 @@ export class WallTile extends Tile {
             }
           )
         ),
+        arcadePhysics: () => {
+          return new ArcadePhysicsComponent(
+            (ap: ArcadePhysics) => {
+              const cube = ap.add.staticBody(x * TileSize, y * TileSize, TileSize, TileSize);
+              // cube.setCollideWorldBounds(true);
+            }
+          );
+        },
       }
     );
   }

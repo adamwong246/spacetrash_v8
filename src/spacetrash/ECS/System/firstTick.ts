@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { Text, TextStyle, Ticker } from "pixi.js";
 
 const WarpField = require("warp-field");
@@ -35,6 +36,7 @@ import {
 } from "../Components/v2/physical";
 import { TileComponentStore } from "../Components/v2/tileable";
 import { LightPositionStore } from "../Components/v3/LightPosition";
+import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
 
 let actors: ActorStore;
 let actorsLit: LightingComponentStore;
@@ -55,11 +57,15 @@ let tiles: TileComponentStore;
 let incasters: LightIncastingStore;
 let tms: TankMovingStore;
 let ods: OrdinalDirectionStore;
-
+let arcadeObjects: ArcadePhysicsStore;
 let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
+  arcadeObjects = game.componentStores[
+    "ArcadePhysicsComponent"
+  ] as ArcadePhysicsStore;
+
   ods = game.componentStores[
     "OrdinalDirectionComponent"
   ] as OrdinalDirectionStore;
@@ -104,7 +110,7 @@ export default async (game: SpaceTrash, delta: number) => {
       eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     } else if (classification === "Tile") {
       eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
-    }else if (classification === "PuckBot") {
+    } else if (classification === "PuckBot") {
       eid2PMSs.add(new Eid2PMComponent(fps.get(n), kk), n);
     }
   });
@@ -210,7 +216,27 @@ export default async (game: SpaceTrash, delta: number) => {
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
   runSetupBotFleet(game);
-  // runPutDrawablesIntoPosition();
+
+  drawables.each(([a, d, c]: [any, DrawableComponent, any]) => {
+    game.pixi2dApp.stage.addChild(d.sprite);
+    game.pixi2dApp.stage.addChild(d.char);
+    game.scene.add(d.mesh);
+  });
+
+  // this.scene.add(spotlight);
+  const pointlight = new THREE.PointLight(0xffffff, 1000, 0, 2);
+  pointlight.position.set(
+    game.camera.position.x,
+    game.camera.position.y,
+    game.camera.position.z
+  );
+  game.scene.add(pointlight);
+
+
+  arcadeObjects.store.forEach((v, k) => {
+    v.ArcadePhysicsBody(game.arcadePhysics);
+  })
+  
   return map1;
 };
 

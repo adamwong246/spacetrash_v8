@@ -22,6 +22,7 @@
     "@types/pixi.js": "^5.0.0",
     "@types/react": "^18.3.3",
     "@types/three": "^0.177.0",
+    "arcade-physics": "^0.1.0",
     "dockview": "^4.3.1",
     "esbuild": "0.25.5",
     "esbuild-sass-plugin": "^3.3.1",
