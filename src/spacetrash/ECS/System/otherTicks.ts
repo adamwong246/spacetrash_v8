@@ -1,8 +1,10 @@
+import { FOV } from "rot-js";
 import {
   MapSize,
   SPEED_CONSTANT,
   TANK_VELOCITY_ANGULAR,
   TANK_VELOCITY as TANK_VELOCITY_LINEAR,
+  TileSize,
 } from "../../Constants";
 import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
@@ -27,7 +29,10 @@ import {
   DegreesDirectionComponent,
 } from "../Components/v2/physical";
 import { LightPositionStore } from "../Components/v3/LightPosition";
-import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
+import {
+  ArcadePhysicsComponent,
+  ArcadePhysicsStore,
+} from "../Components/v2/arcadePhysics";
 
 let actors: ActorStore;
 let arcadeObjects: ArcadePhysicsStore;
@@ -81,24 +86,22 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
     "LightPositionComponent"
   ] as LightPositionStore;
 
-  // resetIllumination();
+  resetIllumination();
   // runFloatingPhysics();
-  
+
   runTankPhysics();
   runArcadePhysics();
-  
+
   // scanFrustum();
-  // rotLighting();
+  rotLighting();
 };
 
 export function runArcadePhysics() {
   // let repaintLights = false;
   arcadeObjects.each((eid, f) => {
-
-
     // f.arcadeObject.velocity.x = 100
     // f.arcadeObject.velocity.x = 100
-    
+
     const { position, classification } = eid2PMSs.get(eid);
     if (classification === "PuckBot") {
       // const p = fps.get(eid);
@@ -168,8 +171,10 @@ export function runFloatingPhysics() {
 
 function runTankPhysics() {
   tms.store.forEach(([eid, t]) => {
-    const { position, classification } = eid2PMSs.get(eid) as unknown as {position: ArcadePhysicsComponent, classification:string}
-    
+    const { position, classification } = eid2PMSs.get(eid) as unknown as {
+      position: ArcadePhysicsComponent;
+      classification: string;
+    };
 
     if (classification === "SpaceTrashBot") {
       // const direction = dds.get(eid);
@@ -183,7 +188,7 @@ function runTankPhysics() {
       updateTankPosition(position, t, eid);
 
       drawables.updateFromArcadePhysics(eid, position);
-      
+
       // if (
       //   oldDir !== direction.r ||
       //   oldX !== position.arcadeObject.position.x ||
@@ -287,12 +292,20 @@ function updateTankPosition(
   }
 
   if (f.j === "forth") {
-    p.arcadeObject.setAccelerationX(Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA);
-    p.arcadeObject.setAccelerationY(Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA);
+    p.arcadeObject.setAccelerationX(
+      Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA
+    );
+    p.arcadeObject.setAccelerationY(
+      Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA
+    );
   }
   if (f.j === "back") {
-    p.arcadeObject.setAccelerationX(Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA) * -1;
-    p.arcadeObject.setAccelerationY(Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA) * -1;
+    p.arcadeObject.setAccelerationX(
+      Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA
+    ) * -1;
+    p.arcadeObject.setAccelerationY(
+      Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA
+    ) * -1;
   }
   if (f.j === "none") {
     p.arcadeObject.setAccelerationX(0);
@@ -302,24 +315,114 @@ function updateTankPosition(
   return isMoving;
 }
 
+function resetIllumination() {
+  drawables.each(([eid, d, eid2]) => {
+    d.sprite.visible = false;
+    d.mesh.visible = true;
+  });
+  incasters.each(([li, z]) => {
+    z.luminance = 0;
+  });
+  for (let y = 0; y < MapSize; y++) {
+    for (let x = 0; x < MapSize; x++) {
+      setPieces.store[y][x].luminance = -1;
+      // setPieces.store[y][x].s
+    }
+  }
+}
+
+function rotLighting() {
+  function lightPasses(x, y) {
+    if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
+      const z = setPieces.at(x, y);
+
+      if (z && z.tileType === "WallTile") {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    return false;
+
+    // var key = x + "," + y;
+    // if (key in data) {
+    //   return data[key] == 0;
+    // }
+    // return false;
+  }
+
+  // var fov = new FOV.PreciseShadowcasting(lightPasses);
+  var fov = new FOV.RecursiveShadowcasting(lightPasses);
+
+  const lightMap = new Map();
+
+  /* output callback */
+  fov.compute(
+    Math.round(GAME.camera.position.x / TileSize),
+    Math.round(GAME.camera.position.y / TileSize),
+    MapSize * TileSize,
+    function (x, y, r, visibility) {
+      if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
+        lightMap[`${x}-${y}`] = visibility;
+
+        // if (visibility === 1 && z && z.drawing) {
+        //   z.drawing.sprite.visible = true;
+        //   z.drawing.mesh.visible = true;
+        // }
+        // if (visibility === 0 && z && z.drawing) {
+        //   z.drawing.sprite.visible = false;
+        //   z.drawing.mesh.visible = false;
+        // }
+      }
+    }
+  );
+
+  for (let l of lightMap) {
+    const k = l[0];
+    const splitt = k.split("-");
+
+    const x = splitt[0];
+    const y = splitt[1];
+
+    const z = setPieces.at(x, y);
+    const lit = l[1];
+
+    if (lit) {
+      z.drawing.sprite.visible = true;
+      z.drawing.mesh.visible = true;
+    } else {
+      if (z.tileType === "FloorTile") {
+        const north = lightMap.get(`${x}-${y - 1}`);
+        const east = lightMap.get(`${x + 1}-${y}`);
+        const west = lightMap.get(`${x - 1}-${y}`);
+        const south = lightMap.get(`${x}-${y + 1}`);
+
+        if (!north) {
+          z.drawing.sprite.visible = false;
+          z.drawing.mesh.visible = true;
+        }
+        if (!east) {
+          z.drawing.sprite.visible = false;
+          z.drawing.mesh.visible = true;
+        }
+        if (!south) {
+          z.drawing.sprite.visible = false;
+          z.drawing.mesh.visible = true;
+        }
+        if (!west) {
+          z.drawing.sprite.visible = false;
+          z.drawing.mesh.visible = true;
+        }
+      } else {
+        z.drawing.sprite.visible = false;
+        z.drawing.mesh.visible = false;
+      }
+    }
+  }
+}
+
 // function radiansToDegrees(radians) {
 //   return radians * (180 / Math.PI);
-// }
-
-// function resetIllumination() {
-//   drawables.each(([eid, d, eid2]) => {
-//     d.sprite.visible = false;
-//     d.mesh.visible = false;
-//   });
-//   incasters.each(([li, z]) => {
-//     z.luminance = 0;
-//   });
-//   for (let y = 0; y < MapSize; y++) {
-//     for (let x = 0; x < MapSize; x++) {
-//       setPieces.store[y][x].luminance = -1;
-//       // setPieces.store[y][x].s
-//     }
-//   }
 // }
 
 // const collisionsAndVideoControls = () => {
@@ -1425,51 +1528,6 @@ function updateTankPosition(
 //   });
 // }
 
-// function rotLighting() {
-//   function lightPasses(x, y) {
-//     if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-//       const z = setPieces.at(x, y);
-
-//       if (z && z.tileType === "WallTile") {
-//         return false;
-//       } else {
-//         return true;
-//       }
-//     }
-//     return false;
-
-//     // var key = x + "," + y;
-//     // if (key in data) {
-//     //   return data[key] == 0;
-//     // }
-//     // return false;
-//   }
-
-//   // var fov = new ROT.FOV.PreciseShadowcasting(lightPasses);
-//   var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
-
-//   /* output callback */
-//   fov.compute(
-//     Math.round(GAME.camera.position.x / TileSize),
-//     Math.round(GAME.camera.position.y / TileSize),
-//     Infinity,
-//     function (x, y, r, visibility) {
-//       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-//         const z = setPieces.at(x, y);
-//         if (visibility === 1 && z && z.drawing) {
-//           z.drawing.sprite.visible = true;
-//           z.drawing.mesh.visible = true;
-//         }
-//         if (visibility === 0 && z && z.drawing) {
-//           z.drawing.sprite.visible = false;
-//           z.drawing.mesh.visible = true;
-//           // z.drawing.mesh.visible = true; // 2.25 ms
-//           // z.drawing.mesh.visible = false; // 14.7
-//         }
-//       }
-//     }
-//   );
-// }
 // function distanceBetweenActorsV1(x, y, x0, y0) {
 //   const squaredDist = (x - x0) * (x - x0) + (y - y0) * (y - y0);
 //   return squaredDist <= Math.sqrt(ActorSize / 2);

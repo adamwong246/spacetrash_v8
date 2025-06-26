@@ -221,7 +221,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       ]
     );
 
-    this.camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.5, TileSize * 20);
+    this.camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.5, TileSize * MapSize);
     this.camera.rotateX(defToRad(-90));
     this.camera.rotateY(defToRad(90));
 
@@ -708,7 +708,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     // this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
 
-    // // draw debug
+    // draw debug
     // this.arcadePhysics.world.bodies.forEach(b => {
     //   b.drawDebug(this.arcadePhysicsCanvasContext)
     // })

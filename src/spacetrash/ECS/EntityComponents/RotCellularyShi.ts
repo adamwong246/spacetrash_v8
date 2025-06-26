@@ -15,7 +15,7 @@ import { IntegerPositionComponent } from "../Components/v2/physical";
 import { MapSize } from "../../Constants";
 
 export class RotCellularrShip extends SpaceTrashEntityComponent {
-  map: Tile|null[][];
+  map: Tile | null[][];
 
   shipSize = MapSize;
 
@@ -121,17 +121,17 @@ export class RotCellularrShip extends SpaceTrashEntityComponent {
 
   make() {
     rotRng.setSeed(performance.now());
-    
+
     var map = new rotMap.Cellular(MapSize, MapSize);
     map.randomize(0.5);
 
-    for (var i=0; i<4; i++) {
+    for (var i = 0; i < 4; i++) {
       // var display = new ROT.Display({width:w, height:h, fontSize:4});
       // SHOW(display.getContainer());
       // map.create(display.DEBUG);
-      map.create()
+      map.create();
     }
-    
+
     map.create((x, y, v) => {
       if (v === 1) {
         this.addToMap(new FloorTile(x, y));
@@ -262,10 +262,14 @@ export class RotCellularrShip extends SpaceTrashEntityComponent {
   }
 
   cullInteriorWall() {
-
     const facing = (x: number, y: number): boolean => {
-      if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true
+      if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true;
       return this.map[y][x].tiletype === "WallTile";
+    };
+
+    const northWestFacing = (x: number, y: number): boolean => {
+      if (facing(x - 1, y - 1)) return true;
+      return false;
     };
 
     const northFacing = (x: number, y: number): boolean => {
@@ -273,13 +277,27 @@ export class RotCellularrShip extends SpaceTrashEntityComponent {
       return false;
     };
 
-    const southFacing = (x: number, y: number): boolean => {
-      if (facing(x, y + 1)) return true;
+    const northEastFacing = (x: number, y: number): boolean => {
+      if (facing(x + 1, y - 1)) return true;
       return false;
     };
 
     const eastFacing = (x: number, y: number): boolean => {
-      if (facing(x - 1, y)) return true;
+      if (facing(x + 1, y)) return true;
+      return false;
+    };
+
+    const southEastFacing = (x: number, y: number): boolean => {
+      if (facing(x + 1, y + 1)) return true;
+      return false;
+    };
+
+    const southFacing = (x: number, y: number): boolean => {
+      if (facing(x, y + 1)) return true;
+      return false;
+    };
+    const southWestFacing = (x: number, y: number): boolean => {
+      if (facing(x - 1, y - 1)) return true;
       return false;
     };
 
@@ -297,20 +315,24 @@ export class RotCellularrShip extends SpaceTrashEntityComponent {
         if (s.tiletype === "WallTile") {
           let interiorFaces = 0;
           if (
+            northWestFacing(x, y) &&
             northFacing(x, y) &&
-            southFacing(x, y) &&
+            northEastFacing(x, y) &&
             eastFacing(x, y) &&
+            southEastFacing(x, y) &&
+            southFacing(x, y) &&
+            southWestFacing(x, y) &&
             westFacing(x, y)
           ) {
-            cullings.push([x, y])
+            cullings.push([x, y]);
           }
         }
       }
     }
 
     cullings.forEach((c) => {
-      this.map[c[1]][c[0]] = null
-    })
+      this.map[c[1]][c[0]] = null;
+    });
   }
 
   constructor() {
