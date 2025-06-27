@@ -26,7 +26,8 @@ export class PuckBot extends Actor {
     r: number = 0,
     dx: number = 0,
     dy: number = 0,
-    name?: string
+    name?: string,
+    aiAgentConfig: AiAgentComponent
   ) {
     const spe = new SpaceTrashEntity();
 
@@ -50,17 +51,8 @@ export class PuckBot extends Actor {
           return ball;
         }),
 
-        new AiAgentComponent(
-          "melee",
-          "randomWalk",
-          "suicideBomb",
-          "acidCorpse",
-          "heat",
-          "sound",
-          "fly",
-          "vacuum",
-          "explosive"
-        ),
+        aiAgentConfig,
+        
       ]
 
       // V2

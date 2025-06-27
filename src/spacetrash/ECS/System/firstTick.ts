@@ -6,7 +6,7 @@ import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
 import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { Eid2PMComponent, Eid2PMStore } from "../Components/v2/eid2PMC";
 import { SetPieceComponent, SetPieceStore } from "../Components/v3/setPieces";
-import { ActorStore } from "../Components/v3/actors";
+import { ActorComponent, ActorStore } from "../Components/v3/actors";
 import { ClassificationStore } from "../Components/v2/classifiable";
 import { ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
 import {
@@ -203,6 +203,7 @@ export default async (game: SpaceTrash, delta: number) => {
     Actors.upsert(
       {
         agent,
+        friendly: false
       },
       eid
     );
@@ -215,7 +216,7 @@ export default async (game: SpaceTrash, delta: number) => {
     IntegerPositionComponent
   );
   setup2dAnd3dGames(game, DrawableComponent);
-  setupArcadePhysics(game, ArcadePhysicsComponent);
+  setupArcadePhysics(game, ArcadePhysicsComponent, Actors);
   setupAiAgents(game, Actors, AiAgentComponent);
 
   return;
@@ -241,24 +242,38 @@ function setup2dAnd3dGames(
   game.scene.add(pointlight);
 }
 
-function setupAiAgents(game: SpaceTrash, Actors, Agents) {
-  Actors.each((eid, ac) => {
+const arcadeBodiesToAgentOnCollisionCallbacks: { body, callback }[] = [];
+
+function setupAiAgents(game: SpaceTrash, Actors: ActorStore, Agents: AiAgentStore) {
+  Actors.each((ac, eid) => {
     if (!ac.friendly) {
-      Agents.each((eid2, ai) => {
+      
+      Agents.each((ai, eid2) => {
         if (eid === eid2) {
+
+          // const onCollide = () => { };
+          
+          // ac.onCollision = onCollide;
+          // ai.
+            
           ac.agent = ai;
+          arcadeBodiesToAgentOnCollisionCallbacks.push({
+            body: ac.arcadeBody,
+            callback: ai.collideCallback
+          })
+          // ac.arcadeBody.setData('onCollide', ai.onCollide)
+          ai.boot(ac.arcadeBody);
         }
       });
     }
   });
 }
 
-const setupArcadePhysics = (game: SpaceTrash, ArcadePhysics) => {
+const setupArcadePhysics = (game: SpaceTrash, ArcadePhysics, Actors: ActorStore) => {
   const staticGroup: any[] = [];
   const dynamicGroup: any[] = [];
 
   ArcadePhysics.each((v, k) => {
-    v.arcadeObject = v.creator(game.arcadePhysics);
     if (v.arcadeObject.immovable) staticGroup.push(v.arcadeObject);
     else dynamicGroup.push(v.arcadeObject);
   });
@@ -270,17 +285,43 @@ const setupArcadePhysics = (game: SpaceTrash, ArcadePhysics) => {
 
   dynamicGroup.forEach((d) => {
     staticGroup.forEach((s) => {
-      game.arcadePhysics.add.collider(s, d);
+      game.arcadePhysics.world.addCollider(s, d, (...a) => {
+        const x = a[1];
+        for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
+          if (z.body === x) {
+            z.callback()
+          }
+        }
+        // const cb = x.getData('onCollide');
+        // cb(s, d)
+        // debugger
+        // Actors.update({
+        //   onCollision
+        // })
+
+
+        // debugger
+      }, () => {
+        // debugger
+      }, () => {
+        // debugger
+      });// add.collider(s, d);
     });
   });
 
   dynamicGroup.forEach((s) => {
     dynamicGroup.forEach((s2) => {
       if (s !== s2) {
-        game.arcadePhysics.add.collider(s, s2);
+        // game.arcadePhysics.world.addCollider(s, s2);// add.collider(s, s2);
       }
     });
   });
+
+  // game.arcadePhysics.world.ad
+
+  game.arcadePhysics.world.on('collide', (object1, object2, body1, body2) => {
+    console.log("collide", object1, object2, body1, body2)
+  })
 };
 
 const runPlaceImmoveableSetPieces = (

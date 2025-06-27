@@ -133,7 +133,7 @@ export class DrawableStoreV2 extends MapStoreV2<DrawableComponent> {
 
   updateFromArcadePhysics(eid: any, f: ArcadePhysicsComponent) {
     const d = this.take(eid);
-    debugger
+    
     if (d.sprite) {
       d.sprite.position.x = f.arcadeObject.position.x + TileSize / 2;
       d.sprite.position.y = f.arcadeObject.position.y + TileSize / 2;

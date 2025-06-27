@@ -539,9 +539,8 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     this.arcadePhysics.world.postUpdate(this.arcadePhysicsTick * 1000, 1000 / 60)
     this.arcadePhysicsTick++
 
-    this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
-
     // draw debug
+    this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
     this.arcadePhysics.world.bodies.forEach(b => {
       b.drawDebug(this.arcadePhysicsCanvasContext)
     })

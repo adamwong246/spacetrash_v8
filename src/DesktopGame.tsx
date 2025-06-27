@@ -211,31 +211,31 @@ export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends M
       }
     })
 
-    this.dockviewAPI.component.addPanel({
-      id: 'fab',
-      component: 'fab',
-      floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600
-      },
-      params: {
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'fab',
+    //   component: 'fab',
+    //   floating: {
+    //     position: { left: 120, top: 190 },
+    //     width: 600,
+    //     height: 600
+    //   },
+    //   params: {
 
-      }
-    })
+    //   }
+    // })
 
-    this.dockviewAPI.component.addPanel({
-      id: 'data',
-      component: 'data',
-      floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600
-      },
-      params: {
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'data',
+    //   component: 'data',
+    //   floating: {
+    //     position: { left: 120, top: 190 },
+    //     width: 600,
+    //     height: 600
+    //   },
+    //   params: {
 
-      }
-    })
+    //   }
+    // })
 
   }
 

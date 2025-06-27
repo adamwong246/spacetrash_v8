@@ -1,22 +1,24 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
 import { ActorSize, MapSize } from "../Constants";
+import { AiAgentComponent } from "../ECS/Components/v3/ai.ts";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
 import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
 
-const SPEED_CONSTANT = 0.05
+const SPEED_CONSTANT = 0.05;
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
-    
+    const ship = new BoringShip();
+
     const drones = [...new Array(1)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize * TileSize,
         // Math.random() * MapSize * TileSize,
-        (MapSize / 2 ),
-        (MapSize / 2 ),
+        MapSize / 2,
+        MapSize / 2,
         // 5, 5,
         0,
         0,
@@ -27,25 +29,62 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const moreBots = [...new Array(1)].map((n) => {
-      return new PuckBot(
-        // 200, 200,
-        Math.random() * MapSize,
-        Math.random() * MapSize ,
-        // Math.random() * MapSize,
-        // Math.random() * MapSize,
-        ActorSize,
-        (Math.random() - 0.5) * SPEED_CONSTANT,
-        (Math.random() - 0.5) * SPEED_CONSTANT
-      );
-    });
+    // const moreBots = [...new Array(1)].map((n) => {
+    //   return new PuckBot(
+    //     // 200, 200,
+    //     Math.random() * MapSize,
+    //     Math.random() * MapSize ,
+    //     // Math.random() * MapSize,
+    //     // Math.random() * MapSize,
+    //     ActorSize,
+    //     (Math.random() - 0.5) * SPEED_CONSTANT,
+    //     (Math.random() - 0.5) * SPEED_CONSTANT
+    //   );
+    // });
 
-    const ship = new BoringShip();
+    const monster0 = new PuckBot(
+      Math.random() * MapSize,
+      Math.random() * MapSize,
+      ActorSize,
+      (Math.random() - 0.5) * SPEED_CONSTANT,
+      (Math.random() - 0.5) * SPEED_CONSTANT,
+      String(performance.now()),
+      new AiAgentComponent(
+        "melee",
+        "langdonsAnt",
+        "suicideBomb",
+        "acidCorpse",
+        "heat",
+        "sound",
+        "fly",
+        "vacuum",
+        "explosive"
+      )
+    );
+
+    const monster1 = new PuckBot(
+      Math.random() * MapSize,
+      Math.random() * MapSize,
+      ActorSize,
+      (Math.random() - 0.5) * SPEED_CONSTANT,
+      (Math.random() - 0.5) * SPEED_CONSTANT,
+      String(performance.now()),
+      new AiAgentComponent(
+        "melee",
+        "wallBounce",
+        "suicideBomb",
+        "acidCorpse",
+        "heat",
+        "sound",
+        "fly",
+        "vacuum",
+        "explosive"
+      )
+    );
+
     // const ship = new RotDiggerShip();
 
-    game.setEntitiesComponent([ship, ...ship.toTiles(),
-      ...moreBots
-    ]);
+    game.setEntitiesComponent([ship, ...ship.toTiles(), monster0, monster1]);
 
     const myDoneIds = game.setEntitiesComponent([...drones]);
 
@@ -61,9 +100,7 @@ class MainScene extends SpaceTrashScene {
       9: [myDoneIds[8], "obiwan"],
     };
 
-    game.BeginTheGame()
-
-    
+    game.BeginTheGame();
   }
 
   update(e: SpaceTrash) {
@@ -119,7 +156,7 @@ const scene = new MainScene({
     (ecs, reply) => {
       return [
         async (game: SpaceTrash) => {
-          game.renderBotCanvas()
+          game.renderBotCanvas();
         },
       ];
     },
@@ -266,7 +303,6 @@ const scene = new MainScene({
     },
     "html",
   ],
-
 
   matter: [
     (ecs, reply) => {

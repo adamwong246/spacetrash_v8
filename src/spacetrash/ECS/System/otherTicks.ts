@@ -19,6 +19,7 @@ import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arc
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { SetPieceStore } from "../Components/v3/setPieces";
+import { AiAgentStore } from "../Components/v3/ai";
 
 let GAME: SpaceTrash;
 let DELTA: number;
@@ -28,6 +29,7 @@ export default (game: SpaceTrash, delta: number) => {
   DELTA = delta;
 
   const {
+    AiAgentComponent,
     Actors,
     ArcadePhysicsComponent,
     DrawableComponent,
@@ -38,9 +40,10 @@ export default (game: SpaceTrash, delta: number) => {
     LightIncastingComponent,
   } = game.components;
 
+  
   // updateSetPieces(SetPieces, Actors);
   // resetIllumination(DrawableComponent, LightIncastingComponent, SetPieces);
-  // runAI(Actors);
+  runAI(AiAgentComponent);
   runTankPhysics(
     TankMovingComponent,
     Eid2PM,
@@ -60,9 +63,9 @@ function updateSetPieces(SetPieces, Actors) {
   }
 }
 
-function runAI(Actors) {
-  Actors.each((a, aeid) => {
-    // a.tick(GAME, DELTA);
+function runAI(AiAgents: AiAgentStore) {
+  AiAgents.each((a, aeid) => {
+    a.tick(GAME, DELTA);
   });
 
   // attacks.each((eid, attack) => {
