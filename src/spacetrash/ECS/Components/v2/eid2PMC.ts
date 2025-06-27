@@ -2,8 +2,9 @@
 import {
   Component,
 } from "../../../../engine/VECS.ts/Component";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 import {
-  Store,
+
 } from "../../../../engine/VECS.ts/types";
 import { ISpaceTrashComponents } from "../v1";
 import { DrawableComponent } from "./drawable";
@@ -26,27 +27,27 @@ export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   }
 }
 
-export class Eid2PMStore extends Store<Record<number, Eid2PMComponent>> {
+export class Eid2PMStore extends MapStoreV2<Record<number, Eid2PMComponent>> {
   
-  store: Record<number, Eid2PMComponent> = {};
+  // store: Record<number, Eid2PMComponent> = {};
 
-  add(e: Eid2PMComponent, n: number) {
-    this.store[n] = e;
-  }
-  // store: DrawableComponent;
+  // add(e: Eid2PMComponent, n: number) {
+  //   this.store[n] = e;
+  // }
+  // // store: DrawableComponent;
 
-  get(n: number) {
-    return this.store[n];
-  }
-
-  // add(a: DrawableComponent) {
-  //   // super.add(a);
+  // get(n: number) {
+  //   return this.store[n];
   // }
 
-  make() {
-    throw new Error("Method not implemented.");
-    return new DrawableComponent();
-  }
+  // // add(a: DrawableComponent) {
+  // //   // super.add(a);
+  // // }
+
+  // make() {
+  //   throw new Error("Method not implemented.");
+  //   return new DrawableComponent();
+  // }
 
   // positionOf(eidOfLight: number): FloatPositionStore {
   //   throw new Error("Method not implemented.");

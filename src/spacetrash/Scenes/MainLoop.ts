@@ -4,6 +4,7 @@ import { ActorSize, MapSize } from "../Constants";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
+import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
 
 const SPEED_CONSTANT = 0.05
 
@@ -40,6 +41,7 @@ class MainScene extends SpaceTrashScene {
     });
 
     const ship = new BoringShip();
+    // const ship = new RotDiggerShip();
 
     game.setEntitiesComponent([ship, ...ship.toTiles(),
       ...moreBots

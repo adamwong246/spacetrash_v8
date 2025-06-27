@@ -4,12 +4,12 @@
 import * as React from 'react'
 import { createRoot } from 'react-dom/client';
 
-import { DockviewReadyEvent, IDockviewPanelHeaderProps } from "dockview";
+import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
 import { DockviewApi, DockviewReact } from 'dockview';
 
 import { StateSpace } from "./engine/StateSpace";
 import { System } from "./engine/VECS.ts/System";
-import { IArchtypesMapping, IComponentsStores, IStores } from "./engine/VECS.ts/types";
+import { IArchtypesMapping, IComponentsStores, IStores, Store } from "./engine/VECS.ts/types";
 import { MultiSurfaceGame } from "./MultiSurfaceGame";
 import { BotsWindow } from "./spacetrash/UI/BotsWindow";
 import { BotWindow } from "./spacetrash/UI/BotWindow";
@@ -20,34 +20,24 @@ import { MatterWindow } from './spacetrash/UI/MatterWindow';
 import { ArcadePhysicsWindow } from './spacetrash/UI/ArcadePhysicsWindow';
 import { FabricatorWindow } from './spacetrash/UI/FabricatorWindow';
 import { DataWindow } from './spacetrash/UI/DataWindow';
+import { IState } from './spacetrash';
 
-let self: DesktopGame<any, any, any>;
+let self: DesktopGame<any, any,  any>;
 
-export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfaceGame<IRenderings, II> {
-  registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
-    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
-  }
+export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends MultiSurfaceGame<IRenderings, IComponents> {
   private reactRoot;
   dockviewAPI: DockviewApi;
-
   stateSetter: (s: any) => void;
   abstract uiHooks: any;
-
-  onDockviewReady(event: DockviewReadyEvent) {
-    self.dockviewAPI = event.api;
-  }
-
   constructor(
     stateSpace: StateSpace,
     system: System,
-    componentStores: IComponentsStores<any>,
-    stores: IStores<any>,
+    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
-    archetypeMappings: IArchtypesMapping
   ) {
-    super(stateSpace, system, componentStores, stores, config, renderings, archetypeMappings);
+    super(stateSpace, system, components, config, renderings);
     this.reactRoot = createRoot(domNode)
     self = this;
   }
@@ -118,6 +108,54 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
     </div >)
   }
 
+  registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
+    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
+  }
+
+  dockViewComponents: Record<string, React.FunctionComponent<IDockviewPanelProps>> = {
+
+    default: (props: IDockviewPanelHeaderProps<IState>) => {
+      return (
+        <div>
+          <p>default</p>
+          {/* <div>{`custom tab: ${props.api.title}`}</div>
+              <span>{`value: ${props.params.myValue}`}</span> */}
+        </div>
+      );
+    },
+
+    map: (props: IDockviewPanelHeaderProps<IState>) => {
+      return (
+        <MapWindow game={this} />
+      );
+    },
+
+    bot: (props: IDockviewPanelHeaderProps<IState>) => {
+      return (
+        <BotWindow game={this} />
+      );
+    },
+
+    bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
+    term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
+    fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
+  }
+
+  onDockviewReady(event: DockviewReadyEvent) {
+    self.dockviewAPI = event.api;
+    event.api.addPanel({
+      id: 'term',
+      component: 'term',
+      floating: {
+        position: { left: 10, top: 10 },
+        width: 900,
+        height: 600
+      },
+      params: {
+        game: this
+      }
+    })
+  }
 
   openAllWindows() {
     this.dockviewAPI.component.addPanel({

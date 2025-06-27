@@ -3,9 +3,8 @@
 
 import { System } from "./System";
 import { EntityComponent } from "./EntityComponent";
-import { IArchtypesStore, IComponentsStores, IEntitiesStore, IStores } from "./types";
+import { IArchtypesStore, IComponentsStores, IEntitiesStore, IStores, Store, StoreV2 } from "./types";
 import { Component } from "./Component";
-
 
 const uint32Max = 4294967295
 const EntityMax = 65535;
@@ -17,29 +16,24 @@ export type IPerformanceConfig = {
   headless: boolean;
 };
 
-export abstract class ECS {
+export abstract class ECS<IComponents extends StoreV2<any>> {
   system: System;
   entities: IEntitiesStore;
-  componentStores: IComponentsStores<any>;
-  stores: IStores<any>;
+  components: IComponentsStores<any, IComponents>
   fps: number = 60;
   performanceLogging = false;
   paused = true;
   nextId = 0;
   headless = false;
-  archetypes: IArchtypesStore;
   archetypeCodes: string[]
 
   constructor(
     system: System,
-    componentStores: IComponentsStores<any>,
-    stores: IStores<any>,
+    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
-    archetypeCodes: string[]
   ) {
     this.system = system;
-    this.componentStores = componentStores;
-    this.stores = stores;
+    this.components = components;
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
     this.headless = config.headless;
@@ -55,12 +49,12 @@ export abstract class ECS {
 
     ///////////////////////////////////
 
-    const archetypeBuffer = new SharedArrayBuffer(
-      Uint8Array.BYTES_PER_ELEMENT * maxArchetypes
-    );
-    const sharedArchetypeArray = new Uint8Array(archetypeBuffer);
-    this.archetypes = sharedArchetypeArray;
-    // this.archetypeCodes = archetypeCodes;
+    // const archetypeBuffer = new SharedArrayBuffer(
+    //   Uint8Array.BYTES_PER_ELEMENT * maxArchetypes
+    // );
+    // const sharedArchetypeArray = new Uint8Array(archetypeBuffer);
+    // this.archetypes = sharedArchetypeArray;
+    // // this.archetypeCodes = archetypeCodes;
 
     // this.entities = sharedArray;
 
@@ -77,17 +71,18 @@ export abstract class ECS {
 
   addComponent(i: number, c: Component<any, any>, classOverride?: "string") {
     const name = classOverride || c.constructor.name;
-    const store = this.componentStores[name];
+    const store: StoreV2<any> = this.components[name];
 
     if (!store)
       throw `Did you forget to register the store "${name}? Check the top level constructor for the implementation of Game."`;
-    store.add(c, i);
+    
+    store.make(c, i);
   }
 
   getComponents(i: number): Component<any, any>[] {
-    return Object.values(this.componentStores)
+    return Object.values(this.components)
       .map((cs) => {
-        return cs.get(i);
+        return cs.take(i);
       })
       .filter((x) => {
         return x !== undefined;
@@ -98,7 +93,7 @@ export abstract class ECS {
     const toReturn = this.nextId;
 
     this.entities[this.nextId] = this.nextId;
-    this.archetypes[this.nextId] = this.archetypeId(e); 
+    // this.archetypes[this.nextId] = this.archetypeId(e); 
     this.nextId++;
     return toReturn;
   }

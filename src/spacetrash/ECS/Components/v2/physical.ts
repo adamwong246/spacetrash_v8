@@ -1,6 +1,6 @@
-
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+
 import { ISpaceTrashComponents } from "../v1";
 
 // Gives an entity a position on the map
@@ -28,81 +28,80 @@ export class IntegerPositionComponent extends PositionComponent {
   // }
 }
 
-export class IntegerPositionStore extends Store<IntegerPositionComponent> {
-  store: Map<number, IntegerPositionComponent>;
-
-  constructor() {
-    super();
-    this.store = new Map();
-  }
-
-  get(n: number) {
-    return this.store.get(n);
-  }
-
-  add(lc: IntegerPositionComponent, n: number) {
-    this.store.set(n, lc);
-    return;
-  }
-
-  withIf(i: number, cb: (i: [number, IntegerPositionComponent]) => void) {
-    const x = this.store.get(i);
-    if (x) cb([Number(i), x, i]);
-  }
-
-  make(x: number, y: number) {
-    return new IntegerPositionComponent(x, y);
-  }
-
-  each(
-    cb: (
-      eid,
-      le: [number, IntegerPositionComponent, string],
-      eidAsString
-    ) => void
-  ) {
-    this.store.forEach((value, key) => {
-      cb([Number(key), [key, value]]);
-    });
-  }
+export class IntegerPositionStore extends MapStoreV2<IntegerPositionComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // // store: Map<number, IntegerPositionComponent>;
+  // constructor() {
+  //   super();
+  //   // this.store = new Map();
+  // }
+  // get(n: number) {
+  //   return this.store.get(n);
+  // }
+  // add(lc: IntegerPositionComponent, n: number) {
+  //   this.store.set(n, lc);
+  //   return;
+  // }
+  // withIf(i: number, cb: (i: [number, IntegerPositionComponent]) => void) {
+  //   const x = this.store.get(i);
+  //   if (x) cb([Number(i), x, i]);
+  // }
+  // make(x: number, y: number) {
+  //   return new IntegerPositionComponent(x, y);
+  // }
+  // each(
+  //   cb: (
+  //     eid,
+  //     le: [number, IntegerPositionComponent, string],
+  //     eidAsString
+  //   ) => void
+  // ) {
+  //   this.store.forEach((value, key) => {
+  //     cb([Number(key), [key, value]]);
+  //   });
+  // }
 }
 
 // Gives an entity a position above the grid
 export class FloatPositionComponent extends PositionComponent {}
 
-export class FloatPositionStore extends EntityComponentStore<FloatPositionComponent> {
-  constructor() {
-    super();
-  }
+export class FloatPositionStore extends MapStoreV2<FloatPositionComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // constructor() {
+  //   super();
+  // }
 
-  withIf(i: number, cb: (i: number, n: number,  ipc: IntegerPositionComponent) => void) {
-    // const x = this.store.get(i);
-    // if (x) cb([i, x]);
-    Object.keys(this.store).forEach((k, ndx) => {
-      if (k === String(i)) {
-        cb(i, this.store[k][0], this.store[k][1]);
-        return;
-        
-      }
-      
-    });
-  }
+  // withIf(i: number, cb: (i: number, n: number,  ipc: IntegerPositionComponent) => void) {
+  //   // const x = this.store.get(i);
+  //   // if (x) cb([i, x]);
+  //   Object.keys(this).forEach((k, ndx) => {
+  //     if (k === String(i)) {
+  //       cb(i, this[k][0], this[k][1]);
+  //       return;
 
-  
-  make(x: number = 0, y: number = 0) {
-    return new FloatPositionComponent(x, y);
-  }
+  //     }
 
-  at(y: number): FloatPositionComponent {
-    return this.store[y][1];
-  }
+  //   });
+  // }
 
-  each(arg0: (ndx: number, y: FloatPositionComponent, aeid: number) => void) {
-    Object.keys(this.store).forEach((k) => {
-      // arg0([Number(k), this.store[k], k]);
-      arg0(Number(k), this.store[k][1], this.store[k][0]);
-    });
-  }
+  // make(x: number = 0, y: number = 0) {
+  //   return new FloatPositionComponent(x, y);
+  // }
+
+  // at(y: number): FloatPositionComponent {
+  //   return this[y][1];
+  // }
+
+  // each(arg0: (ndx: number, y: FloatPositionComponent, aeid: number) => void) {
+  //   Object.keys(this).forEach((k) => {
+  //     // arg0([Number(k), this.store[k], k]);
+  //     arg0(Number(k), this[k][1], this[k][0]);
+  //   });
+  // }
 }
 
 /////////////////////////////////////////////////////////////
@@ -127,35 +126,39 @@ export class DegreesDirectionComponent extends DirectionComponent {
   }
 }
 
-export class DegreesDirectionStore extends EntityComponentStore<DegreesDirectionComponent> {
-  constructor() {
-    super();
-  }
+export class DegreesDirectionStore extends MapStoreV2<DegreesDirectionComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // constructor() {
+  //   super();
+  // }
 
-  make(r: number) {
-    return new DegreesDirectionComponent(r);
-  }
+  // make(r: number) {
+  //   return new DegreesDirectionComponent(r);
+  // }
 }
 
 // Gives an entity a rotation in ordinal direction
 export class OrdinalDirectionComponent extends DirectionComponent {
   r: IDirs;
-  
+
   constructor(r: IDirs) {
     super(r);
   }
 }
 
-export class OrdinalDirectionStore extends EntityComponentStore<OrdinalDirectionComponent> {
-  
+export class OrdinalDirectionStore extends MapStoreV2<OrdinalDirectionComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // constructor() {
+  //   super();
+  // }
 
-  constructor() {
-    super();
-  }
-
-  make(r: IDirs) {
-    return new OrdinalDirectionComponent(r);
-  }
+  // make(r: IDirs) {
+  //   return new OrdinalDirectionComponent(r);
+  // }
 }
 
 /////////////////////////////////////////////////////////////
@@ -167,15 +170,15 @@ export abstract class MovingComponent extends Component<
 > {}
 
 export type ITankDirections = {
-  i: `left` | `right` | 'none';
-  j: `back` | `forth`| 'none';
+  i: `left` | `right` | "none";
+  j: `back` | `forth` | "none";
 };
 
 // Gives the entity movement above the grid
 // moves by dx and dy every tick
 export class TankMovingComponent extends MovingComponent {
-  i: `left` | `right`| 'none';
-  j: `back` | `forth`| 'none';
+  i: `left` | `right` | "none";
+  j: `back` | `forth` | "none";
 
   constructor(i, j) {
     super();
@@ -184,14 +187,17 @@ export class TankMovingComponent extends MovingComponent {
   }
 }
 
-export class TankMovingStore extends EntityComponentStore<TankMovingComponent> {
-  constructor() {
-    super();
-  }
+export class TankMovingStore extends MapStoreV2<TankMovingComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // constructor() {
+  //   super();
+  // }
 
-  make(i, j) {
-    return new TankMovingComponent(i, j);
-  }
+  // make(i, j) {
+  //   return new TankMovingComponent(i, j);
+  // }
 }
 
 //////////////////////////////////////////////////////
@@ -208,14 +214,17 @@ export class FloatMovingComponent extends MovingComponent {
   }
 }
 
-export class FloatMovingStore extends EntityComponentStore<FloatMovingComponent> {
-  constructor() {
-    super();
-  }
+export class FloatMovingStore extends MapStoreV2<FloatMovingComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // constructor() {
+  //   super();
+  // }
 
-  make(r: number) {
-    return new FloatMovingComponent(r);
-  }
+  // make(r: number) {
+  //   return new FloatMovingComponent(r);
+  // }
 }
 
 // Gives the entity movement within the grid
@@ -231,14 +240,17 @@ export class OridinalMovingComponent extends MovingComponent {
   }
 }
 
-export class OridinalMovingStore extends EntityComponentStore<OridinalMovingComponent> {
-  constructor() {
-    super();
-  }
+export class OridinalMovingStore extends MapStoreV2<OridinalMovingComponent> {
+  // each() {
+  //   throw new Error("Method not implemented.");
+  // }
+  // constructor() {
+  //   super();
+  // }
 
-  make(d: IDirs, v: number) {
-    return new OridinalMovingComponent(d, v);
-  }
+  // make(d: IDirs, v: number) {
+  //   return new OridinalMovingComponent(d, v);
+  // }
 }
 
 /////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 import { ArcadePhysics } from "arcade-physics";
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { Store } from "../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+
 
 export class ArcadePhysicsComponent extends Component<any, any> {
   creator: (a: ArcadePhysics) => any;
@@ -13,22 +14,22 @@ export class ArcadePhysicsComponent extends Component<any, any> {
 
 }
 
-export class ArcadePhysicsStore extends Store<ArcadePhysicsComponent> {
+export class ArcadePhysicsStore extends MapStoreV2<ArcadePhysicsComponent> {
   
-  store: Map<number, ArcadePhysicsComponent>;
+  // store: Map<number, ArcadePhysicsComponent>;
 
-  constructor() {
-    super();
-    this.store = new Map();
-  }
+  // constructor() {
+  //   super();
+  //   this.store = new Map();
+  // }
 
-  get(n: number) {
-    return this.store.get(n);
-  }
+  // get(n: number) {
+  //   return this.store.get(n);
+  // }
 
-  add(lc: ArcadePhysicsComponent, n: number) {
-    this.store.set(n, lc);
-  }
+  // add(lc: ArcadePhysicsComponent, n: number) {
+  //   this.store.set(n, lc);
+  // }
 
   // add(lc: IntegerPositionComponent, n: number) {
   //   this.store.set(n, lc);
@@ -44,14 +45,14 @@ export class ArcadePhysicsStore extends Store<ArcadePhysicsComponent> {
   //   return new IntegerPositionComponent(x, y);
   // }
 
-  each(
-    cb: (
-      eid,
-      apo: ArcadePhysicsComponent
-    ) => void
-  ) {
-    this.store.forEach((value, key) => {
-      cb(Number(key), value);
-    });
-  }
+  // each(
+  //   cb: (
+  //     eid,
+  //     apo: ArcadePhysicsComponent
+  //   ) => void
+  // ) {
+  //   this.store.forEach((value, key) => {
+  //     cb(Number(key), value);
+  //   });
+  // }
 }

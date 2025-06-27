@@ -1,84 +1,85 @@
 
-import { Store } from "../../../../engine/VECS.ts/types";
-import { TileSize } from "../../../Constants";
-import { LightIncastingComponent } from "../v1/casting/in";
-import { DrawableComponent } from "../v2/drawable";
-import { IntegerPositionComponent } from "../v2/physical";
+
+// import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+// import { TileSize } from "../../../Constants";
+// import { LightIncastingComponent } from "../v1/casting/in";
+// import { DrawableComponent } from "../v2/drawable";
+// import { IntegerPositionComponent } from "../v2/physical";
 
 
-export class LightPositionStore extends Store<IntegerPositionComponent> {
-  store: Map<number, IntegerPositionComponent>;
+// export class LightPositionStore extends MapStoreV2<IntegerPositionComponent> {
 
-  constructor() {
-    super();
-    this.store = new Map();
-  }
 
-  withIf(i: number, cb: (i: [number, DrawableComponent, string]) => void) {
-    const x = this.store.get(i)
-    if (x) cb([Number(i), x, i]);
-  }
+//   // constructor() {
+//   //   super();
 
-  each(
-    arg0: (eid, le: [number, DrawableComponent, string], eidAsString) => void
-  ) {
-    this.store.forEach((value, key) => {
-      arg0([Number(key), value, key]);
-    });
-  }
+//   // }
 
-  add(lc: IntegerPositionComponent, n: number) {
-    this.store.set(n, lc);
-    return;
-  }
+//   // withIf(i: number, cb: (i: [number, DrawableComponent, string]) => void) {
+//   //   const x = this.store.get(i)
+//   //   if (x) cb([Number(i), x, i]);
+//   // }
 
-  get(n: number): DrawableComponent {
-    return this.store.get(n);
-  }
+//   // each(
+//   //   arg0: (eid, le: [number, DrawableComponent, string], eidAsString) => void
+//   // ) {
+//   //   this.store.forEach((value, key) => {
+//   //     arg0([Number(key), value, key]);
+//   //   });
+//   // }
 
-  make() {
-    throw new Error("Method not implemented.");
-    // return new DrawableComponent();
-  }
+//   // add(lc: IntegerPositionComponent, n: number) {
+//   //   this.store.set(n, lc);
+//   //   return;
+//   // }
 
-  positionOf(eidOfLight: number): IntegerPositionComponent {
-    return this.store.get(eidOfLight)
-  }
+//   // get(n: number): DrawableComponent {
+//   //   return this.store.get(n);
+//   // }
 
-  updatePostion(eid: number, p: IntegerPositionComponent) {
-    const d = this.get(eid);
+//   // make() {
+//   //   throw new Error("Method not implemented.");
+//   //   // return new DrawableComponent();
+//   // }
 
-    // console.log("mark2", d.sprite)
+//   positionOf(eidOfLight: number): IntegerPositionComponent {
+//     return this.take(eidOfLight)
+//   }
 
-    if (d.sprite) {
-      d.sprite.position.x = p.x * TileSize;
-      d.sprite.position.y = p.y * TileSize;
-    }
-    if (d.mesh) {
-      d.mesh.position.x = p.x * TileSize;
-      d.mesh.position.y = p.y * TileSize;
-    }
-  }
+//   updatePostion(eid: number, p: IntegerPositionComponent) {
+//     const d = this.take(eid);
 
-  updateLuminance(eid: number, illuminated) {
-    const d = this.get(eid);
+//     // console.log("mark2", d.sprite)
 
-    if (d.sprite) {
-      d.sprite.visible = illuminated;
-    }
-    if (d.mesh) {
-      d.mesh.visible = illuminated;
-    }
-  }
+//     if (d.sprite) {
+//       d.sprite.position.x = p.x * TileSize;
+//       d.sprite.position.y = p.y * TileSize;
+//     }
+//     if (d.mesh) {
+//       d.mesh.position.x = p.x * TileSize;
+//       d.mesh.position.y = p.y * TileSize;
+//     }
+//   }
 
-  updateLuminanceByLittable(rid: number, reciver: LightIncastingComponent) {
-    const d = this.get(rid);
+//   updateLuminance(eid: number, illuminated) {
+//     const d = this.take(eid);
 
-    if (d.sprite) {
-      d.sprite.visible = reciver.luminance > 0;
-    }
-    if (d.mesh) {
-      d.mesh.visible = reciver.luminance > 0;
-    }
-  }
-}
+//     if (d.sprite) {
+//       d.sprite.visible = illuminated;
+//     }
+//     if (d.mesh) {
+//       d.mesh.visible = illuminated;
+//     }
+//   }
+
+//   updateLuminanceByLittable(rid: number, reciver: LightIncastingComponent) {
+//     const d = this.take(rid);
+
+//     if (d.sprite) {
+//       d.sprite.visible = reciver.luminance > 0;
+//     }
+//     if (d.mesh) {
+//       d.mesh.visible = reciver.luminance > 0;
+//     }
+//   }
+// }

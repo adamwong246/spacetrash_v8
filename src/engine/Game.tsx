@@ -3,24 +3,19 @@
 import { ECS, IPerformanceConfig } from "./VECS.ts/ECS.ts";
 import { StateSpace } from "./StateSpace";
 import { System } from "./VECS.ts/System.ts";
-import { IArchtypesMapping, IComponentsStores, IStores } from "./VECS.ts/types.ts";
+import { IComponentsStores, Store } from "./VECS.ts/types.ts";
 
-// IRenderings is a list of "render strategies"
-// for example:
-// export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | null;
-export abstract class Game<IRenderings, I> extends ECS {
+export abstract class Game<IComponents> extends ECS<IComponents> {
   stateSpace: StateSpace;
 
   constructor(
     stateSpace: StateSpace,
     system: System,
-    componentStores: IComponentsStores<any>,
-    stores: IStores<any>,
+    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
-    archetypeMappings: IArchtypesMapping
 
   ) {
-    super(system, componentStores, stores, config, archetypeMappings)
+    super(system, components, config)
     this.stateSpace = stateSpace;
     this.changeScene = this.changeScene.bind(this);
   }

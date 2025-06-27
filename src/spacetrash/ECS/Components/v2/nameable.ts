@@ -1,7 +1,8 @@
 // Gives an entity a name
 
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { EntityComponentStore } from "../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+
 import { ISpaceTrashComponents } from "../v1";
 
 export class NameableComponent extends Component<
@@ -16,12 +17,12 @@ export class NameableComponent extends Component<
   }
 }
 
-export class NameableStore extends EntityComponentStore<NameableComponent> {
-  constructor() {
-    super();
-  }
+export class NameableStore extends MapStoreV2<NameableComponent> {
+  // constructor() {
+  //   super();
+  // }
 
-  make(name: string) {
-    return new NameableComponent(name);
-  }
+  // make(name: string) {
+  //   return new NameableComponent(name);
+  // }
 }

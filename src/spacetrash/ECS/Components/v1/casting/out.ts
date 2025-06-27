@@ -1,6 +1,7 @@
 import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../../engine/VECS.ts/Component";
-import { EntityComponentStore } from "../../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../../engine/VECS.ts/Store";
+
 
 
 export enum ERays {
@@ -62,16 +63,16 @@ export class LightOutcastingComponent extends OutCastingComponent {
   }
 }
 
-export class LightOutcastingStore extends EntityComponentStore<LightOutcastingComponent> {
+export class LightOutcastingStore extends MapStoreV2<LightOutcastingComponent> {
 
-  each(arg0: ([eid, le, ndx]: [number, LightOutcastingComponent, number]) => void) {
-    Object.keys(this.store).forEach((k, ndx) => {
-        arg0([Number(k), this.store[k], ndx])
-      });
-  }
+  // each(arg0: ([eid, le, ndx]: [number, LightOutcastingComponent, number]) => void) {
+  //   Object.keys(this.store).forEach((k, ndx) => {
+  //       arg0([Number(k), this.take(k), ndx])
+  //     });
+  // }
   
-  make(...a: any[]): LightOutcastingComponent {
-    return new LightOutcastingComponent([...a]);
-    // throw new Error("Method not implemented.");
-  }
+  // make(...a: any[]): LightOutcastingComponent {
+  //   return new LightOutcastingComponent([...a]);
+  //   // throw new Error("Method not implemented.");
+  // }
 }

@@ -1,15 +1,17 @@
 import * as THREE from "three";
 import { TwoDOneD_Component } from "../../../../engine/VECS.ts/Component";
-import { TwoDStore } from "../../../../engine/VECS.ts/types";
-import { MapSize } from "../../../Constants";
+
+
 import { ISpaceTrashComponents } from "../v1";
 import { DrawableComponent } from "../v2/drawable";
+import { TwoDStore } from "../../../../engine/VECS.ts/Store";
+import { MapSize } from "../../../Constants";
 
 export class SetPieceComponent extends TwoDOneD_Component<
   unknown,
   ISpaceTrashComponents
 > {
-  setId = -1;
+  eid = -1;
   actorIds = [];
   litIds = [];
   incasterId = -1;
@@ -32,10 +34,10 @@ export class SetPieceComponent extends TwoDOneD_Component<
 }
 
 export class SetPieceStore extends TwoDStore<SetPieceComponent> {
-  constructor() {
-    super();
-    this.store = [[]];
-  }
+  // // constructor() {
+  // //   super();
+  // //   this.store = [[]];
+  // // }
 
   at(x: number, y: number) {
     if (x < 0) return false;
@@ -46,15 +48,15 @@ export class SetPieceStore extends TwoDStore<SetPieceComponent> {
     return this.store[x][y];
   }
 
-  tileIsAt(x: number, y: number, t: string): boolean {
-    return this.store[x][y].tileType !== t;
-  }
+  // tileIsAt(x: number, y: number, t: string): boolean {
+  //   return this.store[x][y].tileType !== t;
+  // }
 
-  add(a: any) {
-    throw new Error("Method not implemented.");
-  }
+  // add(a: any) {
+  //   throw new Error("Method not implemented.");
+  // }
 
-  make() {
-    return new SetPieceComponent();
-  }
+  // make() {
+  //   return new SetPieceComponent();
+  // }
 }

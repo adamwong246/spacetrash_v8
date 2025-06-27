@@ -3,123 +3,82 @@ import * as THREE from "three";
 import { SpaceTrash } from "../..";
 import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
 
+import { DrawableStoreV2 } from "../Components/v2/drawable";
+import { Eid2PMComponent, Eid2PMStore } from "../Components/v2/eid2PMC";
+import { SetPieceComponent, SetPieceStore } from "../Components/v3/setPieces";
 import { ActorStore } from "../Components/v3/actors";
 import { ClassificationStore } from "../Components/v2/classifiable";
-import { DrawableStoreV2, DrawableComponent } from "../Components/v2/drawable";
-import { Eid2PMStore, Eid2PMComponent } from "../Components/v2/eid2PMC";
+import { ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
 import {
-  LightingComponentStore,
-  LightComponentStore,
-} from "../Components/v2/lights";
-import {
-  IntegerPositionStore,
   FloatMovingStore,
   FloatPositionStore,
+  IntegerPositionStore,
   TankMovingStore,
-  OrdinalDirectionStore,
 } from "../Components/v2/physical";
-import { TileComponentStore } from "../Components/v2/tileable";
-import { LightPositionStore } from "../Components/v3/LightPosition";
-import { ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
 import { AiAgentStore } from "../Components/v3/ai";
-import {
-  LightOutcastingComponent,
-  LightOutcastingStore,
-} from "../Components/v1/casting/out";
-import {
-  LightIncastingStore,
-  LightIncastingComponent,
-} from "../Components/v1/casting/in";
-import { SetPieceStore, SetPieceComponent } from "../Components/v3/setPieces";
-
-let actors: ActorStore;
-// let actorsLit: LightingComponentStore;
-let arcadeObjects: ArcadePhysicsStore;
-let classs: ClassificationStore;
-let drawables: DrawableStoreV2;
-let eid2PMSs: Eid2PMStore;
-let fmc: FloatMovingStore;
-let fp2Emitter: Record<number, LightOutcastingComponent> = {};
-let fps: FloatPositionStore;
-// let incasters: LightIncastingStore;
-let ips: IntegerPositionStore;
-let light2Draw: Record<number, DrawableComponent> = {};
-// let light2IntegerPosition: LightPositionStore;
-// let lights: LightComponentStore;
-let ods: OrdinalDirectionStore;
-let outcasters: LightOutcastingStore;
-let setPieceLit: LightingComponentStore;
-let setPieces: SetPieceStore;
-let tiles: TileComponentStore;
-let tms: TankMovingStore;
-
-let aiAgents: AiAgentStore;
-
-let GAME: SpaceTrash;
+import { TileComponentStore } from "../Components/v2/tileable";
 
 export default async (game: SpaceTrash, delta: number) => {
-  // Level 0 - "Component Stores"
-  aiAgents = game.componentStores["AiAgentComponent"] as AiAgentStore;
+  const {
+    Actors,
+    AiAgentComponent,
+    ArcadePhysicsComponent,
+    ClassificationComponent,
+    DrawableComponent,
+    Eid2PM,
+    FloatMovements,
+    FloatPositions,
+    IntegerPositionComponent,
+    SetPieces,
+    TankMovingComponent,
+    TileComponent,
+  }: {
+    Actors: ActorStore;
+    AiAgentComponent: AiAgentStore;
+    ArcadePhysicsComponent: ArcadePhysicsStore;
+    ClassificationComponent: ClassificationStore;
+    DrawableComponent: DrawableStoreV2;
+    Eid2PM: Eid2PMStore;
+    FloatMovements: FloatMovingStore;
+    FloatPosition: FloatPositionStore;
+    IntegerPositionComponent: IntegerPositionStore;
+    SetPieces: SetPieceStore;
+    TankMovingComponent: TankMovingStore;
+    TileComponent: TileComponentStore;
+  } = game.components;
 
-  arcadeObjects = game.componentStores[
-    "ArcadePhysicsComponent"
-  ] as ArcadePhysicsStore;
+  // ArcadeBodies must be re-constituted with the running game
+  ArcadePhysicsComponent.each((apc, eid) => {
+    const arcadeObject = apc.creator(game.arcadePhysics);
 
-  arcadeObjects = game.componentStores[
-    "ArcadePhysicsComponent"
-  ] as ArcadePhysicsStore;
-
-  ods = game.componentStores[
-    "OrdinalDirectionComponent"
-  ] as OrdinalDirectionStore;
-  tms = game.componentStores["TankMovingComponent"] as TankMovingStore;
-  drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
-  fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
-  fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
-  outcasters = game.componentStores[
-    LightOutcastingComponent.name
-  ] as LightOutcastingStore;
-  // incasters = game.componentStores[
-  //   LightIncastingComponent.name
-  // ] as LightIncastingStore;
-  tiles = game.componentStores["TileComponent"] as TileComponentStore;
-  ips = game.componentStores[
-    "IntegerPositionComponent"
-  ] as IntegerPositionStore;
-  classs = game.componentStores[
-    "ClassificationComponent"
-  ] as ClassificationStore;
-
-  // Level 1 - "Stores"
-  actors = game.stores["ActorComponent"] as ActorStore;
-  setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-
-  // actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
-  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-
-  // lights = game.stores["LightComponent"] as LightComponentStore;
-  // lights = game.stores["LightComponent"] as LightComponentStore;
-  // setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
-  
-  // light2IntegerPosition = game.stores[
-  //   "LightPositionComponent"
-  // ] as LightPositionStore;
-
-
+    ArcadePhysicsComponent.upsert(
+      {
+        arcadeObject,
+      },
+      eid
+    );
+  });
 
   // todo reimpliment classification
-  Object.keys(classs.store).forEach((k) => {
-    const n = Number.parseInt(k);
-    const kk = classs.get(n);
-    const classification = kk;
-    const eid = k;
+  ClassificationComponent.each((cc, eid) => {
+    const kk = ClassificationComponent.take(eid);
+    const classification = kk.entityConstructorName;
 
     if (classification === "SpaceTrashBot") {
-      eid2PMSs.add(new Eid2PMComponent(arcadeObjects.get(n), kk), n);
+      Eid2PM.make(
+        new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
+        eid
+      );
     } else if (classification === "Tile") {
-      eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
+      Eid2PM.make(
+        new Eid2PMComponent(IntegerPositionComponent.take(eid), classification),
+        eid
+      );
     } else if (classification === "PuckBot") {
-      eid2PMSs.add(new Eid2PMComponent(arcadeObjects.get(n), kk), n);
+      Eid2PM.make(
+        new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
+        eid
+      );
     }
   });
 
@@ -130,63 +89,75 @@ export default async (game: SpaceTrash, delta: number) => {
 
   // 2 deep
   // according to profile, this is very slow
-  outcasters.each(([n, [eid, _lx]]) => {
-    const classification = eid2PMSs.store[eid].classification;
+  // outcasters.each(([n, [eid, _lx]]) => {
+  //   const classification = eid2PMSs.store[eid].classification;
 
-    if (classification === "Tile") {
-      setPieceLit.add(eid, ips.get(eid), classification);
-    } else {
-      // actorsLit.add(eid, fps.get(eid), classification);
-    }
+  //   if (classification === "Tile") {
+  //     setPieceLit.add(eid, ips.get(eid), classification);
+  //   } else {
+  //     // actorsLit.add(eid, fps.get(eid), classification);
+  //   }
 
-    drawables.withIf(eid, ([n, dc, s]) => {
-      light2Draw[n] = dc[1];
-    });
+  //   drawables.withIf(eid, ([n, dc, s]) => {
+  //     light2Draw[n] = dc[1];
+  //   });
 
-    // ips.withIf(eid, ([n, dc, s]) => {
-    //   light2IntegerPosition.add(dc, s);
-    // });
-  });
+  //   // ips.withIf(eid, ([n, dc, s]) => {
+  //   //   light2IntegerPosition.add(dc, s);
+  //   // });
+  // });
 
   // setup the empty setPieces
   for (let y = 0; y < MapSize; y++) {
-    setPieces.store[y] = [];
+    SetPieces.store[y] = [];
     for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x] = new SetPieceComponent();
-
-      // for (let yy = 0; yy < MapSize; yy++) {
-      //   setPieces.store[y][x].FOV[yy] = [];
-      //   for (let xx = 0; xx < MapSize; xx++) {
-      //     setPieces.store[y][x].FOV[yy][xx] = [];
-      //   }
-      // }
+      SetPieces.store[y][x] = new SetPieceComponent();
     }
   }
 
   // 3 deep
   // build set pieces grid
-  ips.each(([eid, [ndx, s]]) => {
-    setPieces.at(s.x, s.y).setId = ndx;
+  IntegerPositionComponent.each((s, eid) => {
+    // SetPieces.take(s.x, s.y).setId = eid;
+    SetPieces.update(
+      {
+        eid,
+      },
+      s.x,
+      s.y
+    );
 
-    const t = tiles.get(ndx);
+    const t = TileComponent.take(eid);
     if (!t) {
       throw "why no t?";
     }
 
-    setPieces.at(s.x, s.y);
-    setPieces.at(s.x, s.y).tileType = t.tileType;
-    setPieces.at(s.x, s.y).incasterId = eid;
+    SetPieces.update(
+      {
+        tileType: t.tileType,
+        incasterId: eid,
+      },
+      s.x,
+      s.y
+    );
 
-    drawables.withIf(eid, (dc) => {
-      setPieces.at(s.x, s.y).drawing = dc[1];
-    });
+    DrawableComponent.withIf((dc) => {
+      // SetPieces.at(s.x, s.y).drawing = dc[1];
+      SetPieces.update(
+        {
+          drawing: dc[1],
+        },
+        s.x,
+        s.y
+      );
+    }, eid);
   });
 
   // 2 deep
   // setup the actors list
-  fps.each((ndx, y, aeid) => {
-    const mf = fmc.store.find((x) => x[0] === aeid);
-    const mt = tms.store.find((x) => x[0] === aeid);
+  FloatPositions.each((ndx, y, aeid) => {
+    const mf = FloatMovements.find((x) => x[0] === aeid);
+    const mt = TankMovingComponent.find((x) => x[0] === aeid);
 
     let motion;
     if (mf) {
@@ -202,47 +173,59 @@ export default async (game: SpaceTrash, delta: number) => {
     }
 
     // add the actors
-    actors.add({
-      actorId: ndx,
-      friendly: game.isFriendly(ndx),
-      position: y,
-      motion,
-    });
+    Actors.upsert(
+      {
+        actorId: ndx,
+        friendly: game.isFriendly(ndx),
+        position: y,
+        motion,
+      },
+      aeid
+    );
 
-    outcasters.each(([leid, le]) => {
-      if (aeid === leid) {
-        fp2Emitter[aeid] = le;
-      }
-    });
+    // outcasters.each(([leid, le]) => {
+    //   if (aeid === leid) {
+    //     fp2Emitter[aeid] = le;
+    //   }
+    // });
   });
 
-  arcadeObjects.each((eid, apc) => {
-    if (actors.get(eid)) {
-      actors.get(eid).arcadeBody = apc;
-    }
+  ArcadePhysicsComponent.each((apc, eid) => {
+    Actors.upsert(
+      {
+        arcadeBody: apc.arcadeObject,
+      },
+      eid
+    );
   });
 
-  aiAgents.each((eid2, agent) => {
-    if (actors.get(eid2)) {
-      actors.get(eid2).agent = agent;
-    } else {
-      actors.add({
+  AiAgentComponent.each((agent, eid) => {
+    Actors.upsert(
+      {
         agent,
-      });
-    }
+      },
+      eid
+    );
   });
 
-  runInitialMapBoundaryCheck();
-  runPlaceImmoveableSetPieces();
-  setup2dAnd3dGames(game);
-  setupArcadePhysics(game);
-  setupAiAgents(game);
+  runInitialMapBoundaryCheck(FloatPositions, IntegerPositionComponent);
+  runPlaceImmoveableSetPieces(
+    DrawableComponent,
+    FloatPositions,
+    IntegerPositionComponent
+  );
+  setup2dAnd3dGames(game, DrawableComponent);
+  setupArcadePhysics(game, ArcadePhysicsComponent);
+  setupAiAgents(game, Actors, AiAgentComponent);
 
-  return map1;
+  return;
 };
 
-function setup2dAnd3dGames(game: SpaceTrash) {
-  drawables.each(([a, d, c]: [any, DrawableComponent, any]) => {
+function setup2dAnd3dGames(
+  game: SpaceTrash,
+  DrawableComponent: DrawableStoreV2
+) {
+  DrawableComponent.each((d, deid) => {
     game.pixi2dApp.stage.addChild(d.sprite);
     game.pixi2dApp.stage.addChild(d.char);
     game.scene.add(d.mesh);
@@ -258,11 +241,10 @@ function setup2dAnd3dGames(game: SpaceTrash) {
   game.scene.add(pointlight);
 }
 
-function setupAiAgents(game: SpaceTrash) {
-  debugger;
-  actors.each((eid, ac) => {
+function setupAiAgents(game: SpaceTrash, Actors, Agents) {
+  Actors.each((eid, ac) => {
     if (!ac.friendly) {
-      aiAgents.each((eid2, ai) => {
+      Agents.each((eid2, ai) => {
         if (eid === eid2) {
           ac.agent = ai;
         }
@@ -271,11 +253,11 @@ function setupAiAgents(game: SpaceTrash) {
   });
 }
 
-const setupArcadePhysics = (game: SpaceTrash) => {
+const setupArcadePhysics = (game: SpaceTrash, ArcadePhysics) => {
   const staticGroup: any[] = [];
   const dynamicGroup: any[] = [];
 
-  arcadeObjects.store.forEach((v, k) => {
+  ArcadePhysics.each((v, k) => {
     v.arcadeObject = v.creator(game.arcadePhysics);
     if (v.arcadeObject.immovable) staticGroup.push(v.arcadeObject);
     else dynamicGroup.push(v.arcadeObject);
@@ -284,10 +266,6 @@ const setupArcadePhysics = (game: SpaceTrash) => {
   dynamicGroup.forEach((s) => {
     s.position.x = Math.random() * MapSize * TileSize;
     s.position.y = Math.random() * MapSize * TileSize;
-    // s.setVelocityX((Math.random() - 0.5) * SPEED_CONSTANT)
-    // s.setVelocityY((Math.random() - 0.5) * SPEED_CONSTANT)
-    // s.setAccelerationX((Math.random() - 0.5) * SPEED_CONSTANT)
-    // s.setAccelerationY((Math.random() - 0.5) * SPEED_CONSTANT)
   });
 
   dynamicGroup.forEach((d) => {
@@ -305,9 +283,13 @@ const setupArcadePhysics = (game: SpaceTrash) => {
   });
 };
 
-const runPlaceImmoveableSetPieces = () => {
-  drawables.each(([eid, d, ks]) => {
-    fps.withIf(eid, (pndx, peid, p) => {
+const runPlaceImmoveableSetPieces = (
+  DrawableComponent: DrawableStoreV2,
+  FloatPositions: FloatPositionStore,
+  IntegerPositions: IntegerPositionStore
+) => {
+  DrawableComponent.each((d, eid) => {
+    FloatPositions.withIf((p) => {
       if (d.sprite) {
         d.sprite.position.x = p.x * TileSize;
         d.sprite.position.y = p.y * TileSize;
@@ -324,9 +306,9 @@ const runPlaceImmoveableSetPieces = () => {
 
       d.char.position.x = p.x * TileSize;
       d.char.position.y = p.y * TileSize;
-    });
+    }, eid);
 
-    ips.withIf(eid, ([pic, p]) => {
+    IntegerPositions.withIf((p) => {
       if (d.sprite) {
         d.sprite.position.x = p.x * TileSize;
         d.sprite.position.y = p.y * TileSize;
@@ -343,42 +325,45 @@ const runPlaceImmoveableSetPieces = () => {
 
       d.char.position.x = p.x * TileSize;
       d.char.position.y = p.y * TileSize;
-    });
+    }, eid);
   });
 };
 
 // boundary check against level map for objects with position
-function runInitialMapBoundaryCheck() {
+function runInitialMapBoundaryCheck(
+  FloatPositions: FloatPositionStore,
+  IntegerPositions: IntegerPositionStore
+) {
   // actors out of bounds check
-  fps.store.forEach((c) => {
-    if (c[1].x < MapBoundLow) {
-      c[1].x = MapBoundHigh;
+  FloatPositions.each((c) => {
+    if (c.x < MapBoundLow) {
+      c.x = MapBoundHigh;
     }
-    if (c[1].x > MapBoundHigh) {
-      c[1].x = MapBoundLow;
+    if (c.x > MapBoundHigh) {
+      c.x = MapBoundLow;
     }
-    if (c[1].y < MapBoundLow) {
-      c[1].y = MapBoundHigh;
+    if (c.y < MapBoundLow) {
+      c.y = MapBoundHigh;
     }
-    if (c[1].y > MapBoundHigh) {
-      c[1].y = MapBoundLow;
+    if (c.y > MapBoundHigh) {
+      c.y = MapBoundLow;
     }
   });
 
   // set piece out of bounds check
   // necessary?
-  ips.each((c) => {
-    if (c[1].x < 0) {
-      c[1].x = MapSize;
+  IntegerPositions.each((c) => {
+    if (c.x < 0) {
+      c.x = MapSize;
     }
-    if (c[1].x > MapSize) {
-      c[1].x = 0;
+    if (c.x > MapSize) {
+      c.x = 0;
     }
-    if (c[1].y < 0) {
-      c[1].y = MapSize;
+    if (c.y < 0) {
+      c.y = MapSize;
     }
-    if (c[1].y > MapSize) {
-      c[1].y = 0;
+    if (c.y > MapSize) {
+      c.y = 0;
     }
   });
 }

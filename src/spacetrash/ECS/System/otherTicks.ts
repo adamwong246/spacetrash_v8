@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { FOV } from "rot-js";
 import {
+
   MapSize,
   TANK_VELOCITY_ANGULAR,
   TANK_VELOCITY as TANK_VELOCITY_LINEAR,
@@ -10,119 +11,58 @@ import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
 import { FRICTION_CONSTANT } from "../../Constants";
 
-import { ActorStore } from "../Components/v3/actors";
-import { DrawableStoreV2 } from "../Components/v2/drawable";
-import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
   FloatMovingComponent,
-  FloatMovingStore,
-  FloatPositionStore,
-  IntegerPositionStore,
-  TankMovingStore,
   TankMovingComponent,
-  DegreesDirectionStore,
 } from "../Components/v2/physical";
-import { LightPositionStore } from "../Components/v3/LightPosition";
-import {
-  ArcadePhysicsComponent,
-  ArcadePhysicsStore,
-} from "../Components/v2/arcadePhysics";
-import { V3AttackComponentStore } from "../Components/v3/attack";
-import { AiAgentStore } from "../Components/v3/ai";
-import { LightIncastingStore } from "../Components/v1/casting/in";
-import {
-  LightOutcastingStore,
-  LightOutcastingComponent,
-} from "../Components/v1/casting/out";
+import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
+import { Eid2PMStore } from "../Components/v2/eid2PMC";
+import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { SetPieceStore } from "../Components/v3/setPieces";
-
-let actors: ActorStore;
-let arcadeObjects: ArcadePhysicsStore;
-// let attacks: V3AttackComponentStore;
-let dds: DegreesDirectionStore;
-let drawables: DrawableStoreV2;
-let eid2PMSs: Eid2PMStore;
-let fmc: FloatMovingStore;
-let fps: FloatPositionStore;
-let incasters: LightIncastingStore;
-let ips: IntegerPositionStore;
-// let light2IntegerPosition: LightPositionStore;
-let outcasters: LightOutcastingStore;
-let setPieces: SetPieceStore;
-let tms: TankMovingStore;
-let aiAgents: AiAgentStore;
 
 let GAME: SpaceTrash;
 let DELTA: number;
 
-export default (game: SpaceTrash, delta: number, fovMap) => {
+export default (game: SpaceTrash, delta: number) => {
   GAME = game;
   DELTA = delta;
 
-  // Level 0 - "Component Stores"
-  aiAgents = game.componentStores["AiAgentComponent"] as AiAgentStore;
-  // attacks = game.componentStores["V3AttackComponent"] as V3AttackComponentStore;
-  arcadeObjects = game.componentStores[
-    "ArcadePhysicsComponent"
-  ] as ArcadePhysicsStore;
-  dds = game.componentStores[
-    "DegreesDirectionComponent"
-  ] as DegreesDirectionStore;
-  tms = game.componentStores["TankMovingComponent"] as TankMovingStore;
-  drawables = game.componentStores["DrawableComponent"] as DrawableStoreV2;
-  fmc = game.componentStores["FloatMovingComponent"] as FloatMovingStore;
-  outcasters = game.componentStores[
-    LightOutcastingComponent.name
-  ] as LightOutcastingStore;
-  fps = game.componentStores["FloatPositionComponent"] as FloatPositionStore;
-  ips = game.componentStores[
-    "IntegerPositionComponent"
-  ] as IntegerPositionStore;
+  const {
+    Actors,
+    ArcadePhysicsComponent,
+    DrawableComponent,
+    FloatMovements,
+    SetPieces,
+    TankMovingComponent,
+    Eid2PM,
+    LightIncastingComponent,
+  } = game.components;
 
-  incasters = game.componentStores[
-    "LightIncastingComponent"
-  ] as LightIncastingStore;
-
-  // Level 1 - "Stores"
-  actors = game.stores["ActorComponent"] as ActorStore;
-  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-  setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-
-  // light2IntegerPosition = game.stores[
-  //   "LightPositionComponent"
-  // ] as LightPositionStore;
-
-  updateSetPieces();
-  resetIllumination();
-  runAI();
-  runTankPhysics();
-  runArcadePhysics();
-  // runFloatingPhysics();
-
-  rotLighting();
+  // updateSetPieces(SetPieces, Actors);
+  // resetIllumination(DrawableComponent, LightIncastingComponent, SetPieces);
+  // runAI(Actors);
+  runTankPhysics(
+    TankMovingComponent,
+    Eid2PM,
+    ArcadePhysicsComponent,
+    DrawableComponent
+  );
+  runArcadePhysics(ArcadePhysicsComponent, Eid2PM, DrawableComponent);
+  // runFloatingPhysics(FloatMovements, Eid2PM, DrawableComponent);
+  // rotLighting(SetPieces, ArcadePhysicsComponent, DrawableComponent);
 };
 
-function updateSetPieces() {
+function updateSetPieces(SetPieces, Actors) {
   for (let y = 0; y < MapSize; y++) {
-    // setPieces.store[y] = [];
     for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x].actorIds = actors.byXandY(x, y);
-
-      // for (let yy = 0; yy < MapSize; yy++) {
-      //   setPieces.store[y][x].FOV[yy] = [];
-      //   for (let xx = 0; xx < MapSize; xx++) {
-      //     setPieces.store[y][x].FOV[yy][xx] = [];
-      //   }
-      // }
+      // SetPieces.store[y][x].actorIds = Actors.byXandY(x, y);
     }
   }
 }
 
-function runAI() {
-  debugger;
-  actors.each((eid, a) => {
-    debugger;
-    a.tick(GAME, DELTA);
+function runAI(Actors) {
+  Actors.each((a, aeid) => {
+    // a.tick(GAME, DELTA);
   });
 
   // attacks.each((eid, attack) => {
@@ -161,28 +101,31 @@ function runAI() {
   // });
 }
 
-export function runArcadePhysics() {
-  // let repaintLights = false;
-  arcadeObjects.each((eid, f) => {
-    // f.arcadeObject.velocity.x = 100
-    // f.arcadeObject.velocity.x = 100
+export function runArcadePhysics(
+  ArcadePhysicsComponent: ArcadePhysicsStore,
+  Eid2PM: Eid2PMStore,
+  DrawableComponent: DrawableStoreV2
+) {
 
-    const { position, classification } = eid2PMSs.get(eid);
+  ArcadePhysicsComponent.each((f, feid) => {
+    const classification = Eid2PM.take(feid).classification;
+
     if (classification === "PuckBot") {
+      
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
       // boundaryCheckBot(position);
-      // collisionsAndVideoControls();
+    // collisionsAndVideoControls();
       // const gridChanges = upsdateFloatPosition(position, f);
       // if (gridChanges) {
       //   repaintLights = true;
       // }
       // drawables.updatePostion(eid, position, true);
-      drawables.updateFromArcadePhysics(eid, f);
+      DrawableComponent.updateFromArcadePhysics(feid, f);
     } else if (classification === "Tile") {
       // throw "not implemented";
     } else {
-      drawables.updateFromArcadePhysics(eid, f);
+      DrawableComponent.updateFromArcadePhysics(feid, f);
     }
   });
   // if (repaintLights) {
@@ -199,10 +142,10 @@ export function runArcadePhysics() {
   // }
 }
 
-export function runFloatingPhysics() {
+export function runFloatingPhysics(FloatMovements, Eid2PM, DrawableComponent) {
   // let repaintLights = false;
-  fmc.store.forEach(([eid, f]) => {
-    const { position, classification } = eid2PMSs.get(eid);
+  FloatMovements.forEach(([eid, f]) => {
+    const { position, classification } = Eid2PM.get(eid);
     if (classification === "PuckBot") {
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
@@ -212,7 +155,7 @@ export function runFloatingPhysics() {
       // if (gridChanges) {
       //   repaintLights = true;
       // }
-      drawables.updatePostion(eid, position, gridChanges);
+      DrawableComponent.updatePostion(eid, position, gridChanges);
     } else if (classification === "Tile") {
       throw "not implemented";
     } else {
@@ -234,25 +177,27 @@ export function runFloatingPhysics() {
   // }
 }
 
-function runTankPhysics() {
-  tms.store.forEach(([eid, t]) => {
-    const { position, classification } = eid2PMSs.get(eid) as unknown as {
+function runTankPhysics(
+  TankMovingComponent,
+  Eid2PM,
+  ArcadePhysicsComponent,
+  DrawableComponent
+) {
+  TankMovingComponent.each((t, eid) => {
+    const { position, classification } = Eid2PM.take(eid) as unknown as {
       position: ArcadePhysicsComponent;
       classification: string;
     };
 
     if (classification === "SpaceTrashBot") {
       // const direction = dds.get(eid);
-      const direction = arcadeObjects.get(eid)?.arcadeObject.rotation;
-      const oldDir = direction;
-      const oldX = arcadeObjects.get(eid)?.arcadeObject.x;
-      const oldY = arcadeObjects.get(eid)?.arcadeObject.y;
+      const direction = ArcadePhysicsComponent.take(eid)?.arcadeObject.rotation;
 
       // boundaryCheckBot(position);
       // collisionsAndVideoControls();
       updateTankPosition(position, t, eid);
 
-      drawables.updateFromArcadePhysics(eid, position);
+      DrawableComponent.updateFromArcadePhysics(eid, position);
 
       // if (
       //   oldDir !== direction.r ||
@@ -290,7 +235,7 @@ function updateVelocity(f: number): number {
 }
 
 function updateTankMovement(f: TankMovingComponent, eid: number) {
-  const videoBot = Object.entries(GAME.bots).find((v, n, o) => {
+  const videoBot = Object.entries(GAME.bots).find((v) => {
     return v[1][0] === eid && Number(v[0]) === GAME.videoFeed;
   });
 
@@ -386,25 +331,36 @@ function updateTankPosition(
   return isMoving;
 }
 
-function resetIllumination() {
-  drawables.each(([eid, d, eid2]) => {
+function resetIllumination(
+  DrawableComponent,
+  LightIncastingComponent,
+  SetPieces
+) {
+  DrawableComponent.each((d, deid) => {
+    // d.sprite.visible = false;
+    // d.mesh.visible = false;
     d.sprite.visible = false;
     d.mesh.visible = false;
   });
-  incasters.each(([li, z]) => {
-    z.luminance = 0;
-  });
-  for (let y = 0; y < MapSize; y++) {
-    for (let x = 0; x < MapSize; x++) {
-      setPieces.store[y][x].luminance = -1;
-    }
-  }
+  // LightIncastingComponent.each((z, zeid) => {
+  //   z.luminance = 0;
+  // });
+  // for (let y = 0; y < MapSize; y++) {
+  //   for (let x = 0; x < MapSize; x++) {
+  //     SetPieces.store[y][x].luminance = -1;
+  //   }
+  // }
 }
 
-function rotLighting() {
+function rotLighting(
+  SetPieces: SetPieceStore,
+  ArcadePhysicsComponent: ArcadePhysicsStore,
+  DrawableComponent: DrawableStoreV2
+) {
   function lightPasses(x, y) {
     if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-      const z = setPieces.at(x, y);
+      
+      const z = SetPieces.at(x, y);
 
       if (z && z.tileType === "WallTile") {
         return false;
@@ -431,7 +387,7 @@ function rotLighting() {
     Math.round(GAME.camera.position.x / TileSize),
     Math.round(GAME.camera.position.y / TileSize),
     10,
-    function (x, y, r, visibility) {
+    function (x, y, r) {
       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
         // console.log(r)
         lightMap.set(`${x}-${y}`, r);
@@ -485,7 +441,7 @@ function rotLighting() {
     const x = Number(splitt[0]);
     const y = Number(splitt[1]);
 
-    const setPiece = setPieces.at(x, y);
+    const setPiece = SetPieces.at(x, y);
     const lit = l[1];
 
     if (setPiece && setPiece.drawing && lit) {
@@ -494,7 +450,7 @@ function rotLighting() {
 
       setPiece.drawing.mesh.material = colors[Math.round(lit / 2 + 5)];
 
-      arcadeObjects.each((eid, apo) => {
+      ArcadePhysicsComponent.each((apo, eid) => {
         // apo.arcadeObject.visible = true;
         // debugger
 
@@ -506,7 +462,7 @@ function rotLighting() {
         ) {
           // apo.arcadeObject.visible = true;
           // actors.get(eid)
-          const litThing = drawables.get(eid);
+          const litThing = DrawableComponent.take(eid);
           litThing.mesh.visible = true;
           litThing.sprite.visible = true;
         }
@@ -519,28 +475,28 @@ function rotLighting() {
         const south = lightMap.get(`${x}-${y + 1}`);
 
         if (!north) {
-          const northernsetpiece = setPieces.at(x, y - 1);
+          const northernsetpiece = SetPieces.at(x, y - 1);
           if (northernsetpiece && northernsetpiece.drawing) {
             northernsetpiece.drawing.sprite.visible = true;
             northernsetpiece.drawing.mesh.visible = true;
           }
         }
         if (!east) {
-          const easternSetPiece = setPieces.at(x + 1, y);
+          const easternSetPiece = SetPieces.at(x + 1, y);
           if (easternSetPiece && easternSetPiece.drawing) {
             easternSetPiece.drawing.sprite.visible = false;
             easternSetPiece.drawing.mesh.visible = true;
           }
         }
         if (!south) {
-          const southernSetPiece = setPieces.at(x, y + 1);
+          const southernSetPiece = SetPieces.at(x, y + 1);
           if (southernSetPiece && southernSetPiece.drawing) {
             southernSetPiece.drawing.sprite.visible = true;
             southernSetPiece.drawing.mesh.visible = true;
           }
         }
         if (!west) {
-          const westernSetPiece = setPieces.at(x - 1, y);
+          const westernSetPiece = SetPieces.at(x - 1, y);
           if (westernSetPiece && westernSetPiece.drawing) {
             westernSetPiece.drawing.sprite.visible = true;
             westernSetPiece.drawing.mesh.visible = true;

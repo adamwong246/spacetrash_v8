@@ -1,5 +1,3 @@
-
-
 import { ISpaceTrashComponents } from ".";
 import { Component } from "../../../../engine/VECS.ts/Component";
 

@@ -4,7 +4,7 @@ import { System } from "../engine/VECS.ts/System";
 import { ITermWindowState } from "./UI/terminal";
 import { DesktopGame } from "../DesktopGame";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
-import { IArchtypesMapping } from "../engine/VECS.ts/types";
+import {  IComponentsStores } from "../engine/VECS.ts/types";
 
 const initialTerminalHistory: ITerminalLine = {
   out: "hardware check passed",
@@ -142,13 +142,27 @@ export type ITerminalLine = {
   status: IComStatus;
 };
 
-export abstract class TerminalGame<IRenderings, II, ICanvases> extends DesktopGame<
+export abstract class TerminalGame<
   IRenderings,
-  II,
-  ICanvases
-> {
-  registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
-    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
+  ICanvases,
+  IComponents
+> extends DesktopGame<IRenderings, ICanvases, IComponents> {
+  registerCanvas(
+    key: ICanvases,
+    run: boolean,
+    canvas?: HTMLCanvasElement,
+    callback?: (data: any) => void,
+    canvasContext?: IRenderings | undefined,
+    parentComponent?: HTMLElement
+  ): void {
+    super.registerCanvas(
+      key,
+      run,
+      canvas,
+      callback,
+      canvasContext,
+      parentComponent
+    );
   }
   booted = false;
   uiHooks: any;
@@ -157,26 +171,29 @@ export abstract class TerminalGame<IRenderings, II, ICanvases> extends DesktopGa
   loggedIn = false;
   uiUpdateCallback: any;
 
+  bufferRef: React.MutableRefObject<null>;
+
   constructor(
     stateSpace: StateSpace,
     system: System,
-    componentStores,
-    stores,
+    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
-    domNode: HTMLElement,
-    archetypeMappings: IArchtypesMapping
+    domNode: HTMLElement
   ) {
-    super(
-      stateSpace,
-      system,
-      componentStores,
-      stores,
-      config,
-      renderings,
-      domNode,
-      archetypeMappings
-    );
+    super(stateSpace, system, components, config, renderings, domNode);
+  }
+
+  focusOnTermInput() {
+    this.bufferRef.current.focus();
+  }
+
+  unFocusOnTermInput() {
+    this.bufferRef.current.blur();
+  }
+
+  registerTerminalBuffer(inputRef: React.MutableRefObject<null>) {
+    this.bufferRef = inputRef;
   }
 
   // get the state to send to react ui
@@ -196,7 +213,6 @@ export abstract class TerminalGame<IRenderings, II, ICanvases> extends DesktopGa
     };
   }
 
-  
   commandNotFound(unknownCommand: string) {
     this.returnCommand(commandNotFoundTermLine(unknownCommand));
     this.updateTerminalWindow();

@@ -1,90 +1,74 @@
-import { Component } from "react";
-
-export abstract class ComponentStore<I extends Component<any, any>> {
-  abstract store: any;
-  abstract add(c: I, i: number);
-  abstract make(...a): I;
-  abstract get(i: number): I | undefined;
-}
-
-export abstract class Store<I> {
-  abstract store: I;
-  abstract add(...a: any);
-  // abstract make(...a): I;
-  // abstract get(...a): any;
-}
-
-export abstract class EntityComponentStore<
-  T extends Component<any, any>
-> extends ComponentStore<T> {
-  store: [number, T][] = [];
-
-  // exists(i: number):boolean {
-  //   const toReturn = this.store.find((v) => {
-  //     return v[0] === i;
-  //   });
-
-  //   if (!toReturn) throw "not found!";
-  //   if (!toReturn[1]) throw "not found!";
-
-  //   return true;
-  // }
-
-  add(c: T, i: number) {
-    this.store.push([i, c]);
-  }
-
-  get(i: number) {
-    const toReturn = this.store.find((v) => {
-      return v[0] === i;
-    });
-
-    if (!toReturn) throw "not found!";
-    if (!toReturn[1]) throw "not found!";
-
-    return toReturn[1];
-  }
-
-  exists(i: number) {
-    const toReturn = this.store.find((v) => {
-      return v[0] === i;
-    });
-
-    if (!toReturn) return false
-    if (!toReturn[1]) false;
-
-    return true
-  }
-}
-
-export abstract class OneDStore<I extends []> extends Store<I> {
-  store: I[] = [];
-
-  constructor() {
-    super();
-  }
+import { Component } from "./Component";
+import { StoreV2 } from "./Store";
 
 
-  add(e) {
-    this.store.push(e);
-  }
+// v1
+////////////////////////////////////////////////////////////////////////////////
 
-  get(i: number): I {
-    return this.store[i];
-  }
-}
+// export abstract class MapStore<I extends Component<any, any>> extends Map<
+//   number,
+//   I
+// > {}
 
-export abstract class TwoDStore<I> extends Store<I> {
-  store: I[][] = [[]];
+// export abstract class ComponentStore<
+//   I extends Component<any, any>
+// > extends MapStore<I> {
+//   abstract store: any;
+//   abstract add(c: I, i: number);
+//   // abstract make(...a): I;
+//   // abstract get(i: number): I | undefined;
+// }
 
-  get(y: number, x: number) {
-    return this.store[y][x];
-  }
+// export abstract class Store<I> {
+//   each(arg0: ([eid, [ndx, s]]: [any, [any, any]]) => void) {
+//     throw new Error("Method not implemented.");
+//   }
+//   // get(n: number) {
+//   //   throw new Error("Method not implemented.");
+//   // }
+//   abstract add(...a: any);
+//   // abstract make(...a): I;
+//   abstract get(...a): any;
+//   abstract upsert(): any;
+// }
 
-  add(e) {
-    this.store.push(e);
-  }
-}
+// export abstract class EntityComponentStore<
+//   T extends Component<any, any>
+// > extends MapStore<T> {
+//   // store: [number, T][] = [];
+
+//   // exists(i: number):boolean {
+//   //   const toReturn = this.store.find((v) => {
+//   //     return v[0] === i;
+//   //   });
+
+//   //   if (!toReturn) throw "not found!";
+//   //   if (!toReturn[1]) throw "not found!";
+
+//   //   return true;
+//   // }
+
+//   add(c: T, i: number) {
+//     // this.push([i, c]);
+//     this.set(i, c);
+//   }
+
+//   get(i: number) {
+//     for (let x of this.keys()) {
+//       if (x === i) return this.get(x);
+//     }
+
+//     throw "not found!";
+//   }
+
+//   exists(i: number) {
+//     for (let x of this.keys()) {
+//       if (x === i) return true;
+//     }
+
+//     return false;
+//   }
+// }
 
 export type IEntitiesStore = Int32Array<SharedArrayBuffer>;
 export type IArchtypesStore = Uint8Array;
@@ -101,13 +85,11 @@ export const default2dStore: I2DStores = [];
 
 export type I1DSharedStores = Uint16Array<SharedArrayBuffer>;
 
-export type IStores<I> = Record<
-  keyof I,
-  Store<number>
->;
+export type IStores<I> = Record<keyof I, StoreV2<number>>;
 
-export type IComponentsStores<I extends Component<any, any>> = Record<
-  string,
-  ComponentStore<I>
->;
+export type IComponentsStores<
+  I extends Component<any, any>,
+  II extends StoreV2<any>
+> = Record<keyof II, StoreV2<I>>;
+
 export const defaultStore: IStores<any> = {};

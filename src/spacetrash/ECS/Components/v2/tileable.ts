@@ -1,7 +1,8 @@
 // Gives an entity the name of it's EntityComponent
 
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+
 import { ITiles } from "../../EntityComponents";
 import { ISpaceTrashComponents } from "../v1";
 
@@ -14,25 +15,25 @@ export class TileComponent extends Component<unknown, ISpaceTrashComponents> {
   }
 }
 
-export class TileComponentStore extends Store<Record<number, ITiles>> {
-  store: Record<number, ITiles> = {};
+export class TileComponentStore extends MapStoreV2<ITiles> {
+  // store: Record<number, ITiles> = {};
 
-  constructor() {
-    super();
-  }
+  // constructor() {
+  //   super();
+  // }
 
-  get(n: number) {
-    return this.store[n];
-  }
+  // get(n: number) {
+  //   return this.store[n];
+  // }
 
-  add(c: ITiles, i: number) {
-    this.store[i] = c;
-  }
+  // add(c: ITiles, i: number) {
+  //   this.store[i] = c;
+  // }
 
-  make(entityConstructorName: string) {
-    throw "not implemented";
-    // return new ClassificationComponent(entityConstructorName);
-  }
+  // make(entityConstructorName: string) {
+  //   throw "not implemented";
+  //   // return new ClassificationComponent(entityConstructorName);
+  // }
 
   // pmcOfEid(eid: number): { position: any; moving: any; classification: any } {
   //   throw new Error("Method not implemented.");

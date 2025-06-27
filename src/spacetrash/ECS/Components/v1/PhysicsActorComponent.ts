@@ -1,4 +1,4 @@
-import { EntityComponentStore } from "../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 
 import { PhysicsComponent } from "./physics";
 
@@ -21,12 +21,9 @@ export class PhysicsActorComponent extends PhysicsComponent {
   }
 }
 
-export class PhysicsActorStore extends EntityComponentStore<PhysicsActorComponent> {
+export class PhysicsActorStore extends MapStoreV2<PhysicsActorComponent> {
   constructor() {
     super();
   }
 
-  make(x: number = 0, y: number = 0, r: number = 0, dx: number, dy: number) {
-    return new PhysicsActorComponent(x, y, r, dx, dy);
-  }
 }

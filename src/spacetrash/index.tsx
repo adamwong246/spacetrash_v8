@@ -3,9 +3,6 @@ import { Ticker } from 'pixi.js';
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { ArcadePhysics } from "arcade-physics";
-import {
-  DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps
-} from "dockview";
 
 import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
@@ -17,10 +14,7 @@ import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 import bootScene from "./Scenes/Boot";
 import mainLoopScene from "./Scenes/MainLoop";
 
-import { ITermWindowState, TerminalWindow } from "./UI/terminal";
-import { BotWindow } from "./UI/BotWindow";
-import { MapWindow } from "./UI/map";
-import { BotsWindow } from "./UI/BotsWindow";
+import { ITermWindowState } from "./UI/terminal";
 
 import { ITerminalLine, TerminalGame } from "./Terminal";
 
@@ -32,18 +26,15 @@ import {
 } from "./ECS/Components/v2/physical";
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
-import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
 import { TileSize, MapSize, FPS } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
-import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
 import { ArcadePhysicsStore } from "./ECS/Components/v2/arcadePhysics";
 import { V3AttackComponentStore } from "./ECS/Components/v3/attack";
-import { FabricatorWindow } from "./UI/FabricatorWindow";
 import { AiAgentStore } from "./ECS/Components/v3/ai";
-import { AttackableStore, CameraStore, LightIncastingStore } from "./ECS/Components/v1/casting/in";
+import { AttackableStore, LightIncastingStore } from "./ECS/Components/v1/casting/in";
 import { LightOutcastingStore } from "./ECS/Components/v1/casting/out";
 import { SetPieceStore } from "./ECS/Components/v3/setPieces";
 
@@ -97,12 +88,30 @@ function isNumeric(str: string): boolean {
   return /^[1-9]+$/.test(str) && str.length === 1;
 }
 
-const Drawings = new DrawableStoreV2();
-
-export class SpaceTrash extends TerminalGame<IRenderings, {
-  SetPieceComponent: SetPieceStore,
-  ActorComponent: ActorStore
-}, number> {
+export class SpaceTrash extends TerminalGame<IRenderings,
+  ICanvases,
+  {
+    Actors: ActorStore,
+    SetPieces: SetPieceStore,
+    AiAgentComponent: AiAgentStore,
+    DrawableComponent: DrawableStoreV2
+    Eid2PM: Eid2PMStore,
+    NameableComponent: NameableStore,
+    TileComponent: TileComponentStore,
+    AttackableComponent: AttackableStore,
+    ClassificationComponent: ClassificationStore,
+    LightIncastingComponent: LightIncastingStore,
+    LightOutcastingComponent: LightOutcastingStore,
+    V3AttackComponent: V3AttackComponentStore,
+    FloatMovements: FloatMovingStore,
+    FloatPositions: FloatPositionStore,
+    IntegerPositionComponent: IntegerPositionStore,
+    OrdinalDirectionComponent: OrdinalDirectionStore,
+    OridinalMovingComponent: OridinalMovingStore,
+    TankMovingComponent: TankMovingStore,
+    DegreesDirectionComponent: DegreesDirectionStore,
+    ArcadePhysicsComponent: ArcadePhysicsStore
+  }> {
 
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
@@ -114,6 +123,10 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   pixijsBotParentRef: HTMLElement;
   pixijsRenderer: PIXI.Application;
   pixi2dApp: PIXI.Application;
+
+  arcadePhysics: ArcadePhysics;
+  arcadePhysicsTick: any;
+  arcadePhysicsCanvasContext: any;
 
   public videoFeed: number = 1;
 
@@ -131,17 +144,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
   terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
 
-  bufferRef: React.MutableRefObject<null>;
-
   forward: boolean = false;
   back: boolean = false;
   left: boolean = false;
   right: boolean = false;
 
   botsHook: React.Dispatch<any>;
-  arcadePhysics: ArcadePhysics;
-  arcadePhysicsTick: any;
-  arcadePhysicsCanvasContext: any;
 
   constructor(domNode: HTMLElement) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -154,44 +162,31 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       stateSpace,
       SpaceTrashMainSystem,
       {
+        Actors: new ActorStore(),
         AiAgentComponent: new AiAgentStore(),
         ArcadePhysicsComponent: new ArcadePhysicsStore(),
         AttackableComponent: new AttackableStore(),
-        NameableComponent: new NameableStore(),
-        
-        DrawableComponent: Drawings,
-
         ClassificationComponent: new ClassificationStore(),
-
-        DegreesDirectionComponent: new DegreesDirectionStore(),        
-        FloatMovingComponent: new FloatMovingStore(),
-        FloatPositionComponent: new FloatPositionStore(),
+        DegreesDirectionComponent: new DegreesDirectionStore(),
+        DrawableComponent: new DrawableStoreV2(),
+        Eid2PM: new Eid2PMStore(),
+        FloatMovements: new FloatMovingStore(),
+        FloatPositions: new FloatPositionStore(),
         IntegerPositionComponent: new IntegerPositionStore(),
-        OrdinalDirectionComponent: new OrdinalDirectionStore(),
-        OridinalMovingComponent: new OridinalMovingStore(),
-        TankMovingComponent: new TankMovingStore(),
-
         LightIncastingComponent: new LightIncastingStore(),
         LightOutcastingComponent: new LightOutcastingStore(),
-        
+        NameableComponent: new NameableStore(),
+        OrdinalDirectionComponent: new OrdinalDirectionStore(),
+        OridinalMovingComponent: new OridinalMovingStore(),
+        SetPieces: new SetPieceStore(),
+        TankMovingComponent: new TankMovingStore(),
         TileComponent: new TileComponentStore(),
         V3AttackComponent: new V3AttackComponentStore(),
-      },
-      {
-        SetPieceComponent: new SetPieceStore(),
-        ActorComponent: new ActorStore(),
-        LightComponent: new LightComponentStore(),
-        ActorsLit: new LightingComponentStore(),
-        // SetPiecesLit: new LightingComponentStore(),
-        Eid2PMComponent: new Eid2PMStore(),
-        LightPositionComponent: new LightPositionStore()
+
       },
       performanceConfig,
       new Set(["2d", "webgl2", "pixi2d", "threejs", "arcadePhysics"]),
       domNode,
-      [
-        "Tile", "SpaceTrashBot", "FloorTile", "WallTile"
-      ]
     );
 
     this.camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.5, TileSize * MapSize);
@@ -281,55 +276,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
       })
     super.start()
-  }
-
-  registerTerminalBuffer(inputRef: React.MutableRefObject<null>) {
-    this.bufferRef = inputRef;
-  }
-
-  dockViewComponents: Record<string, React.FunctionComponent<IDockviewPanelProps>> = {
-
-    default: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <div>
-          <p>default</p>
-          {/* <div>{`custom tab: ${props.api.title}`}</div>
-              <span>{`value: ${props.params.myValue}`}</span> */}
-        </div>
-      );
-    },
-
-    map: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <MapWindow game={this} />
-      );
-    },
-
-    bot: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <BotWindow game={this} />
-      );
-    },
-
-    bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
-    term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
-    fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
-  }
-
-  onDockviewReady(event: DockviewReadyEvent) {
-    super.onDockviewReady(event);
-    event.api.addPanel({
-      id: 'term',
-      component: 'term',
-      floating: {
-        position: { left: 10, top: 10 },
-        width: 900,
-        height: 600
-      },
-      params: {
-        game: this
-      }
-    })
   }
 
   loginHook() {
@@ -429,16 +375,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   rotationOfBot(eid: number): { r: number; } {
-    // const storeName = "DegreesDirectionComponent";
-
-    // if (!this.componentStores[storeName]) throw `missing component store ${storeName}`;
-
-    // const c = this.componentStores[storeName].get(eid);
-    // if (!c) throw "missing entity";
-
-    const arcadeObjects = this.componentStores['ArcadePhysicsComponent'] as ArcadePhysicsStore;
-
-    const arcadeObjectComponent = arcadeObjects.get(eid);
+    const arcadeObjectComponent =this.components.ArcadePhysicsComponent.take(eid);
 
     return {
       r: arcadeObjectComponent?.arcadeObject.rotation,
@@ -446,10 +383,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   }
 
   positionOfBot(eid: number): { x: number; y: number } {
-
-    const arcadeObjects = this.componentStores['ArcadePhysicsComponent'] as ArcadePhysicsStore;
-
-    const arcadeObjectComponent = arcadeObjects.get(eid);
+    const arcadeObjectComponent = this.components.ArcadePhysicsComponent.take(eid);
 
     return {
       x: arcadeObjectComponent.arcadeObject.position.x,
@@ -471,7 +405,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     return p;
   }
-
 
   registerBotsHook(stateSetter: React.Dispatch<any>) {
     this.botsHook = stateSetter;
@@ -508,14 +441,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     } else {
       throw `no window by id ${s}, ${p}`
     }
-  }
-
-  focusOnTermInput() {
-    this.bufferRef.current.focus()
-  }
-
-  unFocusOnTermInput() {
-    this.bufferRef.current.blur()
   }
 
   async registerCanvas(

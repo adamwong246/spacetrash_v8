@@ -1,5 +1,6 @@
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { Store } from "../../../../engine/VECS.ts/types";
+import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+
 import { PhysicsActorComponent } from "../v1/PhysicsActorComponent";
 import { PhysicsSetPieceComponent } from "../v1/PhysicsSetPieceComponent";
 
@@ -25,28 +26,28 @@ export class Kamkikaze extends V3AttackComponent {
   };
 }
 
-export class V3AttackComponentStore extends Store<V3AttackComponent> {
-  store: Map<number, V3AttackComponent>;
+export class V3AttackComponentStore extends MapStoreV2<V3AttackComponent> {
+  // store: Map<number, V3AttackComponent>;
 
-  constructor() {
-    super();
-    this.store = new Map();
-  }
+  // constructor() {
+  //   super();
+  //   this.store = new Map();
+  // }
 
-  add(...a: any) {
-    throw new Error("Method not implemented.");
-  }
+  // add(...a: any) {
+  //   throw new Error("Method not implemented.");
+  // }
 
-  each(
-      cb: (
-        eid,
-        apo: V3AttackComponent
-      ) => void
-    ) {
-      this.store.forEach((value, key) => {
-        cb(Number(key), value);
-      });
-    }
+  // each(
+  //     cb: (
+  //       eid,
+  //       apo: V3AttackComponent
+  //     ) => void
+  //   ) {
+  //     this.store.forEach((value, key) => {
+  //       cb(Number(key), value);
+  //     });
+  //   }
 
   
   // withIf(i: number, cb: (i: [number, DrawableComponent, string]) => void) {
