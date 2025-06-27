@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { FOV } from "rot-js";
 import {
   MapSize,
-  SPEED_CONSTANT,
   TANK_VELOCITY_ANGULAR,
   TANK_VELOCITY as TANK_VELOCITY_LINEAR,
   TileSize,
@@ -10,13 +9,8 @@ import {
 import { FloatPositionComponent } from "../Components/v2/physical";
 import { SpaceTrash } from "../..";
 import { FRICTION_CONSTANT } from "../../Constants";
-import { LightIncastingStore } from "../Components/casting/in";
-import {
-  LightOutcastingStore,
-  LightOutcastingComponent,
-} from "../Components/casting/out";
-import { SetPieceStore } from "../Components/phase0";
-import { ActorStore } from "../Components/phase1";
+
+import { ActorStore } from "../Components/v3/actors";
 import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import {
@@ -27,16 +21,24 @@ import {
   TankMovingStore,
   TankMovingComponent,
   DegreesDirectionStore,
-  DegreesDirectionComponent,
 } from "../Components/v2/physical";
 import { LightPositionStore } from "../Components/v3/LightPosition";
 import {
   ArcadePhysicsComponent,
   ArcadePhysicsStore,
 } from "../Components/v2/arcadePhysics";
+import { V3AttackComponentStore } from "../Components/v3/attack";
+import { AiAgentStore } from "../Components/v3/ai";
+import { LightIncastingStore } from "../Components/v1/casting/in";
+import {
+  LightOutcastingStore,
+  LightOutcastingComponent,
+} from "../Components/v1/casting/out";
+import { SetPieceStore } from "../Components/v3/setPieces";
 
 let actors: ActorStore;
 let arcadeObjects: ArcadePhysicsStore;
+// let attacks: V3AttackComponentStore;
 let dds: DegreesDirectionStore;
 let drawables: DrawableStoreV2;
 let eid2PMSs: Eid2PMStore;
@@ -44,10 +46,11 @@ let fmc: FloatMovingStore;
 let fps: FloatPositionStore;
 let incasters: LightIncastingStore;
 let ips: IntegerPositionStore;
-let light2IntegerPosition: LightPositionStore;
+// let light2IntegerPosition: LightPositionStore;
 let outcasters: LightOutcastingStore;
 let setPieces: SetPieceStore;
 let tms: TankMovingStore;
+let aiAgents: AiAgentStore;
 
 let GAME: SpaceTrash;
 let DELTA: number;
@@ -57,10 +60,11 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   DELTA = delta;
 
   // Level 0 - "Component Stores"
+  aiAgents = game.componentStores["AiAgentComponent"] as AiAgentStore;
+  // attacks = game.componentStores["V3AttackComponent"] as V3AttackComponentStore;
   arcadeObjects = game.componentStores[
     "ArcadePhysicsComponent"
   ] as ArcadePhysicsStore;
-
   dds = game.componentStores[
     "DegreesDirectionComponent"
   ] as DegreesDirectionStore;
@@ -83,19 +87,79 @@ export default (game: SpaceTrash, delta: number, fovMap) => {
   actors = game.stores["ActorComponent"] as ActorStore;
   eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-  light2IntegerPosition = game.stores[
-    "LightPositionComponent"
-  ] as LightPositionStore;
 
+  // light2IntegerPosition = game.stores[
+  //   "LightPositionComponent"
+  // ] as LightPositionStore;
+
+  updateSetPieces();
   resetIllumination();
-  // runFloatingPhysics();
-
+  runAI();
   runTankPhysics();
   runArcadePhysics();
+  // runFloatingPhysics();
 
-  // scanFrustum();
   rotLighting();
 };
+
+function updateSetPieces() {
+  for (let y = 0; y < MapSize; y++) {
+    // setPieces.store[y] = [];
+    for (let x = 0; x < MapSize; x++) {
+      setPieces.store[y][x].actorIds = actors.byXandY(x, y);
+
+      // for (let yy = 0; yy < MapSize; yy++) {
+      //   setPieces.store[y][x].FOV[yy] = [];
+      //   for (let xx = 0; xx < MapSize; xx++) {
+      //     setPieces.store[y][x].FOV[yy][xx] = [];
+      //   }
+      // }
+    }
+  }
+}
+
+function runAI() {
+  debugger;
+  actors.each((eid, a) => {
+    debugger;
+    a.tick(GAME, DELTA);
+  });
+
+  // attacks.each((eid, attack) => {
+  //   function lightPasses(x, y) {
+  //     if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
+  //       const z = setPieces.at(x, y);
+
+  //       if (z && z.tileType === "WallTile") {
+  //         return false;
+  //       } else {
+  //         return true;
+  //       }
+  //     }
+  //     return false;
+
+  //     // var key = x + "," + y;
+  //     // if (key in data) {
+  //     //   return data[key] == 0;
+  //     // }
+  //     // return false;
+  //   }
+
+  //   var fov = new FOV.RecursiveShadowcasting(lightPasses);
+
+  //   fov.compute(
+  //     Math.round(GAME.camera.position.x / TileSize),
+  //     Math.round(GAME.camera.position.y / TileSize),
+  //     10,
+  //     function (x, y, r, visibility) {
+  //       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
+  //         attack.givenItemsInFov(x, y, r, actors.onXandY(x, y));
+  //       }
+  //     }
+  //   );
+
+  // });
+}
 
 export function runArcadePhysics() {
   // let repaintLights = false;
@@ -333,7 +397,6 @@ function resetIllumination() {
   for (let y = 0; y < MapSize; y++) {
     for (let x = 0; x < MapSize; x++) {
       setPieces.store[y][x].luminance = -1;
-      // setPieces.store[y][x].s
     }
   }
 }
@@ -403,16 +466,16 @@ function rotLighting() {
   );
 
   let colors = {
-    1: new THREE.MeshBasicMaterial({ color: 0xffffff}),
-    2: new THREE.MeshBasicMaterial({ color: 0xe0e0e0}),
-    3: new THREE.MeshBasicMaterial({ color: 0xc0c0c0}),
-    4: new THREE.MeshBasicMaterial({ color: 0xa0a0a0}),
-    5: new THREE.MeshBasicMaterial({ color: 0x808080}),
-    6: new THREE.MeshBasicMaterial({ color: 0x606060}),
-    7: new THREE.MeshBasicMaterial({ color: 0x404040}),
-    8: new THREE.MeshBasicMaterial({ color: 0x202020}),
-    9: new THREE.MeshBasicMaterial({ color: 0x101010}),
-    10: new THREE.MeshBasicMaterial({ color: 0x000000}),
+    1: new THREE.MeshBasicMaterial({ color: 0xffffff }),
+    2: new THREE.MeshBasicMaterial({ color: 0xe0e0e0 }),
+    3: new THREE.MeshBasicMaterial({ color: 0xc0c0c0 }),
+    4: new THREE.MeshBasicMaterial({ color: 0xa0a0a0 }),
+    5: new THREE.MeshBasicMaterial({ color: 0x808080 }),
+    6: new THREE.MeshBasicMaterial({ color: 0x606060 }),
+    7: new THREE.MeshBasicMaterial({ color: 0x404040 }),
+    8: new THREE.MeshBasicMaterial({ color: 0x202020 }),
+    9: new THREE.MeshBasicMaterial({ color: 0x101010 }),
+    10: new THREE.MeshBasicMaterial({ color: 0x000000 }),
   };
 
   for (let l of lightMap) {
@@ -429,7 +492,7 @@ function rotLighting() {
       setPiece.drawing.sprite.visible = true;
       setPiece.drawing.mesh.visible = true;
 
-      setPiece.drawing.mesh.material = colors[lit]
+      setPiece.drawing.mesh.material = colors[Math.round(lit / 2 + 5)];
 
       arcadeObjects.each((eid, apo) => {
         // apo.arcadeObject.visible = true;

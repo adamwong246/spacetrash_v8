@@ -1,14 +1,11 @@
 // Gives an entity the name of it's EntityComponent
 
-import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
 import { ITiles } from "../../EntityComponents";
+import { ISpaceTrashComponents } from "../v1";
 
-export class TileComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class TileComponent extends Component<unknown, ISpaceTrashComponents> {
   tileType: ITiles;
 
   constructor(tileType: ITiles) {
@@ -18,7 +15,6 @@ export class TileComponent extends Component<
 }
 
 export class TileComponentStore extends Store<Record<number, ITiles>> {
-  
   store: Record<number, ITiles> = {};
 
   constructor() {
@@ -28,13 +24,13 @@ export class TileComponentStore extends Store<Record<number, ITiles>> {
   get(n: number) {
     return this.store[n];
   }
-  
+
   add(c: ITiles, i: number) {
-    this.store[i] = c
+    this.store[i] = c;
   }
 
   make(entityConstructorName: string) {
-    throw "not implemented"
+    throw "not implemented";
     // return new ClassificationComponent(entityConstructorName);
   }
 

@@ -1,31 +1,10 @@
 
 import { Store } from "../../../../engine/VECS.ts/types";
 import { TileSize } from "../../../Constants";
-import { LightIncastingComponent } from "../casting/in";
+import { LightIncastingComponent } from "../v1/casting/in";
 import { DrawableComponent } from "../v2/drawable";
 import { IntegerPositionComponent } from "../v2/physical";
 
-
-
-// export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
-//   sprite: PIXI.Sprite;
-//   mesh: THREE.Mesh;
-
-
-//   constructor(sprite: PIXI.Sprite, mesh: THREE.Mesh) {
-//     super();
-//     this.mesh = mesh;
-//     this.sprite = sprite;
-//   }
-
-//   setMesh(m: THREE.Mesh) {
-//     this.mesh = m;
-//   }
-
-//   setSprite(s: Sprite) {
-//     this.sprite = s;
-//   }
-// }
 
 export class LightPositionStore extends Store<IntegerPositionComponent> {
   store: Map<number, IntegerPositionComponent>;

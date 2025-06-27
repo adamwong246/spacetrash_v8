@@ -1,8 +1,8 @@
 // Gives an entity the name of it's EntityComponent
 
-import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
+import { ISpaceTrashComponents } from "../v1";
 
 export class ClassificationComponent extends Component<
   unknown,

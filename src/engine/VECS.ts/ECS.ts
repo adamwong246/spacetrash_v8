@@ -75,8 +75,8 @@ export abstract class ECS {
 
   }
 
-  addComponent(i: number, c: Component<any, any>) {
-    const name = c.constructor.name;
+  addComponent(i: number, c: Component<any, any>, classOverride?: "string") {
+    const name = classOverride || c.constructor.name;
     const store = this.componentStores[name];
 
     if (!store)

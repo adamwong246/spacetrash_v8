@@ -1,35 +1,30 @@
-const frustum = new THREE.Frustum();
-const matrix = new THREE.Matrix4();
-
 import React from "react";
-import { Text, TextStyle, Ticker } from 'pixi.js';
-import * as THREE from "three";
-
-import * as Matter from "matter-js";
-import { ArcadePhysics } from "arcade-physics";
-
-import brick from "./Assets/brick.png";
-import stone from "./Assets/stone.png";
-import voidPng from "./Assets/void.png";
+import { Ticker } from 'pixi.js';
 import * as PIXI from "pixi.js";
+import * as THREE from "three";
+import { ArcadePhysics } from "arcade-physics";
 import {
   DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps
 } from "dockview";
 
+import brick from "./Assets/brick.png";
+import stone from "./Assets/stone.png";
+import voidPng from "./Assets/void.png";
+
 import { StateSpace } from "../engine/StateSpace";
 import { IPerformanceConfig } from "../engine/VECS.ts/ECS";
 
-import { AttackableStore, CameraStore, LightIncastingStore } from "./ECS/Components/casting/in";
-
-import { SetPieceStore } from "./ECS/Components/phase0";
-import { ActorStore } from "./ECS/Components/phase1";
-import { ITermWindowState, TerminalWindow } from "./UI/terminal";
 import bootScene from "./Scenes/Boot";
 import mainLoopScene from "./Scenes/MainLoop";
+
+import { ITermWindowState, TerminalWindow } from "./UI/terminal";
 import { BotWindow } from "./UI/BotWindow";
 import { MapWindow } from "./UI/map";
 import { BotsWindow } from "./UI/BotsWindow";
+
 import { ITerminalLine, TerminalGame } from "./Terminal";
+
+import { ActorStore } from "./ECS/Components/v3/actors";
 import {
   IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore,
   TankMovingStore,
@@ -38,29 +33,19 @@ import {
 import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
 import { LightComponentStore, LightingComponentStore } from "./ECS/Components/v2/lights";
-
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
-
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
-import { TileSize, MapSize, FPS, shipLength } from "./Constants";
+import { TileSize, MapSize, FPS } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
-import { DrawableComponent, DrawableStoreV2 } from "./ECS/Components/v2/drawable";
+import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { LightPositionStore } from "./ECS/Components/v3/LightPosition";
-import { LightOutcastingStore } from "./ECS/Components/casting/out";
-import { MatterStore } from "./ECS/Components/v2/matter";
 import { ArcadePhysicsStore } from "./ECS/Components/v2/arcadePhysics";
-
-var Engine = Matter.Engine,
-  Render = Matter.Render,
-  Runner = Matter.Runner,
-  Bodies = Matter.Bodies,
-  Composite = Matter.Composite;
-
-//////////////////////////////////////////////////////////////////////
-
-// const spotlight = new THREE.SpotLight(0xff0000, 1000);
-// const pointlight = new THREE.PointLight(0xffffff, 1000, 0, 2)
-// const light = new THREE.RectAreaLight( 0xff0000, 1000);
+import { V3AttackComponentStore } from "./ECS/Components/v3/attack";
+import { FabricatorWindow } from "./UI/FabricatorWindow";
+import { AiAgentStore } from "./ECS/Components/v3/ai";
+import { AttackableStore, CameraStore, LightIncastingStore } from "./ECS/Components/v1/casting/in";
+import { LightOutcastingStore } from "./ECS/Components/v1/casting/out";
+import { SetPieceStore } from "./ECS/Components/v3/setPieces";
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
@@ -72,18 +57,6 @@ const performanceConfig: IPerformanceConfig = {
 };
 
 const defToRad = (d: number) => (d * Math.PI) / 180;
-
-let shipMapMouseX = 0;
-let shipMapMouseY = 0;
-export type ISpaceTrashApps =
-  | "terminal"
-  | `shipmap`
-  | `manual`
-  | `drone`
-  | "drones"
-  | "shipmapV2"
-  | "droneV2";
-
 
 const bootScreenTermLine: ITerminalLine = {
   status: "pass",
@@ -107,13 +80,13 @@ boot sequence complete!
   `,
 };
 
-export type ICanvases = "map" | "bot" | "matter" | "arcadePhysics";
+export type ICanvases = "map" | "bot" | "arcadePhysics";
 
 export type IState = {
   game: SpaceTrash;
 };
 
-export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | "matter" | "arcadePhysics" | null;
+export type IRenderings = "2d" | "webgl2" | "pixi2d" | "threejs" | "arcadePhysics" | null;
 
 function isAlphabetic(str: string): boolean {
   if (!str) return false;
@@ -141,11 +114,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
   pixijsBotParentRef: HTMLElement;
   pixijsRenderer: PIXI.Application;
   pixi2dApp: PIXI.Application;
-
-  matterEngine: Matter.Engine;
-  matterRenderer: Matter.Render;
-
-  public pixiLoaded: boolean = false;
 
   public videoFeed: number = 1;
 
@@ -186,35 +154,40 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       stateSpace,
       SpaceTrashMainSystem,
       {
+        AiAgentComponent: new AiAgentStore(),
+        ArcadePhysicsComponent: new ArcadePhysicsStore(),
         AttackableComponent: new AttackableStore(),
-        CameraComponent: new CameraStore(),
-        ClassificationComponent: new ClassificationStore(),
-        DegreesDirectionComponent: new DegreesDirectionStore(),
+        NameableComponent: new NameableStore(),
+        
         DrawableComponent: Drawings,
+
+        ClassificationComponent: new ClassificationStore(),
+
+        DegreesDirectionComponent: new DegreesDirectionStore(),        
         FloatMovingComponent: new FloatMovingStore(),
         FloatPositionComponent: new FloatPositionStore(),
         IntegerPositionComponent: new IntegerPositionStore(),
-        LightIncastingComponent: new LightIncastingStore(),
-        LightOutcastingComponent: new LightOutcastingStore(),
-        MatterComponent: new MatterStore(),
-        NameableComponent: new NameableStore(),
         OrdinalDirectionComponent: new OrdinalDirectionStore(),
         OridinalMovingComponent: new OridinalMovingStore(),
         TankMovingComponent: new TankMovingStore(),
+
+        LightIncastingComponent: new LightIncastingStore(),
+        LightOutcastingComponent: new LightOutcastingStore(),
+        
         TileComponent: new TileComponentStore(),
-        ArcadePhysicsComponent: new ArcadePhysicsStore(),
+        V3AttackComponent: new V3AttackComponentStore(),
       },
       {
         SetPieceComponent: new SetPieceStore(),
         ActorComponent: new ActorStore(),
         LightComponent: new LightComponentStore(),
         ActorsLit: new LightingComponentStore(),
-        SetPiecesLit: new LightingComponentStore(),
+        // SetPiecesLit: new LightingComponentStore(),
         Eid2PMComponent: new Eid2PMStore(),
         LightPositionComponent: new LightPositionStore()
       },
       performanceConfig,
-      new Set(["2d", "webgl2", "pixi2d", "threejs", "matter", "arcadePhysics"]),
+      new Set(["2d", "webgl2", "pixi2d", "threejs", "arcadePhysics"]),
       domNode,
       [
         "Tile", "SpaceTrashBot", "FloorTile", "WallTile"
@@ -228,9 +201,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.scene = new THREE.Scene();
 
     this.pixi2dApp = new PIXI.Application();
-
-    this.matterEngine = Engine.create();
-    this.matterEngine.gravity.scale = 0.000001;
 
     this.addToHistory(bootScreenTermLine)
 
@@ -582,26 +552,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
       });
 
     }
-    if (key === "matter") {
-
-      // var width = (MapSize) * TileSize,
-      //   height = (MapSize) * TileSize;
-      // canvas.width = width;
-      // canvas.height = height;
-
-      // this.matterRenderer = Render.create({
-      //   canvas,
-      //   element: parentComponent,
-      //   engine: this.matterEngine,
-      //   options: {
-      //     width,
-      //     height,
-      //     wireframes: false
-      //   }
-      // });
-
-
-    }
 
     if (key === "arcadePhysics") {
 
@@ -620,49 +570,12 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
       this.arcadePhysics = new ArcadePhysics(config)
 
-      // box
-      // const box = this.arcadePhysics.add.body(20, 20, 64, 64)
-      // box.setVelocityX(20)
-      // box.setBounce(0.6)
-      // box.setCollideWorldBounds(true)
-
-      // // ball
-
-
-      // // platform
-      // const platform = this.arcadePhysics.add.staticBody(60, 350, 160, 32)
-
-      // // colliders
-      // this.arcadePhysics.add.collider(box, ball)
-      // this.arcadePhysics.add.collider(box, platform)
-      // this.arcadePhysics.add.collider(ball, platform)
-
-
-      // var width = (MapSize) * TileSize,
-      //   height = (MapSize) * TileSize;
-      // canvas.width = width;
-      // canvas.height = height;
-
-      // this.matterRenderer = Render.create({
-      //   canvas,
-      //   element: parentComponent,
-      //   engine: this.matterEngine,
-      //   options: {
-      //     width,
-      //     height,
-      //     wireframes: false
-      //   }
-      // });
-
     }
 
     if (
       this.pixi2dApp &&
       this.threejsRenderer &&
-      // this.matterRenderer &&
       this.arcadePhysics) {
-
-
       this.unpause();
     }
   }
@@ -694,10 +607,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
   async renderShipMap() {
     // todo
-  }
-
-  async renderMatterJs() {
-    // Engine.update(this.matterEngine);
   }
 
   async renderArcadePhysics() {

@@ -1,15 +1,9 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
-import { ActorSize, MapSize, NumberOfActors, TileSize } from "../Constants";
-import { PuckBot } from "../ECS/EntityComponents/actors/PuckBot";
-import { SpaceTrashBot } from "../ECS/EntityComponents/actors/TankBot";
-import { RotCellularrShip as RotCellularShip } from "../ECS/EntityComponents/RotCellularyShi";
-
-
-import { RotDiggerShip } from "../ECS/EntityComponents/ship";
-// import { SpaceTrashBot } from "../ECS/EntityComponents/SpaceTrashBot";
-
-// import NAMES from "./../NameGenerator"
+import { ActorSize, MapSize } from "../Constants";
+import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
+import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
+import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
 
 const SPEED_CONSTANT = 0.05
 
@@ -32,7 +26,7 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const moreBots = [...new Array(50)].map((n) => {
+    const moreBots = [...new Array(1)].map((n) => {
       return new PuckBot(
         // 200, 200,
         Math.random() * MapSize,
@@ -45,7 +39,7 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const ship = new RotCellularShip();
+    const ship = new BoringShip();
 
     game.setEntitiesComponent([ship, ...ship.toTiles(),
       ...moreBots

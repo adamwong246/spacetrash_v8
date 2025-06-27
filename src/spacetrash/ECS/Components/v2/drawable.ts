@@ -1,13 +1,11 @@
-import  ArcadePhysics  from "arcade-physics";
-
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
-import { Text, TextStyle, Ticker } from "pixi.js";
+import { Text } from "pixi.js";
 
 import { Sprite } from "pixi.js";
-import { ISpaceTrashComponents } from "..";
+
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
+import { Store } from "../../../../engine/VECS.ts/types";
 
 import {
   DegreesDirectionComponent,
@@ -16,10 +14,10 @@ import {
   PositionComponent,
 } from "./physical";
 
-import { LightIncastingComponent } from "../casting/in";
 import { TileSize } from "../../../Constants";
-import { SpaceTrash } from "../../..";
 import { ArcadePhysicsComponent } from "./arcadePhysics";
+import { ISpaceTrashComponents } from "../v1";
+import { LightIncastingComponent } from "../v1/casting/in";
 
 export type IChars = Text;
 
@@ -42,14 +40,13 @@ export class DrawableComponent extends Component<any, ISpaceTrashComponents> {
   constructor(
     sprite: PIXI.Sprite,
     mesh: THREE.Mesh,
-    char: IChars = character("?"),
+    char: IChars = character("?")
   ) {
     super();
     this.mesh = mesh;
     this.sprite = sprite;
     this.char = char;
     this.dirty = true;
-    
   }
 
   setMesh(m: THREE.Mesh) {
@@ -167,7 +164,6 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
   // }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  
   store: Map<number, DrawableComponent>;
 
   constructor() {
@@ -213,7 +209,6 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
   }
 
   findByMeshId(uuid: string) {
-
     for (const [eid, dc] of this.store) {
       // let qq = this.store.get(vs[k]);
       // if (!qq) break;
@@ -229,7 +224,7 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
 
     //   const k = i.toString();
     //   console.log(k)
-      
+
     // }
     throw "You tried to find a mesh but it could not be found";
   }
@@ -284,8 +279,8 @@ export class DrawableStoreV2 extends Store<DrawableComponent> {
     // debugger
     if (d.sprite) {
       // debugger
-      d.sprite.position.x = f.arcadeObject.position.x + (TileSize/2)
-      d.sprite.position.y = f.arcadeObject.position.y + (TileSize/2)
+      d.sprite.position.x = f.arcadeObject.position.x + TileSize / 2;
+      d.sprite.position.y = f.arcadeObject.position.y + TileSize / 2;
       d.sprite.rotation = f.arcadeObject.rotation;
     }
     if (d.mesh) {

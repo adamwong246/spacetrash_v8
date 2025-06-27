@@ -1,5 +1,5 @@
 import { ArcadePhysics } from "arcade-physics";
-import * as Matter from "matter-js";
+
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
@@ -27,13 +27,13 @@ import {
 import { ClassificationComponent } from "../Components/v2/classifiable";
 import { DrawableComponent } from "../Components/v2/drawable";
 
-import { LightIncastingComponent } from "../Components/casting/in";
-import { TileComponent } from "../Components/v2/tileable";
-import { MatterComponent } from "../Components/v2/matter";
+
 import { ArcadePhysicsComponent } from "../Components/v2/arcadePhysics";
 
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { degToRad } from "three/src/math/MathUtils.js";
+import { LightIncastingComponent } from "../Components/v1/casting/in";
+import { TileComponent } from "../Components/v2/tileable";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -105,7 +105,6 @@ const bunnySprite = () => {
 
 export class Tile extends SpaceTrashEntityComponent {
   tiletype: ITiles;
-  // matter: MatterComponent;
 
   constructor(
     x: number,
@@ -115,7 +114,6 @@ export class Tile extends SpaceTrashEntityComponent {
     dir: DirectionComponent,
 
     componentsV4?: {
-      matter?: MatterComponent;
       arcadePhysics?: ArcadePhysicsComponent;
     }
   ) {
@@ -138,10 +136,7 @@ export class Tile extends SpaceTrashEntityComponent {
     this.tiletype = tiletype;
 
     if (componentsV4) {
-      if (componentsV4.matter) {
-        // this.matter = componentsV4.matter;
-        comps.push(componentsV4.matter);
-      }
+      
       if (componentsV4.arcadePhysics) {
         comps.push(componentsV4.arcadePhysics);
       }
@@ -194,26 +189,7 @@ export class WallTile extends Tile {
       new DrawableComponent(brickSprite(), wallTile(), new PIXI.Text("░")),
       new OrdinalDirectionComponent(d),
       {
-        matter: new MatterComponent(
-          // Matter.Bodies.rectangle((MapSize * TileSize) / 2, (MapSize * TileSize) / 2, TileSize, TileSize, {
-          Matter.Bodies.rectangle(
-            (x * TileSize) / 4,
-            (y * TileSize) / 4,
-            TileSize / 4,
-            TileSize / 4,
-            {
-              isStatic: true,
-              // collisionFilter: {
-              //   category: 0,
-              // },
-              render: {
-                fillStyle: "green",
-                strokeStyle: "orange",
-                lineWidth: 3,
-              },
-            }
-          )
-        ),
+       
         arcadePhysics: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
           const cube = ap.add.staticBody(
             x * TileSize,
@@ -237,7 +213,7 @@ export class VoidTile extends Tile {
       new DrawableComponent(voidSprite(), voidTile(), new PIXI.Text("█")),
       new OrdinalDirectionComponent("north"),
       {
-        matter: undefined,
+
       }
     );
   }

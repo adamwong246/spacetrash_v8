@@ -1,6 +1,7 @@
-import { ISpaceTrashComponents } from "..";
+
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { EntityComponentStore, Store } from "../../../../engine/VECS.ts/types";
+import { ISpaceTrashComponents } from "../v1";
 
 // Gives an entity a position on the map
 export abstract class PositionComponent extends Component<

@@ -1,27 +1,11 @@
-import { ArcadePhysics } from "arcade-physics/";
 import * as THREE from "three";
-import { Text, TextStyle, Ticker } from "pixi.js";
 
-const WarpField = require("warp-field");
-const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
 import { SpaceTrash } from "../..";
-import { MapBoundHigh, MapBoundLow, MapSize, SPEED_CONSTANT, TileSize } from "../../Constants";
-import {
-  LightIncastingComponent,
-  LightIncastingStore,
-} from "../Components/casting/in";
-import {
-  LightOutcastingComponent,
-  LightOutcastingStore,
-} from "../Components/casting/out";
-import { SetPieceComponent, SetPieceStore } from "../Components/phase0";
-import { ActorStore } from "../Components/phase1";
+import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
+
+import { ActorStore } from "../Components/v3/actors";
 import { ClassificationStore } from "../Components/v2/classifiable";
-import {
-  DrawableStoreV2,
-  DrawableComponent,
-  IChars,
-} from "../Components/v2/drawable";
+import { DrawableStoreV2, DrawableComponent } from "../Components/v2/drawable";
 import { Eid2PMStore, Eid2PMComponent } from "../Components/v2/eid2PMC";
 import {
   LightingComponentStore,
@@ -29,7 +13,6 @@ import {
 } from "../Components/v2/lights";
 import {
   IntegerPositionStore,
-  IntegerPositionComponent,
   FloatMovingStore,
   FloatPositionStore,
   TankMovingStore,
@@ -37,10 +20,20 @@ import {
 } from "../Components/v2/physical";
 import { TileComponentStore } from "../Components/v2/tileable";
 import { LightPositionStore } from "../Components/v3/LightPosition";
-import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
+import { ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
+import { AiAgentStore } from "../Components/v3/ai";
+import {
+  LightOutcastingComponent,
+  LightOutcastingStore,
+} from "../Components/v1/casting/out";
+import {
+  LightIncastingStore,
+  LightIncastingComponent,
+} from "../Components/v1/casting/in";
+import { SetPieceStore, SetPieceComponent } from "../Components/v3/setPieces";
 
 let actors: ActorStore;
-let actorsLit: LightingComponentStore;
+// let actorsLit: LightingComponentStore;
 let arcadeObjects: ArcadePhysicsStore;
 let classs: ClassificationStore;
 let drawables: DrawableStoreV2;
@@ -48,11 +41,11 @@ let eid2PMSs: Eid2PMStore;
 let fmc: FloatMovingStore;
 let fp2Emitter: Record<number, LightOutcastingComponent> = {};
 let fps: FloatPositionStore;
-let incasters: LightIncastingStore;
+// let incasters: LightIncastingStore;
 let ips: IntegerPositionStore;
 let light2Draw: Record<number, DrawableComponent> = {};
-let light2IntegerPosition: LightPositionStore;
-let lights: LightComponentStore;
+// let light2IntegerPosition: LightPositionStore;
+// let lights: LightComponentStore;
 let ods: OrdinalDirectionStore;
 let outcasters: LightOutcastingStore;
 let setPieceLit: LightingComponentStore;
@@ -60,10 +53,18 @@ let setPieces: SetPieceStore;
 let tiles: TileComponentStore;
 let tms: TankMovingStore;
 
+let aiAgents: AiAgentStore;
+
 let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
   // Level 0 - "Component Stores"
+  aiAgents = game.componentStores["AiAgentComponent"] as AiAgentStore;
+
+  arcadeObjects = game.componentStores[
+    "ArcadePhysicsComponent"
+  ] as ArcadePhysicsStore;
+
   arcadeObjects = game.componentStores[
     "ArcadePhysicsComponent"
   ] as ArcadePhysicsStore;
@@ -78,9 +79,9 @@ export default async (game: SpaceTrash, delta: number) => {
   outcasters = game.componentStores[
     LightOutcastingComponent.name
   ] as LightOutcastingStore;
-  incasters = game.componentStores[
-    LightIncastingComponent.name
-  ] as LightIncastingStore;
+  // incasters = game.componentStores[
+  //   LightIncastingComponent.name
+  // ] as LightIncastingStore;
   tiles = game.componentStores["TileComponent"] as TileComponentStore;
   ips = game.componentStores[
     "IntegerPositionComponent"
@@ -91,15 +92,20 @@ export default async (game: SpaceTrash, delta: number) => {
 
   // Level 1 - "Stores"
   actors = game.stores["ActorComponent"] as ActorStore;
-  actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
-  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
-  lights = game.stores["LightComponent"] as LightComponentStore;
-  lights = game.stores["LightComponent"] as LightComponentStore;
-  setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
   setPieces = game.stores["SetPieceComponent"] as SetPieceStore;
-  light2IntegerPosition = game.stores[
-    "LightPositionComponent"
-  ] as LightPositionStore;
+
+  // actorsLit = game.stores["ActorsLit"] as LightingComponentStore;
+  eid2PMSs = game.stores["Eid2PMComponent"] as Eid2PMStore;
+
+  // lights = game.stores["LightComponent"] as LightComponentStore;
+  // lights = game.stores["LightComponent"] as LightComponentStore;
+  // setPieceLit = game.stores["SetPiecesLit"] as LightingComponentStore;
+  
+  // light2IntegerPosition = game.stores[
+  //   "LightPositionComponent"
+  // ] as LightPositionStore;
+
+
 
   // todo reimpliment classification
   Object.keys(classs.store).forEach((k) => {
@@ -113,16 +119,14 @@ export default async (game: SpaceTrash, delta: number) => {
     } else if (classification === "Tile") {
       eid2PMSs.add(new Eid2PMComponent(ips.get(n), kk), n);
     } else if (classification === "PuckBot") {
-      eid2PMSs.add(new Eid2PMComponent(
-        arcadeObjects.get(n),
-        kk), n);
+      eid2PMSs.add(new Eid2PMComponent(arcadeObjects.get(n), kk), n);
     }
   });
 
-  outcasters.each(([ndx, [eid, lc]]) => {
-    const classification = eid2PMSs.get(eid).classification;
-    lights.add(eid, fps.store[ndx], classification);
-  });
+  // outcasters.each(([ndx, [eid, lc]]) => {
+  //   // const classification = eid2PMSs.get(eid).classification;
+  //   // lights.add(eid, fps.store[ndx], classification);
+  // });
 
   // 2 deep
   // according to profile, this is very slow
@@ -159,8 +163,6 @@ export default async (game: SpaceTrash, delta: number) => {
     }
   }
 
-  // const map1 = new WarpField.FieldOfViewMap("map1", MapSize, MapSize);
-
   // 3 deep
   // build set pieces grid
   ips.each(([eid, [ndx, s]]) => {
@@ -174,9 +176,6 @@ export default async (game: SpaceTrash, delta: number) => {
     setPieces.at(s.x, s.y);
     setPieces.at(s.x, s.y).tileType = t.tileType;
     setPieces.at(s.x, s.y).incasterId = eid;
-
-    // if (Math.random() > 0.5) map1.addBody(s.x, s.y);
-    if (t.tileType === "WallTile") map1.addBody(s.x, s.y);
 
     drawables.withIf(eid, (dc) => {
       setPieces.at(s.x, s.y).drawing = dc[1];
@@ -217,10 +216,32 @@ export default async (game: SpaceTrash, delta: number) => {
     });
   });
 
+  arcadeObjects.each((eid, apc) => {
+    if (actors.get(eid)) {
+      actors.get(eid).arcadeBody = apc;
+    }
+  });
+
+  aiAgents.each((eid2, agent) => {
+    if (actors.get(eid2)) {
+      actors.get(eid2).agent = agent;
+    } else {
+      actors.add({
+        agent,
+      });
+    }
+  });
+
   runInitialMapBoundaryCheck();
   runPlaceImmoveableSetPieces();
-  runSetupBotFleet(game);
+  setup2dAnd3dGames(game);
+  setupArcadePhysics(game);
+  setupAiAgents(game);
 
+  return map1;
+};
+
+function setup2dAnd3dGames(game: SpaceTrash) {
   drawables.each(([a, d, c]: [any, DrawableComponent, any]) => {
     game.pixi2dApp.stage.addChild(d.sprite);
     game.pixi2dApp.stage.addChild(d.char);
@@ -235,15 +256,30 @@ export default async (game: SpaceTrash, delta: number) => {
     game.camera.position.z
   );
   game.scene.add(pointlight);
+}
 
-  const staticGroup: any[] = []
-  const dynamicGroup: any[] = []
-  
+function setupAiAgents(game: SpaceTrash) {
+  debugger;
+  actors.each((eid, ac) => {
+    if (!ac.friendly) {
+      aiAgents.each((eid2, ai) => {
+        if (eid === eid2) {
+          ac.agent = ai;
+        }
+      });
+    }
+  });
+}
+
+const setupArcadePhysics = (game: SpaceTrash) => {
+  const staticGroup: any[] = [];
+  const dynamicGroup: any[] = [];
+
   arcadeObjects.store.forEach((v, k) => {
     v.arcadeObject = v.creator(game.arcadePhysics);
-    if (v.arcadeObject.immovable) staticGroup.push(v.arcadeObject)
+    if (v.arcadeObject.immovable) staticGroup.push(v.arcadeObject);
     else dynamicGroup.push(v.arcadeObject);
-  })
+  });
 
   dynamicGroup.forEach((s) => {
     s.position.x = Math.random() * MapSize * TileSize;
@@ -252,33 +288,20 @@ export default async (game: SpaceTrash, delta: number) => {
     // s.setVelocityY((Math.random() - 0.5) * SPEED_CONSTANT)
     // s.setAccelerationX((Math.random() - 0.5) * SPEED_CONSTANT)
     // s.setAccelerationY((Math.random() - 0.5) * SPEED_CONSTANT)
-  })  
+  });
 
   dynamicGroup.forEach((d) => {
     staticGroup.forEach((s) => {
-      game.arcadePhysics.add.collider(s, d)
-    })  
-  })
+      game.arcadePhysics.add.collider(s, d);
+    });
+  });
 
   dynamicGroup.forEach((s) => {
     dynamicGroup.forEach((s2) => {
-      if (s !== s2){
-        game.arcadePhysics.add.collider(s, s2)
+      if (s !== s2) {
+        game.arcadePhysics.add.collider(s, s2);
       }
-      
-    })  
-  })  
-
-  return map1;
-};
-
-
-// Turn our bot fleet into drawables.
-const runSetupBotFleet = (game: SpaceTrash) => {
-  Object.entries(game.bots).forEach(([b, bb], x, [xx, [s, [eid, s2]]]) => {
-    // drawables.updateChar(eid, new Text("!!!"));
-    // game.pixijsRenderer.stage.addChild(drawables.get(eid).char);
-    // game.pixijsRenderer.render
+    });
   });
 };
 
@@ -359,87 +382,3 @@ function runInitialMapBoundaryCheck() {
     }
   });
 }
-
-// const runFOV = () => {
-//   // var VISION_RANGE = 10;
-//   // var WORLD_SIZ  E = [MapSize, MapSize];
-//   // map = new Map([MapSize, MapSize]);
-
-//   map.iter(function (pos, tile) {
-//     const y = pos[1];
-//     const x = pos[0];
-//     (tile.wall = setPieces.store[y][x].tileType === "WallTile"),
-//       (tile.visible = true);
-//   });
-
-//   // setPieces.store.forEach((row) => {
-//   //   row.forEach((setpiece) => {
-//   //     if (setpiece.tileType === "WallTil") {
-
-//   //     }
-//   //   })
-//   // })
-
-//   //player is in the middle
-//   // var player_pos = [MapSize / 2, MapSize / 2];
-//   // map.tiles[player_pos[0]][player_pos[1]].wall = false;
-
-//   // compute(map, player_pos, Infinity);
-// };
-
-///////////////////////////////////////////////////////////
-
-// for (let y = 0; y < MapSize; y++) {
-//   for (let x = 0; x < MapSize; x++) {
-//     if (setPieces.tileIsAt(x, y, "FloorTile")) {
-//       map1.addBody(x, y);
-//     }
-//   }
-// }
-
-// for (let y = 0; y < MapSize; y++) {
-//   for (let x = 0; x < MapSize; x++) {
-//     const fov = WarpField.computeFieldOfView(map1, x, y, 1000);
-
-//     for (let yy = MapSize / -2; yy < MapSize / 2; yy++) {
-//       for (let xx = MapSize / -2; xx < MapSize / -2; xx++) {
-//         // const targetX =
-//         const isVisible = fov.getVisible(xx, yy);
-//         if (isVisible) {
-//           setPieces.store[y][x].FOV[yy][xx] = distanceV2(x, y, xx, yy);
-//         }
-//       }
-//     }
-//   }
-// }
-
-// setPieces.store[y][x].FOV[yy][xx];
-
-///////////////////////////////////////////////////////////////////////
-
-// for (let y = 0; y < fps.store.length; y++) {
-//   // const aeid = fps.store[y][0];
-//   const aeid = fps.at(y);
-//   // add the actors
-//   actors.add({
-//     actorId: aeid,
-//     // actorX: fps.store[y][1].x,
-//     // actorY: fps.store[y][1].y,
-//     // rendered2d: "fresh",
-//     // renderedWebgl: "fresh",
-//     // culled2d: false,
-//     // culledWebgl: false,
-//     friendly: game.isFriendly(aeid),
-//     position: fps.store[y][1],
-//     motion: fmc.store[y][1],
-//     // sprite: new Sprite,
-//     // renderedWebgl: "new",
-//     // rendered2d: "new"
-//   });
-
-//   outcasters.each(([leid, le]) => {
-//     if (aeid === leid) {
-//       fp2Emitter[aeid] = le;
-//     }
-//   });
-// }

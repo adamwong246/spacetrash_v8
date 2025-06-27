@@ -1,25 +1,16 @@
-import * as THREE from "three";
-import { Sprite, SpriteSource, Texture } from "pixi.js";
-import { ISpaceTrashComponents } from "..";
+
 import {
   Component,
-  TwoDOneD_Component,
 } from "../../../../engine/VECS.ts/Component";
 import {
-  ComponentStore,
-  EntityComponentStore,
-  OneDStore,
   Store,
 } from "../../../../engine/VECS.ts/types";
+import { ISpaceTrashComponents } from "../v1";
+import { DrawableComponent } from "./drawable";
 
-import { ActorComponent } from "../phase1";
 import {
-  FloatPositionComponent,
-  FloatPositionStore,
-  MovingComponent,
   PositionComponent,
 } from "./physical";
-import { ClassificationComponent } from "./classifiable";
 
 export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   position: PositionComponent;

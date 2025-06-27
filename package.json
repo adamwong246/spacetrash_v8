@@ -31,7 +31,6 @@
     "graphology-types": "^0.24.7",
     "i": "^0.3.7",
     "install": "^0.13.0",
-    "matter-js": "^0.20.0",
     "npm": "^11.4.2",
     "pixi.js": "8.10.1",
     "protochain": "^1.0.5",
