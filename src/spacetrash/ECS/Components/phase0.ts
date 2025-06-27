@@ -4,6 +4,7 @@ import { ISpaceTrashComponents } from ".";
 import { Component, TwoDOneD_Component } from "../../../engine/VECS.ts/Component";
 import { TwoDStore } from "../../../engine/VECS.ts/types";
 import { DrawableComponent } from "./v2/drawable";
+import { MapSize } from "../../Constants";
 
 
 export class SetPieceComponent extends TwoDOneD_Component<unknown, ISpaceTrashComponents> {
@@ -37,6 +38,11 @@ export class SetPieceStore extends TwoDStore<SetPieceComponent> {
   }
 
   at(x: number, y: number) {
+    if (x < 0) return false;
+    if (y < 0) return false;
+    if (x >= MapSize) return false;
+    if (y >= MapSize) return false;
+
     return this.store[x][y]
   }
 

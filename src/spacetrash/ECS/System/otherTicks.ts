@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { FOV } from "rot-js";
 import {
   MapSize,
@@ -301,11 +302,17 @@ function updateTankPosition(
   }
   if (f.j === "back") {
     p.arcadeObject.setAccelerationX(
-      Math.cos(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA
-    ) * -1;
+      Math.cos(p.arcadeObject.rotation - 1.5708) *
+        TANK_VELOCITY_LINEAR *
+        DELTA *
+        -1
+    );
     p.arcadeObject.setAccelerationY(
-      Math.sin(p.arcadeObject.rotation - 1.5708) * TANK_VELOCITY_LINEAR * DELTA
-    ) * -1;
+      Math.sin(p.arcadeObject.rotation - 1.5708) *
+        TANK_VELOCITY_LINEAR *
+        DELTA *
+        -1
+    );
   }
   if (f.j === "none") {
     p.arcadeObject.setAccelerationX(0);
@@ -318,7 +325,7 @@ function updateTankPosition(
 function resetIllumination() {
   drawables.each(([eid, d, eid2]) => {
     d.sprite.visible = false;
-    d.mesh.visible = true;
+    d.mesh.visible = false;
   });
   incasters.each(([li, z]) => {
     z.luminance = 0;
@@ -360,10 +367,13 @@ function rotLighting() {
   fov.compute(
     Math.round(GAME.camera.position.x / TileSize),
     Math.round(GAME.camera.position.y / TileSize),
-    MapSize * TileSize,
+    10,
     function (x, y, r, visibility) {
       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-        lightMap[`${x}-${y}`] = visibility;
+        // console.log(r)
+        lightMap.set(`${x}-${y}`, r);
+
+        // const z = setPieces.at(x, y);
 
         // if (visibility === 1 && z && z.drawing) {
         //   z.drawing.sprite.visible = true;
@@ -373,50 +383,113 @@ function rotLighting() {
         //   z.drawing.sprite.visible = false;
         //   z.drawing.mesh.visible = false;
         // }
+
+        // actors.each((aid, ac) => {
+        //   ac.position.
+        //   // const a = actors.positionOf(Number(aid))
+        //   // // if () {
+
+        //   // // }
+        // })
+        // console.log(z.actorIds)
+        // z.actorIds.forEach((aid) => {
+        //   drawables.get(aid).sprite.visible = true;
+        //   drawables.get(aid).mesh.visible = true;
+        //   // const actor = actors.get(aid);
+        //   // act
+        // })
       }
     }
   );
+
+  let colors = {
+    1: new THREE.MeshBasicMaterial({ color: 0xffffff}),
+    2: new THREE.MeshBasicMaterial({ color: 0xe0e0e0}),
+    3: new THREE.MeshBasicMaterial({ color: 0xc0c0c0}),
+    4: new THREE.MeshBasicMaterial({ color: 0xa0a0a0}),
+    5: new THREE.MeshBasicMaterial({ color: 0x808080}),
+    6: new THREE.MeshBasicMaterial({ color: 0x606060}),
+    7: new THREE.MeshBasicMaterial({ color: 0x404040}),
+    8: new THREE.MeshBasicMaterial({ color: 0x202020}),
+    9: new THREE.MeshBasicMaterial({ color: 0x101010}),
+    10: new THREE.MeshBasicMaterial({ color: 0x000000}),
+  };
 
   for (let l of lightMap) {
     const k = l[0];
     const splitt = k.split("-");
 
-    const x = splitt[0];
-    const y = splitt[1];
+    const x = Number(splitt[0]);
+    const y = Number(splitt[1]);
 
-    const z = setPieces.at(x, y);
+    const setPiece = setPieces.at(x, y);
     const lit = l[1];
 
-    if (lit) {
-      z.drawing.sprite.visible = true;
-      z.drawing.mesh.visible = true;
-    } else {
-      if (z.tileType === "FloorTile") {
+    if (setPiece && setPiece.drawing && lit) {
+      setPiece.drawing.sprite.visible = true;
+      setPiece.drawing.mesh.visible = true;
+
+      setPiece.drawing.mesh.material = colors[lit]
+
+      arcadeObjects.each((eid, apo) => {
+        // apo.arcadeObject.visible = true;
+        // debugger
+
+        // console.log(Math.round(apo.arcadeObject.position.x/TileSize), x)
+
+        if (
+          Math.round(apo.arcadeObject.position.x / TileSize) === x &&
+          Math.round(apo.arcadeObject.position.y / TileSize) === y
+        ) {
+          // apo.arcadeObject.visible = true;
+          // actors.get(eid)
+          const litThing = drawables.get(eid);
+          litThing.mesh.visible = true;
+          litThing.sprite.visible = true;
+        }
+      });
+
+      if (true) {
         const north = lightMap.get(`${x}-${y - 1}`);
         const east = lightMap.get(`${x + 1}-${y}`);
         const west = lightMap.get(`${x - 1}-${y}`);
         const south = lightMap.get(`${x}-${y + 1}`);
 
         if (!north) {
-          z.drawing.sprite.visible = false;
-          z.drawing.mesh.visible = true;
+          const northernsetpiece = setPieces.at(x, y - 1);
+          if (northernsetpiece && northernsetpiece.drawing) {
+            northernsetpiece.drawing.sprite.visible = true;
+            northernsetpiece.drawing.mesh.visible = true;
+          }
         }
         if (!east) {
-          z.drawing.sprite.visible = false;
-          z.drawing.mesh.visible = true;
+          const easternSetPiece = setPieces.at(x + 1, y);
+          if (easternSetPiece && easternSetPiece.drawing) {
+            easternSetPiece.drawing.sprite.visible = false;
+            easternSetPiece.drawing.mesh.visible = true;
+          }
         }
         if (!south) {
-          z.drawing.sprite.visible = false;
-          z.drawing.mesh.visible = true;
+          const southernSetPiece = setPieces.at(x, y + 1);
+          if (southernSetPiece && southernSetPiece.drawing) {
+            southernSetPiece.drawing.sprite.visible = true;
+            southernSetPiece.drawing.mesh.visible = true;
+          }
         }
         if (!west) {
-          z.drawing.sprite.visible = false;
-          z.drawing.mesh.visible = true;
+          const westernSetPiece = setPieces.at(x - 1, y);
+          if (westernSetPiece && westernSetPiece.drawing) {
+            westernSetPiece.drawing.sprite.visible = true;
+            westernSetPiece.drawing.mesh.visible = true;
+          }
         }
       } else {
-        z.drawing.sprite.visible = false;
-        z.drawing.mesh.visible = false;
+        // if (setPiece.drawing) {
+        //   setPiece.drawing.sprite.visible = true;
+        //   setPiece.drawing.mesh.visible = true;
+        // }
       }
+    } else {
     }
   }
 }

@@ -16,12 +16,12 @@ const SPEED_CONSTANT = 0.05
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     
-    const drones = [...new Array(9)].map((n) => {
+    const drones = [...new Array(1)].map((n) => {
       return new SpaceTrashBot(
-        Math.random() * MapSize * TileSize,
-        Math.random() * MapSize * TileSize,
-        // (MapSize / 2 ),
-        // (MapSize / 2 ),
+        // Math.random() * MapSize * TileSize,
+        // Math.random() * MapSize * TileSize,
+        (MapSize / 2 ),
+        (MapSize / 2 ),
         // 5, 5,
         0,
         0,
@@ -32,7 +32,7 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const moreBots = [...new Array(55)].map((n) => {
+    const moreBots = [...new Array(50)].map((n) => {
       return new PuckBot(
         // 200, 200,
         Math.random() * MapSize,

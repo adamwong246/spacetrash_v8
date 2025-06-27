@@ -18,6 +18,8 @@ import { TerminalWindow } from "./spacetrash/UI/terminal";
 import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
 import { MatterWindow } from './spacetrash/UI/MatterWindow';
 import { ArcadePhysicsWindow } from './spacetrash/UI/ArcadePhysicsWindow';
+import { FabricatorWindow } from './spacetrash/UI/FabricatorWindow';
+import { DataWindow } from './spacetrash/UI/DataWindow';
 
 let self: DesktopGame<any, any, any>;
 
@@ -109,6 +111,8 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
 
           matter: (props: IDockviewPanelHeaderProps<any>) => <MatterWindow game={self} />,
           arcadePhysics: (props: IDockviewPanelHeaderProps<any>) => <ArcadePhysicsWindow game={self} />,
+          fab: (props: IDockviewPanelHeaderProps<any>) => (<FabricatorWindow game={self} />),
+          data: (props: IDockviewPanelHeaderProps<any>) => (<DataWindow game={self} />),
         }}
       />
     </div >)
@@ -116,18 +120,18 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
 
 
   openAllWindows() {
-    // this.dockviewAPI.component.addPanel({
-    //   id: 'bots',
-    //   component: 'bots',
-    //   floating: {
-    //     position: { left: 90, top: 90 },
-    //     width: 500,
-    //     height: 500
-    //   },
-    //   params: {
+    this.dockviewAPI.component.addPanel({
+      id: 'bots',
+      component: 'bots',
+      floating: {
+        position: { left: 90, top: 90 },
+        width: 500,
+        height: 500
+      },
+      params: {
 
-    //   }
-    // })
+      }
+    })
 
     this.dockviewAPI.component.addPanel({
       id: 'vid',
@@ -155,22 +159,36 @@ export abstract class DesktopGame<IRenderings, II, ICanvases> extends MultiSurfa
       }
     })
 
-    // this.dockviewAPI.component.addPanel({
-    //   id: 'matter',
-    //   component: 'matter',
-    //   floating: {
-    //     position: { left: 100, top: 150 },
-    //     width: 600,
-    //     height: 600
-    //   },
-    //   params: {
-
-    //   }
-    // })
 
     this.dockviewAPI.component.addPanel({
       id: 'arcadePhysics',
       component: 'arcadePhysics',
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'fab',
+      component: 'fab',
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'data',
+      component: 'data',
       floating: {
         position: { left: 120, top: 190 },
         width: 600,

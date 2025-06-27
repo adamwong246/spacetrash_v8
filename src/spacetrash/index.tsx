@@ -237,8 +237,6 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     const self = this;
     document.addEventListener('keydown', function (event) {
       if (event.repeat) return;
-
-
       if (event.key === 'Escape') {
         self.focusMapWindow();
       }
@@ -345,6 +343,7 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
 
     bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
     term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
+    fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
   }
 
   onDockviewReady(event: DockviewReadyEvent) {
@@ -706,15 +705,15 @@ export class SpaceTrash extends TerminalGame<IRenderings, {
     this.arcadePhysics.world.postUpdate(this.arcadePhysicsTick * 1000, 1000 / 60)
     this.arcadePhysicsTick++
 
-    // this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
+    this.arcadePhysicsCanvasContext.clearRect(0, 0, this.arcadePhysicsCanvasContext.canvas.width, this.arcadePhysicsCanvasContext.canvas.height)
 
     // draw debug
-    // this.arcadePhysics.world.bodies.forEach(b => {
-    //   b.drawDebug(this.arcadePhysicsCanvasContext)
-    // })
-    // this.arcadePhysics.world.staticBodies.forEach(b => {
-    //   b.drawDebug(this.arcadePhysicsCanvasContext)
-    // })
+    this.arcadePhysics.world.bodies.forEach(b => {
+      b.drawDebug(this.arcadePhysicsCanvasContext)
+    })
+    this.arcadePhysics.world.staticBodies.forEach(b => {
+      b.drawDebug(this.arcadePhysicsCanvasContext)
+    })
   }
 
   BeginTheGame() {
