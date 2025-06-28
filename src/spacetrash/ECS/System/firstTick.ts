@@ -49,13 +49,8 @@ export default async (game: SpaceTrash, delta: number) => {
 
   // ArcadeBodies must be re-constituted with the running game
   ArcadePhysicsComponent.each((apc, eid) => {
-    const arcadeObject = apc.creator(game.arcadePhysics);
-
-    ArcadePhysicsComponent.upsert(
-      {
-        arcadeObject,
-      },
-      eid
+    ArcadePhysicsComponent.take(eid).arcadeObject = apc.creator(
+      game.arcadePhysics
     );
   });
 
@@ -64,6 +59,7 @@ export default async (game: SpaceTrash, delta: number) => {
     const kk = ClassificationComponent.take(eid);
     const classification = kk.entityConstructorName;
 
+    console.log(classification);
     if (classification === "SpaceTrashBot") {
       Eid2PM.make(
         new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
@@ -79,8 +75,15 @@ export default async (game: SpaceTrash, delta: number) => {
         new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
         eid
       );
+    } else if (classification === "WarpCore") {
+      debugger;
+      Eid2PM.make(
+        new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
+        eid
+      );
     }
   });
+  debugger;
 
   // outcasters.each(([ndx, [eid, lc]]) => {
   //   // const classification = eid2PMSs.get(eid).classification;
@@ -127,19 +130,17 @@ export default async (game: SpaceTrash, delta: number) => {
       s.y
     );
 
-    const t = TileComponent.take(eid);
-    if (!t) {
-      throw "why no t?";
+    const t = TileComponent.get(eid);
+    if (t) {
+      SetPieces.update(
+        {
+          tileType: t.tileType,
+          incasterId: eid,
+        },
+        s.x,
+        s.y
+      );
     }
-
-    SetPieces.update(
-      {
-        tileType: t.tileType,
-        incasterId: eid,
-      },
-      s.x,
-      s.y
-    );
 
     DrawableComponent.withIf((dc) => {
       // SetPieces.at(s.x, s.y).drawing = dc[1];
@@ -172,45 +173,25 @@ export default async (game: SpaceTrash, delta: number) => {
       throw "IDK";
     }
 
-    // add the actors
-    Actors.upsert(
-      {
-        actorId: ndx,
-        friendly: game.isFriendly(ndx),
-        position: y,
-        motion,
-      },
-      aeid
-    );
-
-    // outcasters.each(([leid, le]) => {
-    //   if (aeid === leid) {
-    //     fp2Emitter[aeid] = le;
-    //   }
-    // });
+    Actors.take(aeid).actorId = ndx;
+    Actors.take(aeid).friendly = game.isFriendly(ndx);
+    Actors.take(aeid).position = y;
+    Actors.take(aeid).motion = motion;
   });
 
   ArcadePhysicsComponent.each((apc, eid) => {
     if (!apc.arcadeObject.immovable) {
-      Actors.upsert(
-        {
-          arcadeBody: apc.arcadeObject,
-        },
-        eid
-      );
+      if (Actors.get(eid)) {
+        Actors.take(eid).arcadeBody = apc.arcadeObject;
+      } else {
+        Actors.make({ arcadeBody: apc.arcadeObject }, eid);
+      }
     }
   });
 
-  // debugger
-
   AiAgentComponent.each((agent, eid) => {
-    Actors.upsert(
-      {
-        agent,
-        friendly: false,
-      },
-      eid
-    );
+    Actors.take(eid).agent = agent;
+    Actors.take(eid).friendly = false;
   });
 
   runInitialMapBoundaryCheck(FloatPositions, IntegerPositionComponent);
@@ -320,7 +301,7 @@ const setupArcadePhysics = (
         () => {
           // debugger
         }
-      ); 
+      );
     });
   });
 

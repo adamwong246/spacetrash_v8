@@ -1,54 +1,34 @@
-
-import {
-  Component,
-} from "../../../../engine/VECS.ts/Component";
+import { Component } from "../../../../engine/VECS.ts/Component";
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-import {
-
-} from "../../../../engine/VECS.ts/types";
+import {} from "../../../../engine/VECS.ts/types";
 import { ISpaceTrashComponents } from "../v1";
 import { DrawableComponent } from "./drawable";
 
-import {
-  PositionComponent,
-} from "./physical";
+import { PositionComponent } from "./physical";
 
 export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   position: PositionComponent;
   classification: string;
 
-  constructor(
-    position: PositionComponent,
-    classification: string
-  ) {
+  constructor(position: PositionComponent, classification: string) {
     super();
     this.position = position;
     this.classification = classification;
   }
+
+  getAbsoluteXandY(eid: number) {
+    return this.position.getAbsoluteXandY();
+  }
+
 }
 
-export class Eid2PMStore extends MapStoreV2<Record<number, Eid2PMComponent>> {
+export class Eid2PMStore extends MapStoreV2<Eid2PMComponent> {
   
-  // store: Record<number, Eid2PMComponent> = {};
-
-  // add(e: Eid2PMComponent, n: number) {
-  //   this.store[n] = e;
-  // }
-  // // store: DrawableComponent;
-
-  // get(n: number) {
-  //   return this.store[n];
-  // }
-
-  // // add(a: DrawableComponent) {
-  // //   // super.add(a);
-  // // }
-
-  // make() {
-  //   throw new Error("Method not implemented.");
-  //   return new DrawableComponent();
-  // }
-
+  getAbsoluteXandY(eid: number) {
+    const { classification, position } = this.take(eid);
+    return position.getAbsoluteXandY();
+}
+  
   // positionOf(eidOfLight: number): FloatPositionStore {
   //   throw new Error("Method not implemented.");
   // }

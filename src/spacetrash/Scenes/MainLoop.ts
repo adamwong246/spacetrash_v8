@@ -1,12 +1,14 @@
 import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
-import { ActorSize, MapSize } from "../Constants";
+import { ActorSize, MapSize, TileSize } from "../Constants";
 import { AiAgentComponent } from "../ECS/Components/v3/ai.ts";
+import { RadiationDetectorComponent } from "../ECS/Components/v3/radiation.ts";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
 import { RotCellularShip } from "../ECS/EntityComponents/ships/RotCellularyShip.ts";
 import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
+import { WarpCore } from "../ECS/EntityComponents/warpcore.ts";
 
 const SPEED_CONSTANT = 0.05;
 
@@ -15,7 +17,7 @@ class MainScene extends SpaceTrashScene {
     const ship = new BoringShip();
     // const ship = new RotCellularShip();
 
-    const drones = [...new Array(1)].map((n) => {
+    const drones = [...new Array(9)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize * TileSize,
         // Math.random() * MapSize * TileSize,
@@ -30,6 +32,18 @@ class MainScene extends SpaceTrashScene {
         // (Math.random() - 0.5) * SPEED_CONSTANT
       );
     });
+
+    const radiationDetectingDrone = game.setEntitiesComponent([
+      new SpaceTrashBot(
+        Math.random() * MapSize * TileSize,
+        Math.random() * MapSize * TileSize,
+        0,
+        0,
+        0,
+        "idk",
+        [new RadiationDetectorComponent(0)]
+      ),
+    ])[0];
 
     // const moreBots = [...new Array(1)].map((n) => {
     //   return new PuckBot(
@@ -46,26 +60,25 @@ class MainScene extends SpaceTrashScene {
 
     const moreBots = [...new Array(10)].map((n) => {
       return new PuckBot(
-      Math.random() * MapSize,
-      Math.random() * MapSize,
-      ActorSize,
-      0,0,
-      String(performance.now()),
-      new AiAgentComponent(
-        "melee",
-        "langdonsAnt",
-        "suicideBomb",
-        "acidCorpse",
-        "heat",
-        "sound",
-        "fly",
-        "vacuum",
-        "explosive"
-      )
-    );
+        Math.random() * MapSize,
+        Math.random() * MapSize,
+        ActorSize,
+        0,
+        0,
+        String(performance.now()),
+        new AiAgentComponent(
+          "melee",
+          "langdonsAnt",
+          "suicideBomb",
+          "acidCorpse",
+          "heat",
+          "sound",
+          "fly",
+          "vacuum",
+          "explosive"
+        )
+      );
     });
-
-    
 
     const monster1 = new PuckBot(
       Math.random() * MapSize,
@@ -87,15 +100,31 @@ class MainScene extends SpaceTrashScene {
       )
     );
 
-    
+    const warpcore0 = new WarpCore(
+      100,
+      Math.round(Math.random() * MapSize),
+      Math.round(Math.random() * MapSize)
+    );
 
-    game.setEntitiesComponent([ship, ...ship.toTiles(),
-      ...moreBots,
+    const warpcore1 = new WarpCore(
+      1000,
+      Math.round(Math.random() * MapSize),
+      Math.round(Math.random() * MapSize)
+    );
+
+    game.setEntitiesComponent([
+      ship,
+      ...ship.toTiles(),
+      // ...moreBots,
+
+      warpcore0,
+      warpcore1,
+
       // monster0,
-      // monster1
+      // monster1,
     ]);
 
-    const myDoneIds = game.setEntitiesComponent([...drones]);
+    const myDoneIds = game.setEntitiesComponent(drones);
 
     game.bots = {
       1: [myDoneIds[0], "larry"],
@@ -106,7 +135,7 @@ class MainScene extends SpaceTrashScene {
       6: [myDoneIds[5], "bones"],
       7: [myDoneIds[6], "han"],
       8: [myDoneIds[7], "luke"],
-      9: [myDoneIds[8], "obiwan"],
+      9: [radiationDetectingDrone, "obiwan"],
     };
 
     game.BeginTheGame();

@@ -1,5 +1,6 @@
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { TileSize } from "../../../Constants";
 
 import { ISpaceTrashComponents } from "../v1";
 
@@ -8,6 +9,8 @@ export abstract class PositionComponent extends Component<
   unknown,
   ISpaceTrashComponents
 > {
+  abstract getAbsoluteXandY(): {x: number, y: number};
+
   x: number;
   y: number;
 
@@ -20,12 +23,18 @@ export abstract class PositionComponent extends Component<
 
 // Gives an entity a position within the grid
 export class IntegerPositionComponent extends PositionComponent {
-  // tileType: string;
-  // constructor(x: number, y: number, t: any) {
-  //   debugger
-  //   super();
-  //   // this.tileType = t;
-  // }
+  constructor(x: number, y: number) {
+    if (!Number.isInteger(x)) throw `x cannot be a float`;
+    if (!Number.isInteger(y)) throw `y cannot be a float`;
+
+    super(x, y);
+  }
+  getAbsoluteXandY() {
+    return {
+      x: this.x * TileSize,
+      y: this.y * TileSize,
+    }
+  }
 }
 
 export class IntegerPositionStore extends MapStoreV2<IntegerPositionComponent> {
@@ -65,7 +74,14 @@ export class IntegerPositionStore extends MapStoreV2<IntegerPositionComponent> {
 }
 
 // Gives an entity a position above the grid
-export class FloatPositionComponent extends PositionComponent {}
+export class FloatPositionComponent extends PositionComponent {
+  getAbsoluteXandY() {
+    return {
+      x: this.x,
+      y: this.y,
+    }
+  }
+}
 
 export class FloatPositionStore extends MapStoreV2<FloatPositionComponent> {
   // each() {
@@ -74,7 +90,6 @@ export class FloatPositionStore extends MapStoreV2<FloatPositionComponent> {
   // constructor() {
   //   super();
   // }
-
   // withIf(i: number, cb: (i: number, n: number,  ipc: IntegerPositionComponent) => void) {
   //   // const x = this.store.get(i);
   //   // if (x) cb([i, x]);
@@ -82,20 +97,15 @@ export class FloatPositionStore extends MapStoreV2<FloatPositionComponent> {
   //     if (k === String(i)) {
   //       cb(i, this[k][0], this[k][1]);
   //       return;
-
   //     }
-
   //   });
   // }
-
   // make(x: number = 0, y: number = 0) {
   //   return new FloatPositionComponent(x, y);
   // }
-
   // at(y: number): FloatPositionComponent {
   //   return this[y][1];
   // }
-
   // each(arg0: (ndx: number, y: FloatPositionComponent, aeid: number) => void) {
   //   Object.keys(this).forEach((k) => {
   //     // arg0([Number(k), this.store[k], k]);
@@ -133,7 +143,6 @@ export class DegreesDirectionStore extends MapStoreV2<DegreesDirectionComponent>
   // constructor() {
   //   super();
   // }
-
   // make(r: number) {
   //   return new DegreesDirectionComponent(r);
   // }
@@ -155,7 +164,6 @@ export class OrdinalDirectionStore extends MapStoreV2<OrdinalDirectionComponent>
   // constructor() {
   //   super();
   // }
-
   // make(r: IDirs) {
   //   return new OrdinalDirectionComponent(r);
   // }
@@ -194,7 +202,6 @@ export class TankMovingStore extends MapStoreV2<TankMovingComponent> {
   // constructor() {
   //   super();
   // }
-
   // make(i, j) {
   //   return new TankMovingComponent(i, j);
   // }
@@ -221,7 +228,6 @@ export class FloatMovingStore extends MapStoreV2<FloatMovingComponent> {
   // constructor() {
   //   super();
   // }
-
   // make(r: number) {
   //   return new FloatMovingComponent(r);
   // }
@@ -247,7 +253,6 @@ export class OridinalMovingStore extends MapStoreV2<OridinalMovingComponent> {
   // constructor() {
   //   super();
   // }
-
   // make(d: IDirs, v: number) {
   //   return new OridinalMovingComponent(d, v);
   // }

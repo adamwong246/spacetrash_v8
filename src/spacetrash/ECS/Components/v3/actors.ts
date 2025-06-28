@@ -33,35 +33,3 @@ export class ActorStore extends MapStoreV2<ActorComponent> {
     return toReturn;
   }
 }
-
-// each(cb: (l: string, a: ActorComponent) => any) {
-//   Object.keys(this).forEach((k) => {
-//     const ac = this.get(k);
-//     cb(k, ac);
-//   });
-// }
-
-// // setPieceIdAt(x: number, y: number): number {
-// //   return this.store[y][x].setId;
-// // }
-
-// // get(n: number): ActorComponent {
-// //   return this.store.find((v) => v.actorId === n);
-// // }
-
-// add(a: ActorComponent) {
-//   super.add(a);
-// }
-
-// make() {
-//   return new ActorComponent();
-// }
-
-// // positionOf(eidOfLight: number): FloatPositionComponent {
-// //   return this.store.length();
-// // }
-
-// update(n: number, p: FloatPositionComponent) {
-//   this.get(n).floatPosition = p;
-// }
-// }

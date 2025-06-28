@@ -37,6 +37,8 @@ import { AiAgentComponent, AiAgentStore } from "./ECS/Components/v3/ai";
 import { AttackableStore, LightIncastingStore } from "./ECS/Components/v1/casting/in";
 import { LightOutcastingStore } from "./ECS/Components/v1/casting/out";
 import { SetPieceStore } from "./ECS/Components/v3/setPieces";
+import { RadiationDetectorStore, RadiationEmitterStore } from "./ECS/Components/v3/radiation";
+import { IBotWindowState } from "./UI/BotWindow";
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
@@ -92,27 +94,29 @@ export class SpaceTrash extends TerminalGame<IRenderings,
   ICanvases,
   {
     Actors: ActorStore,
-    SetPieces: SetPieceStore,
     AiAgentComponent: AiAgentStore,
-    DrawableComponent: DrawableStoreV2
-    Eid2PM: Eid2PMStore,
-    NameableComponent: NameableStore,
-    TileComponent: TileComponentStore,
+    ArcadePhysicsComponent: ArcadePhysicsStore
     AttackableComponent: AttackableStore,
     ClassificationComponent: ClassificationStore,
-    LightIncastingComponent: LightIncastingStore,
-    LightOutcastingComponent: LightOutcastingStore,
-    V3AttackComponent: V3AttackComponentStore,
+    DegreesDirectionComponent: DegreesDirectionStore,
+    DrawableComponent: DrawableStoreV2
+    Eid2PM: Eid2PMStore,
     FloatMovements: FloatMovingStore,
     FloatPositions: FloatPositionStore,
     IntegerPositionComponent: IntegerPositionStore,
+    LightIncastingComponent: LightIncastingStore,
+    LightOutcastingComponent: LightOutcastingStore,
+    NameableComponent: NameableStore,
     OrdinalDirectionComponent: OrdinalDirectionStore,
     OridinalMovingComponent: OridinalMovingStore,
+    RadiationEmitterComponent: RadiationEmitterStore,
+    RadiationDetectorComponent: RadiationDetectorStore
+    SetPieces: SetPieceStore,
     TankMovingComponent: TankMovingStore,
-    DegreesDirectionComponent: DegreesDirectionStore,
-    ArcadePhysicsComponent: ArcadePhysicsStore
+    TileComponent: TileComponentStore,
+    V3AttackComponent: V3AttackComponentStore,
   }> {
-  
+
 
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
@@ -151,6 +155,21 @@ export class SpaceTrash extends TerminalGame<IRenderings,
   right: boolean = false;
 
   botsHook: React.Dispatch<any>;
+  botHook: React.Dispatch<React.SetStateAction<IBotWindowState>>;
+
+  uiState: {
+    bot: {
+      rads: number | '?',
+      heat: number,
+      sound: number,
+    }
+  } = {
+      bot: {
+        rads: 0,
+        heat: 0,
+        sound: 0,
+      }
+    }
 
   constructor(domNode: HTMLElement) {
     const stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -179,12 +198,14 @@ export class SpaceTrash extends TerminalGame<IRenderings,
         NameableComponent: new NameableStore(),
         OrdinalDirectionComponent: new OrdinalDirectionStore(),
         OridinalMovingComponent: new OridinalMovingStore(),
+        RadiationDetectorComponent: new RadiationDetectorStore(),
+        RadiationEmitterComponent: new RadiationEmitterStore(),
         SetPieces: new SetPieceStore(),
         TankMovingComponent: new TankMovingStore(),
         TileComponent: new TileComponentStore(),
-        V3AttackComponent: new V3AttackComponentStore(),
-
+        V3AttackComponent: new V3AttackComponentStore()
       },
+
       performanceConfig,
       new Set(["2d", "webgl2", "pixi2d", "threejs", "arcadePhysics"]),
       domNode,
@@ -279,6 +300,21 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     super.start()
   }
 
+  updateBotWindowRadiation(rads: number | '?') {
+    this.uiState = {
+      ...this.uiState,
+      bot: {
+        ...this.uiState.bot,
+        rads
+      }
+    }
+    this.botHook(this.uiState.bot);
+  }
+
+  registerBotHook(stateSetter: React.Dispatch<React.SetStateAction<IBotWindowState>>) {
+    this.botHook = stateSetter;
+  }
+
   impartDamage(source: AiAgentComponent, target: ActorComponent) {
     // throw new Error("Method not implemented.");
   }
@@ -301,6 +337,11 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     const n: number = Number(s);
     if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
     this.videoFeed = n;
+    this.botHook({
+      rads: 100,
+      heat: 99,
+      sound: 101,
+    })
     this.unFocusOnTermInput();
     super.focusWindowById(`vid`)
   }
@@ -380,7 +421,7 @@ export class SpaceTrash extends TerminalGame<IRenderings,
   }
 
   rotationOfBot(eid: number): { r: number; } {
-    const arcadeObjectComponent =this.components.ArcadePhysicsComponent.take(eid);
+    const arcadeObjectComponent = this.components.ArcadePhysicsComponent.take(eid);
 
     return {
       r: arcadeObjectComponent?.arcadeObject.rotation,

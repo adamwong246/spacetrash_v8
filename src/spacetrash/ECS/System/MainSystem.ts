@@ -36,7 +36,10 @@ class MainSystem extends System {
 }
 
 export function distanceV2(x: number, y: number, x2: number, y2: number) {
-  return (x - x2) * (x - x2) + (y - y2) * (y - y2);
+  const distance = (x - x2) * (x - x2) + (y - y2) * (y - y2)
+  if (isNaN(distance)) throw `distance cannot be NaN`
+
+  return distance;
 }
 
 export const SpaceTrashMainSystem = new MainSystem(MapSize);

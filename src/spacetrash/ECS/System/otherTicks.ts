@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { FOV } from "rot-js";
 import {
-
   MapSize,
   TANK_VELOCITY_ANGULAR,
   TANK_VELOCITY as TANK_VELOCITY_LINEAR,
@@ -15,11 +14,20 @@ import {
   FloatMovingComponent,
   TankMovingComponent,
 } from "../Components/v2/physical";
-import { ArcadePhysicsComponent, ArcadePhysicsStore } from "../Components/v2/arcadePhysics";
+import {
+  ArcadePhysicsComponent,
+  ArcadePhysicsStore,
+} from "../Components/v2/arcadePhysics";
 import { Eid2PMStore } from "../Components/v2/eid2PMC";
 import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { SetPieceStore } from "../Components/v3/setPieces";
 import { AiAgentStore } from "../Components/v3/ai";
+import {
+  RadiationDetectorComponent,
+  RadiationDetectorStore,
+  RadiationEmitterStore,
+} from "../Components/v3/radiation";
+import { distanceV2 } from "./MainSystem";
 
 let GAME: SpaceTrash;
 let DELTA: number;
@@ -38,11 +46,16 @@ export default (game: SpaceTrash, delta: number) => {
     TankMovingComponent,
     Eid2PM,
     LightIncastingComponent,
+    RadiationDetectorComponent,
+    RadiationEmitterComponent,
   } = game.components;
 
   // updateSetPieces(SetPieces, Actors);
   // resetIllumination(DrawableComponent, LightIncastingComponent, SetPieces);
+  resetRadiation(RadiationDetectorComponent)
+
   runAI(AiAgentComponent);
+
   runTankPhysics(
     TankMovingComponent,
     Eid2PM,
@@ -50,9 +63,64 @@ export default (game: SpaceTrash, delta: number) => {
     DrawableComponent
   );
   runArcadePhysics(ArcadePhysicsComponent, Eid2PM, DrawableComponent);
+
+  runRadiationScan(RadiationEmitterComponent, RadiationDetectorComponent, Eid2PM);
+
+  runUpdateUI(RadiationDetectorComponent)
+
   // runFloatingPhysics(FloatMovements, Eid2PM, DrawableComponent);
   // rotLighting(SetPieces, ArcadePhysicsComponent, DrawableComponent);
 };
+
+function runUpdateUI(RadiationDetectors: RadiationDetectorComponent,) {
+  const b = GAME.bots[GAME.videoFeed] as [number, string];
+  const eidOfVideoFeed = b[0];
+
+  if (RadiationDetectors.get(eidOfVideoFeed)) {
+    GAME.updateBotWindowRadiation(RadiationDetectors.take(eidOfVideoFeed).rads);  
+  } else {
+    GAME.updateBotWindowRadiation("?")
+  }
+
+
+  
+  // RadiationDetectors.each((rd, rdid) => {    
+  //   rd.rads = 0;
+  // });
+}
+
+function resetRadiation(RadiationDetectors: RadiationDetectorComponent,) {
+  RadiationDetectors.each((rd, rdid) => {    
+    rd.rads = 0;
+  });
+}
+
+function runRadiationScan(
+  RadiationEmitters: RadiationEmitterStore,
+  RadiationDetectors: RadiationDetectorStore,
+  Eid2PMs: Eid2PMStore,
+) {
+  RadiationDetectors.each((rd, rdid) => {
+
+    let rads = 0;
+    RadiationEmitters.each((re, reid) => {
+
+      const pa = Eid2PMs.getAbsoluteXandY(rdid);
+      const pb = Eid2PMs.getAbsoluteXandY(reid);
+
+      const distance = distanceV2(pa.x, pa.y, pb.x, pb.y);
+
+      const power = re.rads/distance;
+
+      if (isNaN(power)) throw `power cannot be NaN`
+
+      debugger
+      rads += power;
+    });
+    
+    rd.rads = rads;
+  });
+}
 
 function updateSetPieces(SetPieces, Actors) {
   for (let y = 0; y < MapSize; y++) {
@@ -69,7 +137,6 @@ function runAI(AiAgents: AiAgentStore) {
 
   // attacks.each((eid, attack) => {
 
-
   // });
 }
 
@@ -78,16 +145,14 @@ export function runArcadePhysics(
   Eid2PM: Eid2PMStore,
   DrawableComponent: DrawableStoreV2
 ) {
-
   ArcadePhysicsComponent.each((f, feid) => {
     const classification = Eid2PM.take(feid).classification;
 
     if (classification === "PuckBot") {
-      
       // const p = fps.get(eid);
       // if (!p) throw "floating position component not found";
       // boundaryCheckBot(position);
-    // collisionsAndVideoControls();
+      // collisionsAndVideoControls();
       // const gridChanges = upsdateFloatPosition(position, f);
       // if (gridChanges) {
       //   repaintLights = true;
@@ -331,7 +396,6 @@ function rotLighting(
 ) {
   function lightPasses(x, y) {
     if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-      
       const z = SetPieces.at(x, y);
 
       if (z && z.tileType === "WallTile") {

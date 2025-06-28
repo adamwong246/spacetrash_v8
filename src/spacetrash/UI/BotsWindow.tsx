@@ -1,7 +1,27 @@
-import React, { useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { SpaceTrash } from "..";
 
-const TableCell = (props: { name: string }) => {
+type IBot = {
+  name: string,
+  
+}
+  
+export type IBotsWindowState = {
+  1: IBot,
+  2: IBot,
+  3: IBot,
+  4: IBot,
+  5: IBot,
+  6: IBot,
+  7: IBot,
+  8: IBot,
+  9: IBot,
+}
+
+const TableCell = (props: {
+  children: ReactNode;
+  name: string 
+}) => {
   return <td
     style={{
       width: '150px',
@@ -16,7 +36,9 @@ const TableCell = (props: { name: string }) => {
       }}
 
     >
-      {props.name}
+      <p>{props.name}</p>
+
+      {props.children}
     </div>
   </td>
 }

@@ -7,6 +7,11 @@ import { ActorComponent } from "./actors";
 import { SetPieceComponent, SetPieceStore } from "./setPieces";
 import { distanceV2 } from "../../System/MainSystem";
 
+import AttackPatterns from "./behaviorPatterns/attacks";
+import ExplorePatterns from "./behaviorPatterns/explore";
+import { FovSense } from "./senses/fov";
+import { RadiationSense } from "./senses/radiation";
+
 export type IBehaviors =
   | `seed`
   | `explore`
@@ -20,18 +25,11 @@ export type IExplore =
   | `langdonsAnt`
   | `spawnSeason`
   | `wallBounce`;
-export type IAttack = `melee` | `ranged` | `mine`;
+export type IAttack = `melee` | `ranged`;
 export type IDefend = `protectTheNest` | `rush` | `suicideBomb`;
-export type IDie = `explode` | `acidCorpse` | `rallyCry` | `nothing`;
-export type IAttractRepel =
-  | `FOV`
-  | `motionFOV`
-  | `heat`
-  | `sound`
-  | `radiation`
-  | `light`
-  | `damage`;
-export type IMotions = `tank` | `fly` | `lunge` | `none`;
+export type IDie = `pop` | `acidCorpse` | `rallyCry`;
+export type IAttractRepel = `FOV` | `heat` | `sound` | `radiation` | `light`;
+export type IMotions = `tank` | `fly` | `none`;
 export type IStrengthsAndWeaknesses =
   | `vacuum`
   | `heat`
@@ -69,7 +67,9 @@ export class AiAgentComponent extends Component<any, any> {
 
   attackTargetId: number;
 
-  FOV: { manhattenDistance: number; visiblility: 0 | 1 }[][] = [[]];
+  // FOV: { manhattenDistance: number; visiblility: 0 | 1 }[][] = [[]];
+  fovSense: FovSense;
+  radiationSense: RadiationSense;
 
   constructor(
     attackPattern: IAttack,
@@ -93,6 +93,9 @@ export class AiAgentComponent extends Component<any, any> {
     this.weaknesses = weaknesses;
     this.strength = strength;
 
+    this.fovSense = new FovSense();
+    this.radiationSense = new RadiationSense();
+
     this.intoAttackMode.bind(this);
     // this.intoAttackMode.bind(this)
     this.collideCallback.bind(this);
@@ -115,7 +118,6 @@ export class AiAgentComponent extends Component<any, any> {
     EID = eid;
     this.arcadeBody = arcadeBody;
     this.mode = "explore";
-    
 
     // if (!this.arcadeBody) throw "no arcade body?";
 
@@ -133,23 +135,12 @@ export class AiAgentComponent extends Component<any, any> {
   }
 
   tick(game: SpaceTrash, delta: number) {
-    if (!this.arcadeBody) throw "no arcade body?";
+    // if (!this.arcadeBody) throw "no arcade body?";
 
     GAME = game;
-    if (this.mode === "explore") {
-      this.explore(game);
-    } else if (this.mode === "attack") {
-      this.attack();
-    } else if (this.mode === "defend") {
-      // this.defend();
-    } else if (this.mode === "die") {
-      // this.die();
-    } else {
-      throw `AI is in unknown mode: ${this.mode}`;
-    }
 
-    const newX = Math.round(this.arcadeBody.position.x);
-    const newY = Math.round(this.arcadeBody.position.y);
+    // const newX = Math.round(this.arcadeBody.position.x);
+    // const newY = Math.round(this.arcadeBody.position.y);
 
     // if (newX !== this.oldGridX || newY !== this.oldGridY) {
     //   this.oldGridX = newX;
@@ -162,11 +153,7 @@ export class AiAgentComponent extends Component<any, any> {
 
   intoAttackMode(actorId: number) {
     this.attackTargetId = actorId;
-
-    // if (this.mode === `attack`) return;
-
     this.mode = "attack";
-    // this.attack();
   }
 
   refreshFOV() {
@@ -199,61 +186,89 @@ export class AiAgentComponent extends Component<any, any> {
     fov.compute(playerX, playerY, 5, (x, y, manhattenDistance, visibility) => {
       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
         if (visibility === 1) {
-          const sp: SetPieceComponent = GAME.components.SetPieces.at(x, y);
-          if (sp) {
-            const actorsOnSpace: number[] = GAME.components.Actors.byXandY(
+          const setPiece: SetPieceComponent = GAME.components.SetPieces.at(
+            x,
+            y
+          );
+
+          if (setPiece) {
+            const actors: number[] = GAME.components.Actors.byXandY(
               x,
               y
-            );
+            ).filter((i) => {
+              return i !== EID;
+            });
 
-            if (actorsOnSpace.length) {
-              for (let a of actorsOnSpace) {
-                // don't target self
-                if (a !== EID) {
-                  this.intoAttackMode(a);
-                }
-              }
-            }
+            this.FOV[y][x] = actors, setPiece, d, v;
+            // if (this.mode === "explore") {
+            //   ExplorePatterns[this.explorePattern](
+            //     this,
+            //     GAME,
+            //     actors,
+            //     setPiece,
+            //     x,
+            //     y,
+            //     manhattenDistance,
+            //     visibility
+            //   );
+            // } else if (this.mode === "attack") {
+            //   AttackPatterns[this.attackPattern](
+            //     this,
+            //     GAME,
+            //     actors,
+            //     setPiece,
+            //     x,
+            //     y,
+            //     manhattenDistance,
+            //     visibility
+            //   );
+            // } else if (this.mode === "defend") {
+            //   // this.defend();
+            // } else if (this.mode === "die") {
+            //   // this.die();
+            // } else {
+            //   throw `AI is in unknown mode: ${this.mode}`;
+            // }
           } else {
             debugger;
           }
         }
-        // self.FOV[y][x] = {manhattenDistance, visibility}
-        // attack.givenItemsInFov(x, y, r, actors.onXandY(x, y));
       }
     });
   }
 
-  explore(game: SpaceTrash) {
-    if (this.explorePattern === "langdonsAnt") {
-      this.arcadeBody.setAccelerationX(randomSpeed());
-      this.arcadeBody.setAccelerationY(randomSpeed());
-    } else if (this.explorePattern === "wallBounce") {
-      // no-op
-    } else if (this.explorePattern === "walkInCircle") {
-      // no-op
-    } else {
-      throw new Error("Method not implemented.");
-    }
-
-    // const target = this.checkFOV();
-    // if (target) {
-    //   this.mode = this.attack;
-    // }
+  fovInput(
+    actors: number[],
+    setPiece: SetPieceComponent,
+    x: number,
+    y: number,
+    manhattenDistance: number,
+    visibility: 0 | 1
+  ) {
+    throw new Error("Method not implemented.");
   }
 
-  attack() {
-    const actorToAttack = GAME.components.Actors.take(this.attackTargetId);
+  // explore(game: SpaceTrash) {
+  //   if (this.explorePattern === "langdonsAnt") {
+  //     this.arcadeBody.setAccelerationX(randomSpeed());
+  //     this.arcadeBody.setAccelerationY(randomSpeed());
+  //   } else if (this.explorePattern === "wallBounce") {
+  //     // no-op
+  //   } else if (this.explorePattern === "walkInCircle") {
+  //     // no-op
+  //   } else {
+  //     throw new Error("Method not implemented.");
+  //   }
 
-    if (this.attackPattern === "melee") {
-      
-      this.melee();
-    } else {
-      throw new Error(
-        `Attack pattern not implemented for ${this.attackPattern}`
-      );
-    }
-  }
+  //   // const target = this.checkFOV();
+  //   // if (target) {
+  //   //   this.mode = this.attack;
+  //   // }
+  // }
+
+  // attack() {
+  //   AttackPatterns[this.attackPattern](this, GAME)
+  // }
 
   defend() {
     throw new Error("Method not implemented.");
@@ -270,17 +285,17 @@ export class AiAgentComponent extends Component<any, any> {
     return false;
   }
 
-  melee() {
-    
-    const dist = this.distanceToTarget();
-    if (dist > 500) {
-      this.gotoPosition(
-        GAME.components.Actors.take(this.attackTargetId).arcadeBody.position
-      );
-    } else {
-      this.attackTarget();
-    }
-  }
+  // melee() {
+
+  //   const dist = this.distanceToTarget();
+  //   if (dist > 500) {
+  //     this.gotoPosition(
+  //       GAME.components.Actors.take(this.attackTargetId).arcadeBody.position
+  //     );
+  //   } else {
+  //     this.attackTarget();
+  //   }
+  // }
 
   distanceToTarget() {
     const { x, y } = GAME.components.Actors.take(this.attackTargetId).arcadeBody
@@ -314,7 +329,7 @@ export class AiAgentComponent extends Component<any, any> {
 
     const x1 = this.arcadeBody.position.x;
     const y1 = this.arcadeBody.position.y;
-    
+
     if (x1 > x) {
       this.arcadeBody.velocity.x = this.arcadeBody.velocity.x - 1;
     } else {
@@ -328,16 +343,16 @@ export class AiAgentComponent extends Component<any, any> {
     }
 
     if (this.arcadeBody.velocity.x > 30) {
-      this.arcadeBody.velocity.x = 30
+      this.arcadeBody.velocity.x = 30;
     }
     if (this.arcadeBody.velocity.x < -30) {
-      this.arcadeBody.velocity.x = -30
+      this.arcadeBody.velocity.x = -30;
     }
-        if (this.arcadeBody.velocity.y > 30) {
-      this.arcadeBody.velocity.y = 30
+    if (this.arcadeBody.velocity.y > 30) {
+      this.arcadeBody.velocity.y = 30;
     }
     if (this.arcadeBody.velocity.y < -30) {
-      this.arcadeBody.velocity.y = -30
+      this.arcadeBody.velocity.y = -30;
     }
   }
 }

@@ -1,6 +1,9 @@
 import { Component } from "./Component";
 
 export abstract class StoreV2<IC> {
+  byXandY(x: number, y: number) {
+    throw new Error("Method not implemented.");
+  }
   at(x: any, y: any) {
     throw new Error("Method not implemented.");
   }
@@ -39,6 +42,12 @@ export abstract class MapStoreV2<
     throw "not found";
   }
 
+  get(eid: number) {
+    const x = this.store.get(eid);
+    if (!x) return false;
+    return x;
+    }
+  
   take(eid: number) {
     const x = this.store.get(eid);
     if (!x) throw "not found";
@@ -53,12 +62,12 @@ export abstract class MapStoreV2<
     this.store.set(eid, c);
   }
 
-  upsert(p: Partial<IC>, eid: number) {
-    this.store.set(eid, {
-      ...this.store.get(eid),
-      ...p,
-    });
-  }
+  // upsert(p: Partial<IC>, eid: number) {
+  //   this.store.set(eid, {
+  //     ...this.store.get(eid),
+  //     ...p,
+  //   });
+  // }
 
   withIf(cb: (x: IC) => void, eid: number) {
     const x = this.store.get(eid);

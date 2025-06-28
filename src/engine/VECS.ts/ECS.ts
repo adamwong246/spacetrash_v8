@@ -75,7 +75,6 @@ export abstract class ECS<IComponents extends StoreV2<any>> {
 
     if (!store)
       throw `Did you forget to register the store "${name}? Check the top level constructor for the implementation of Game."`;
-    
     store.make(c, i);
   }
 
