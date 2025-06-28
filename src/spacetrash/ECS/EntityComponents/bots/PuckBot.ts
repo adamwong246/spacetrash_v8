@@ -1,5 +1,5 @@
 import { ArcadePhysics } from "arcade-physics";
-import * as Matter from "matter-js";
+
 import { Text } from "pixi.js";
 
 import { SpaceTrashEntity } from "../../Entity";

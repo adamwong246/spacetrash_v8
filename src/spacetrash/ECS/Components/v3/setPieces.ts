@@ -1,11 +1,13 @@
 import * as THREE from "three";
-import { TwoDOneD_Component } from "../../../../engine/VECS.ts/Component";
+import * as PIXI from "pixi.js";
 
+import { TwoDOneD_Component } from "../../../../engine/VECS.ts/Component";
 
 import { ISpaceTrashComponents } from "../v1";
 import { DrawableComponent } from "../v2/drawable";
 import { TwoDStore } from "../../../../engine/VECS.ts/Store";
 import { MapSize } from "../../../Constants";
+import { HeatConductorComponent, HeatEmitterComponent } from "./heat";
 
 export class SetPieceComponent extends TwoDOneD_Component<
   unknown,
@@ -24,12 +26,23 @@ export class SetPieceComponent extends TwoDOneD_Component<
   FOV: number[][];
   drawing: DrawableComponent;
 
+  heat: number = 0;
+  redrawHeat: boolean = true;
+  heatConductor?: HeatConductorComponent;
+  heatEmitter?: HeatEmitterComponent;
+  // thermalGraphic: PIXI.Graphics;
+
   constructor() {
     super();
 
     this.x = -1;
     this.y = -1;
     this.FOV = [[]];
+
+    // this.thermalGraphic = new PIXI.Graphics();
+    // this.thermalGraphic.beginFill(0xAAAAAA);
+    // this.thermalGraphic.lineStyle(0, 0xffffff);
+    // this.thermalGraphic.drawRect(0, 0, 300, 200);
   }
 }
 

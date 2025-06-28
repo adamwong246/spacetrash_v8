@@ -18,7 +18,7 @@ import {
   ArcadePhysicsComponent,
   ArcadePhysicsStore,
 } from "../Components/v2/arcadePhysics";
-import { Eid2PMStore } from "../Components/v2/eid2PMC";
+import { Eid2PMComponent, Eid2PMStore } from "../Components/v2/eid2PMC";
 import { DrawableStoreV2 } from "../Components/v2/drawable";
 import { SetPieceStore } from "../Components/v3/setPieces";
 import { AiAgentStore } from "../Components/v3/ai";
@@ -28,6 +28,7 @@ import {
   RadiationEmitterStore,
 } from "../Components/v3/radiation";
 import { distanceV2 } from "./MainSystem";
+import { averageNeighborsInPlace } from "./lib";
 
 let GAME: SpaceTrash;
 let DELTA: number;
@@ -38,21 +39,19 @@ export default (game: SpaceTrash, delta: number) => {
 
   const {
     AiAgentComponent,
-    Actors,
     ArcadePhysicsComponent,
     DrawableComponent,
-    FloatMovements,
-    SetPieces,
     TankMovingComponent,
     Eid2PM,
-    LightIncastingComponent,
     RadiationDetectorComponent,
     RadiationEmitterComponent,
+    HeatEmitterComponent,
+    SetPieces,
   } = game.components;
 
   // updateSetPieces(SetPieces, Actors);
   // resetIllumination(DrawableComponent, LightIncastingComponent, SetPieces);
-  resetRadiation(RadiationDetectorComponent)
+  resetRadiation(RadiationDetectorComponent);
 
   runAI(AiAgentComponent);
 
@@ -64,33 +63,69 @@ export default (game: SpaceTrash, delta: number) => {
   );
   runArcadePhysics(ArcadePhysicsComponent, Eid2PM, DrawableComponent);
 
-  runRadiationScan(RadiationEmitterComponent, RadiationDetectorComponent, Eid2PM);
+  runRadiationScan(
+    RadiationEmitterComponent,
+    RadiationDetectorComponent,
+    Eid2PM
+  );
+  // runHeatSpread(HeatEmitterComponent, SetPieces);
 
-  runUpdateUI(RadiationDetectorComponent)
+  runUpdateUI(RadiationDetectorComponent);
 
   // runFloatingPhysics(FloatMovements, Eid2PM, DrawableComponent);
   // rotLighting(SetPieces, ArcadePhysicsComponent, DrawableComponent);
 };
 
-function runUpdateUI(RadiationDetectors: RadiationDetectorComponent,) {
+function runHeatSpread() {
+  // inject heat into system
+  GAME.components.HeatEmitterComponent.each((h, eid) => {
+    const { x, y } = (GAME.components.Eid2PM.take(eid) as Eid2PMComponent)
+      .position;
+    const s = GAME.components.SetPieces.take(x, y);
+    s.heat += h.power;
+  });
+
+  // then average it out
+  averageNeighborsInPlace(GAME.components.SetPieces, GAME);
+
+  // for (let y = 0; y < MapSize; y++) {
+  //   for (let x = 0; x < MapSize; x++) {
+  //     // GAME.components.SetPieces.store[y][x] = new SetPieceComponent();
+  //     const s: SetPieceComponent = GAME.components.SetPieces.store[y][x];
+  //     const graphic = s.thermalGraphic;
+
+  //     // s.thermalGraphic.beginFill(interpolateColor(-100, 100, s.heat, "#FF00aa", "#aa00FF"));
+
+  //     // // set the line style to have a width of 5 and set the color to red
+  //     // s.thermalGraphic.lineStyle(5, 0xff00aa);
+
+  //     // // draw a rectangle
+  //     // s.thermalGraphic.drawRect(x * TileSize, y * TileSize, TileSize, TileSize);
+  //     // s.thermalGraphic.endFill();
+
+  //     // s.thermalGraphic.fillStyle = interpolateColor(-100, 100, s.heat, "#FF0000", "#0000FF");
+  //     // s.thermalGraphic.fillStyle = 0xFF0000
+  //   }
+  // }
+}
+
+function runUpdateUI(RadiationDetectors: RadiationDetectorComponent) {
   const b = GAME.bots[GAME.videoFeed] as [number, string];
   const eidOfVideoFeed = b[0];
 
   if (RadiationDetectors.get(eidOfVideoFeed)) {
-    GAME.updateBotWindowRadiation(RadiationDetectors.take(eidOfVideoFeed).rads);  
+    GAME.updateBotWindowRadiation(RadiationDetectors.take(eidOfVideoFeed).rads);
   } else {
-    GAME.updateBotWindowRadiation("?")
+    GAME.updateBotWindowRadiation("?");
   }
 
-
-  
-  // RadiationDetectors.each((rd, rdid) => {    
+  // RadiationDetectors.each((rd, rdid) => {
   //   rd.rads = 0;
   // });
 }
 
-function resetRadiation(RadiationDetectors: RadiationDetectorComponent,) {
-  RadiationDetectors.each((rd, rdid) => {    
+function resetRadiation(RadiationDetectors: RadiationDetectorComponent) {
+  RadiationDetectors.each((rd, rdid) => {
     rd.rads = 0;
   });
 }
@@ -98,26 +133,23 @@ function resetRadiation(RadiationDetectors: RadiationDetectorComponent,) {
 function runRadiationScan(
   RadiationEmitters: RadiationEmitterStore,
   RadiationDetectors: RadiationDetectorStore,
-  Eid2PMs: Eid2PMStore,
+  Eid2PMs: Eid2PMStore
 ) {
   RadiationDetectors.each((rd, rdid) => {
-
     let rads = 0;
     RadiationEmitters.each((re, reid) => {
-
       const pa = Eid2PMs.getAbsoluteXandY(rdid);
       const pb = Eid2PMs.getAbsoluteXandY(reid);
 
       const distance = distanceV2(pa.x, pa.y, pb.x, pb.y);
 
-      const power = re.rads/distance;
+      const power = re.rads / distance;
 
-      if (isNaN(power)) throw `power cannot be NaN`
+      if (isNaN(power)) throw `power cannot be NaN`;
 
-      debugger
       rads += power;
     });
-    
+
     rd.rads = rads;
   });
 }

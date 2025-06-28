@@ -16,13 +16,14 @@ import { BotWindow } from "./spacetrash/UI/BotWindow";
 import { MapWindow } from "./spacetrash/UI/map";
 import { TerminalWindow } from "./spacetrash/UI/terminal";
 import { IPerformanceConfig } from "./engine/VECS.ts/ECS";
-import { MatterWindow } from './spacetrash/UI/MatterWindow';
+
 import { ArcadePhysicsWindow } from './spacetrash/UI/ArcadePhysicsWindow';
 import { FabricatorWindow } from './spacetrash/UI/FabricatorWindow';
 import { DataWindow } from './spacetrash/UI/DataWindow';
 import { IState } from './spacetrash';
+import { ThermalWindow } from './spacetrash/UI/ThermalWindow';
 
-let self: DesktopGame<any, any,  any>;
+let self: DesktopGame<any, any, any>;
 
 export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends MultiSurfaceGame<IRenderings, IComponents> {
   private reactRoot;
@@ -99,10 +100,11 @@ export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends M
           bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
           term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
 
-          matter: (props: IDockviewPanelHeaderProps<any>) => <MatterWindow game={self} />,
+
           arcadePhysics: (props: IDockviewPanelHeaderProps<any>) => <ArcadePhysicsWindow game={self} />,
           fab: (props: IDockviewPanelHeaderProps<any>) => (<FabricatorWindow game={self} />),
           data: (props: IDockviewPanelHeaderProps<any>) => (<DataWindow game={self} />),
+          thermal: (props: IDockviewPanelHeaderProps<any>) => (<ThermalWindow game={self} />),
         }}
       />
     </div >)
@@ -121,6 +123,12 @@ export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends M
           {/* <div>{`custom tab: ${props.api.title}`}</div>
               <span>{`value: ${props.params.myValue}`}</span> */}
         </div>
+      );
+    },
+
+    thermal: (props: IDockviewPanelHeaderProps<IState>) => {
+      return (
+        <ThermalWindow game={this} />
       );
     },
 
@@ -201,6 +209,19 @@ export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends M
     this.dockviewAPI.component.addPanel({
       id: 'arcadePhysics',
       component: 'arcadePhysics',
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'thermal',
+      component: 'thermal',
       floating: {
         position: { left: 120, top: 190 },
         width: 600,

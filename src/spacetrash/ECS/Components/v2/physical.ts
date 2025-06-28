@@ -9,7 +9,8 @@ export abstract class PositionComponent extends Component<
   unknown,
   ISpaceTrashComponents
 > {
-  abstract getAbsoluteXandY(): {x: number, y: number};
+  abstract getAbsoluteXandY(): { x: number, y: number };
+  abstract getTileXAndY() : { x: number, y: number };
 
   x: number;
   y: number;

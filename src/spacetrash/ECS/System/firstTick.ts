@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as PIXI from "pixi.js";
 
 import { SpaceTrash } from "../..";
 import { MapBoundHigh, MapBoundLow, MapSize, TileSize } from "../../Constants";
@@ -17,6 +18,15 @@ import {
 } from "../Components/v2/physical";
 import { AiAgentStore } from "../Components/v3/ai";
 import { TileComponentStore } from "../Components/v2/tileable";
+import {
+  HeatConductorComponent,
+  HeatConductorStore,
+  HeatDetectorStore,
+  HeatEmitterStore,
+} from "../Components/v3/heat";
+import { Game } from "../../../engine/Game";
+
+let GAME: SpaceTrash;
 
 export default async (game: SpaceTrash, delta: number) => {
   const {
@@ -28,6 +38,9 @@ export default async (game: SpaceTrash, delta: number) => {
     Eid2PM,
     FloatMovements,
     FloatPositions,
+    HeatConductorComponent,
+    HeatDetectorComponent,
+    HeatEmitterComponent,
     IntegerPositionComponent,
     SetPieces,
     TankMovingComponent,
@@ -41,11 +54,16 @@ export default async (game: SpaceTrash, delta: number) => {
     Eid2PM: Eid2PMStore;
     FloatMovements: FloatMovingStore;
     FloatPosition: FloatPositionStore;
+    HeatConductorComponent: HeatConductorStore;
+    HeatDetectorComponent: HeatDetectorStore;
+    HeatEmitterComponent: HeatEmitterStore;
     IntegerPositionComponent: IntegerPositionStore;
     SetPieces: SetPieceStore;
     TankMovingComponent: TankMovingStore;
     TileComponent: TileComponentStore;
   } = game.components;
+
+  GAME = game;
 
   // ArcadeBodies must be re-constituted with the running game
   ArcadePhysicsComponent.each((apc, eid) => {
@@ -59,7 +77,6 @@ export default async (game: SpaceTrash, delta: number) => {
     const kk = ClassificationComponent.take(eid);
     const classification = kk.entityConstructorName;
 
-    console.log(classification);
     if (classification === "SpaceTrashBot") {
       Eid2PM.make(
         new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
@@ -76,14 +93,12 @@ export default async (game: SpaceTrash, delta: number) => {
         eid
       );
     } else if (classification === "WarpCore") {
-      debugger;
       Eid2PM.make(
         new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
         eid
       );
     }
   });
-  debugger;
 
   // outcasters.each(([ndx, [eid, lc]]) => {
   //   // const classification = eid2PMSs.get(eid).classification;
@@ -121,6 +136,11 @@ export default async (game: SpaceTrash, delta: number) => {
   // 3 deep
   // build set pieces grid
   IntegerPositionComponent.each((s, eid) => {
+    (GAME.components.Eid2PM as Eid2PMStore).make(
+      new Eid2PMComponent(s, "_"),
+      eid
+    );
+
     // SetPieces.take(s.x, s.y).setId = eid;
     SetPieces.update(
       {
@@ -141,6 +161,28 @@ export default async (game: SpaceTrash, delta: number) => {
         s.y
       );
     }
+
+    HeatConductorComponent.withIf((dc) => {
+      // SetPieces.at(s.x, s.y).drawing = dc[1];
+      SetPieces.update(
+        {
+          heatConductor: dc[1],
+        },
+        s.x,
+        s.y
+      );
+    }, eid);
+
+    HeatEmitterComponent.withIf((dc) => {
+      // SetPieces.at(s.x, s.y).drawing = dc[1];
+      SetPieces.update(
+        {
+          heatEmitter: dc[1],
+        },
+        s.x,
+        s.y
+      );
+    }, eid);
 
     DrawableComponent.withIf((dc) => {
       // SetPieces.at(s.x, s.y).drawing = dc[1];
@@ -202,10 +244,54 @@ export default async (game: SpaceTrash, delta: number) => {
   );
   setup2dAnd3dGames(game, DrawableComponent);
   setupArcadePhysics(game, ArcadePhysicsComponent, Actors);
+
+  setupHeat();
   setupAiAgents(game, Actors, AiAgentComponent);
 
   return;
 };
+
+function setupHeat() {
+  GAME.components.HeatConductorComponent.each((heatConductor: HeatConductorComponent, hceid) => {
+
+    GAME.components.IntegerPositionComponent.each((ip, ipceid) => {
+      if (hceid === ipceid) {
+        heatConductor.pixiThermalGraphic = HeatConductorComponent.thermalGraphic(ip.x, ip.y)
+        GAME.pixi2dThermalApp.stage.addChild(heatConductor.pixiThermalGraphic);
+      }
+
+      const { x, y } = ip;
+      const sp = GAME.components.SetPieces.store[y][x];
+
+      if (!sp) {
+        GAME.components.SetPieces.make({
+          heatConductor,
+        }, hceid);
+      } else {
+        sp.heatConductor = heatConductor;
+      }
+    })
+    // const sp: SetPieceComponent = GAME.components.SetPieces.take(hceid);
+    // const position = sp.
+
+  })
+
+  // (GAME.components.HeatDetectorComponent as HeatConductorStore).each((s, k, z) => {
+  // // s.thermalGraphic = GAME.pixi2dThermalApp..add.rectangle(50, 50, 100, 100, 0xFF0000);
+
+  // const { x, y } = GAME.components.Eid2PM.take(k).position.getTileXAndY();
+
+  // const graphics = new PIXI.Graphics();
+  // graphics.beginFill(new PIXI.Color("blue").toHex());
+  // graphics.drawRect(0, 0, 100, 100);
+  // graphics.endFill();
+
+  // graphics.tint = new PIXI.Color("blue").toHex();
+  // GAME.pixi2dThermalApp.stage.addChild(graphics);
+  // GAME.pixi2dThermalApp.render();
+
+  // });
+}
 
 function setup2dAnd3dGames(
   game: SpaceTrash,

@@ -20,15 +20,23 @@ export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
     return this.position.getAbsoluteXandY();
   }
 
+  getTileXAndY(eid: number) {
+    return this.position.getTileXAndY();
+  }
 }
 
 export class Eid2PMStore extends MapStoreV2<Eid2PMComponent> {
-  
   getAbsoluteXandY(eid: number) {
     const { classification, position } = this.take(eid);
     return position.getAbsoluteXandY();
-}
-  
+  }
+
+  getTileXAndY(eid: number) {
+    const { classification, position } = this.take(eid);
+    return position.getTileXAndY();
+  }
+
+
   // positionOf(eidOfLight: number): FloatPositionStore {
   //   throw new Error("Method not implemented.");
   // }

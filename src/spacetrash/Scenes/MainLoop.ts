@@ -2,6 +2,7 @@ import { SpaceTrashScene } from ".";
 import { SpaceTrash } from "..";
 import { ActorSize, MapSize, TileSize } from "../Constants";
 import { AiAgentComponent } from "../ECS/Components/v3/ai.ts";
+import { HeatDetectorComponent } from "../ECS/Components/v3/heat.ts";
 import { RadiationDetectorComponent } from "../ECS/Components/v3/radiation.ts";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
@@ -16,6 +17,7 @@ class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     const ship = new BoringShip();
     // const ship = new RotCellularShip();
+    // const ship = new RotDiggerShip();
 
     const drones = [...new Array(9)].map((n) => {
       return new SpaceTrashBot(
@@ -41,7 +43,10 @@ class MainScene extends SpaceTrashScene {
         0,
         0,
         "idk",
-        [new RadiationDetectorComponent(0)]
+        [
+          new RadiationDetectorComponent(0),
+          new HeatDetectorComponent()
+        ]
       ),
     ])[0];
 
@@ -118,7 +123,7 @@ class MainScene extends SpaceTrashScene {
       // ...moreBots,
 
       warpcore0,
-      warpcore1,
+      // warpcore1,
 
       // monster0,
       // monster1,
@@ -229,31 +234,6 @@ const scene = new MainScene({
     },
     (ecs, reply) => {
       return [];
-      // const thingsToDraw = [];  //shipMapUpdateLoop(ecs);
-
-      // return [
-      //   ...thingsToDraw,
-      //   (canvas) => {
-      //     if (
-      //       canvas.constructor.name ===
-      //       "OffscreenCanvasRenderingContext2D"
-      //     ) {
-      //       const canvas2d =
-      //         canvas as OffscreenCanvasRenderingContext2D;
-      //       canvas2d.beginPath();
-      //       canvas2d.arc(
-      //         shipMapMouseX,
-      //         shipMapMouseY,
-      //         TileSize / 1,
-      //         0,
-      //         2 * Math.PI
-      //       );
-      //       canvas2d.lineWidth = 1;
-      //       canvas2d.strokeStyle = "green";
-      //       canvas2d.stroke();
-      //     }
-      //   },
-      // ];
     },
     (ecs, event: any) => {
       if (event.type === "mousemove") {
@@ -342,28 +322,28 @@ const scene = new MainScene({
     "html",
   ],
 
-  matter: [
-    (ecs, reply) => {
-      return [];
-    },
-    (ecs, reply) => {
-      return [
-        async (game: SpaceTrash) => {
-          await game.renderMatterJs();
-        },
-      ];
-    },
-    (ecs, event: any) => {
-      // if (event.type === "mousemove") {
-      //   var rect = event.boundingClient;
-      //   var x = event.clientX - rect.left;
-      //   var y = event.clientY - rect.top;
-      //   shipMapMouseX = x;
-      //   shipMapMouseY = y;
-      // }
-    },
-    "2d",
-  ],
+  // matter: [
+  //   (ecs, reply) => {
+  //     return [];
+  //   },
+  //   (ecs, reply) => {
+  //     return [
+  //       async (game: SpaceTrash) => {
+  //         await game.renderMatterJs();
+  //       },
+  //     ];
+  //   },
+  //   (ecs, event: any) => {
+  //     // if (event.type === "mousemove") {
+  //     //   var rect = event.boundingClient;
+  //     //   var x = event.clientX - rect.left;
+  //     //   var y = event.clientY - rect.top;
+  //     //   shipMapMouseX = x;
+  //     //   shipMapMouseY = y;
+  //     // }
+  //   },
+  //   "2d",
+  // ],
 
   arcadePhysics: [
     (ecs, reply) => {
@@ -387,6 +367,30 @@ const scene = new MainScene({
     },
     "2d",
   ],
+
+  thermal: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game: SpaceTrash) => {
+          await game.renderThermals();
+        },
+      ];
+    },
+    (ecs, event: any) => {
+      // if (event.type === "mousemove") {
+      //   var rect = event.boundingClient;
+      //   var x = event.clientX - rect.left;
+      //   var y = event.clientY - rect.top;
+      //   shipMapMouseX = x;
+      //   shipMapMouseY = y;
+      // }
+    },
+    "2d",
+  ],
+
 });
 
 export default scene;

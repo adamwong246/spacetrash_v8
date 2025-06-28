@@ -148,7 +148,7 @@ export class AiAgentComponent extends Component<any, any> {
 
     //   this.refreshFOV();
     // }
-    this.refreshFOV();
+    // this.refreshFOV();
   }
 
   intoAttackMode(actorId: number) {

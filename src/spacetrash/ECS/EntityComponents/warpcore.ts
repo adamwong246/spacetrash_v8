@@ -15,6 +15,7 @@ import { TileSize } from "../../Constants";
 import { bunnySprite, cylinder } from "./bots";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { blueMaterial, greenMaterial } from "../../threejs";
+import { HeatEmitterComponent } from "../Components/v3/heat";
 
 export class WarpCore extends SpaceTrashEntityComponent {
   rads: number;
@@ -48,6 +49,7 @@ export class WarpCore extends SpaceTrashEntityComponent {
 
       new AttackableComponent(),
       new RadiationEmitterComponent(rads),
+      new HeatEmitterComponent(0.1),
 
       new ArcadePhysicsComponent((ap: ArcadePhysics) => {
 

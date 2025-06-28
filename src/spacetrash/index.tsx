@@ -31,7 +31,7 @@ import { TileComponentStore } from "./ECS/Components/v2/tileable";
 import { TileSize, MapSize, FPS } from "./Constants";
 import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
-import { ArcadePhysicsStore } from "./ECS/Components/v2/arcadePhysics";
+import { ArcadePhysicsComponent, ArcadePhysicsStore } from "./ECS/Components/v2/arcadePhysics";
 import { V3AttackComponentStore } from "./ECS/Components/v3/attack";
 import { AiAgentComponent, AiAgentStore } from "./ECS/Components/v3/ai";
 import { AttackableStore, LightIncastingStore } from "./ECS/Components/v1/casting/in";
@@ -39,6 +39,7 @@ import { LightOutcastingStore } from "./ECS/Components/v1/casting/out";
 import { SetPieceStore } from "./ECS/Components/v3/setPieces";
 import { RadiationDetectorStore, RadiationEmitterStore } from "./ECS/Components/v3/radiation";
 import { IBotWindowState } from "./UI/BotWindow";
+import { HeatConductorStore, HeatDetectorStore, HeatEmitterStore } from "./ECS/Components/v3/heat";
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
@@ -73,7 +74,7 @@ boot sequence complete!
   `,
 };
 
-export type ICanvases = "map" | "bot" | "arcadePhysics";
+export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal";
 
 export type IState = {
   game: SpaceTrash;
@@ -103,20 +104,22 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     Eid2PM: Eid2PMStore,
     FloatMovements: FloatMovingStore,
     FloatPositions: FloatPositionStore,
+    HeatDetectorComponent: HeatDetectorStore
+    HeatEmitterComponent: HeatEmitterStore,
+    HeatConductorComponent: HeatConductorStore,
     IntegerPositionComponent: IntegerPositionStore,
     LightIncastingComponent: LightIncastingStore,
     LightOutcastingComponent: LightOutcastingStore,
     NameableComponent: NameableStore,
     OrdinalDirectionComponent: OrdinalDirectionStore,
     OridinalMovingComponent: OridinalMovingStore,
-    RadiationEmitterComponent: RadiationEmitterStore,
     RadiationDetectorComponent: RadiationDetectorStore
+    RadiationEmitterComponent: RadiationEmitterStore,
     SetPieces: SetPieceStore,
     TankMovingComponent: TankMovingStore,
     TileComponent: TileComponentStore,
     V3AttackComponent: V3AttackComponentStore,
   }> {
-
 
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
@@ -128,6 +131,12 @@ export class SpaceTrash extends TerminalGame<IRenderings,
   pixijsBotParentRef: HTMLElement;
   pixijsRenderer: PIXI.Application;
   pixi2dApp: PIXI.Application;
+
+  // thermals are a another pixi app
+  pixijsThermalCanvasRef: HTMLCanvasElement;
+  pixijsThermalParentRef: HTMLElement;
+  pixijsThermalRenderer: PIXI.Application;
+  pixi2dThermalApp: PIXI.Application;
 
   arcadePhysics: ArcadePhysics;
   arcadePhysicsTick: any;
@@ -192,6 +201,9 @@ export class SpaceTrash extends TerminalGame<IRenderings,
         Eid2PM: new Eid2PMStore(),
         FloatMovements: new FloatMovingStore(),
         FloatPositions: new FloatPositionStore(),
+        HeatConductorComponent: new HeatConductorStore(),
+        HeatDetectorComponent: new HeatDetectorStore(),
+        HeatEmitterComponent: new HeatEmitterStore(),
         IntegerPositionComponent: new IntegerPositionStore(),
         LightIncastingComponent: new LightIncastingStore(),
         LightOutcastingComponent: new LightOutcastingStore(),
@@ -218,6 +230,7 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     this.scene = new THREE.Scene();
 
     this.pixi2dApp = new PIXI.Application();
+    this.pixi2dThermalApp = new PIXI.Application();
 
     this.addToHistory(bootScreenTermLine)
 
@@ -337,11 +350,13 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     const n: number = Number(s);
     if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
     this.videoFeed = n;
+
     this.botHook({
       rads: 100,
       heat: 99,
       sound: 101,
     })
+
     this.unFocusOnTermInput();
     super.focusWindowById(`vid`)
   }
@@ -423,14 +438,18 @@ export class SpaceTrash extends TerminalGame<IRenderings,
   rotationOfBot(eid: number): { r: number; } {
     const arcadeObjectComponent = this.components.ArcadePhysicsComponent.take(eid);
 
+    if (!arcadeObjectComponent.arcadeObject) return { r: arcadeObjectComponent.r }
+
+
     return {
       r: arcadeObjectComponent?.arcadeObject.rotation,
     };
   }
 
   positionOfBot(eid: number): { x: number; y: number } {
-    const arcadeObjectComponent = this.components.ArcadePhysicsComponent.take(eid);
+    const arcadeObjectComponent: ArcadePhysicsComponent = this.components.ArcadePhysicsComponent.take(eid);
 
+    if (!arcadeObjectComponent.arcadeObject) return { x: arcadeObjectComponent.x, y: arcadeObjectComponent.y }
     return {
       x: arcadeObjectComponent.arcadeObject.position.x,
       y: arcadeObjectComponent.arcadeObject.position.y,
@@ -543,7 +562,27 @@ export class SpaceTrash extends TerminalGame<IRenderings,
 
     }
 
+    if (key === "thermal") {
+      // debugger
+      this.pixijsThermalCanvasRef = canvas;
+      this.pixijsThermalParentRef = parentComponent;
+
+      await this.pixi2dThermalApp.init({
+        sharedTicker: true,
+        view: canvas.getContext("webgl2")?.canvas,
+        backgroundColor: 0xFFFFFF,
+        width: 500,
+        height: 500
+      });
+
+      
+      // this.pixi2dThermalApp.render()
+
+    }
+
+
     if (
+      this.pixi2dThermalApp &&
       this.pixi2dApp &&
       this.threejsRenderer &&
       this.arcadePhysics) {
@@ -577,6 +616,10 @@ export class SpaceTrash extends TerminalGame<IRenderings,
   }
 
   async renderShipMap() {
+    // todo
+  }
+
+  async renderThermals() {
     // todo
   }
 

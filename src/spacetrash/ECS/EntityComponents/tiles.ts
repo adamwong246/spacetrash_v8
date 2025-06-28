@@ -34,6 +34,7 @@ import { SpaceTrashEntityComponent, ITiles } from ".";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { LightIncastingComponent } from "../Components/v1/casting/in";
 import { TileComponent } from "../Components/v2/tileable";
+import { HeatConductorComponent } from "../Components/v3/heat";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -125,6 +126,7 @@ export class Tile extends SpaceTrashEntityComponent {
       new LightIncastingComponent(),
       new ClassificationComponent("Tile"),
       new TileComponent(tiletype),
+      new HeatConductorComponent(1)
     ];
 
     if (dir !== undefined) {
