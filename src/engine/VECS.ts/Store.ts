@@ -1,6 +1,9 @@
 import { Component } from "./Component";
 
 export abstract class StoreV2<IC> {
+  at(x: any, y: any) {
+    throw new Error("Method not implemented.");
+  }
   abstract store;
 
   // set

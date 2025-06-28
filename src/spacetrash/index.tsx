@@ -18,7 +18,7 @@ import { ITermWindowState } from "./UI/terminal";
 
 import { ITerminalLine, TerminalGame } from "./Terminal";
 
-import { ActorStore } from "./ECS/Components/v3/actors";
+import { ActorComponent, ActorStore } from "./ECS/Components/v3/actors";
 import {
   IntegerPositionStore, FloatPositionStore, DegreesDirectionStore, FloatMovingStore, OrdinalDirectionStore, OridinalMovingStore,
   TankMovingStore,
@@ -33,7 +33,7 @@ import { SpaceTrashMainSystem } from "./ECS/System/MainSystem";
 import { DrawableStoreV2 } from "./ECS/Components/v2/drawable";
 import { ArcadePhysicsStore } from "./ECS/Components/v2/arcadePhysics";
 import { V3AttackComponentStore } from "./ECS/Components/v3/attack";
-import { AiAgentStore } from "./ECS/Components/v3/ai";
+import { AiAgentComponent, AiAgentStore } from "./ECS/Components/v3/ai";
 import { AttackableStore, LightIncastingStore } from "./ECS/Components/v1/casting/in";
 import { LightOutcastingStore } from "./ECS/Components/v1/casting/out";
 import { SetPieceStore } from "./ECS/Components/v3/setPieces";
@@ -112,6 +112,7 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     DegreesDirectionComponent: DegreesDirectionStore,
     ArcadePhysicsComponent: ArcadePhysicsStore
   }> {
+  
 
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
@@ -276,6 +277,10 @@ export class SpaceTrash extends TerminalGame<IRenderings,
 
       })
     super.start()
+  }
+
+  impartDamage(source: AiAgentComponent, target: ActorComponent) {
+    // throw new Error("Method not implemented.");
   }
 
   loginHook() {

@@ -5,6 +5,7 @@ import { AiAgentComponent } from "../ECS/Components/v3/ai.ts";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
+import { RotCellularShip } from "../ECS/EntityComponents/ships/RotCellularyShip.ts";
 import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
 
 const SPEED_CONSTANT = 0.05;
@@ -12,6 +13,7 @@ const SPEED_CONSTANT = 0.05;
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     const ship = new BoringShip();
+    // const ship = new RotCellularShip();
 
     const drones = [...new Array(1)].map((n) => {
       return new SpaceTrashBot(
@@ -42,12 +44,12 @@ class MainScene extends SpaceTrashScene {
     //   );
     // });
 
-    const monster0 = new PuckBot(
+    const moreBots = [...new Array(10)].map((n) => {
+      return new PuckBot(
       Math.random() * MapSize,
       Math.random() * MapSize,
       ActorSize,
-      (Math.random() - 0.5) * SPEED_CONSTANT,
-      (Math.random() - 0.5) * SPEED_CONSTANT,
+      0,0,
       String(performance.now()),
       new AiAgentComponent(
         "melee",
@@ -61,6 +63,9 @@ class MainScene extends SpaceTrashScene {
         "explosive"
       )
     );
+    });
+
+    
 
     const monster1 = new PuckBot(
       Math.random() * MapSize,
@@ -82,9 +87,13 @@ class MainScene extends SpaceTrashScene {
       )
     );
 
-    // const ship = new RotDiggerShip();
+    
 
-    game.setEntitiesComponent([ship, ...ship.toTiles(), monster0, monster1]);
+    game.setEntitiesComponent([ship, ...ship.toTiles(),
+      ...moreBots,
+      // monster0,
+      // monster1
+    ]);
 
     const myDoneIds = game.setEntitiesComponent([...drones]);
 

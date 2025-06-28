@@ -6,7 +6,7 @@ import { IntegerPositionComponent } from "../../Components/v2/physical";
 import { Tile, WallTile, FloorTile } from "../tiles";
 
 
-export class RotCellularrShip extends SpaceTrashEntityComponent {
+export class RotCellularShip extends SpaceTrashEntityComponent {
   map: Tile | null[][];
 
   shipSize = MapSize;

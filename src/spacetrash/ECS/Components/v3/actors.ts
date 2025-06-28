@@ -5,6 +5,7 @@ import { AiAgentComponent, IBehaviors } from "./ai";
 import { SpaceTrash } from "../../..";
 import { ISpaceTrashComponents } from "../v1";
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { TileSize } from "../../../Constants";
 
 export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
   actorId: number;
@@ -13,25 +14,25 @@ export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
   friendly: boolean;
   motion: FloatMovingComponent;
   position: FloatPositionComponent;
+  FOV: any;
 }
 
-export class ActorStore extends MapStoreV2<ActorComponent> {}
+export class ActorStore extends MapStoreV2<ActorComponent> {
+  byXandY(x: number, y: number): number[] {
+    let toReturn: number[] = [];
 
-// byXandY(x: number, y: number): number[] {
-//   let toReturn: number[] = [];
+    this.each((ac, eid) => {
+      if (
+        Math.round(ac.arcadeBody.position.x / TileSize) === x &&
+        Math.round(ac.arcadeBody.position.y / TileSize) === y
+      ) {
+        toReturn.push(eid);
+      }
+    });
 
-//   Object.keys(this).forEach((k) => {
-//     const ac = this[k];
-//     if (
-//       Math.round(ac.arcadeBody.arcadeObject.position.x / TileSize) === x &&
-//       Math.round(ac.arcadeBody.arcadeObject.position.y / TileSize) === y
-//     ) {
-//       toReturn.push(Number(k));
-//     }
-//   });
-
-//   return toReturn;
-// }
+    return toReturn;
+  }
+}
 
 // each(cb: (l: string, a: ActorComponent) => any) {
 //   Object.keys(this).forEach((k) => {

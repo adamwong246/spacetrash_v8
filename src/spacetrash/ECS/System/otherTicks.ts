@@ -40,7 +40,6 @@ export default (game: SpaceTrash, delta: number) => {
     LightIncastingComponent,
   } = game.components;
 
-  
   // updateSetPieces(SetPieces, Actors);
   // resetIllumination(DrawableComponent, LightIncastingComponent, SetPieces);
   runAI(AiAgentComponent);
@@ -69,37 +68,7 @@ function runAI(AiAgents: AiAgentStore) {
   });
 
   // attacks.each((eid, attack) => {
-  //   function lightPasses(x, y) {
-  //     if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-  //       const z = setPieces.at(x, y);
 
-  //       if (z && z.tileType === "WallTile") {
-  //         return false;
-  //       } else {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-
-  //     // var key = x + "," + y;
-  //     // if (key in data) {
-  //     //   return data[key] == 0;
-  //     // }
-  //     // return false;
-  //   }
-
-  //   var fov = new FOV.RecursiveShadowcasting(lightPasses);
-
-  //   fov.compute(
-  //     Math.round(GAME.camera.position.x / TileSize),
-  //     Math.round(GAME.camera.position.y / TileSize),
-  //     10,
-  //     function (x, y, r, visibility) {
-  //       if (x > 0 && x <= MapSize - 1 && y > 0 && y <= MapSize - 1) {
-  //         attack.givenItemsInFov(x, y, r, actors.onXandY(x, y));
-  //       }
-  //     }
-  //   );
 
   // });
 }
