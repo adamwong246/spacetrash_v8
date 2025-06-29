@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     throw `no rootHtml?! I expected an html element with id of "react-root"`;
   }
   const s = new SpaceTrash(domNode);
+     window.SPACE_TRASH = s;
+  
   await s.start()
 });
 

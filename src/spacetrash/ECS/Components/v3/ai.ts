@@ -28,7 +28,9 @@ export type IExplore =
 export type IAttack = `melee` | `ranged`;
 export type IDefend = `protectTheNest` | `rush` | `suicideBomb`;
 export type IDie = `pop` | `acidCorpse` | `rallyCry`;
-export type IAttractRepel = `FOV` | `heat` | `sound` | `radiation` | `light`;
+export type ISpawn = `divide` | `mate`;
+
+export type IAttractRepel = `FOV` | `heat` | `sound` | `radiation`;
 export type IMotions = `tank` | `fly` | `none`;
 export type IStrengthsAndWeaknesses =
   | `vacuum`
@@ -47,18 +49,99 @@ let GAME: SpaceTrash;
 
 let EID;
 
+type IRelation = {
+  alignment: "predator" | "prey" | "ignore";
+};
+
+// The AI is randomly assigned:
+// 1) A preference for one of the 4 corners
+// 2) For each of the 4 squares, a random appropriate behavior pattern
+
+// The mode is modeled as 1 point
+
+
+// Relations
+// There is a matrix for every known actor.
+// for each of the 4 points, there is a threshold that must be met to promote the relationship
+//
+//          Rival
+// predator          prey
+//          teammate
+//
+// Rival/teammate - changes by observed behavior
+// predator/prey  - Wether the AI will pursue or flee from the tracking target
+
+// Actor events
+//
+//         friendly
+// tracked          lost-track
+//       unfriendly  
+//
+
+// Mode
+// These behaviors define how the bot acts without regard to another actor
+// It is modeled as a single point.
+//
+//         spawn
+// attack         defend
+//          die
+//
+// spawn/die     - increases and decrease by individual health
+// attack/defend - increases and decrease by team health
+
+// Motivation
+// These behaviors define how the bot responds to a increasing "meter"
+//
+//        boredom
+// hunger           fear 
+//        ambition
+//
+// boredom/ambition - increases and decrease by individual activity
+// hunger/fear      - whether the bot moves towards resources or away from threat
+
+// Preferences
+//
+// These behaviors describe how the bot acts when in a neutral state. It doesn't change over time.
+// IE mode: neutral and all meters under threshold. 
+//        strength
+// repel            attract
+//        weakness
+//
+// strength/weakness - whether the ai prioritizes moving towards elemental preference or elemental preference
+// repel/attract     - whether the ai prioritizes moving towards elemental strength or elemental weakness
+
+
+
+
+
+
+
+
+
+
+
+
+type IModes = 'attack' | 'defend' | `spawn` | `die`[];
+
 export class AiAgentComponent extends Component<any, any> {
   mode: IBehaviors = "seed";
 
+  // a list ordered by mode preferences 
+  modePreference: IModes
+  // the mode behavior patterns
   attackPattern: IAttack;
   explorePattern: IExplore;
   defendPattern: IDefend;
   diePattern: IDie;
+
+
   seekPattern: IAttractRepel;
   repelPattern: IAttractRepel;
-  motion: IMotions;
   weaknesses: IStrengthsAndWeaknesses;
   strength: IStrengthsAndWeaknesses;
+
+  motion: IMotions;
+  
 
   arcadeBody: unknown;
 
@@ -70,6 +153,9 @@ export class AiAgentComponent extends Component<any, any> {
   // FOV: { manhattenDistance: number; visiblility: 0 | 1 }[][] = [[]];
   fovSense: FovSense;
   radiationSense: RadiationSense;
+  // heatSense: HeatSense;
+
+  relations: Map<number, IRelation>;
 
   constructor(
     attackPattern: IAttack,
@@ -199,7 +285,7 @@ export class AiAgentComponent extends Component<any, any> {
               return i !== EID;
             });
 
-            this.FOV[y][x] = actors, setPiece, d, v;
+            (this.FOV[y][x] = actors), setPiece, d, v;
             // if (this.mode === "explore") {
             //   ExplorePatterns[this.explorePattern](
             //     this,

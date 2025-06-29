@@ -36,13 +36,9 @@
     "protochain": "^1.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-pro-panels": "^1.0.2",
-    "react-resizable-draggable-modal": "^0.0.1",
-    "react-rnd": "^10.4.11",
     "react-usestateref": "^1.0.9",
     "restructure": "^3.0.2",
     "rot-js": "^2.2.1",
-    "three": "^0.177.0",
-    "warp-field": "^2.0.2"
+    "three": "^0.177.0"
   }
 }
