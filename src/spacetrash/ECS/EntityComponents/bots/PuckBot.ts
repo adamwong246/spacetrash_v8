@@ -4,18 +4,11 @@ import { Text } from "pixi.js";
 
 import { SpaceTrashEntity } from "../../Entity";
 
-import {
-  FloatPositionComponent,
-  FloatMovingComponent,
-} from "../../Components/v2/physical";
-
-import { ClassificationComponent } from "../../Components/v2/classifiable";
 import { DrawableComponent } from "../../Components/v2/drawable";
 
-import { Actor, bunnySprite, RandomExplorePattern, spike } from ".";
-import { MapSize, SPEED_CONSTANT, TileSize } from "../../../Constants";
+import { Actor, bunnySprite, spike } from ".";
+import { TileSize } from "../../../Constants";
 import { ArcadePhysicsComponent } from "../../Components/v2/arcadePhysics";
-import { Kamkikaze } from "../../Components/v3/attack";
 import { AiAgentComponent } from "../../Components/v3/ai";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";
 
@@ -40,7 +33,6 @@ export class PuckBot extends Actor {
         // // new LightOutcastingComponent(1),
         new LightIncastingComponent(1),
         // // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
-        new ClassificationComponent("PuckBot"),
 
         new DrawableComponent(bunnySprite(), spike(), new Text("?")),
 
@@ -52,7 +44,6 @@ export class PuckBot extends Actor {
         }),
 
         aiAgentConfig,
-        
       ]
 
       // V2

@@ -24,7 +24,7 @@ import {
   IntegerPositionComponent,
   OrdinalDirectionComponent,
 } from "../Components/v2/physical";
-import { ClassificationComponent } from "../Components/v2/classifiable";
+
 import { DrawableComponent } from "../Components/v2/drawable";
 
 
@@ -124,7 +124,6 @@ export class Tile extends SpaceTrashEntityComponent {
       d,
       new IntegerPositionComponent(x, y),
       new LightIncastingComponent(),
-      new ClassificationComponent("Tile"),
       new TileComponent(tiletype),
       new HeatConductorComponent(1)
     ];

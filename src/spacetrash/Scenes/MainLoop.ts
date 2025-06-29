@@ -120,13 +120,11 @@ class MainScene extends SpaceTrashScene {
     game.setEntitiesComponent([
       ship,
       ...ship.toTiles(),
-      // ...moreBots,
-
+      ...moreBots,
       warpcore0,
-      // warpcore1,
-
+      warpcore1,
       // monster0,
-      // monster1,
+      monster1,
     ]);
 
     const myDoneIds = game.setEntitiesComponent(drones);

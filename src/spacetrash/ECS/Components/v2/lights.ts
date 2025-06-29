@@ -1,6 +1,6 @@
 
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-import { ClassificationComponent } from "./classifiable";
+
 import { FloatPositionComponent } from "./physical";
 
 
@@ -40,42 +40,3 @@ export type LightingComponent = FloatPositionComponent;
 // map light id to position
 export class LightingComponentStore extends MapStoreV2<any> {
   // store: Record<
-  //   number,
-  //   {
-  //     floatPosition: FloatPositionComponent;
-  //     classification: string;
-  //   }
-  // >;
-
-  // constructor() {
-  //   super();
-  //   this.store = {};
-  // }
-
-  // add(
-  //   n: number,
-  //   floatPosition: FloatPositionComponent,
-  //   classification: string
-  // ) {
-  //   return (this.store[n] = {
-  //     floatPosition,
-  //     classification,
-  //   });
-  // }
-
-  // get(n: number): {
-  //   floatPosition: FloatPositionComponent;
-  //   classification: ClassificationComponent;
-  // } {
-  //   return this.store[n];
-  // }
-
-  // make() {
-  //   throw "method not implemented";
-  //   // return new LightComponent();
-  // }
-
-  // // positionOf(eidOfLight: number): FloatPositionStore {
-  // //   throw new Error("Method not implemented.");
-  // // }
-}

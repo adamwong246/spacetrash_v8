@@ -16,26 +16,5 @@ export class TileComponent extends Component<unknown, ISpaceTrashComponents> {
 }
 
 export class TileComponentStore extends MapStoreV2<ITiles> {
-  // store: Record<number, ITiles> = {};
-
-  // constructor() {
-  //   super();
-  // }
-
-  // get(n: number) {
-  //   return this.store[n];
-  // }
-
-  // add(c: ITiles, i: number) {
-  //   this.store[i] = c;
-  // }
-
-  // make(entityConstructorName: string) {
-  //   throw "not implemented";
-  //   // return new ClassificationComponent(entityConstructorName);
-  // }
-
-  // pmcOfEid(eid: number): { position: any; moving: any; classification: any } {
-  //   throw new Error("Method not implemented.");
-  // }
+  
 }

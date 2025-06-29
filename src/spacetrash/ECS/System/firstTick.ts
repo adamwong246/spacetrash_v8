@@ -33,7 +33,6 @@ export default async (game: SpaceTrash, delta: number) => {
     Actors,
     AiAgentComponent,
     ArcadePhysicsComponent,
-    ClassificationComponent,
     DrawableComponent,
     Eid2PM,
     FloatMovements,
@@ -49,7 +48,7 @@ export default async (game: SpaceTrash, delta: number) => {
     Actors: ActorStore;
     AiAgentComponent: AiAgentStore;
     ArcadePhysicsComponent: ArcadePhysicsStore;
-    ClassificationComponent: ClassificationStore;
+
     DrawableComponent: DrawableStoreV2;
     Eid2PM: Eid2PMStore;
     FloatMovements: FloatMovingStore;
@@ -72,11 +71,8 @@ export default async (game: SpaceTrash, delta: number) => {
     );
   });
 
-  // todo reimpliment classification
-  ClassificationComponent.each((cc, eid) => {
-    const kk = ClassificationComponent.take(eid);
-    const classification = kk.entityConstructorName;
-
+  for (let [eid, [classification]] of GAME.entities) {
+    // debugger
     if (classification === "SpaceTrashBot") {
       Eid2PM.make(
         new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
@@ -98,7 +94,34 @@ export default async (game: SpaceTrash, delta: number) => {
         eid
       );
     }
-  });
+  }
+  // todo reimpliment classification
+  // ClassificationComponent.each((cc, eid) => {
+  //   const kk = ClassificationComponent.take(eid);
+  //   const classification = kk.entityConstructorName;
+
+  //   if (classification === "SpaceTrashBot") {
+  //     Eid2PM.make(
+  //       new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
+  //       eid
+  //     );
+  //   } else if (classification === "Tile") {
+  //     Eid2PM.make(
+  //       new Eid2PMComponent(IntegerPositionComponent.take(eid), classification),
+  //       eid
+  //     );
+  //   } else if (classification === "PuckBot") {
+  //     Eid2PM.make(
+  //       new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
+  //       eid
+  //     );
+  //   } else if (classification === "WarpCore") {
+  //     Eid2PM.make(
+  //       new Eid2PMComponent(ArcadePhysicsComponent.take(eid), classification),
+  //       eid
+  //     );
+  //   }
+  // });
 
   // outcasters.each(([ndx, [eid, lc]]) => {
   //   // const classification = eid2PMSs.get(eid).classification;
@@ -252,29 +275,35 @@ export default async (game: SpaceTrash, delta: number) => {
 };
 
 function setupHeat() {
-  GAME.components.HeatConductorComponent.each((heatConductor: HeatConductorComponent, hceid) => {
+  GAME.components.HeatConductorComponent.each(
+    (heatConductor: HeatConductorComponent, hceid) => {
+      GAME.components.IntegerPositionComponent.each((ip, ipceid) => {
+        if (hceid === ipceid) {
+          heatConductor.pixiThermalGraphic =
+            HeatConductorComponent.thermalGraphic(ip.x, ip.y);
+          GAME.pixi2dThermalApp.stage.addChild(
+            heatConductor.pixiThermalGraphic
+          );
+        }
 
-    GAME.components.IntegerPositionComponent.each((ip, ipceid) => {
-      if (hceid === ipceid) {
-        heatConductor.pixiThermalGraphic = HeatConductorComponent.thermalGraphic(ip.x, ip.y)
-        GAME.pixi2dThermalApp.stage.addChild(heatConductor.pixiThermalGraphic);
-      }
+        const { x, y } = ip;
+        const sp = GAME.components.SetPieces.store[y][x];
 
-      const { x, y } = ip;
-      const sp = GAME.components.SetPieces.store[y][x];
-
-      if (!sp) {
-        GAME.components.SetPieces.make({
-          heatConductor,
-        }, hceid);
-      } else {
-        sp.heatConductor = heatConductor;
-      }
-    })
-    // const sp: SetPieceComponent = GAME.components.SetPieces.take(hceid);
-    // const position = sp.
-
-  })
+        if (!sp) {
+          GAME.components.SetPieces.make(
+            {
+              heatConductor,
+            },
+            hceid
+          );
+        } else {
+          sp.heatConductor = heatConductor;
+        }
+      });
+      // const sp: SetPieceComponent = GAME.components.SetPieces.take(hceid);
+      // const position = sp.
+    }
+  );
 
   // (GAME.components.HeatDetectorComponent as HeatConductorStore).each((s, k, z) => {
   // // s.thermalGraphic = GAME.pixi2dThermalApp..add.rectangle(50, 50, 100, 100, 0xFF0000);

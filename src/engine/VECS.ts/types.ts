@@ -70,9 +70,7 @@ import { StoreV2 } from "./Store";
 //   }
 // }
 
-export type IEntitiesStore = Int32Array<SharedArrayBuffer>;
-export type IArchtypesStore = Uint8Array;
-export type IArchtypesMapping = string[];
+export type IEntitiesStore = Map<number, string[]>
 
 export type IComponentsStore = [number, Component<any, any>][];
 export const defaultComponentsStore: IComponentsStore = [];

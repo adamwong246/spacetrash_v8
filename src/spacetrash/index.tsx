@@ -24,7 +24,6 @@ import {
   TankMovingStore,
   DirectionComponent
 } from "./ECS/Components/v2/physical";
-import { ClassificationStore } from "./ECS/Components/v2/classifiable";
 import { NameableStore } from "./ECS/Components/v2/nameable";
 import { Eid2PMStore } from "./ECS/Components/v2/eid2PMC";
 import { TileComponentStore } from "./ECS/Components/v2/tileable";
@@ -98,7 +97,6 @@ export class SpaceTrash extends TerminalGame<IRenderings,
     AiAgentComponent: AiAgentStore,
     ArcadePhysicsComponent: ArcadePhysicsStore
     AttackableComponent: AttackableStore,
-    ClassificationComponent: ClassificationStore,
     DegreesDirectionComponent: DegreesDirectionStore,
     DrawableComponent: DrawableStoreV2
     Eid2PM: Eid2PMStore,
@@ -195,7 +193,6 @@ export class SpaceTrash extends TerminalGame<IRenderings,
         AiAgentComponent: new AiAgentStore(),
         ArcadePhysicsComponent: new ArcadePhysicsStore(),
         AttackableComponent: new AttackableStore(),
-        ClassificationComponent: new ClassificationStore(),
         DegreesDirectionComponent: new DegreesDirectionStore(),
         DrawableComponent: new DrawableStoreV2(),
         Eid2PM: new Eid2PMStore(),

@@ -3,7 +3,6 @@ import { Text } from "pixi.js";
 
 import { SpaceTrashEntityComponent } from ".";
 import { AttackableComponent } from "../Components/v1/casting/in";
-import { ClassificationComponent } from "../Components/v2/classifiable";
 import { IntegerPositionComponent } from "../Components/v2/physical";
 import { SpaceTrashEntity } from "../Entity";
 import { DrawableComponent } from "../Components/v2/drawable";
@@ -45,7 +44,7 @@ export class WarpCore extends SpaceTrashEntityComponent {
       ),
 
       new IntegerPositionComponent(x, y),
-      new ClassificationComponent("WarpCore"),
+
 
       new AttackableComponent(),
       new RadiationEmitterComponent(rads),

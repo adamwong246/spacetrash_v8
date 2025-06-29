@@ -1,10 +1,13 @@
 // The base class upon which all Games inheirt
 // It handles the View-Entity-Component-System and main loop
+var protochain = require('protochain')
+
 
 import { System } from "./System";
 import { EntityComponent } from "./EntityComponent";
-import { IArchtypesStore, IComponentsStores, IEntitiesStore, IStores, Store, StoreV2 } from "./types";
+import { IComponentsStores, IEntitiesStore, } from "./types";
 import { Component } from "./Component";
+import { StoreV2 } from "./Store";
 
 const uint32Max = 4294967295
 const EntityMax = 65535;
@@ -37,40 +40,11 @@ export abstract class ECS<IComponents extends StoreV2<any>> {
     this.fps = config.fps;
     this.performanceLogging = config.performanceLogging;
     this.headless = config.headless;
-    this.archetypeCodes = ['_'];
-
-    ///////////////////////////////////
-
-    const sharedBuffer = new SharedArrayBuffer(
-      Int32Array.BYTES_PER_ELEMENT * EntityMax
-    );
-    const sharedArray = new Int32Array(sharedBuffer);
-    this.entities = sharedArray;
-
-    ///////////////////////////////////
-
-    // const archetypeBuffer = new SharedArrayBuffer(
-    //   Uint8Array.BYTES_PER_ELEMENT * maxArchetypes
-    // );
-    // const sharedArchetypeArray = new Uint8Array(archetypeBuffer);
-    // this.archetypes = sharedArchetypeArray;
-    // // this.archetypeCodes = archetypeCodes;
-
-    // this.entities = sharedArray;
-
-    // this.archetypes = new Uint8Array();
-    
-    
-    // this.archetypeCodes.forEach((a, i) => {
-    //   this.archetypes[i] = i;
-    // })
-    // debugger
-
-
+    this.entities = new Map();
   }
 
-  addComponent(i: number, c: Component<any, any>, classOverride?: "string") {
-    const name = classOverride || c.constructor.name;
+  addComponent(i: number, c: Component<any, any>) {
+    const name = c.constructor.name;
     const store: StoreV2<any> = this.components[name];
 
     if (!store)
@@ -88,11 +62,10 @@ export abstract class ECS<IComponents extends StoreV2<any>> {
       });
   }
 
-  addEntity(e: EntityComponent): number {
+  addEntity(e: EntityComponent, classs: string): number {
     const toReturn = this.nextId;
 
-    this.entities[this.nextId] = this.nextId;
-    // this.archetypes[this.nextId] = this.archetypeId(e); 
+    this.entities.set(this.nextId, classs);
     this.nextId++;
     return toReturn;
   }
@@ -117,7 +90,8 @@ export abstract class ECS<IComponents extends StoreV2<any>> {
         debugger
       }
 
-      const i = this.addEntity(e);
+      const i = this.addEntity(
+        e, protochain(e).map((c) => c.constructor.name).slice(0, -1));
       toReturn.push(i);
 
       e.components.forEach((c: Component<any, any>) => {

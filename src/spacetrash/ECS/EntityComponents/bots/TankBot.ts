@@ -6,7 +6,6 @@ import { TankMovingComponent } from "../../Components/v2/physical";
 import { NameableComponent } from "../../Components/v2/nameable";
 
 import RandomMaleNames from "../../../NameGenerator";
-import { ClassificationComponent } from "../../Components/v2/classifiable";
 import { DrawableComponent } from "../../Components/v2/drawable";
 
 import { TileSize } from "../../../Constants";
@@ -35,8 +34,6 @@ export class SpaceTrashBot extends Actor {
       new LightOutcastingComponent(1),
       new LightIncastingComponent(1),
       new NameableComponent(name || RandomMaleNames.generate("male", spe)),
-      new ClassificationComponent("SpaceTrashBot"),
-
       new DrawableComponent(bunnySprite(), cylinder(), new Text("?")),
 
       new ArcadePhysicsComponent((ap: ArcadePhysics) => {
@@ -53,20 +50,4 @@ export class SpaceTrashBot extends Actor {
     ]);
   }
 
-  static name(
-    bots: {
-      1: number;
-      2: number;
-      3: number;
-      4: number;
-      5: number;
-      6: number;
-      7: number;
-      8: number;
-      9: number;
-    },
-    eidOfBot: string
-  ) {
-    return eidOfBot;
-  }
 }
