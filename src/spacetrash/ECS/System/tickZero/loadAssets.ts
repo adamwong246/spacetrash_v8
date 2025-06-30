@@ -12,13 +12,13 @@ const mtlLoader = new MTLLoader();
 const objLoader = new OBJLoader();
 
 export default async function loadAssets() {
+  
+  // objLoader.setMaterials(greenMaterial);
   mtlLoader.load(
     mechMtl,
-    // "Assets/mechModels/Arachnoid.mtl", // Path to your .mtl file
     function (materials) {
       materials.preload();
-      objLoader.setMaterials(materials); // Apply materials to the OBJLoader
-      // ... (OBJ loading continues below)
+      objLoader.setMaterials(materials);
     },
     function (xhr) {
       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -30,11 +30,10 @@ export default async function loadAssets() {
 
   objLoader.load(
     mechObj,
-    // "Assets/mechModels/Arachnoid.obj", // Path to your .obj file
     function (object) {
-      console.log(mechPng);
-      // debugger
-      // Add the loaded object to your scene
+
+      // (GAME as SpaceTrash).scene.environment.
+
       (GAME as SpaceTrash).scene.add(object);
       object.position.x = (MapSize / 2) * TileSize;
       object.position.y = (MapSize / 2) * TileSize;
@@ -42,8 +41,7 @@ export default async function loadAssets() {
 
       object.scale.set(10, 10, 10);
       object.rotateX(degToRad(-90));
-      // debugger
-      // this.threejsRenderer.
+
     },
     function (xhr) {
       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");

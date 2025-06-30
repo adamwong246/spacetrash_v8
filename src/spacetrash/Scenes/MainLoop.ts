@@ -15,8 +15,8 @@ const SPEED_CONSTANT = 0.05;
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
-    const ship = new BoringShip();
-    // const ship = new RotCellularShip();
+    // const ship = new BoringShip();
+    const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
 
     const drones = [...new Array(9)].map((n) => {

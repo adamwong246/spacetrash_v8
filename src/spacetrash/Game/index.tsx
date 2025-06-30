@@ -184,8 +184,6 @@ export class SpaceTrash extends GameWithControls {
       }
     });
 
-
-
     this.pixijsRenderer = new PIXI.Application();
   }
 
@@ -346,11 +344,17 @@ export class SpaceTrash extends GameWithControls {
       this.threejsBotCanvasRef = canvas;
       this.threejsBotParentRef = parentComponent;
 
+      
       this.threejsRenderer = new THREE.WebGLRenderer({
         canvas,
         context: canvas.getContext("webgl2") as WebGL2RenderingContext,
         antialias: false,
       });
+      // this.threejsRenderer.
+      // this.threejsRenderer.physicallyCorrectLights = true;
+      // this.threejsRenderer.
+
+
 
     }
     if (key === "map") {
