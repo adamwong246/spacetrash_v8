@@ -20,6 +20,8 @@ esbuild.context({
     '.png': `file`,
     '.json': `json`,
     '.mp3': `copy`,
+    '.obj': `file`,
+    '.mtl': `file`,
   },
   "assetNames": "[name]",
 

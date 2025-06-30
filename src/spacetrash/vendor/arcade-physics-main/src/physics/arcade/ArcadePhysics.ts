@@ -18,6 +18,7 @@ import { StaticBody } from './StaticBody'
 import type { ArcadeWorldConfig } from './typedefs/types'
 export type { ArcadeWorldConfig }
 
+import type { ISpaceTrashPlugin } from "./../../../../index"
 /**
  * The Arcade Physics Plugin belongs to a Scene and sets up and manages the Scene's physics simulation.
  * It also holds some useful methods for moving and rotating Arcade Physics Bodies.
@@ -37,6 +38,8 @@ export class ArcadePhysics {
   config: any
   world!: World
   add!: Factory
+
+  plugins: ISpaceTrashPlugin
 
   constructor(config: ArcadeWorldConfig) {
     const scene = {

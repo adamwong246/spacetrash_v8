@@ -12,6 +12,7 @@ import type { World } from './World'
 export class Factory {
   scene: any
   sys: any
+  tilemap: any;
 
   /**
    * The Arcade Physics Factory allows you to easily create Arcade Physics enabled Game Objects.
@@ -25,6 +26,8 @@ export class Factory {
 
     /** A reference to the Scene.Systems this Arcade Physics instance belongs to.  */
     this.sys = world.scene.sys
+
+    this.tilemap = world.scene.tilemap;
   }
 
   /** Creates a new Dynamic Arcade Body. */

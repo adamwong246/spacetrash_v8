@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { SpaceTrash } from "..";
+import { SpaceTrash } from "../Game";
 
 export const ThermalWindow = (props: { game: SpaceTrash }) => {
   const parentRef = useRef(null);

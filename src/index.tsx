@@ -1,4 +1,4 @@
-import { SpaceTrash } from "./spacetrash";
+import { SpaceTrash } from "./spacetrash/Game/index";
 
 document.addEventListener("DOMContentLoaded", async (event) => {
   const domNode = document.getElementById('react-root');

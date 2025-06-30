@@ -1,4 +1,4 @@
-import { ArcadePhysics } from "arcade-physics";
+import { ArcadePhysics } from "../../vendor/arcade-physics-main/src";
 
 import * as PIXI from "pixi.js";
 import * as THREE from "three";

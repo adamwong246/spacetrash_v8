@@ -1,5 +1,7 @@
 import { Text } from "pixi.js";
 
+import { ArcadePhysics } from "../../../vendor/arcade-physics-main/src";
+
 import { SpaceTrashEntity } from "../../Entity";
 
 import { TankMovingComponent } from "../../Components/v2/physical";
@@ -11,7 +13,7 @@ import { DrawableComponent } from "../../Components/v2/drawable";
 import { TileSize } from "../../../Constants";
 
 import { Actor, bunnySprite, cylinder } from ".";
-import { ArcadePhysics } from "arcade-physics";
+
 import { ArcadePhysicsComponent } from "../../Components/v2/arcadePhysics";
 import { LightOutcastingComponent } from "../../Components/v1/casting/out";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";

@@ -10,7 +10,7 @@ import GetPoint from './GetPoint'
 import GetPoints from './GetPoints'
 import GEOM_CONST from '../const'
 import Random from './Random'
-import Vector2 from '../../math/Vector2'
+import {Vector2} from '../../math/Vector2'
 
 /**
  * @classdesc

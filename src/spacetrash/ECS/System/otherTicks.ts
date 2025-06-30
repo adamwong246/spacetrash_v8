@@ -7,7 +7,7 @@ import {
   TileSize,
 } from "../../Constants";
 import { FloatPositionComponent } from "../Components/v2/physical";
-import { SpaceTrash } from "../..";
+import { SpaceTrash } from "../../Game";
 import { FRICTION_CONSTANT } from "../../Constants";
 
 import {

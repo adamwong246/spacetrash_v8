@@ -1,9 +1,10 @@
-import runFirstTick from "./firstTick.ts";
+import runFirstTick from "./tickZero/index.ts";
+
 import runEveryOtherTick from "./otherTicks.ts";
 
 import { System } from "../../../engine/VECS.ts/System.ts";
 
-import { SpaceTrash } from "../../index.tsx";
+import { SpaceTrash } from "../../Game/index.tsx";
 
 import { MapSize } from "../../Constants.ts";
 

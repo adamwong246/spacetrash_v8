@@ -1,5 +1,5 @@
 import { FOV } from "rot-js";
-import { SpaceTrash } from "../../..";
+import { SpaceTrash } from "../../../Game";
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 import { MapSize, TileSize } from "../../../Constants";

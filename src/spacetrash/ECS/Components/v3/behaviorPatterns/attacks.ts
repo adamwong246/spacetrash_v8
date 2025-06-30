@@ -1,4 +1,4 @@
-import { SpaceTrash } from "../../../..";
+import { SpaceTrash } from "../../../../Game";
 
 import { AiAgentComponent } from "../ai";
 import { SetPieceComponent } from "../setPieces";

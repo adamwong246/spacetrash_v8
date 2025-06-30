@@ -835,11 +835,6 @@
   resolved "https://registry.yarnpkg.com/@types/earcut/-/earcut-3.0.0.tgz#c21ab8372c47f8af1bec63cb36eecb6917b6c5b6"
   integrity sha512-k/9fOUGO39yd2sCjrbAJvGDEQvRwRnQIZlBz43roGwUZo5SHAmyVvSFyaVVZkicRVCaDXPKlbxrUcBuJoSWunQ==
 
-"@types/matter-js@^0.19.8":
-  version "0.19.8"
-  resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.19.8.tgz#ce1a7f743b8520f58cda2c5b06434a46c6731fed"
-  integrity sha512-W2ZWG58Lijv/4v768NgpeyFqqiOyslmAU7qqM1Lhz4XBoUgGtZtPz4CjcOKYtqHIak14dvPldslQhltqLTWwsw==
-
 "@types/pixi.js@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@types/pixi.js/-/pixi.js-5.0.0.tgz#3fbd6d9d26cb563a0f2870e0ea767bc62dddf1b8"
@@ -929,14 +924,6 @@ aproba@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-2.0.0.tgz#52520b8ae5b569215b354efc0caa3fe1e45a8adc"
   integrity sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==
-
-arcade-physics@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/arcade-physics/-/arcade-physics-0.1.0.tgz#42aced7d3c33adc3fd26b1ff8535b78846f186f4"
-  integrity sha512-osksIUwdZhD6wjf1YnI6r0AuOdv2CvlVkQXPQ9AOjdst3pSk/ycw5+1dNIzq9D9Tg7Y5AVCfUCxEym4pszV04g==
-  dependencies:
-    eventemitter3 "^4.0.7"
-    rbush "^3.0.1"
 
 archy@~1.0.0:
   version "1.0.0"

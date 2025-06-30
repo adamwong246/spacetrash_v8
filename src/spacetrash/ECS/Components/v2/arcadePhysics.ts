@@ -1,4 +1,4 @@
-import { ArcadePhysics } from "arcade-physics";
+import { ArcadePhysics } from "../../../vendor/arcade-physics-main/src";
 
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 

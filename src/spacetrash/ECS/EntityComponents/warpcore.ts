@@ -1,3 +1,4 @@
+import { ArcadePhysics } from "../../vendor/arcade-physics-main/src";
 import * as THREE from "three";
 import { Text } from "pixi.js";
 
@@ -9,7 +10,7 @@ import { DrawableComponent } from "../Components/v2/drawable";
 import { Component } from "../../../engine/VECS.ts/Component";
 import { ArcadePhysicsComponent } from "../Components/v2/arcadePhysics";
 import { RadiationEmitterComponent } from "../Components/v3/radiation";
-import { ArcadePhysics } from "arcade-physics";
+
 import { TileSize } from "../../Constants";
 import { bunnySprite, cylinder } from "./bots";
 import { degToRad } from "three/src/math/MathUtils.js";
