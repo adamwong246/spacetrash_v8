@@ -1,21 +1,18 @@
 // Allows a game with multiple HTML canvases
 // It is not platform specific and needs to target node-canvas as well as client canvases
 
-
 import { ICanvases } from ".";
-import { Game } from "../../engine/Game";
-import { StateSpace } from "../../engine/StateSpace";
+import { Game } from "../../engine/game/Game";
+import { StateSpace } from "../../engine/game/StateSpace";
+
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
 import { System } from "../../engine/VECS.ts/System";
 import { IComponentsStores } from "../../engine/VECS.ts/types";
 
-
 export abstract class MultiSurfaceGame<
   IRenderings,
   IComponents
-  > extends Game<
-    IComponents
-  > {
+> extends Game<IComponents> {
   renderings: Set<IRenderings>;
 
   constructor(
@@ -23,9 +20,9 @@ export abstract class MultiSurfaceGame<
     system: System,
     components: IComponentsStores<any, any>,
     config: IPerformanceConfig,
-    renderings: Set<IRenderings>,
+    renderings: Set<IRenderings>
   ) {
-    super(stateSpace, system, components,  config);
+    super(stateSpace, system, components, config);
     this.renderings = renderings;
     this.canvasContexts = {};
   }
@@ -68,22 +65,22 @@ export abstract class MultiSurfaceGame<
   }
 
   draw() {
-    return Promise.all(Object.keys(this.canvasContexts).map(async (c) => {
-      return await this.drawCanvas(c)
-    }));
+    return Promise.all(
+      Object.keys(this.canvasContexts).map(async (c) => {
+        return await this.drawCanvas(c);
+      })
+    );
   }
 
-  
   async drawCanvas(key: string): Promise<any> {
     const scene = this.stateSpace.get(this.stateSpace.currrent);
     const canvas = this.canvasContexts[key].canvas;
-    
+
     const clbk = this.canvasContexts[key].callback;
-    const drawOps: ((g: MultiSurfaceGame<any, any>, canvas: any) => Promise<any>)[] = scene.draw(
-      key,
-      clbk || (() => { }),
-      this
-    );
+    const drawOps: ((
+      g: MultiSurfaceGame<any, any>,
+      canvas: any
+    ) => Promise<any>)[] = scene.draw(key, clbk || (() => {}), this);
 
     await Promise.all(
       drawOps.map(async (d) => {
@@ -97,4 +94,3 @@ export abstract class MultiSurfaceGame<
     );
   }
 }
-  

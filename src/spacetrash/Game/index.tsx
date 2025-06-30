@@ -8,7 +8,7 @@ import brick from "./../Assets/brick.png";
 import stone from "../Assets/stone.png";
 import voidPng from "../Assets/void.png";
 
-import { StateSpace } from "../../engine/StateSpace";
+
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
 
 import bootScene from "../Scenes/Boot";
@@ -29,6 +29,7 @@ import { ArcadePhysicsComponent } from "../ECS/Components/v2/arcadePhysics";
 import { AiAgentComponent } from "../ECS/Components/v3/ai";
 import { IBotWindowState } from "../UI/BotWindow";
 import { GameWithControls } from "./4-WithControls";
+import { StateSpace } from "../../engine/game/StateSpace";
 
 const ticker = Ticker.shared;
 ticker.maxFPS = FPS;
@@ -344,7 +345,7 @@ export class SpaceTrash extends GameWithControls {
       this.threejsBotCanvasRef = canvas;
       this.threejsBotParentRef = parentComponent;
 
-      
+
       this.threejsRenderer = new THREE.WebGLRenderer({
         canvas,
         context: canvas.getContext("webgl2") as WebGL2RenderingContext,

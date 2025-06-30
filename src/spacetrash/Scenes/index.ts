@@ -1,5 +1,6 @@
-import { Scene } from "../../engine/Scene";
+
 import { SpaceTrash } from "..";
+import { Scene } from "../../engine/game/Scene";
 import { ECS } from "../../engine/VECS.ts/ECS";
 
 type IReply = (ecs: any) => void;
@@ -18,43 +19,4 @@ export abstract class SpaceTrashScene extends Scene {
   abstract drone(s: SpaceTrash, g: HTMLCanvasElement);
   abstract shipMap(s: SpaceTrash, g: HTMLCanvasElement);
   abstract drones(s: SpaceTrash, g: HTMLCanvasElement);
-  // appLogic: IAppLogic<IApps>;
-  // sceneBoot: (ecs: ECS) => Promise<void>;
-
-  // constructor(
-  //   name: string,
-  //   appLogic: IAppLogic<IApps>,
-  //   sceneBoot: (ecs: ECS) => Promise<void>
-  // ) {
-  //   super(name);
-  //   this.appLogic = appLogic;
-  //   this.sceneBoot = sceneBoot || (async (ecs) => {});
-  // }
-
-  // async boot(
-  //   ecs: ECS,
-  // ) {
-  //   await this.sceneBoot(ecs);
-  //   Object.keys(this.appLogic).forEach((k) => {
-  //     this.appLogic[k][0](ecs);
-  //   });
-  // }
-
-  // draw(
-  //   app: IApps,
-  //   bootReplier: IReply,
-  //   ecs: ECS
-  // ): ((
-  //   ctx: OffscreenCanvasRenderingContext2D | THREE.WebGLRenderer
-  //   ) => Promise<any>)[] {
-  //   return this.appLogic[app][1](ecs, bootReplier);
-  // }
-
-  // inputEvent(inputEvent: Event | string, app: string, ecs: ECS) {
-  //   if (app === "document") {
-  //     return;
-  //   }
-
-  //   this.appLogic[app][2] && this.appLogic[app][2](ecs, inputEvent);
-  // }
 }

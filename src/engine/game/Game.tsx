@@ -1,9 +1,9 @@
 // The 1st class. It handles the scenes and rendering
 
-import { ECS, IPerformanceConfig } from "./VECS.ts/ECS.ts";
+import { ECS, IPerformanceConfig } from "../VECS.ts/ECS.ts";
 import { StateSpace } from "./StateSpace";
-import { System } from "./VECS.ts/System.ts";
-import { IComponentsStores, Store } from "./VECS.ts/types.ts";
+import { System } from "../VECS.ts/System.ts";
+import { IComponentsStores, Store } from "../VECS.ts/types.ts";
 
 export abstract class Game<IComponents> extends ECS<IComponents> {
   stateSpace: StateSpace;
