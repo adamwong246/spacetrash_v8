@@ -1,8 +1,8 @@
 import { Component } from "../../../../engine/VECS.ts/Component";
 
-import { FloatMovingComponent, FloatPositionComponent } from "../v2/physical";
+import { FloatMovingComponent, FloatPositionComponent } from "../../../../engine/game/physical";
 import { AiAgentComponent, IBehaviors } from "./ai";
-import { SpaceTrash } from "../../../Game";
+import { SpaceTrash } from "../../../Game/6-WithStateSpace";
 import { ISpaceTrashComponents } from "../v1";
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 import { TileSize } from "../../../Constants";

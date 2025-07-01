@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/6-WithStateSpace";
 import { MapSize, TileSize } from "../Constants";
 
 export const ArcadePhysicsWindow = (props: { game: SpaceTrash }) => {

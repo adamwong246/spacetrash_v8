@@ -1,4 +1,4 @@
-import { SpaceTrash } from "./spacetrash/Game/index";
+import { SpaceTrash } from "./spacetrash/Game";
 
 document.addEventListener("DOMContentLoaded", async (event) => {
   const domNode = document.getElementById('react-root');
@@ -6,8 +6,6 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     throw `no rootHtml?! I expected an html element with id of "react-root"`;
   }
   const s = new SpaceTrash(domNode);
-     window.SPACE_TRASH = s;
-  
   await s.start()
 });
 

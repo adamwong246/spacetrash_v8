@@ -4,7 +4,7 @@ import {} from "../../../../engine/VECS.ts/types";
 import { ISpaceTrashComponents } from "../v1";
 import { DrawableComponent } from "./drawable";
 
-import { PositionComponent } from "./physical";
+import { PositionComponent } from "../../../../engine/game/physical";
 
 export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   position: PositionComponent;

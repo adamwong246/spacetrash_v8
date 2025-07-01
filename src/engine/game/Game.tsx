@@ -1,28 +1,21 @@
-// The 1st class. It handles the scenes and rendering
-
-import { ECS, IPerformanceConfig } from "../VECS.ts/ECS.ts";
+import { IPerformanceConfig } from "../VECS.ts/ECS.ts";
 import { StateSpace } from "./StateSpace";
-import { System } from "../VECS.ts/System.ts";
-import { IComponentsStores, Store } from "../VECS.ts/types.ts";
+import { ECSWithSystem } from "../VECS.ts/ECSWithSystem.ts";
 
-export abstract class Game<IComponents> extends ECS<IComponents> {
-  stateSpace: StateSpace;
+export abstract class Game extends ECSWithSystem {
+  
+  abstract stateSpace: StateSpace;
 
   constructor(
-    stateSpace: StateSpace,
-    system: System,
-    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
 
   ) {
-    super(system, components, config)
-    this.stateSpace = stateSpace;
+    super(config)
     this.changeScene = this.changeScene.bind(this);
   }
 
   async start() {
     await this.stateSpace.getCurrent().boot(this)
-    await super.start()
   }
 
   async changeScene(to: string) {

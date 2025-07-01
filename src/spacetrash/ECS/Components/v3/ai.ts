@@ -1,16 +1,17 @@
 import { FOV } from "rot-js";
-import { SpaceTrash } from "../../../Game";
+
 import { Component } from "../../../../engine/VECS.ts/Component";
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 import { MapSize, TileSize } from "../../../Constants";
 import { ActorComponent } from "./actors";
 import { SetPieceComponent, SetPieceStore } from "./setPieces";
-import { distanceV2 } from "../../System/MainSystem";
 
 import AttackPatterns from "./behaviorPatterns/attacks";
 import ExplorePatterns from "./behaviorPatterns/explore";
 import { FovSense } from "./senses/fov";
 import { RadiationSense } from "./senses/radiation";
+import { SpaceTrash } from "../../../Game";
+import { distanceV2 } from "../../../lib";
 
 export type IBehaviors =
   | `seed`
@@ -59,7 +60,6 @@ type IRelation = {
 
 // The mode is modeled as 1 point
 
-
 // Relations
 // There is a matrix for every known actor.
 // for each of the 4 points, there is a threshold that must be met to promote the relationship
@@ -75,7 +75,7 @@ type IRelation = {
 //
 //         friendly
 // tracked          lost-track
-//       unfriendly  
+//       unfriendly
 //
 
 // Mode
@@ -93,7 +93,7 @@ type IRelation = {
 // These behaviors define how the bot responds to a increasing "meter"
 //
 //        boredom
-// hunger           fear 
+// hunger           fear
 //        ambition
 //
 // boredom/ambition - increases and decrease by individual activity
@@ -102,7 +102,7 @@ type IRelation = {
 // Preferences
 //
 // These behaviors describe how the bot acts when in a neutral state. It doesn't change over time.
-// IE mode: neutral and all meters under threshold. 
+// IE mode: neutral and all meters under threshold.
 //        strength
 // repel            attract
 //        weakness
@@ -110,30 +110,18 @@ type IRelation = {
 // strength/weakness - whether the ai prioritizes moving towards elemental preference or elemental preference
 // repel/attract     - whether the ai prioritizes moving towards elemental strength or elemental weakness
 
-
-
-
-
-
-
-
-
-
-
-
-type IModes = 'attack' | 'defend' | `spawn` | `die`[];
+type IModes = "attack" | "defend" | `spawn` | `die`[];
 
 export class AiAgentComponent extends Component<any, any> {
   mode: IBehaviors = "seed";
 
-  // a list ordered by mode preferences 
-  modePreference: IModes
+  // a list ordered by mode preferences
+  modePreference: IModes;
   // the mode behavior patterns
   attackPattern: IAttack;
   explorePattern: IExplore;
   defendPattern: IDefend;
   diePattern: IDie;
-
 
   seekPattern: IAttractRepel;
   repelPattern: IAttractRepel;
@@ -141,7 +129,6 @@ export class AiAgentComponent extends Component<any, any> {
   strength: IStrengthsAndWeaknesses;
 
   motion: IMotions;
-  
 
   arcadeBody: unknown;
 

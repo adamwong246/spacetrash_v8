@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/6-WithStateSpace";
 
 export const MapWindow = (props: {game: SpaceTrash}) => {
   const parentRef = useRef(null);

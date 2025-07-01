@@ -7,40 +7,42 @@ import { createRoot } from 'react-dom/client';
 import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
 import { DockviewApi, DockviewReact } from 'dockview';
 
-import { StateSpace } from "../../engine/StateSpace";
-import { System } from "../../engine/VECS.ts/System";
-
-
 import { BotsWindow } from "../UI/BotsWindow";
-import { BotWindow } from "../UI/BotWindow";
+import { BotWindow, IBotWindowState } from "../UI/BotWindow";
 import { MapWindow } from "../UI/map";
-import { TerminalWindow } from "../UI/terminal";
+import { ITermWindowState, TerminalWindow } from "../UI/terminal";
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
 
 import { ArcadePhysicsWindow } from '../UI/ArcadePhysicsWindow';
 import { FabricatorWindow } from '../UI/FabricatorWindow';
 import { DataWindow } from '../UI/DataWindow';
-import { IState } from '.';
+
 import { ThermalWindow } from '../UI/ThermalWindow';
-import { IComponentsStores } from '../../engine/VECS.ts/types';
 import { MultiSurfaceGame } from './0-multisurface';
 
-let self: DesktopGame<any, any, any>;
+let self: DesktopGame<any, any>;
 
-export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends MultiSurfaceGame<IRenderings, IComponents> {
+export abstract class DesktopGame<
+  IRenderings,
+  ICanvases,
+> extends MultiSurfaceGame<IRenderings> {
+
   private reactRoot;
   dockviewAPI: DockviewApi;
   stateSetter: (s: any) => void;
   abstract uiHooks: any;
+
+  terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
+
+  botsHook: React.Dispatch<any>;
+  botHook: React.Dispatch<React.SetStateAction<IBotWindowState>>;
+
   constructor(
-    stateSpace: StateSpace,
-    system: System,
-    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement,
   ) {
-    super(stateSpace, system, components, config, renderings);
+    super(config, renderings);
     this.reactRoot = createRoot(domNode)
     self = this;
   }
@@ -270,4 +272,6 @@ export abstract class DesktopGame<IRenderings, ICanvases, IComponents> extends M
       }
     })
   }
+
+
 }

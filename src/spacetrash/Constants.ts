@@ -60,3 +60,6 @@ export const TANK_VELOCITY_ANGULAR = 0.05;
 export const VELOCITY_CONSTANT = 0.001;
 export const SPEED_CONSTANT = 0.0001;
 export const TANK_VELOCITY = 3
+
+
+export const TANK_VELOCITY_LINEAR = 1;

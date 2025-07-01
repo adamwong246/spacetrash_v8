@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { ITerminalLine } from "../Game/2-Terminal";
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/6-WithStateSpace";
 
 export type ITermWindowState = {
   history: ITerminalLine[];

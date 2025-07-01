@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/6-WithStateSpace";
 
 // const TableCell = (props: { name: string }) => {
 //   return <td

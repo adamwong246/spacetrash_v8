@@ -1,19 +1,35 @@
-import { IState } from ".";
-import { StateSpace } from "../../engine/StateSpace";
-import { System } from "../../engine/VECS.ts/System";
 import { ITermWindowState } from "../UI/terminal";
 import { DesktopGame } from "./1-DesktopGame";
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
-import {  IComponentsStores } from "../../engine/VECS.ts/types";
+import { IComponentsStores } from "../../engine/VECS.ts/types";
+
+import { StoreV2 } from "../../engine/VECS.ts/Store";
+
+const bootScreenTermLine: ITerminalLine = {
+  status: "pass",
+  out: `
+  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                                                                                                        │
+  │ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
+  │ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
+  │ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
+  │ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
+  │ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
+  │ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
+  │                                                                                                        │
+  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+            
+boot sequence initiated...
+Oonix v457.3.2 by Demiurge Labs, 3003
+QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
+boot sequence complete!
+  `,
+};
 
 const initialTerminalHistory: ITerminalLine = {
   out: "hardware check passed",
   status: "pass",
-};
-
-const errorTermLine: ITerminalLine = {
-  out: `Log in to use this command`,
-  status: `fail`,
 };
 
 const settingsTermLine: ITerminalLine = {
@@ -27,27 +43,6 @@ const settingsTermLine: ITerminalLine = {
 "settings fps <number>" Sets the Frames Per Second. By default, the FPS is set to 30.
   "settings fps 60" Set the FPS to 30 frame per second"
   `,
-  status: `pass`,
-};
-
-const botsTermLine = (s: IState): ITerminalLine => {
-  const lines: string = Object.keys(s.game.bots)
-    .reduce((mm, v) => {
-      mm.push(`${v} ${s.game.bots[v][1]}`);
-      return mm;
-    }, [] as string[])
-    .join("\n");
-
-  return { out: lines, status: `pass` };
-};
-
-const videoTermLine: ITerminalLine = {
-  out: `Now in video mode`,
-  status: `pass`,
-};
-
-const mapTermLine: ITerminalLine = {
-  out: `Now in map mode`,
   status: `pass`,
 };
 
@@ -145,25 +140,7 @@ export type ITerminalLine = {
 export abstract class TerminalGame<
   IRenderings,
   ICanvases,
-  IComponents
-> extends DesktopGame<IRenderings, ICanvases, IComponents> {
-  registerCanvas(
-    key: ICanvases,
-    run: boolean,
-    canvas?: HTMLCanvasElement,
-    callback?: (data: any) => void,
-    canvasContext?: IRenderings | undefined,
-    parentComponent?: HTMLElement
-  ): void {
-    super.registerCanvas(
-      key,
-      run,
-      canvas,
-      callback,
-      canvasContext,
-      parentComponent
-    );
-  }
+> extends DesktopGame<IRenderings, ICanvases> {
   booted = false;
   uiHooks: any;
   history: ITerminalLine[] = [initialTerminalHistory];
@@ -174,14 +151,13 @@ export abstract class TerminalGame<
   bufferRef: React.MutableRefObject<null>;
 
   constructor(
-    stateSpace: StateSpace,
-    system: System,
-    components: IComponentsStores<any, IComponents>,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
     domNode: HTMLElement
   ) {
-    super(stateSpace, system, components, config, renderings, domNode);
+    super(config, renderings, domNode);
+
+    this.addToHistory(bootScreenTermLine);
   }
 
   focusOnTermInput() {
@@ -391,10 +367,6 @@ export abstract class TerminalGame<
 
   abstract loginHook();
 
-  // focusWindowById(s: string, p?) {
-  //   super.focusWindowById(s)
-  // }
-
   alreadyLoggedIn(): void {
     this.returnCommand(alreadyLoggedInTermLine);
   }
@@ -426,5 +398,4 @@ export abstract class TerminalGame<
   settings() {
     this.returnCommand(settingsTermLine);
   }
-
 }

@@ -1,5 +1,5 @@
 import { SpaceTrashScene } from ".";
-import { SpaceTrash } from "..";
+
 import { ActorSize, MapSize, TileSize } from "../Constants";
 import { AiAgentComponent } from "../ECS/Components/v3/ai.ts";
 import { HeatDetectorComponent } from "../ECS/Components/v3/heat.ts";
@@ -10,13 +10,14 @@ import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
 import { RotCellularShip } from "../ECS/EntityComponents/ships/RotCellularyShip.ts";
 import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
 import { WarpCore } from "../ECS/EntityComponents/warpcore.ts";
+import { SpaceTrash } from "../Game/index.ts";
 
 const SPEED_CONSTANT = 0.05;
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
-    // const ship = new BoringShip();
-    const ship = new RotCellularShip();
+    const ship = new BoringShip();
+    // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
 
     const drones = [...new Array(9)].map((n) => {
@@ -123,8 +124,7 @@ class MainScene extends SpaceTrashScene {
       ...moreBots,
       warpcore0,
       warpcore1,
-      // monster0,
-      monster1,
+      // monster1,
     ]);
 
     const myDoneIds = game.setEntitiesComponent(drones);

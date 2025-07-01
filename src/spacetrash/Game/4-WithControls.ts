@@ -1,6 +1,4 @@
-import { StateSpace } from "../../engine/StateSpace";
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
-import { System } from "../../engine/VECS.ts/System";
 import { GameWithStores } from "./3-WithStores";
 
 export abstract class GameWithControls extends GameWithStores {
@@ -10,24 +8,16 @@ export abstract class GameWithControls extends GameWithStores {
   right: boolean = false;
 
   constructor(
-    stateSpace: StateSpace,
     domNode: HTMLElement,
-    system: System,
     performanceConfig: IPerformanceConfig,
     renderings: Set<any>
   ) {
-    super(
-      stateSpace,
-      system,
-      domNode,
-      performanceConfig,
-      renderings
-    );
+    super(domNode, performanceConfig, renderings);
 
     const self = this;
     document.addEventListener("keydown", function (event) {
       if (event.repeat) return;
-       else if (event.key === "ArrowUp") {
+      else if (event.key === "ArrowUp") {
         self.driveForward();
         return;
       } else if (event.key === "ArrowDown") {
@@ -39,7 +29,7 @@ export abstract class GameWithControls extends GameWithStores {
       } else if (event.key === "ArrowRight") {
         self.turnRight();
         return;
-      } 
+      }
     });
 
     document.addEventListener("keyup", function (event) {

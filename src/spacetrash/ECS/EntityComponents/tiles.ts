@@ -1,5 +1,3 @@
-import { ArcadePhysics } from "../../vendor/arcade-physics-main/src";
-
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
@@ -21,20 +19,20 @@ import { SpaceTrashEntity } from "../Entity";
 import {
   DirectionComponent,
   IDirs,
-  IntegerPositionComponent,
   OrdinalDirectionComponent,
-} from "../Components/v2/physical";
-
-import { DrawableComponent } from "../Components/v2/drawable";
-
-
-import { ArcadePhysicsComponent } from "../Components/v2/arcadePhysics";
+  PositionComponent,
+} from "../../../engine/game/physical";
 
 import { SpaceTrashEntityComponent, ITiles } from ".";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { LightIncastingComponent } from "../Components/v1/casting/in";
 import { TileComponent } from "../Components/v2/tileable";
 import { HeatConductorComponent } from "../Components/v3/heat";
+import { SP_IntegerPositionComponent } from "../Components/v4/IntegerPosition";
+import { PixiJsRenderableComponent } from "../../../engine/rendering/pixijs";
+import { ThreeJsRenderableComponent } from "../../../engine/rendering/threejs";
+import { ArcadePhysics } from "arcade-physics";
+import { ArcadePhysicsComponent } from "../Components/v4/PhaserArcade";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -43,7 +41,7 @@ var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 const floorTile = () => {
   const m = new THREE.Mesh(floorGeometry, floorTexture);
   m.position.z = TileSize / 2;
-  m.rotateY(degToRad(180))
+  m.rotateY(degToRad(180));
 
   return m;
 };
@@ -63,14 +61,12 @@ const wallTile = () => {
 const voidTile = () => {
   const m = new THREE.Mesh(floorGeometry, voidMaterial);
   m.position.z = TileSize / 2;
-  // m.visible = Math.random() > 0.9
   return m;
 };
 
 const blankTile = () => {
   const m = new THREE.Mesh(floorGeometry, blueMaterial);
   m.position.z = TileSize / 2;
-  // m.visible = Math.random() > 0.9
   return m;
 };
 
@@ -107,79 +103,76 @@ const bunnySprite = () => {
 export class Tile extends SpaceTrashEntityComponent {
   tiletype: ITiles;
 
+  position: PositionComponent;
+
   constructor(
     x: number,
     y: number,
     tiletype: ITiles,
-    d: DrawableComponent = new DrawableComponent(bunnySprite(), blankTile()),
-    dir: DirectionComponent,
-
-    componentsV4?: {
-      arcadePhysics?: ArcadePhysicsComponent;
+    {
+      pixi,
+      threejs,
+      arcade,
+      dir,
+    }: {
+      pixi?: PixiJsRenderableComponent;
+      threejs?: ThreeJsRenderableComponent;
+      arcade?: ArcadePhysicsComponent;
+      dir?: DirectionComponent;
     }
   ) {
+    let position = new SP_IntegerPositionComponent(x, y);
     const spe = new SpaceTrashEntity();
 
     const comps: Component<any, any>[] = [
-      d,
-      new IntegerPositionComponent(x, y),
+      position,
       new LightIncastingComponent(),
       new TileComponent(tiletype),
-      new HeatConductorComponent(1)
+      new HeatConductorComponent(1),
     ];
+
+    super(spe, comps);
+
+    this.position = position;
 
     if (dir !== undefined) {
       comps.push(dir);
     }
 
-    super(spe, comps);
+    if (arcade !== undefined) {
+      comps.push(arcade);
+    }
+
+    if (threejs !== undefined) {
+      comps.push(threejs);
+    }
+
+    if (pixi !== undefined) {
+      comps.push(pixi);
+    }
 
     this.tiletype = tiletype;
-
-    if (componentsV4) {
-      
-      if (componentsV4.arcadePhysics) {
-        comps.push(componentsV4.arcadePhysics);
-      }
-    }
   }
 
-  position(): IntegerPositionComponent {
-    const c = this.components.find((c) => {
-      return c.constructor.name === "IntegerPositionComponent";
-    }) as IntegerPositionComponent | undefined;
+  // position(): SP_IntegerPosition {
+  //   const c = this.components.find((c) => {
+  //     return c.constructor.name === "IntegerPositionComponent";
+  //   }) as SP_IntegerPosition | undefined;
 
-    if (!c) throw "missing component";
+  //   if (!c) throw "missing component";
 
-    return c;
-  }
+  //   return c;
+  // }
 }
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(
-      x,
-      y,
-      "FloorTile",
-      new DrawableComponent(stoneSprite(), floorTile(), new PIXI.Text(" "))
-    );
+    super(x, y, "FloorTile", {
+      pixi: new PixiJsRenderableComponent(stoneSprite()),
+      threejs: new ThreeJsRenderableComponent(floorTile()),
+    });
   }
 }
-
-// export class WireframeWallTile extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(
-//       x,
-//       y,
-//       "WallTile",
-//       new DrawableComponent(
-//         brickSprite(),
-//         new THREE.Mesh(cubeGeo, blueMaterial),
-//         new PIXI.Text('░')
-//       )
-//     );
-//   }
-// }
 
 export class WallTile extends Tile {
   constructor(x: number = 0, y: number = 0, d: IDirs) {
@@ -187,11 +180,12 @@ export class WallTile extends Tile {
       x,
       y,
       "WallTile",
-      new DrawableComponent(brickSprite(), wallTile(), new PIXI.Text("░")),
-      new OrdinalDirectionComponent(d),
+
       {
-       
-        arcadePhysics: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+        dir: new OrdinalDirectionComponent(d),
+        pixi: new PixiJsRenderableComponent(brickSprite()),
+        threejs: new ThreeJsRenderableComponent(wallTile()),
+        arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
           const cube = ap.add.staticBody(
             x * TileSize,
             y * TileSize,
@@ -207,166 +201,9 @@ export class WallTile extends Tile {
 
 export class VoidTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    super(
-      x,
-      y,
-      "VoidTile",
-      new DrawableComponent(voidSprite(), voidTile(), new PIXI.Text("█")),
-      new OrdinalDirectionComponent("north"),
-      {
-
-      }
-    );
+    super(x, y, "VoidTile", {
+      pixi: new PixiJsRenderableComponent(voidSprite()),
+      threejs: new ThreeJsRenderableComponent(voidTile()),
+    });
   }
 }
-
-// export class North extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "North");
-//   }
-// }
-
-// export class East extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "East");
-//   }
-// }
-
-// export class West extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "West");
-//   }
-// }
-
-// export class South extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "South");
-//   }
-// }
-
-// export class TileA extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileA");
-//   }
-// }
-
-// export class TileB extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileB");
-//   }
-// }
-
-// export class TileC extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileC");
-//   }
-// }
-
-// export class TileD extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileD");
-//   }
-// }
-
-// export class TileE extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileE");
-//   }
-// }
-
-// export class TileF extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileF");
-//   }
-// }
-
-// export class TileG extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileG");
-//   }
-// }
-
-// export class TileH extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileH");
-//   }
-// }
-
-// export class TileI extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileI");
-//   }
-// }
-
-// export class TileJ extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "TileI");
-//   }
-// }
-
-// export class SouthWest extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "SouthWest");
-//   }
-// }
-
-// export class SouthEast extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "SouthEast");
-//   }
-// }
-
-// export class NorthWest extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "NorthWest");
-//   }
-// }
-
-// export class NorthEast extends Tile {
-//   constructor(x: number = 0, y: number = 0) {
-//     super(x, y, "NorthEast");
-//   }
-// }
-
-// // 16 tiles
-// // https://www.boristhebrave.com/2021/05/23/triangle-grids/
-// export const Tiles = [
-//   FloorTile,
-//   TileA,
-//   TileB,
-//   North,
-//   TileC,
-//   TileD,
-//   East,
-//   TileE,
-//   TileF,
-//   West,
-//   TileG,
-//   TileH,
-//   South,
-//   TileI,
-//   TileJ,
-//   WallTile,
-
-//   SouthWest,
-//   SouthEast,
-//   NorthWest,
-//   NorthEast,
-// ];
-
-// // export class DoorTile extends SpaceTrashEntityComponent {
-// //   constructor(x: number = 0, y: number = 0, r: number = 0) {
-// //     const spe = new SpaceTrashEntity();
-// //     super(
-// //       spe,
-// //       [
-// //         new PhysicsSetComponent(spe, x, y, true, 'Door'),
-// //       // new AttackableComponent(spe),
-// //       // new UnmovingComponent(spe),
-// //       // new PowerConsumingComponent(spe),
-// //       new SolidityComponent(spe, 0),
-// //       new LightOutcastingComponent(spe)
-// //       ],
-// //     );
-// //   }
-// // }

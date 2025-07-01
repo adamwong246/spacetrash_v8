@@ -48,9 +48,12 @@ export abstract class MapStoreV2<
     return x;
   }
 
-  take(eid: number) {
+  take(eid: number, message?: string) {
     const x = this.store.get(eid);
-    if (!x) throw "not found";
+    if (!x) {
+      const errorMessage = `${this.constructor.name} #${eid} not found. ${message || ""}`
+      throw errorMessage
+    };
     return x;
   }
 

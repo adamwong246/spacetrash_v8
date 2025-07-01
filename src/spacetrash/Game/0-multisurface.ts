@@ -1,28 +1,20 @@
 // Allows a game with multiple HTML canvases
 // It is not platform specific and needs to target node-canvas as well as client canvases
 
-import { ICanvases } from ".";
 import { Game } from "../../engine/game/Game";
-import { StateSpace } from "../../engine/game/StateSpace";
 
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
-import { System } from "../../engine/VECS.ts/System";
-import { IComponentsStores } from "../../engine/VECS.ts/types";
 
 export abstract class MultiSurfaceGame<
   IRenderings,
-  IComponents
-> extends Game<IComponents> {
+> extends Game {
   renderings: Set<IRenderings>;
 
   constructor(
-    stateSpace: StateSpace,
-    system: System,
-    components: IComponentsStores<any, any>,
     config: IPerformanceConfig,
     renderings: Set<IRenderings>
   ) {
-    super(stateSpace, system, components, config);
+    super(config);
     this.renderings = renderings;
     this.canvasContexts = {};
   }

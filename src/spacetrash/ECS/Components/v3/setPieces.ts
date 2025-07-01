@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js";
 import { TwoDOneD_Component } from "../../../../engine/VECS.ts/Component";
 
 import { ISpaceTrashComponents } from "../v1";
-import { DrawableComponent } from "../v2/drawable";
+// import { DrawableComponent } from "../v2/drawable";
 import { TwoDStore } from "../../../../engine/VECS.ts/Store";
 import { MapSize } from "../../../Constants";
 import { HeatConductorComponent, HeatEmitterComponent } from "./heat";
@@ -24,7 +24,10 @@ export class SetPieceComponent extends TwoDOneD_Component<
   y: number;
   culledWebgl: boolean;
   FOV: number[][];
-  drawing: DrawableComponent;
+
+  // drawing: DrawableComponent;
+  pixiElement;
+  threejselement;
 
   heat: number = 0;
   redrawHeat: boolean = true;

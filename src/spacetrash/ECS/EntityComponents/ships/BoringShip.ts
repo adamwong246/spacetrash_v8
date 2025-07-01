@@ -1,7 +1,7 @@
 import { SpaceTrashEntityComponent } from "..";
 import { Entity } from "../../../../engine/VECS.ts/Entity";
 import { MapSize } from "../../../Constants";
-import { IntegerPositionComponent } from "../../Components/v2/physical";
+import { IntegerPositionComponent } from "../../../../engine/game/physical";
 import { Tile, WallTile, FloorTile } from "../tiles";
 
 export class BoringShip extends SpaceTrashEntityComponent {
@@ -64,27 +64,28 @@ export class BoringShip extends SpaceTrashEntityComponent {
   addToMap(t: Tile) {
     if (!t) debugger;
 
-    if (t.position().x >= this.shipSize) {
+    if (t.position.x >= this.shipSize) {
       console.error("Cannot add tile beyond the upper bound of 32");
       return;
     }
-    if (t.position().y < 0) {
+    if (t.position.y < 0) {
       console.error("Cannot add tile beyond the lower bound of 0");
       return;
     }
 
-    if (t.position().y >= this.shipSize) {
+    if (t.position.y >= this.shipSize) {
       console.error("Cannot add tile beyond the upper bound of 32");
       return;
     }
-    if (t.position().y < 0) {
+    if (t.position.y < 0) {
       console.error("Cannot add tile beyond the lower bound of 0");
       return;
     }
 
-    const p = t.components.find((c) => {
-      return c.constructor.name === "IntegerPositionComponent";
-    }) as IntegerPositionComponent;
+    const p = t.position;
+    // const p = t.components.find((c) => {
+    //   return c.constructor.name === "IntegerPositionComponent";
+    // }) as IntegerPositionComponent;
 
     const x = p.x;
     const y = p.y;

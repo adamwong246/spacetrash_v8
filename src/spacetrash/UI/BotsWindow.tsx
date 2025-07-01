@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from "react";
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/6-WithStateSpace";
 
 type IBot = {
   name: string,

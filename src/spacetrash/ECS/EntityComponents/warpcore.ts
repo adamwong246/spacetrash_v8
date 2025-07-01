@@ -1,21 +1,21 @@
-import { ArcadePhysics } from "../../vendor/arcade-physics-main/src";
 import * as THREE from "three";
-import { Text } from "pixi.js";
 
+import { ArcadePhysics } from "../../vendor/arcade-physics-main/src";
 import { SpaceTrashEntityComponent } from ".";
 import { AttackableComponent } from "../Components/v1/casting/in";
-import { IntegerPositionComponent } from "../Components/v2/physical";
+import { IntegerPositionComponent } from "../../../engine/game/physical";
 import { SpaceTrashEntity } from "../Entity";
-import { DrawableComponent } from "../Components/v2/drawable";
 import { Component } from "../../../engine/VECS.ts/Component";
-import { ArcadePhysicsComponent } from "../Components/v2/arcadePhysics";
 import { RadiationEmitterComponent } from "../Components/v3/radiation";
-
 import { TileSize } from "../../Constants";
 import { bunnySprite, cylinder } from "./bots";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { blueMaterial, greenMaterial } from "../../threejs";
 import { HeatEmitterComponent } from "../Components/v3/heat";
+import { ArcadePhysicsComponent } from "../Components/v4/PhaserArcade";
+import { SP_IntegerPositionComponent } from "../Components/v4/IntegerPosition";
+import { PixiJsRenderableComponent } from "../../../engine/rendering/pixijs";
+import { ThreeJsRenderableComponent } from "../../../engine/rendering/threejs";
 
 export class WarpCore extends SpaceTrashEntityComponent {
   rads: number;
@@ -24,9 +24,14 @@ export class WarpCore extends SpaceTrashEntityComponent {
     const spe = new SpaceTrashEntity();
 
     const comps: Component<any, any>[] = [
-      new DrawableComponent(
-        bunnySprite(),
+      new SP_IntegerPositionComponent(x, y),
 
+      new AttackableComponent(),
+      new RadiationEmitterComponent(rads),
+      new HeatEmitterComponent(0.1),
+
+      new PixiJsRenderableComponent(bunnySprite()),
+      new ThreeJsRenderableComponent(
         (() => {
           const geometry = new THREE.CylinderGeometry(
             TileSize / 2,
@@ -39,34 +44,18 @@ export class WarpCore extends SpaceTrashEntityComponent {
           mesh.rotateX(degToRad(90));
 
           return mesh;
-        })(),
-
-        new Text("W")
+        })()
       ),
 
-      new IntegerPositionComponent(x, y),
-
-
-      new AttackableComponent(),
-      new RadiationEmitterComponent(rads),
-      new HeatEmitterComponent(0.1),
-
       new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-
         const cube = ap.add.staticBody(
-            x * TileSize,
-            y * TileSize,
-            TileSize,
-            TileSize
+          x * TileSize,
+          y * TileSize,
+          TileSize,
+          TileSize
         );
         cube.immovable = true;
         return cube;
-        // const ball = ap.add.body(x * TileSize, y * TileSize);
-        // ball.setCircle(TileSize / 2);
-        // ball.setBounce(0.1);
-        // ball.setCollideWorldBounds(true);
-        // ball.setFriction(-1, -1);
-        // return ball;
       }),
     ];
 

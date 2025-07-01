@@ -4,20 +4,22 @@ import { ArcadePhysics } from "../../../vendor/arcade-physics-main/src";
 
 import { SpaceTrashEntity } from "../../Entity";
 
-import { TankMovingComponent } from "../../Components/v2/physical";
 import { NameableComponent } from "../../Components/v2/nameable";
 
 import RandomMaleNames from "../../../NameGenerator";
-import { DrawableComponent } from "../../Components/v2/drawable";
 
 import { TileSize } from "../../../Constants";
 
 import { Actor, bunnySprite, cylinder } from ".";
 
-import { ArcadePhysicsComponent } from "../../Components/v2/arcadePhysics";
 import { LightOutcastingComponent } from "../../Components/v1/casting/out";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { Component } from "../../../../engine/VECS.ts/Component";
+import { ArcadePhysicsComponent } from "../../Components/v4/PhaserArcade";
+import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
+import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
+import { ConsoleRenderableComponent } from "../../../../engine/rendering/console";
+import { TankMovingComponent } from "../../Components/v4/TankMovingComponent";
 
 export class SpaceTrashBot extends Actor {
   constructor(
@@ -32,11 +34,15 @@ export class SpaceTrashBot extends Actor {
     const spe = new SpaceTrashEntity();
 
     super(spe, [
+      ...upgrades,
       new TankMovingComponent(dx, dy),
       new LightOutcastingComponent(1),
       new LightIncastingComponent(1),
       new NameableComponent(name || RandomMaleNames.generate("male", spe)),
-      new DrawableComponent(bunnySprite(), cylinder(), new Text("?")),
+
+      new ThreeJsRenderableComponent(cylinder()),
+      new PixiJsRenderableComponent(bunnySprite()),
+      new ConsoleRenderableComponent("?"),
 
       new ArcadePhysicsComponent((ap: ArcadePhysics) => {
         const ball = ap.add.body(x * TileSize, y * TileSize);
@@ -48,8 +54,6 @@ export class SpaceTrashBot extends Actor {
         return ball;
       }),
 
-      ...upgrades
     ]);
   }
-
 }

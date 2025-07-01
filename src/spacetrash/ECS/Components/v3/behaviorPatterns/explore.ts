@@ -1,4 +1,4 @@
-import { SpaceTrash } from "../../../../Game";
+import { SpaceTrash } from "../../../../Game/6-WithStateSpace";
 import { AiAgentComponent } from "../ai";
 import { SetPieceComponent } from "../setPieces";
 

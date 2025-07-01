@@ -4,13 +4,16 @@ import { Text } from "pixi.js";
 
 import { SpaceTrashEntity } from "../../Entity";
 
-import { DrawableComponent } from "../../Components/v2/drawable";
+
 
 import { Actor, bunnySprite, spike } from ".";
 import { TileSize } from "../../../Constants";
-import { ArcadePhysicsComponent } from "../../Components/v2/arcadePhysics";
+
 import { AiAgentComponent } from "../../Components/v3/ai";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";
+import { ArcadePhysicsComponent } from "../../Components/v4/PhaserArcade";
+import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
+import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
 
 export class PuckBot extends Actor {
   constructor(
@@ -34,7 +37,10 @@ export class PuckBot extends Actor {
         new LightIncastingComponent(1),
         // // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
 
-        new DrawableComponent(bunnySprite(), spike(), new Text("?")),
+        // new DrawableComponent(bunnySprite(), spike(), new Text("?")),
+
+        new PixiJsRenderableComponent(bunnySprite()),
+        new ThreeJsRenderableComponent(spike()),
 
         new ArcadePhysicsComponent((ap: ArcadePhysics) => {
           const ball = ap.add.body(x * TileSize, y * TileSize);

@@ -4,7 +4,7 @@ import { SpaceTrashScene } from ".";
 
 class BootScene extends SpaceTrashScene {
   boot(e: SpaceTrash) {
-    // 
+    // debugger
   }
 
 
