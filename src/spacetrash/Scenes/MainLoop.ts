@@ -320,28 +320,28 @@ const scene = new MainScene({
     "html",
   ],
 
-  // matter: [
-  //   (ecs, reply) => {
-  //     return [];
-  //   },
-  //   (ecs, reply) => {
-  //     return [
-  //       async (game: SpaceTrash) => {
-  //         await game.renderMatterJs();
-  //       },
-  //     ];
-  //   },
-  //   (ecs, event: any) => {
-  //     // if (event.type === "mousemove") {
-  //     //   var rect = event.boundingClient;
-  //     //   var x = event.clientX - rect.left;
-  //     //   var y = event.clientY - rect.top;
-  //     //   shipMapMouseX = x;
-  //     //   shipMapMouseY = y;
-  //     // }
-  //   },
-  //   "2d",
-  // ],
+  matter: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game: SpaceTrash) => {
+          await game.renderMatterJs();
+        },
+      ];
+    },
+    (ecs, event: any) => {
+      // if (event.type === "mousemove") {
+      //   var rect = event.boundingClient;
+      //   var x = event.clientX - rect.left;
+      //   var y = event.clientY - rect.top;
+      //   shipMapMouseX = x;
+      //   shipMapMouseY = y;
+      // }
+    },
+    "2d",
+  ],
 
   arcadePhysics: [
     (ecs, reply) => {

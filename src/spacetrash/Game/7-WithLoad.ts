@@ -4,6 +4,8 @@ import { Eid2PMComponent } from "../ECS/Components/v2/eid2PMC";
 import { HeatConductorComponent } from "../ECS/Components/v3/heat";
 import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
 import { GameWithControls } from "./4-WithControls";
+import { IRenderings } from "./3-WithStores";
+import { Composite } from "matter-js";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
@@ -16,11 +18,19 @@ export abstract class GameWithLoad extends GameWithControls {
         fps: 60,
         headless: false,
       },
-      new Set(["2d", "webgl2", "pixi2d", "threejs", "arcadePhysics"])
+      new Set<IRenderings>([
+        "2d",
+        "webgl2",
+        "pixi2d",
+        "threejs",
+        "arcadePhysics",
+        "matter",
+      ])
     );
   }
 
   load() {
+    this.populateMatterJs();
     this.inflateArcadePhysics();
     this.mapEntitiesToPositions();
     this.initializeSetPieces();
@@ -34,6 +44,15 @@ export abstract class GameWithLoad extends GameWithControls {
     this.setupArcadePhysics();
     this.setupAiAgents();
     this.setupHeat();
+  }
+
+  populateMatterJs() {
+    const bodies: Matter.Body[] = [];
+    for (let b of this.components.MatterComponent.store) {
+      bodies.push(b[1].matterBody);
+    }
+    console.log(bodies);
+    Composite.add(this.matterEngine.world, [...bodies]);
   }
 
   inflateArcadePhysics() {

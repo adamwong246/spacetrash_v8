@@ -4,8 +4,6 @@ import { Text } from "pixi.js";
 
 import { SpaceTrashEntity } from "../../Entity";
 
-
-
 import { Actor, bunnySprite, spike } from ".";
 import { TileSize } from "../../../Constants";
 
@@ -50,6 +48,25 @@ export class PuckBot extends Actor {
         }),
 
         aiAgentConfig,
+
+        // new MatterComponent(
+        //   Matter.Bodies.circle(
+        //     (x * TileSize) / 4,
+        //     (y * TileSize) / 4,
+        //     TileSize / 3 / 4,
+        //     {
+        //       isStatic: false,
+        //       // collisionFilter: {
+        //       //   category: 0,
+        //       // },
+        //       render: {
+        //         fillStyle: "red",
+        //         strokeStyle: "blue",
+        //         lineWidth: 3,
+        //       },
+        //     }
+        //   )
+        // ),
       ]
 
       // V2

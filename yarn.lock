@@ -1484,6 +1484,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/matter-js@^0.19.8":
+  version "0.19.8"
+  resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.19.8.tgz#ce1a7f743b8520f58cda2c5b06434a46c6731fed"
+  integrity sha512-W2ZWG58Lijv/4v768NgpeyFqqiOyslmAU7qqM1Lhz4XBoUgGtZtPz4CjcOKYtqHIak14dvPldslQhltqLTWwsw==
+
 "@types/mime@^1":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.5.tgz#1ef302e01cf7d2b5a0fa526790c9123bf1d06690"

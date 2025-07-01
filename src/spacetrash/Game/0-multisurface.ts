@@ -42,7 +42,7 @@ export abstract class MultiSurfaceGame<
     }
 
     if (canvasContext !== undefined && !this.renderings.has(canvasContext)) {
-      throw `you passed an illegal context: ${canvasContext}. I expected ${this.renderings.entries()}`;
+      throw `you passed an illegal context: ${canvasContext}. I expected ${[...this.renderings]}`;
     }
 
     this.canvasContexts[key] = {

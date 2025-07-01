@@ -33,6 +33,8 @@ import { PixiJsRenderableComponent } from "../../../engine/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../engine/rendering/threejs";
 import { ArcadePhysics } from "arcade-physics";
 import { ArcadePhysicsComponent } from "../Components/v4/PhaserArcade";
+import { MatterComponent } from "../../../engine/physics/matterjs";
+import Matter from "matter-js";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -110,11 +112,13 @@ export class Tile extends SpaceTrashEntityComponent {
     y: number,
     tiletype: ITiles,
     {
+      matter,
       pixi,
       threejs,
       arcade,
       dir,
     }: {
+      matter?: MatterComponent;
       pixi?: PixiJsRenderableComponent;
       threejs?: ThreeJsRenderableComponent;
       arcade?: ArcadePhysicsComponent;
@@ -149,6 +153,10 @@ export class Tile extends SpaceTrashEntityComponent {
 
     if (pixi !== undefined) {
       comps.push(pixi);
+    }
+
+    if (matter !== undefined) {
+      comps.push(matter);
     }
 
     this.tiletype = tiletype;
@@ -194,6 +202,27 @@ export class WallTile extends Tile {
           );
           return cube;
         }),
+
+        matter: new MatterComponent(
+          // Matter.Bodies.rectangle((MapSize * TileSize) / 2, (MapSize * TileSize) / 2, TileSize, TileSize, {
+          Matter.Bodies.rectangle(
+            (x * TileSize) / 4,
+            (y * TileSize) / 4,
+            TileSize / 4,
+            TileSize / 4,
+            {
+              isStatic: true,
+              // collisionFilter: {
+              //   category: 0,
+              // },
+              render: {
+                fillStyle: "green",
+                strokeStyle: "orange",
+                lineWidth: 3,
+              },
+            }
+          )
+        ),
       }
     );
   }

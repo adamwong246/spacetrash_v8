@@ -7,8 +7,14 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        }
     },
+    "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8",
+    "last.externalTilesetPath": "/Users/adam/Code/spacetrash_v8",
     "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/Assets",
+    "map.lastUsedExportFilter": "JavaScript map files (*.js)",
     "openFiles": [
     ],
     "project": "untitled.tiled-project",

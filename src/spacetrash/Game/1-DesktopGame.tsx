@@ -1,3 +1,4 @@
+import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
@@ -29,6 +30,13 @@ import { defToRad } from "../lib";
 import { DirectionComponent } from "../../engine/game/physical";
 import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
 import { StateSpace } from "../../engine/game/StateSpace";
+import { MatterWindow } from "../UI/MatterWindow";
+
+var Engine = Matter.Engine,
+  Render = Matter.Render,
+  Runner = Matter.Runner,
+  Bodies = Matter.Bodies,
+  Composite = Matter.Composite;
 
 export type ITerminalLine = {
   in?: string;
@@ -221,6 +229,9 @@ export abstract class DesktopGame<
   arcadePhysicsTick: any;
   arcadePhysicsCanvasContext: any;
 
+  matterEngine: Matter.Engine;
+  matterRenderer: Matter.Render;
+
   public videoFeed: number = 1;
 
   public bots: {
@@ -267,6 +278,9 @@ export abstract class DesktopGame<
     this.pixi2dThermalApp = new PIXI.Application();
 
     this.pixijsRenderer = new PIXI.Application();
+
+    this.matterEngine = Engine.create();
+    this.matterEngine.gravity.scale = 0.000001;
 
     this.addToHistory(bootScreenTermLine);
 
@@ -354,6 +368,7 @@ export abstract class DesktopGame<
           fab: (props: IDockviewPanelHeaderProps<any>) => (<FabricatorWindow game={self} />),
           data: (props: IDockviewPanelHeaderProps<any>) => (<DataWindow game={self} />),
           thermal: (props: IDockviewPanelHeaderProps<any>) => (<ThermalWindow game={self} />),
+          matter: (props: IDockviewPanelHeaderProps<any>) => (<MatterWindow game={self} />),
         }}
       />
     </div >)
@@ -392,7 +407,6 @@ export abstract class DesktopGame<
     this.unFocusOnTermInput();
     this.focusWindowById(`vid`)
   }
-
 
   async registerCanvas(
     key: ICanvases,
@@ -456,6 +470,40 @@ export abstract class DesktopGame<
       // this.arcadePhysics.plugins.add();
     }
 
+    if (key === "matter") {
+      var width = (MapSize) * TileSize,
+        height = (MapSize) * TileSize;
+      canvas.width = width;
+      canvas.height = height;
+
+      this.matterRenderer = Render.create({
+        canvas,
+        element: parentComponent,
+        engine: this.matterEngine,
+        options: {
+          width,
+          height,
+          wireframes: false
+        }
+      });
+
+
+
+      const boxA = Bodies.rectangle(400, 200, 80, 80);
+      const ballA = Bodies.circle(380, 100, 40, 10);
+      const ballB = Bodies.circle(460, 10, 40, 10);
+      const ground = Bodies.rectangle(400, 380, 810, 60, { isStatic: true });
+      Composite.add(this.matterEngine.world, [boxA, ballA, ballB, ground]);
+
+      let runner = Matter.Runner.create();
+      Matter.Render.run(this.matterRenderer);
+      Matter.Runner.run(runner, this.matterEngine);
+      Render.lookAt(this.matterRenderer, {
+        min: { x: 0, y: 0 },
+        max: { x: 800, y: 600 }
+      });
+    }
+
     if (key === "thermal") {
       // debugger
       this.pixijsThermalCanvasRef = canvas;
@@ -476,6 +524,7 @@ export abstract class DesktopGame<
       this.pixi2dThermalApp &&
       this.pixi2dApp &&
       this.threejsRenderer &&
+      this.matterRenderer &&
       this.arcadePhysics
     ) {
       this.run();
@@ -515,6 +564,7 @@ export abstract class DesktopGame<
     bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
     term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
     fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
+    matter: (props: IDockviewPanelHeaderProps<IState>) => (<MatterWindow game={this} />),
   }
 
   onDockviewReady(event: DockviewReadyEvent) {
@@ -590,6 +640,19 @@ export abstract class DesktopGame<
     this.dockviewAPI.component.addPanel({
       id: 'thermal',
       component: 'thermal',
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600
+      },
+      params: {
+
+      }
+    })
+
+    this.dockviewAPI.component.addPanel({
+      id: 'matter',
+      component: 'matter',
       floating: {
         position: { left: 120, top: 190 },
         width: 600,
@@ -952,6 +1015,10 @@ export abstract class DesktopGame<
 
   async renderThermals() {
     // todo
+  }
+
+  async renderMatterJs() {
+    Engine.update(this.matterEngine);
   }
 
   async renderArcadePhysics() {

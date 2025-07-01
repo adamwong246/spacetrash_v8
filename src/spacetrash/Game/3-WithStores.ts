@@ -39,8 +39,9 @@ import { PixiJsRenderableStore } from "../../engine/rendering/pixijs";
 import { ConsoleRenderableStore } from "../../engine/rendering/console";
 
 import { DesktopGame } from "./1-DesktopGame";
+import { MatterComponent, MatterStore } from "../../engine/physics/matterjs";
 
-export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal";
+export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal" | "matter";
 
 export type IRenderings =
   | "2d"
@@ -48,6 +49,7 @@ export type IRenderings =
   | "pixi2d"
   | "threejs"
   | "arcadePhysics"
+  | "matter"
   | null;
 
 export abstract class GameWithStores extends DesktopGame<
@@ -55,6 +57,7 @@ export abstract class GameWithStores extends DesktopGame<
   ICanvases
 > {
   components = {
+    MatterComponent: new MatterStore(),
     Actors: new ActorStore(),
     AiAgentComponent: new AiAgentStore(),
     ArcadePhysicsComponent: new ArcadePhysicsStore(),
