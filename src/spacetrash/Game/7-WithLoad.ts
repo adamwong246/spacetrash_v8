@@ -1,3 +1,5 @@
+import * as PIXI from "pixi.js";
+
 import * as THREE from "three";
 import { MapSize, MapBoundLow, MapBoundHigh, TileSize } from "../Constants";
 import { Eid2PMComponent } from "../ECS/Components/v2/eid2PMC";
@@ -39,7 +41,7 @@ export abstract class GameWithLoad extends GameWithControls {
     this.attachArcadePhysicsToActors();
     this.attachAiAgentsToActors();
     this.runInitialMapBoundaryCheck();
-    this.runPlaceImmoveableSetPieces();
+    // this.runPlaceImmoveableSetPieces();
     this.setup2dAnd3dGames();
     this.setupArcadePhysics();
     this.setupAiAgents();
@@ -267,64 +269,64 @@ export abstract class GameWithLoad extends GameWithControls {
     //   });
   }
 
-  runPlaceImmoveableSetPieces = () => {
-    this.components.PixiJsRenderableComponent.each((d, eid) => {
-      this.components.FloatPositions.withIf((p) => {
-        if (d.sprite) {
-          d.sprite.position.x = p.x * TileSize;
-          d.sprite.position.y = p.y * TileSize;
-        } else {
-          throw "the sprite should be loaded by now";
-        }
-      }, eid);
-      this.components.IntegerPositionComponent.withIf((p) => {
-        if (d.sprite) {
-          d.sprite.position.x = p.x * TileSize;
-          d.sprite.position.y = p.y * TileSize;
-        } else {
-          throw "the sprite should be loaded by now";
-        }
-      }, eid);
+  // runPlaceImmoveableSetPieces = () => {
+  //   this.components.PixiJsRenderableComponent.each((d, eid) => {
+  //     this.components.FloatPositions.withIf((p) => {
+  //       if (d.sprite) {
+  //         d.sprite.position.x = p.x * TileSize;
+  //         d.sprite.position.y = p.y * TileSize;
+  //       } else {
+  //         throw "the sprite should be loaded by now";
+  //       }
+  //     }, eid);
+  //     this.components.SP_IntegerPositionComponent.withIf((p) => {
+  //       if (d.sprite) {
+  //         d.sprite.position.x = p.X();
+  //         d.sprite.position.y = p.Y();
+  //       } else {
+  //         throw "the sprite should be loaded by now";
+  //       }
+  //     }, eid);
 
-      this.components.ArcadePhysicsComponent.withIf((p) => {
-        if (d.sprite) {
-          d.sprite.position.x = p.arcadeObject.position.x * TileSize;
-          d.sprite.position.y = p.arcadeObject.position.y * TileSize;
-        } else {
-          throw "the sprite should be loaded by now";
-        }
-      }, eid);
-    });
+  //     this.components.ArcadePhysicsComponent.withIf((p) => {
+  //       if (d.sprite) {
+  //         d.sprite.position.x = p.arcadeObject.position.x * TileSize;
+  //         d.sprite.position.y = p.arcadeObject.position.y * TileSize;
+  //       } else {
+  //         throw "the sprite should be loaded by now";
+  //       }
+  //     }, eid);
+  //   });
 
-    this.components.ThreeJsRenderableComponent.each((d, eid) => {
-      this.components.FloatPositions.withIf((p) => {
-        if (d.mesh) {
-          d.mesh.position.x = p.x * TileSize;
-          d.mesh.position.y = p.y * TileSize;
-        } else {
-          throw "the mesh should be loaded by now";
-        }
-      }, eid);
+  //   this.components.ThreeJsRenderableComponent.each((d, eid) => {
+  //     this.components.FloatPositions.withIf((p) => {
+  //       if (d.mesh) {
+  //         d.mesh.position.x = p.x * TileSize;
+  //         d.mesh.position.y = p.y * TileSize;
+  //       } else {
+  //         throw "the mesh should be loaded by now";
+  //       }
+  //     }, eid);
 
-      this.components.IntegerPositionComponent.withIf((p) => {
-        if (d.mesh) {
-          d.mesh.position.x = p.x * TileSize;
-          d.mesh.position.y = p.y * TileSize;
-        } else {
-          throw "the mesh should be loaded by now";
-        }
-      }, eid);
+  //     this.components.IntegerPositionComponent.withIf((p) => {
+  //       if (d.mesh) {
+  //         d.mesh.position.x = p.x * TileSize;
+  //         d.mesh.position.y = p.y * TileSize;
+  //       } else {
+  //         throw "the mesh should be loaded by now";
+  //       }
+  //     }, eid);
 
-      this.components.ArcadePhysicsComponent.withIf((p) => {
-        if (d.mesh) {
-          d.mesh.position.x = p.arcadeObject.position.x * TileSize;
-          d.mesh.position.y = p.arcadeObject.position.y * TileSize;
-        } else {
-          throw "the sprite should be loaded by now";
-        }
-      }, eid);
-    });
-  };
+  //     this.components.ArcadePhysicsComponent.withIf((p) => {
+  //       if (d.mesh) {
+  //         d.mesh.position.x = p.arcadeObject.position.x * TileSize;
+  //         d.mesh.position.y = p.arcadeObject.position.y * TileSize;
+  //       } else {
+  //         throw "the sprite should be loaded by now";
+  //       }
+  //     }, eid);
+  //   });
+  // };
 
   setup2dAnd3dGames() {
     this.components.PixiJsRenderableComponent.each((p, i) => {

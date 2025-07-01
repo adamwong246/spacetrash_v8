@@ -6,6 +6,12 @@ import * as RAPIER from "@dimforge/rapier2d-simd";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 
+
+import brick from "./../Assets/brick.png";
+import stone from "./../Assets/stone.png";
+import voidPng from "./../Assets/void.png";
+
+
 import bootScene from "../Scenes/Boot";
 import mainLoopScene from "../Scenes/MainLoop";
 
@@ -34,13 +40,13 @@ import { defToRad } from "../lib";
 import { DirectionComponent } from "../../engine/game/physical";
 import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
 import { StateSpace } from "../../engine/game/StateSpace";
-import { MatterWindow } from "../UI/MatterWindow";
+// import { MatterWindow } from "../UI/MatterWindow";
 
-var Engine = Matter.Engine,
-  Render = Matter.Render,
-  Runner = Matter.Runner,
-  Bodies = Matter.Bodies,
-  Composite = Matter.Composite;
+// var Engine = Matter.Engine,
+//   Render = Matter.Render,
+//   Runner = Matter.Runner,
+//   Bodies = Matter.Bodies,
+//   Composite = Matter.Composite;
 
 export type ITerminalLine = {
   in?: string;
@@ -308,6 +314,19 @@ export abstract class DesktopGame<
   async start() {
     super.start();
 
+    PIXI.Assets.load([
+      "https://pixijs.com/assets/bunny.png",
+      stone,
+      brick,
+      voidPng,
+      "https://pixijs.com/assets/bitmap-font/desyrel.xml",
+    ]).then(() => {
+      PIXI.Texture.from("https://pixijs.com/assets/bunny.png");
+      PIXI.Texture.from(stone);
+      PIXI.Texture.from(brick);
+      PIXI.Texture.from(voidPng);
+    });
+
     self.reactRoot.render(
       <div>
         <div
@@ -440,7 +459,7 @@ export abstract class DesktopGame<
       await this.pixi2dApp.init({
         sharedTicker: true,
         view: canvas.getContext("webgl2")?.canvas,
-        backgroundColor: 0x1099bb,
+        backgroundColor: 0xa091bb,
         width: MapSize * TileSize,
         height: MapSize * TileSize,
       });

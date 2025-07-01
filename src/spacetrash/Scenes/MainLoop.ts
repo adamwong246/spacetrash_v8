@@ -121,9 +121,9 @@ class MainScene extends SpaceTrashScene {
     game.setEntitiesComponent([
       ship,
       ...ship.toTiles(),
-      ...moreBots,
-      warpcore0,
-      warpcore1,
+      // ...moreBots,
+      // warpcore0,
+      // warpcore1,
       // monster1,
     ]);
 

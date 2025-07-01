@@ -114,14 +114,14 @@ export class Tile extends SpaceTrashEntityComponent {
     y: number,
     tiletype: ITiles,
     {
-      matter,
+      // matter,
       pixi,
       threejs,
       arcade,
       dir,
     }: {
-      rapier?: RapierPhysicalComponent;
-      matter?: MatterComponent;
+      // rapier?: RapierPhysicalComponent;
+      // matter?: MatterComponent;
       pixi?: PixiJsRenderableComponent;
       threejs?: ThreeJsRenderableComponent;
       arcade?: ArcadePhysicsComponent;
@@ -156,11 +156,13 @@ export class Tile extends SpaceTrashEntityComponent {
 
     if (pixi !== undefined) {
       comps.push(pixi);
+    } else {
+      throw "must have sprite"
     }
 
-    if (matter !== undefined) {
-      comps.push(matter);
-    }
+    // if (matter !== undefined) {
+    //   comps.push(matter);
+    // }
 
     this.tiletype = tiletype;
   }
@@ -206,26 +208,26 @@ export class WallTile extends Tile {
           return cube;
         }),
 
-        matter: new MatterComponent(
-          // Matter.Bodies.rectangle((MapSize * TileSize) / 2, (MapSize * TileSize) / 2, TileSize, TileSize, {
-          Matter.Bodies.rectangle(
-            (x * TileSize) / 4,
-            (y * TileSize) / 4,
-            TileSize / 4,
-            TileSize / 4,
-            {
-              isStatic: true,
-              // collisionFilter: {
-              //   category: 0,
-              // },
-              render: {
-                fillStyle: "green",
-                strokeStyle: "orange",
-                lineWidth: 3,
-              },
-            }
-          )
-        ),
+        // matter: new MatterComponent(
+        //   // Matter.Bodies.rectangle((MapSize * TileSize) / 2, (MapSize * TileSize) / 2, TileSize, TileSize, {
+        //   Matter.Bodies.rectangle(
+        //     (x * TileSize) / 4,
+        //     (y * TileSize) / 4,
+        //     TileSize / 4,
+        //     TileSize / 4,
+        //     {
+        //       isStatic: true,
+        //       // collisionFilter: {
+        //       //   category: 0,
+        //       // },
+        //       render: {
+        //         fillStyle: "green",
+        //         strokeStyle: "orange",
+        //         lineWidth: 3,
+        //       },
+        //     }
+        //   )
+        // ),
 
         // rapier: new RapierPhysicalComponent(
         //   RAPIER.RigidBodyDesc.fixed().setTranslation(x, y),
