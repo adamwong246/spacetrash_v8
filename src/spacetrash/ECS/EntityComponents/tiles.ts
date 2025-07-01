@@ -35,6 +35,8 @@ import { ArcadePhysics } from "arcade-physics";
 import { ArcadePhysicsComponent } from "../Components/v4/PhaserArcade";
 import { MatterComponent } from "../../../engine/physics/matterjs";
 import Matter from "matter-js";
+// import { RapierPhysicalComponent } from "../../../engine/physics/rapier";
+import RAPIER from "@dimforge/rapier2d-simd";
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -118,6 +120,7 @@ export class Tile extends SpaceTrashEntityComponent {
       arcade,
       dir,
     }: {
+      rapier?: RapierPhysicalComponent;
       matter?: MatterComponent;
       pixi?: PixiJsRenderableComponent;
       threejs?: ThreeJsRenderableComponent;
@@ -223,6 +226,11 @@ export class WallTile extends Tile {
             }
           )
         ),
+
+        // rapier: new RapierPhysicalComponent(
+        //   RAPIER.RigidBodyDesc.fixed().setTranslation(x, y),
+        //   RAPIER.ColliderDesc.cuboid(TileSize, TileSize)
+        // ),
       }
     );
   }

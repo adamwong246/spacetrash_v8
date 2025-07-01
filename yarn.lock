@@ -38,6 +38,11 @@
     debug "4.3.4"
     tslib "^2.6.2"
 
+"@dimforge/rapier2d-simd@^0.17.3":
+  version "0.17.3"
+  resolved "https://registry.yarnpkg.com/@dimforge/rapier2d-simd/-/rapier2d-simd-0.17.3.tgz#e2017f57174cb672500702ac2ebc59a196bced74"
+  integrity sha512-uOxprks2+NrDspI9Mchh5GPr8q4BvIWTwFcW/bjGdRt84KrLtanYRC6gTMFr3V4sKot3NhFZ8aNY+vm1oL3GzA==
+
 "@dimforge/rapier3d-compat@~0.12.0":
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/@dimforge/rapier3d-compat/-/rapier3d-compat-0.12.0.tgz#7b3365e1dfdc5cd957b45afe920b4ac06c7cd389"
@@ -3018,6 +3023,11 @@ esbuild-plugin-markdown@^0.0.3:
     fs-extra "^9.1.0"
     highlight.js "^10.6.0"
     marked "^2.0.0"
+
+esbuild-plugin-wasm@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/esbuild-plugin-wasm/-/esbuild-plugin-wasm-1.1.0.tgz#062c0e62c266e94165c66ebcbb5852a1cdbfd7cd"
+  integrity sha512-0bQ6+1tUbySSnxzn5jnXHMDvYnT0cN/Wd4Syk8g/sqAIJUg7buTIi22svS3Qz6ssx895NT+TgLPb33xi1OkZig==
 
 esbuild-sass-plugin@^3.3.1:
   version "3.3.1"

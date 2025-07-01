@@ -1,16 +1,20 @@
 import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
+import * as RAPIER from "@dimforge/rapier2d-simd";
 
-import * as React from 'react'
-import { createRoot } from 'react-dom/client';
-
+import * as React from "react";
+import { createRoot } from "react-dom/client";
 
 import bootScene from "../Scenes/Boot";
 import mainLoopScene from "../Scenes/MainLoop";
 
-import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
-import { DockviewApi, DockviewReact } from 'dockview';
+import {
+  DockviewReadyEvent,
+  IDockviewPanelHeaderProps,
+  IDockviewPanelProps,
+} from "dockview";
+import { DockviewApi, DockviewReact } from "dockview";
 
 import { BotsWindow } from "../UI/BotsWindow";
 import { BotWindow, IBotWindowState } from "../UI/BotWindow";
@@ -18,12 +22,12 @@ import { MapWindow } from "../UI/map";
 import { ITermWindowState, TerminalWindow } from "../UI/terminal";
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
 
-import { ArcadePhysicsWindow } from '../UI/ArcadePhysicsWindow';
-import { FabricatorWindow } from '../UI/FabricatorWindow';
-import { DataWindow } from '../UI/DataWindow';
+import { ArcadePhysicsWindow } from "../UI/ArcadePhysicsWindow";
+import { FabricatorWindow } from "../UI/FabricatorWindow";
+import { DataWindow } from "../UI/DataWindow";
 
-import { ThermalWindow } from '../UI/ThermalWindow';
-import { MultiSurfaceGame } from './0-multisurface';
+import { ThermalWindow } from "../UI/ThermalWindow";
+import { MultiSurfaceGame } from "./0-multisurface";
 import { ArcadePhysics } from "arcade-physics";
 import { TileSize, MapSize } from "../Constants";
 import { defToRad } from "../lib";
@@ -181,13 +185,10 @@ ESC       bring shipmap for foreground
 
 type IComStatus = "pass" | "fail" | "niether";
 
-
-
 export abstract class DesktopGame<
   IRenderings,
-  ICanvases,
+  ICanvases
 > extends MultiSurfaceGame<IRenderings> {
-
   loggedIn = false;
 
   history: ITerminalLine[] = [initialTerminalHistory];
@@ -202,7 +203,9 @@ export abstract class DesktopGame<
   stateSetter: (s: any) => void;
   abstract uiHooks: any;
 
-  terminalWindowHook: React.Dispatch<React.SetStateAction<ITermWindowState | undefined>>;
+  terminalWindowHook: React.Dispatch<
+    React.SetStateAction<ITermWindowState | undefined>
+  >;
 
   botsHook: React.Dispatch<any>;
   botHook: React.Dispatch<React.SetStateAction<IBotWindowState>>;
@@ -220,17 +223,19 @@ export abstract class DesktopGame<
   pixi2dApp: PIXI.Application;
 
   // thermals are a another pixi app
-  pixijsThermalCanvasRef: HTMLCanvasElement;
-  pixijsThermalParentRef: HTMLElement;
-  pixijsThermalRenderer: PIXI.Application;
-  pixi2dThermalApp: PIXI.Application;
+  // pixijsThermalCanvasRef: HTMLCanvasElement;
+  // pixijsThermalParentRef: HTMLElement;
+  // pixijsThermalRenderer: PIXI.Application;
+  // pixi2dThermalApp: PIXI.Application;
 
   arcadePhysics: ArcadePhysics;
   arcadePhysicsTick: any;
   arcadePhysicsCanvasContext: any;
 
-  matterEngine: Matter.Engine;
-  matterRenderer: Matter.Render;
+  // matterEngine: Matter.Engine;
+  // matterRenderer: Matter.Render;
+
+  // rapierWorld: RAPIER.World;
 
   public videoFeed: number = 1;
 
@@ -251,10 +256,10 @@ export abstract class DesktopGame<
   constructor(
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
-    domNode: HTMLElement,
+    domNode: HTMLElement
   ) {
     super(config, renderings);
-    this.reactRoot = createRoot(domNode)
+    this.reactRoot = createRoot(domNode);
     self = this;
 
     this.stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
@@ -275,111 +280,101 @@ export abstract class DesktopGame<
     this.scene = new THREE.Scene();
 
     this.pixi2dApp = new PIXI.Application();
-    this.pixi2dThermalApp = new PIXI.Application();
+    // this.pixi2dThermalApp = new PIXI.Application();
 
     this.pixijsRenderer = new PIXI.Application();
 
-    this.matterEngine = Engine.create();
-    this.matterEngine.gravity.scale = 0.000001;
+    // this.matterEngine = Engine.create();
+    // this.matterEngine.gravity.scale = 0.000001;
 
     this.addToHistory(bootScreenTermLine);
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener("keydown", function (event) {
       if (event.repeat) return;
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         self.focusMapWindow();
-      }
-      else if (event.key === "`") {
+      } else if (event.key === "`") {
         self.focusTerminalWindow();
-      }
-
-      else if (isNumeric((event.key)) && self.buffer === "") {
-        self.focusVideoWindow(event.key)
-      }
-      else if (isAlphabetic(event.key)) {
-        self.focusTerminalWindow(event.key)
-      }
-      else {
+      } else if (isNumeric(event.key) && self.buffer === "") {
+        self.focusVideoWindow(event.key);
+      } else if (isAlphabetic(event.key)) {
+        self.focusTerminalWindow(event.key);
+      } else {
         // console.log(event);
       }
     });
-
   }
 
   async start() {
     super.start();
 
-    self.reactRoot.render(<div>
+    self.reactRoot.render(
+      <div>
+        <div
+          style={{
+            top: 0,
+            left: 0,
+            position: "absolute",
+            zIndex: 1,
+          }}
+        >
+          <button onClick={() => this.focusWindowById("map")}>map</button>
+          <button onClick={() => this.focusWindowById("term")}>term</button>
+          <button onClick={() => this.focusWindowById("vid", 1)}>1</button>
+          <button onClick={() => this.focusWindowById("vid", 2)}>2</button>
+          <button onClick={() => this.focusWindowById("vid", 3)}>3</button>
+          <button onClick={() => this.focusWindowById("vid", 4)}>4</button>
+          <button onClick={() => this.focusWindowById("vid", 5)}>5</button>
+          <button onClick={() => this.focusWindowById("vid", 6)}>6</button>
+          <button onClick={() => this.focusWindowById("vid", 7)}>7</button>
+          <button onClick={() => this.focusWindowById("vid", 8)}>8</button>
+          <button onClick={() => this.focusWindowById("vid", 9)}>9</button>
+        </div>
 
+        <DockviewReact
+          className={"dockview-theme-abyss"}
+          onReady={self.onDockviewReady}
+          components={{
+            default: (props: IDockviewPanelHeaderProps<any>) => {
+              return (
+                <div>
+                  <p>default</p>
+                </div>
+              );
+            },
 
-      <div
-        style={{
-          top: 0,
-          left: 0,
-          position: 'absolute',
-          zIndex: 1
-        }}
-      >
-        <button onClick={() => this.focusWindowById('map')}>map</button>
-        <button onClick={() => this.focusWindowById('term')}>term</button>
-        <button onClick={() => this.focusWindowById('vid', 1)}>1</button>
-        <button onClick={() => this.focusWindowById('vid', 2)}>2</button>
-        <button onClick={() => this.focusWindowById('vid', 3)}>3</button>
-        <button onClick={() => this.focusWindowById('vid', 4)}>4</button>
-        <button onClick={() => this.focusWindowById('vid', 5)}>5</button>
-        <button onClick={() => this.focusWindowById('vid', 6)}>6</button>
-        <button onClick={() => this.focusWindowById('vid', 7)}>7</button>
-        <button onClick={() => this.focusWindowById('vid', 8)}>8</button>
-        <button onClick={() => this.focusWindowById('vid', 9)}>9</button>
+            map: (props: IDockviewPanelHeaderProps<any>) => {
+              return <MapWindow game={self} />;
+            },
+
+            vid: (props: IDockviewPanelHeaderProps<any>) => {
+              return <BotWindow game={self} />;
+            },
+            term: (props: IDockviewPanelHeaderProps<any>) => (
+              <TerminalWindow game={self} />
+            ),
+            arcadePhysics: (props: IDockviewPanelHeaderProps<any>) => (
+              <ArcadePhysicsWindow game={self} />
+            ),
+            // bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
+            // fab: (props: IDockviewPanelHeaderProps<any>) => (<FabricatorWindow game={self} />),
+            // data: (props: IDockviewPanelHeaderProps<any>) => (<DataWindow game={self} />),
+            // thermal: (props: IDockviewPanelHeaderProps<any>) => (<ThermalWindow game={self} />),
+            // matter: (props: IDockviewPanelHeaderProps<any>) => (<MatterWindow game={self} />),
+          }}
+        />
       </div>
-
-      <DockviewReact
-        className={'dockview-theme-abyss'}
-        onReady={self.onDockviewReady}
-        components={{
-
-          default: (props: IDockviewPanelHeaderProps<any>) => {
-            return (
-              <div>
-                <p>default</p>
-                {/* <div>{`custom tab: ${props.api.title}`}</div>
-                    <span>{`value: ${props.params.myValue}`}</span> */}
-              </div>
-            );
-          },
-
-          map: (props: IDockviewPanelHeaderProps<any>) => {
-            return (
-              <MapWindow game={self} />
-            );
-          },
-
-          vid: (props: IDockviewPanelHeaderProps<any>) => {
-            return (
-              <BotWindow game={self} />
-            );
-          },
-
-          bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
-          term: (props: IDockviewPanelHeaderProps<any>) => <TerminalWindow game={self} />,
-
-
-          arcadePhysics: (props: IDockviewPanelHeaderProps<any>) => <ArcadePhysicsWindow game={self} />,
-          fab: (props: IDockviewPanelHeaderProps<any>) => (<FabricatorWindow game={self} />),
-          data: (props: IDockviewPanelHeaderProps<any>) => (<DataWindow game={self} />),
-          thermal: (props: IDockviewPanelHeaderProps<any>) => (<ThermalWindow game={self} />),
-          matter: (props: IDockviewPanelHeaderProps<any>) => (<MatterWindow game={self} />),
-        }}
-      />
-    </div >)
+    );
   }
 
   registerBotsHook(stateSetter: React.Dispatch<any>) {
     this.botsHook = stateSetter;
-    this.botsHook(this.bots)
+    this.botsHook(this.bots);
   }
 
-  registerBotHook(stateSetter: React.Dispatch<React.SetStateAction<IBotWindowState>>) {
+  registerBotHook(
+    stateSetter: React.Dispatch<React.SetStateAction<IBotWindowState>>
+  ) {
     this.botHook = stateSetter;
   }
 
@@ -389,23 +384,23 @@ export abstract class DesktopGame<
   }
 
   focusTerminalWindow() {
-    this.focusWindowById(`term`)
-    this.focusOnTermInput()
+    this.focusWindowById(`term`);
+    this.focusOnTermInput();
   }
 
   focusVideoWindow(s: string) {
     const n: number = Number(s);
-    if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
+    if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`;
     this.videoFeed = n;
 
     this.botHook({
       rads: 100,
       heat: 99,
       sound: 101,
-    })
+    });
 
     this.unFocusOnTermInput();
-    this.focusWindowById(`vid`)
+    this.focusWindowById(`vid`);
   }
 
   async registerCanvas(
@@ -467,72 +462,76 @@ export abstract class DesktopGame<
 
       this.arcadePhysics = new ArcadePhysics(config);
 
-      // this.arcadePhysics.plugins.add();
+      // let gravity = new RAPIER.Vector2(0.0, -9.81);
+      // this.rapierWorld = new RAPIER.World(gravity);
     }
 
-    if (key === "matter") {
-      var width = (MapSize) * TileSize,
-        height = (MapSize) * TileSize;
-      canvas.width = width;
-      canvas.height = height;
+    // if (key === "matter") {
+    //   var width = (MapSize) * TileSize,
+    //     height = (MapSize) * TileSize;
+    //   canvas.width = width;
+    //   canvas.height = height;
 
-      this.matterRenderer = Render.create({
-        canvas,
-        element: parentComponent,
-        engine: this.matterEngine,
-        options: {
-          width,
-          height,
-          wireframes: false
-        }
-      });
+    //   this.matterRenderer = Render.create({
+    //     canvas,
+    //     element: parentComponent,
+    //     engine: this.matterEngine,
+    //     options: {
+    //       width,
+    //       height,
+    //       wireframes: false
+    //     }
+    //   });
 
+    //   const boxA = Bodies.rectangle(400, 200, 80, 80);
+    //   const ballA = Bodies.circle(380, 100, 40, 10);
+    //   const ballB = Bodies.circle(460, 10, 40, 10);
+    //   const ground = Bodies.rectangle(400, 380, 810, 60, { isStatic: true });
+    //   Composite.add(this.matterEngine.world, [boxA, ballA, ballB, ground]);
 
+    //   let runner = Matter.Runner.create();
+    //   Matter.Render.run(this.matterRenderer);
+    //   Matter.Runner.run(runner, this.matterEngine);
+    //   Render.lookAt(this.matterRenderer, {
+    //     min: { x: 0, y: 0 },
+    //     max: { x: 800, y: 600 }
+    //   });
+    // }
 
-      const boxA = Bodies.rectangle(400, 200, 80, 80);
-      const ballA = Bodies.circle(380, 100, 40, 10);
-      const ballB = Bodies.circle(460, 10, 40, 10);
-      const ground = Bodies.rectangle(400, 380, 810, 60, { isStatic: true });
-      Composite.add(this.matterEngine.world, [boxA, ballA, ballB, ground]);
+    // if (key === "thermal") {
+    //   // debugger
+    //   this.pixijsThermalCanvasRef = canvas;
+    //   this.pixijsThermalParentRef = parentComponent;
 
-      let runner = Matter.Runner.create();
-      Matter.Render.run(this.matterRenderer);
-      Matter.Runner.run(runner, this.matterEngine);
-      Render.lookAt(this.matterRenderer, {
-        min: { x: 0, y: 0 },
-        max: { x: 800, y: 600 }
-      });
-    }
+    //   await this.pixi2dThermalApp.init({
+    //     sharedTicker: true,
+    //     view: canvas.getContext("webgl2")?.canvas,
+    //     backgroundColor: 0xffffff,
+    //     width: 500,
+    //     height: 500,
+    //   });
 
-    if (key === "thermal") {
-      // debugger
-      this.pixijsThermalCanvasRef = canvas;
-      this.pixijsThermalParentRef = parentComponent;
-
-      await this.pixi2dThermalApp.init({
-        sharedTicker: true,
-        view: canvas.getContext("webgl2")?.canvas,
-        backgroundColor: 0xffffff,
-        width: 500,
-        height: 500,
-      });
-
-      // this.pixi2dThermalApp.render()
-    }
+    //   // this.pixi2dThermalApp.render()
+    // }
 
     if (
-      this.pixi2dThermalApp &&
+      // this.pixi2dThermalApp &&
+
       this.pixi2dApp &&
       this.threejsRenderer &&
-      this.matterRenderer &&
+      // this.matterRenderer &&
+
+      // this.rapierWorld
       this.arcadePhysics
     ) {
       this.run();
     }
   }
 
-  dockViewComponents: Record<string, React.FunctionComponent<IDockviewPanelProps>> = {
-
+  dockViewComponents: Record<
+    string,
+    React.FunctionComponent<IDockviewPanelProps>
+  > = {
     default: (props: IDockviewPanelHeaderProps<IState>) => {
       return (
         <div>
@@ -543,125 +542,80 @@ export abstract class DesktopGame<
       );
     },
 
-    thermal: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <ThermalWindow game={this} />
-      );
-    },
+    // fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
+    // matter: (props: IDockviewPanelHeaderProps<IState>) => (<MatterWindow game={this} />),
+    // bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
+    // thermal: (props: IDockviewPanelHeaderProps<IState>) => {
+    //   return (
+    //     <ThermalWindow game={this} />
+    //   );
+    // },
 
     map: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <MapWindow game={this} />
-      );
+      return <MapWindow game={this} />;
     },
 
     bot: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <BotWindow game={this} />
-      );
+      return <BotWindow game={this} />;
     },
 
-    bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
-    term: (props: IDockviewPanelHeaderProps<IState>) => <TerminalWindow game={this} />,
-    fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
-    matter: (props: IDockviewPanelHeaderProps<IState>) => (<MatterWindow game={this} />),
-  }
+    term: (props: IDockviewPanelHeaderProps<IState>) => (
+      <TerminalWindow game={this} />
+    ),
+  };
 
   onDockviewReady(event: DockviewReadyEvent) {
     self.dockviewAPI = event.api;
     event.api.addPanel({
-      id: 'term',
-      component: 'term',
+      id: "term",
+      component: "term",
       floating: {
         position: { left: 10, top: 10 },
         width: 900,
-        height: 600
+        height: 600,
       },
       params: {
-        game: this
-      }
-    })
+        game: this,
+      },
+    });
   }
 
   openAllWindows() {
-    this.dockviewAPI.component.addPanel({
-      id: 'bots',
-      component: 'bots',
-      floating: {
-        position: { left: 90, top: 90 },
-        width: 500,
-        height: 500
-      },
-      params: {
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'bots',
+    //   component: 'bots',
+    //   floating: {
+    //     position: { left: 90, top: 90 },
+    //     width: 500,
+    //     height: 500
+    //   },
+    //   params: {
+    //   }
+    // })
 
-      }
-    })
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'thermal',
+    //   component: 'thermal',
+    //   floating: {
+    //     position: { left: 120, top: 190 },
+    //     width: 600,
+    //     height: 600
+    //   },
+    //   params: {
+    //   }
+    // })
 
-    this.dockviewAPI.component.addPanel({
-      id: 'vid',
-      component: 'vid',
-      floating: {
-        position: { left: 50, top: 50 },
-        width: 500,
-        height: 500
-      },
-      params: {
-
-      }
-    })
-
-    this.dockviewAPI.component.addPanel({
-      id: 'map',
-      component: 'map',
-      floating: {
-        position: { left: 100, top: 150 },
-        width: 600,
-        height: 600
-      },
-      params: {
-
-      }
-    })
-
-
-    this.dockviewAPI.component.addPanel({
-      id: 'arcadePhysics',
-      component: 'arcadePhysics',
-      floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600
-      },
-      params: {
-
-      }
-    })
-
-    this.dockviewAPI.component.addPanel({
-      id: 'thermal',
-      component: 'thermal',
-      floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600
-      },
-      params: {
-
-      }
-    })
-
-    this.dockviewAPI.component.addPanel({
-      id: 'matter',
-      component: 'matter',
-      floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600
-      },
-      params: {
-
-      }
-    })
+    // this.dockviewAPI.component.addPanel({
+    //   id: 'matter',
+    //   component: 'matter',
+    //   floating: {
+    //     position: { left: 120, top: 190 },
+    //     width: 600,
+    //     height: 600
+    //   },
+    //   params: {
+    //   }
+    // })
 
     // this.dockviewAPI.component.addPanel({
     //   id: 'fab',
@@ -672,7 +626,6 @@ export abstract class DesktopGame<
     //     height: 600
     //   },
     //   params: {
-
     //   }
     // })
 
@@ -685,21 +638,51 @@ export abstract class DesktopGame<
     //     height: 600
     //   },
     //   params: {
-
     //   }
     // })
 
+    this.dockviewAPI.component.addPanel({
+      id: "vid",
+      component: "vid",
+      floating: {
+        position: { left: 50, top: 50 },
+        width: 500,
+        height: 500,
+      },
+      params: {},
+    });
+
+    this.dockviewAPI.component.addPanel({
+      id: "map",
+      component: "map",
+      floating: {
+        position: { left: 100, top: 150 },
+        width: 600,
+        height: 600,
+      },
+      params: {},
+    });
+
+    this.dockviewAPI.component.addPanel({
+      id: "arcadePhysics",
+      component: "arcadePhysics",
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600,
+      },
+      params: {},
+    });
   }
 
   focusWindowById(s: string, x?) {
     this.dockviewAPI.panels.forEach((p) => {
       if (p.id === s) {
         p.focus();
-        p.setTitle(`${s}`)
+        p.setTitle(`${s}`);
       }
-    })
+    });
   }
-
 
   focusOnTermInput() {
     this.bufferRef.current.focus();
@@ -899,7 +882,7 @@ export abstract class DesktopGame<
   login(): void {
     if (!this.loggedIn) {
       this.loggedIn = true;
-      this.changeScene("mainloop")
+      this.changeScene("mainloop");
       this.returnCommand(loggedInTermLine);
     } else {
       this.returnCommand(alreadyLoggedInTermLine);
@@ -938,7 +921,6 @@ export abstract class DesktopGame<
     this.returnCommand(settingsTermLine);
   }
 
-
   positionOfBot(eid: number): { x: number; y: number } {
     const arcadeObjectComponent: ArcadePhysicsComponent =
       this.components.ArcadePhysicsComponent.take(eid);
@@ -970,7 +952,6 @@ export abstract class DesktopGame<
       r: arcadeObjectComponent?.arcadeObject.rotation,
     };
   }
-
 
   videoFeedRotation(): DirectionComponent {
     const p = this.rotationOfBot(
@@ -1018,7 +999,7 @@ export abstract class DesktopGame<
   }
 
   async renderMatterJs() {
-    Engine.update(this.matterEngine);
+    // Engine.update(this.matterEngine);
   }
 
   async renderArcadePhysics() {
@@ -1047,6 +1028,4 @@ export abstract class DesktopGame<
   BeginTheGame() {
     this.openAllWindows();
   }
-
-
 }

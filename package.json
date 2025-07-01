@@ -18,6 +18,7 @@
     "t-report": "tsx node_modules/testeranto/dist/prebuild/ReportServer.mjs"
   },
   "dependencies": {
+    "@dimforge/rapier2d-simd": "^0.17.3",
     "@pixi/core": "^7.4.3",
     "@pixi/extensions": "^7.4.3",
     "@stdlib/datasets-female-first-names-en": "^0.2.2",
@@ -29,6 +30,7 @@
     "arcade-physics": "^0.1.0",
     "dockview": "^4.3.1",
     "esbuild": "0.25.5",
+    "esbuild-plugin-wasm": "^1.1.0",
     "esbuild-sass-plugin": "^3.3.1",
     "eventemitter3": "^4.0.7",
     "graphology": "^0.25.4",

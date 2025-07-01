@@ -30,7 +30,7 @@ export abstract class GameWithLoad extends GameWithControls {
   }
 
   load() {
-    this.populateMatterJs();
+    // this.populateMatterJs();
     this.inflateArcadePhysics();
     this.mapEntitiesToPositions();
     this.initializeSetPieces();

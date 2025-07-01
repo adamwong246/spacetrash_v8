@@ -1,5 +1,6 @@
 import esbuild from 'esbuild';
 import { sassPlugin } from 'esbuild-sass-plugin'
+import { wasmLoader } from 'esbuild-plugin-wasm'
 
 esbuild.context({
   keepNames: true,
@@ -27,6 +28,7 @@ esbuild.context({
 
   plugins: [
     sassPlugin({ cssImports: true }),
+    wasmLoader()
   ],
 
 }).then((ctx) => {
