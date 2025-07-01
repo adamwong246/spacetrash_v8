@@ -1,8 +1,6 @@
 import { TankMovingStore } from "../ECS/Components/v4/TankMovingComponent";
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
 
-import { TerminalGame } from "./2-Terminal";
-
 import { ActorStore } from "../ECS/Components/v3/actors";
 
 import { NameableStore } from "../ECS/Components/v2/nameable";
@@ -39,14 +37,24 @@ import {
 import { ThreeJsRenderableStore } from "../../engine/rendering/threejs";
 import { PixiJsRenderableStore } from "../../engine/rendering/pixijs";
 import { ConsoleRenderableStore } from "../../engine/rendering/console";
-import { IRenderings, ICanvases } from "./5-WithRenders";
 
-export abstract class GameWithStores extends TerminalGame<
+import { DesktopGame } from "./1-DesktopGame";
+
+export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal";
+
+export type IRenderings =
+  | "2d"
+  | "webgl2"
+  | "pixi2d"
+  | "threejs"
+  | "arcadePhysics"
+  | null;
+
+export abstract class GameWithStores extends DesktopGame<
   IRenderings,
   ICanvases
 > {
   components = {
-    // DrawableComponent: new DrawableStoreV2(),
     Actors: new ActorStore(),
     AiAgentComponent: new AiAgentStore(),
     ArcadePhysicsComponent: new ArcadePhysicsStore(),
@@ -69,12 +77,11 @@ export abstract class GameWithStores extends TerminalGame<
     RadiationDetectorComponent: new RadiationDetectorStore(),
     RadiationEmitterComponent: new RadiationEmitterStore(),
     SetPieces: new SetPieceStore(),
+    SP_IntegerPositionComponent: new IntegerPositionStore(),
     TankMovingComponent: new TankMovingStore(),
     ThreeJsRenderableComponent: new ThreeJsRenderableStore(),
     TileComponent: new TileComponentStore(),
     V3AttackComponent: new V3AttackComponentStore(),
-    
-    SP_IntegerPositionComponent: new IntegerPositionStore()
   };
 
   constructor(

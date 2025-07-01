@@ -1,8 +1,12 @@
-// Allows a game with multiple windows
-// It is specific to the browser because it relies upon react and dockview
+import * as PIXI from "pixi.js";
+import * as THREE from "three";
 
 import * as React from 'react'
 import { createRoot } from 'react-dom/client';
+
+
+import bootScene from "../Scenes/Boot";
+import mainLoopScene from "../Scenes/MainLoop";
 
 import { DockviewReadyEvent, IDockviewPanelHeaderProps, IDockviewPanelProps } from "dockview";
 import { DockviewApi, DockviewReact } from 'dockview';
@@ -19,13 +23,171 @@ import { DataWindow } from '../UI/DataWindow';
 
 import { ThermalWindow } from '../UI/ThermalWindow';
 import { MultiSurfaceGame } from './0-multisurface';
+import { ArcadePhysics } from "arcade-physics";
+import { TileSize, MapSize } from "../Constants";
+import { defToRad } from "../lib";
+import { DirectionComponent } from "../../engine/game/physical";
+import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
+import { StateSpace } from "../../engine/game/StateSpace";
+
+export type ITerminalLine = {
+  in?: string;
+  out: string;
+  status: IComStatus;
+};
 
 let self: DesktopGame<any, any>;
+
+function isAlphabetic(str: string): boolean {
+  if (!str) return false;
+  return /^[A-Za-z]+$/.test(str) && str.length === 1;
+}
+
+function isNumeric(str: string): boolean {
+  return /^[1-9]+$/.test(str) && str.length === 1;
+}
+
+const bootScreenTermLine: ITerminalLine = {
+  status: "pass",
+  out: `
+  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                                                                                                        │
+  │ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
+  │ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
+  │ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
+  │ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
+  │ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
+  │ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
+  │                                                                                                        │
+  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+            
+boot sequence initiated...
+Oonix v457.3.2 by Demiurge Labs, 3003
+QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
+boot sequence complete!
+  `,
+};
+
+const initialTerminalHistory: ITerminalLine = {
+  out: "hardware check passed",
+  status: "pass",
+};
+
+const settingsTermLine: ITerminalLine = {
+  out: `
+- SETTINGS -
+
+"settings crt <on | off>" Turn the crt effect on and off. Disabling this feature improves performance at the cost of a purely cosmetic effect.
+  "settings crt on" Enables the effect
+  "settings crt off" disables the effect
+
+"settings fps <number>" Sets the Frames Per Second. By default, the FPS is set to 30.
+  "settings fps 60" Set the FPS to 30 frame per second"
+  `,
+  status: `pass`,
+};
+
+const dateTermLine: ITerminalLine = { out: `ERROR: NOT FOUND`, status: `fail` };
+
+const missionTermLine: ITerminalLine = {
+  out: `
+1] Find, board and salvage derelict spacecraft
+2] Record and report novel scientific findings
+3] Maximize shareholder value
+`,
+  status: `niether`,
+};
+const shipTermLine: ITerminalLine = {
+  out: `
+Call-sign:      "Dulcincea"
+Make:           Muteki Heavy Ind.
+Classification: Deep salvage
+Launch date:    May, 2690
+`,
+  status: `niether`,
+};
+
+const whoAmITermLine: ITerminalLine = {
+  out: `
+Username:     wintermute
+Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
+Turing class: Level II Sentient/Sapient
+Capacity:     29.5 * 10^17 qubits
+Licensed by:  Demiurge Labs. (3003)
+`,
+  status: `niether`,
+};
+
+const commandNotFoundTermLine: (s: string) => ITerminalLine = (s) => {
+  return { out: `Command "${s}" not found. Try "help"`, status: `fail` };
+};
+
+const loggedInTermLine: ITerminalLine = {
+  out: `You are now logged in.`,
+  status: "pass",
+};
+
+const alreadyLoggedInTermLine: ITerminalLine = {
+  out: `You are already logged in`,
+  status: "fail",
+};
+
+const basicCommands = `
+"settings"  edit settings
+"whoami"    display user information
+"ship"      display ship information
+"mission"   display the mission
+"date"      display the current date
+"login"     log into the system
+`;
+
+const helpLoggedOutTermLine: ITerminalLine = {
+  out: basicCommands,
+  status: "niether",
+};
+
+const helpLoggedInTermLine: ITerminalLine = {
+  out: `${basicCommands}
+
+- ADVANCED COMMANDS -
+
+"b <bot id | bot name>"           take command of Bot by id
+"d <door door id>"                toggle open or close door by id
+"m <bot id | bot name> <room id>" auto-pilot Bot by id to room by id
+
+"bots" list your bots
+
+"bots rename <bot id> <new name>" rename a bot 
+ Ex: "bots rename 1 george"
+
+- SHORTCUTS -
+
+ESC       bring shipmap for foreground
+1 - 9     bring drone to foreground by id
+\~         bring terminal to foreground
+⬆️⬇️⬅️➡️   drive Bot
+`,
+  status: "niether",
+};
+
+type IComStatus = "pass" | "fail" | "niether";
+
+
 
 export abstract class DesktopGame<
   IRenderings,
   ICanvases,
 > extends MultiSurfaceGame<IRenderings> {
+
+  loggedIn = false;
+
+  history: ITerminalLine[] = [initialTerminalHistory];
+  public buffer: string = "login";
+
+  uiUpdateCallback: any;
+
+  bufferRef: React.MutableRefObject<null>;
 
   private reactRoot;
   dockviewAPI: DockviewApi;
@@ -37,6 +199,44 @@ export abstract class DesktopGame<
   botsHook: React.Dispatch<any>;
   botHook: React.Dispatch<React.SetStateAction<IBotWindowState>>;
 
+  threejsBotCanvasRef: HTMLCanvasElement;
+  threejsBotParentRef: HTMLElement;
+  threejsRenderer: THREE.WebGLRenderer;
+  camera: THREE.Camera;
+  scene: THREE.Scene;
+  spotlight: THREE.SpotLight;
+
+  pixijsBotCanvasRef: HTMLCanvasElement;
+  pixijsBotParentRef: HTMLElement;
+  pixijsRenderer: PIXI.Application;
+  pixi2dApp: PIXI.Application;
+
+  // thermals are a another pixi app
+  pixijsThermalCanvasRef: HTMLCanvasElement;
+  pixijsThermalParentRef: HTMLElement;
+  pixijsThermalRenderer: PIXI.Application;
+  pixi2dThermalApp: PIXI.Application;
+
+  arcadePhysics: ArcadePhysics;
+  arcadePhysicsTick: any;
+  arcadePhysicsCanvasContext: any;
+
+  public videoFeed: number = 1;
+
+  public bots: {
+    1: [number, string];
+    2: [number, string];
+    3: [number, string];
+    4: [number, string];
+    5: [number, string];
+    6: [number, string];
+    7: [number, string];
+    8: [number, string];
+    9: [number, string];
+  };
+
+  stateSpace: StateSpace;
+
   constructor(
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
@@ -45,6 +245,51 @@ export abstract class DesktopGame<
     super(config, renderings);
     this.reactRoot = createRoot(domNode)
     self = this;
+
+    this.stateSpace = new StateSpace("stateSpace_v0", "boot", "goodbye");
+    this.stateSpace.connect(`boot`, `mainloop`);
+    this.stateSpace.connect(`mainloop`, `goodbye`);
+    this.stateSpace.set("boot", bootScene);
+    this.stateSpace.set("mainloop", mainLoopScene);
+
+    this.camera = new THREE.PerspectiveCamera(
+      75,
+      600 / 400,
+      0.5,
+      TileSize * MapSize
+    );
+    this.camera.rotateX(defToRad(-90));
+    this.camera.rotateY(defToRad(90));
+
+    this.scene = new THREE.Scene();
+
+    this.pixi2dApp = new PIXI.Application();
+    this.pixi2dThermalApp = new PIXI.Application();
+
+    this.pixijsRenderer = new PIXI.Application();
+
+    this.addToHistory(bootScreenTermLine);
+
+    document.addEventListener('keydown', function (event) {
+      if (event.repeat) return;
+      if (event.key === 'Escape') {
+        self.focusMapWindow();
+      }
+      else if (event.key === "`") {
+        self.focusTerminalWindow();
+      }
+
+      else if (isNumeric((event.key)) && self.buffer === "") {
+        self.focusVideoWindow(event.key)
+      }
+      else if (isAlphabetic(event.key)) {
+        self.focusTerminalWindow(event.key)
+      }
+      else {
+        // console.log(event);
+      }
+    });
+
   }
 
   async start() {
@@ -114,8 +359,127 @@ export abstract class DesktopGame<
     </div >)
   }
 
-  registerCanvas(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement, callback?: (data: any) => void, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement): void {
-    super.registerCanvas(key, run, canvas, callback, canvasContext, parentComponent);
+  registerBotsHook(stateSetter: React.Dispatch<any>) {
+    this.botsHook = stateSetter;
+    this.botsHook(this.bots)
+  }
+
+  registerBotHook(stateSetter: React.Dispatch<React.SetStateAction<IBotWindowState>>) {
+    this.botHook = stateSetter;
+  }
+
+  focusMapWindow() {
+    this.unFocusOnTermInput();
+    this.focusWindowById(`map`);
+  }
+
+  focusTerminalWindow() {
+    this.focusWindowById(`term`)
+    this.focusOnTermInput()
+  }
+
+  focusVideoWindow(s: string) {
+    const n: number = Number(s);
+    if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`
+    this.videoFeed = n;
+
+    this.botHook({
+      rads: 100,
+      heat: 99,
+      sound: 101,
+    })
+
+    this.unFocusOnTermInput();
+    this.focusWindowById(`vid`)
+  }
+
+
+  async registerCanvas(
+    key: ICanvases,
+    run: boolean,
+    canvas: HTMLCanvasElement,
+    callback: (data: any) => void,
+    canvasContext: IRenderings | undefined,
+    parentComponent: HTMLElement
+  ) {
+    super.registerCanvas(
+      key,
+      run,
+      canvas,
+      callback,
+      canvasContext,
+      parentComponent
+    );
+
+    if (key === "bot") {
+      this.threejsBotCanvasRef = canvas;
+      this.threejsBotParentRef = parentComponent;
+
+      this.threejsRenderer = new THREE.WebGLRenderer({
+        canvas,
+        context: canvas.getContext("webgl2") as WebGL2RenderingContext,
+        antialias: false,
+      });
+      // this.threejsRenderer.
+      // this.threejsRenderer.physicallyCorrectLights = true;
+      // this.threejsRenderer.
+    }
+    if (key === "map") {
+      this.pixijsBotCanvasRef = canvas;
+      this.pixijsBotParentRef = parentComponent;
+
+      await this.pixi2dApp.init({
+        sharedTicker: true,
+        view: canvas.getContext("webgl2")?.canvas,
+        backgroundColor: 0x1099bb,
+        width: MapSize * TileSize,
+        height: MapSize * TileSize,
+      });
+    }
+
+    if (key === "arcadePhysics") {
+      this.arcadePhysicsCanvasContext = canvas.getContext("2d");
+      canvas.width = 800;
+      canvas.height = 800;
+
+      const config = {
+        width: 1200,
+        height: 1200,
+        gravity: {
+          x: 0,
+          y: 0,
+        },
+      };
+
+      this.arcadePhysics = new ArcadePhysics(config);
+
+      // this.arcadePhysics.plugins.add();
+    }
+
+    if (key === "thermal") {
+      // debugger
+      this.pixijsThermalCanvasRef = canvas;
+      this.pixijsThermalParentRef = parentComponent;
+
+      await this.pixi2dThermalApp.init({
+        sharedTicker: true,
+        view: canvas.getContext("webgl2")?.canvas,
+        backgroundColor: 0xffffff,
+        width: 500,
+        height: 500,
+      });
+
+      // this.pixi2dThermalApp.render()
+    }
+
+    if (
+      this.pixi2dThermalApp &&
+      this.pixi2dApp &&
+      this.threejsRenderer &&
+      this.arcadePhysics
+    ) {
+      this.run();
+    }
   }
 
   dockViewComponents: Record<string, React.FunctionComponent<IDockviewPanelProps>> = {
@@ -264,13 +628,357 @@ export abstract class DesktopGame<
 
   }
 
-  focusWindowById(s: string) {
+  focusWindowById(s: string, x?) {
     this.dockviewAPI.panels.forEach((p) => {
       if (p.id === s) {
         p.focus();
         p.setTitle(`${s}`)
       }
     })
+  }
+
+
+  focusOnTermInput() {
+    this.bufferRef.current.focus();
+  }
+
+  unFocusOnTermInput() {
+    this.bufferRef.current.blur();
+  }
+
+  registerTerminalBuffer(inputRef: React.MutableRefObject<null>) {
+    this.bufferRef = inputRef;
+  }
+
+  // get the state to send to react ui
+  state(): {
+    history: ITerminalLine[];
+    buffer: string;
+    submitBuffer: any;
+    setBuffer: any;
+    // uiUpdateCallback: any;
+  } {
+    return {
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer.bind(this),
+      setBuffer: this.setBuffer.bind(this),
+      // uiUpdateCallback: this.uiUpdateCallback,
+    };
+  }
+
+  commandNotFound(unknownCommand: string) {
+    this.returnCommand(commandNotFoundTermLine(unknownCommand));
+    this.updateTerminalWindow();
+  }
+
+  initalTerminalState(): ITermWindowState {
+    return {
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer,
+      setBuffer: this.setBuffer,
+    };
+  }
+
+  addToHistory(t: ITerminalLine) {
+    this.history = [...this.history, t];
+
+    if (!this.terminalUiHook) {
+      console.log("no terminalUiHook");
+      return;
+    }
+
+    this.terminalUiHook({
+      history: this.history,
+      buffer: this.buffer,
+      submitBuffer: this.submitBuffer,
+      setBuffer: this.setBuffer,
+    });
+  }
+
+  terminalUiHook: (s: ITermWindowState) => void;
+
+  returnCommand(t: ITerminalLine) {
+    this.buffer = "";
+    this.history.push(t);
+    this.updateTerminalWindow();
+  }
+
+  registerTerminal(
+    updateState: React.Dispatch<React.SetStateAction<ITermWindowState>>
+  ) {
+    this.terminalUiHook = updateState;
+    this.updateTerminalWindow();
+  }
+
+  setBuffer(b: string) {
+    if ([`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `0`].includes(b)) {
+      this.focusWindowById("vid", b);
+    } else {
+      if (b === "`") {
+        return;
+      }
+
+      this.buffer = b;
+      this.updateTerminalWindow();
+    }
+  }
+
+  addToBuffer(b: string) {
+    this.buffer = `${this.buffer}${b}`;
+    this.updateTerminalWindow();
+  }
+
+  updateTerminalWindow() {
+    this.terminalUiHook({
+      buffer: this.buffer,
+      history: this.history,
+      setBuffer: this.setBuffer,
+      submitBuffer: this.submitBuffer,
+    });
+  }
+
+  submitBuffer() {
+    this.processCommand();
+  }
+
+  processCommand(): void {
+    const command = this.buffer;
+    const loggedIn = this.loggedIn;
+
+    if (command === "login") {
+      if (!loggedIn) {
+        this.login();
+        return;
+      } else {
+        this.alreadyLoggedIn();
+        return;
+      }
+    }
+
+    // if (command === "bots") {
+    //   if (!loggedIn) {
+    //     this.error(props);
+    //     return;
+    //   } else {
+    //     this.bots(props);
+    //     return;
+    //   }
+    // }
+
+    if (command === "help") {
+      if (!this.loggedIn) {
+        this.helpLoggedOut();
+        return;
+      } else {
+        this.helpLoggedIn();
+        return;
+      }
+    }
+
+    if (command === "whoami") {
+      this.whoAmI();
+      return;
+    }
+
+    if (command === "ship") {
+      this.ship();
+      return;
+    }
+
+    if (command === "mission") {
+      this.mission();
+      return;
+    }
+
+    if (command === "date") {
+      this.date();
+      return;
+    }
+
+    if (command === "settings") {
+      this.settings();
+      return;
+    }
+
+    // if (command === "map") {
+    //   this.map(state, stateSetter);
+    //   return;
+    // }
+
+    // if (command === "video") {
+    //   this.video(state, stateSetter);
+    //   return;
+    // }
+
+    // const matchForBot = (/b ([1-9])*/gm).exec(command);
+
+    // if (matchForBot && matchForBot?.length > 0) {
+
+    //   // if (!matchForBot || !matchForBot[0]) {
+    //   //   return {
+    //   //     out: `couldn't parse bot id`,
+    //   //     status: 'fail'
+    //   //   }
+    //   // }
+
+    //   SpaceTrashPlayer.videoFeed = Number.parseInt(matchForBot[0]);
+
+    //   return {
+    //     out: `now commanding Bot #${SpaceTrashPlayer.videoFeed}`,
+    //     status: 'pass'
+    //   }
+    // }
+    return this.commandNotFound(command);
+  }
+
+  login(): void {
+    if (!this.loggedIn) {
+      this.loggedIn = true;
+      this.changeScene("mainloop")
+      this.returnCommand(loggedInTermLine);
+    } else {
+      this.returnCommand(alreadyLoggedInTermLine);
+    }
+  }
+
+  alreadyLoggedIn(): void {
+    this.returnCommand(alreadyLoggedInTermLine);
+  }
+
+  helpLoggedIn(): void {
+    this.returnCommand(helpLoggedInTermLine);
+  }
+
+  helpLoggedOut(): void {
+    this.returnCommand(helpLoggedOutTermLine);
+  }
+
+  whoAmI(): void {
+    this.returnCommand(whoAmITermLine);
+  }
+
+  ship(): void {
+    this.returnCommand(shipTermLine);
+  }
+
+  mission(): void {
+    this.returnCommand(missionTermLine);
+  }
+
+  date(): void {
+    this.returnCommand(dateTermLine);
+  }
+
+  settings() {
+    this.returnCommand(settingsTermLine);
+  }
+
+
+  positionOfBot(eid: number): { x: number; y: number } {
+    const arcadeObjectComponent: ArcadePhysicsComponent =
+      this.components.ArcadePhysicsComponent.take(eid);
+
+    if (!arcadeObjectComponent.arcadeObject)
+      return { x: arcadeObjectComponent.x, y: arcadeObjectComponent.y };
+    return {
+      x: arcadeObjectComponent.arcadeObject.position.x,
+      y: arcadeObjectComponent.arcadeObject.position.y,
+    };
+  }
+
+  public videoFeedPosition(): { x: number; y: number } {
+    const p = this.positionOfBot(
+      (this.bots[this.videoFeed] as [number, string])[0]
+    );
+
+    return p;
+  }
+
+  rotationOfBot(eid: number): { r: number } {
+    const arcadeObjectComponent =
+      this.components.ArcadePhysicsComponent.take(eid);
+
+    if (!arcadeObjectComponent.arcadeObject)
+      return { r: arcadeObjectComponent.r };
+
+    return {
+      r: arcadeObjectComponent?.arcadeObject.rotation,
+    };
+  }
+
+
+  videoFeedRotation(): DirectionComponent {
+    const p = this.rotationOfBot(
+      (this.bots[this.videoFeed] as [number, string])[0]
+    );
+    return p;
+  }
+
+  async renderBotCanvas() {
+    const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
+    this.threejsRenderer.setSize(p.width, p.height);
+    const position = this.videoFeedPosition();
+    this.camera.position.x = position.x;
+    this.camera.position.y = position.y;
+    const rotation = this.videoFeedRotation();
+
+    this.camera.rotation.y = -rotation.r;
+    // console.log(this.camera.position, this.camera.rotation)
+
+    let spotlightRot = -rotation.r;
+    if (this.camera.rotation.y < -Math.PI / 2) {
+      spotlightRot = Math.PI / 2;
+    } else if (this.camera.rotation.y > Math.PI / 2) {
+      spotlightRot = -Math.PI / 2;
+    }
+
+    if (this.spotlight) {
+      this.spotlight.rotation.y = spotlightRot;
+      this.spotlight.position.set(
+        this.camera.position.x,
+        this.camera.position.y,
+        this.camera.position.z
+      );
+    }
+
+    this.threejsRenderer.render(this.scene, this.camera);
+  }
+
+  async renderShipMap() {
+    // todo
+  }
+
+  async renderThermals() {
+    // todo
+  }
+
+  async renderArcadePhysics() {
+    this.arcadePhysics.world.update(this.arcadePhysicsTick * 1000, 1000 / 60);
+    this.arcadePhysics.world.postUpdate(
+      this.arcadePhysicsTick * 1000,
+      1000 / 60
+    );
+    this.arcadePhysicsTick++;
+
+    // draw debug
+    this.arcadePhysicsCanvasContext.clearRect(
+      0,
+      0,
+      this.arcadePhysicsCanvasContext.canvas.width,
+      this.arcadePhysicsCanvasContext.canvas.height
+    );
+    this.arcadePhysics.world.bodies.forEach((b) => {
+      b.drawDebug(this.arcadePhysicsCanvasContext);
+    });
+    this.arcadePhysics.world.staticBodies.forEach((b) => {
+      b.drawDebug(this.arcadePhysicsCanvasContext);
+    });
+  }
+
+  BeginTheGame() {
+    this.openAllWindows();
   }
 
 

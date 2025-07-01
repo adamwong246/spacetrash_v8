@@ -45,6 +45,7 @@ export abstract class GameWithControls extends GameWithStores {
         // console.log(event);
       }
     });
+
   }
 
   driveForward() {

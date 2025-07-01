@@ -70,7 +70,7 @@ export abstract class MultiSurfaceGame<
 
     const clbk = this.canvasContexts[key].callback;
     const drawOps: ((
-      g: MultiSurfaceGame<any, any>,
+      g: MultiSurfaceGame<any>,
       canvas: any
     ) => Promise<any>)[] = scene.draw(key, clbk || (() => {}), this);
 

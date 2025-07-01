@@ -268,3 +268,4 @@ export function getColorGrade(X: number): number {
   return grade;
 }
 
+export const defToRad = (d: number) => (d * Math.PI) / 180;

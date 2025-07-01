@@ -3,11 +3,23 @@ import { MapSize, MapBoundLow, MapBoundHigh, TileSize } from "../Constants";
 import { Eid2PMComponent } from "../ECS/Components/v2/eid2PMC";
 import { HeatConductorComponent } from "../ECS/Components/v3/heat";
 import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
-import { GameWithStateSpace } from "./6-WithStateSpace";
+import { GameWithControls } from "./4-WithControls";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
-export abstract class GameWithLoad extends GameWithStateSpace {
+export abstract class GameWithLoad extends GameWithControls {
+  constructor(domNode: HTMLElement) {
+    super(
+      domNode,
+      {
+        performanceLogging: false,
+        fps: 60,
+        headless: false,
+      },
+      new Set(["2d", "webgl2", "pixi2d", "threejs", "arcadePhysics"])
+    );
+  }
+
   load() {
     this.inflateArcadePhysics();
     this.mapEntitiesToPositions();
