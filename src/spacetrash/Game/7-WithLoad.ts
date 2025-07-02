@@ -65,8 +65,9 @@ export abstract class GameWithLoad extends GameWithControls {
   }
 
   mapEntitiesToPositions() {
-    for (let [eid, [classification]] of this.entities) {
-      if (classification === "SpaceTrashBot") {
+    for (let [eid, [subtype, classification]] of this.entities) {
+
+      if (classification === "Actor") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
             this.components.ArcadePhysicsComponent.take(eid),
@@ -74,7 +75,7 @@ export abstract class GameWithLoad extends GameWithControls {
           ),
           eid
         );
-      } else if (classification === "FloorTile") {
+      } else if (classification === "Tile") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
             this.components.SP_IntegerPositionComponent.take(eid),
@@ -82,26 +83,8 @@ export abstract class GameWithLoad extends GameWithControls {
           ),
           eid
         );
-      } else if (classification === "WallTile") {
-        this.components.Eid2PM.make(
-          new Eid2PMComponent(
-            this.components.SP_IntegerPositionComponent.take(eid),
-            classification
-          ),
-          eid
-        );
-      } else if (classification === "PuckBot") {
-        this.components.Eid2PM.make(
-          new Eid2PMComponent(
-            this.components.ArcadePhysicsComponent.take(
-              eid,
-              "PuckBots ought to have an arcade physics component"
-            ),
-            classification
-          ),
-          eid
-        );
-      } else if (classification === "WarpCore") {
+
+      }  else if (classification === "WarpCore") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
             this.components.ArcadePhysicsComponent.take(
@@ -385,44 +368,44 @@ export abstract class GameWithLoad extends GameWithControls {
       s.position.y = Math.random() * MapSize * TileSize;
     });
 
-    dynamicGroup.forEach((d) => {
-      staticGroup.forEach((s) => {
-        this.arcadePhysics.world.addCollider(
-          s,
-          d,
-          (...a) => {
-            const x = a[1];
-            for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
-              if (z.body === x) {
-                // z.callback();
-              }
-            }
-            // const cb = x.getData('onCollide');
-            // cb(s, d)
-            // debugger
-            // Actors.update({
-            //   onCollision
-            // })
+    // dynamicGroup.forEach((d) => {
+    //   staticGroup.forEach((s) => {
+    //     this.arcadePhysics.world.addCollider(
+    //       s,
+    //       d,
+    //       (...a) => {
+    //         const x = a[1];
+    //         for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
+    //           if (z.body === x) {
+    //             // z.callback();
+    //           }
+    //         }
+    //         // const cb = x.getData('onCollide');
+    //         // cb(s, d)
+    //         // debugger
+    //         // Actors.update({
+    //         //   onCollision
+    //         // })
 
-            // debugger
-          },
-          () => {
-            // debugger
-          },
-          () => {
-            // debugger
-          }
-        );
-      });
-    });
+    //         // debugger
+    //       },
+    //       () => {
+    //         // debugger
+    //       },
+    //       () => {
+    //         // debugger
+    //       }
+    //     );
+    //   });
+    // });
 
-    dynamicGroup.forEach((s) => {
-      dynamicGroup.forEach((s2) => {
-        if (s !== s2) {
-          // game.arcadePhysics.world.addCollider(s, s2);// add.collider(s, s2);
-        }
-      });
-    });
+    // dynamicGroup.forEach((s) => {
+    //   dynamicGroup.forEach((s2) => {
+    //     if (s !== s2) {
+    //       // game.arcadePhysics.world.addCollider(s, s2);// add.collider(s, s2);
+    //     }
+    //   });
+    // });
 
     this.arcadePhysics.world.on("collide", (object1, object2, body1, body2) => {
       // console.log("collide", object1, object2, body1, body2);

@@ -8,6 +8,7 @@ import {
   voidMaterial,
   wallTexture,
   floorTexture,
+  redMaterial,
 } from "../../threejs";
 import brick from "./../../Assets/brick.png";
 import stone from "./../../Assets/stone.png";
@@ -33,10 +34,42 @@ import { PixiJsRenderableComponent } from "../../../engine/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../engine/rendering/threejs";
 import { ArcadePhysics } from "arcade-physics";
 import { ArcadePhysicsComponent } from "../Components/v4/PhaserArcade";
-import { MatterComponent } from "../../../engine/physics/matterjs";
-import Matter from "matter-js";
+// import { MatterComponent } from "../../../engine/physics/matterjs";
+// import Matter from "matter-js";
 // import { RapierPhysicalComponent } from "../../../engine/physics/rapier";
-import RAPIER from "@dimforge/rapier2d-simd";
+// import RAPIER from "@dimforge/rapier2d-simd";
+
+const PrismGeometry = function (): THREE.ExtrudeGeometry {
+  // Define the triangle vertices
+  // const A = new THREE.Vector2(0, 0);
+  // const B = new THREE.Vector2(0, TileSize);
+  // const C = new THREE.Vector2(TileSize, 0);
+
+  const A = new THREE.Vector2(-16, -16);
+  const B = new THREE.Vector2(-16, 16);
+  const C = new THREE.Vector2(16, -16);
+  const height = TileSize;
+
+  // Create a shape from the triangle
+  const triangleShape = new THREE.Shape([
+    A,
+    B,
+    C,
+    // new THREE.Vector2(-10,  15), new THREE.Vector2(-10, -15), new THREE.Vector2( 10, -15)
+  ]);
+
+  // Create the extrusion geometry
+  const geometry = new THREE.ExtrudeGeometry(triangleShape, {
+    depth: height,
+    bevelEnabled: false,
+  });
+
+  return geometry;
+
+  // return m
+};
+
+// PrismGeometry.prototype = Object.create(THREE.ExtrudeGeometry.prototype);
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
@@ -82,14 +115,14 @@ const voidSprite = () => {
 };
 
 const stoneSprite = () => {
-  const s = new PIXI.Sprite(PIXI.Texture.from(stone));
+  const s = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-EMPTY`));
   s.width = TileSize;
   s.height = TileSize;
   return s;
 };
 
 const brickSprite = () => {
-  const s = new PIXI.Sprite(PIXI.Texture.from(brick));
+  const s = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-FULL`));
   s.width = TileSize;
   s.height = TileSize;
   return s;
@@ -102,6 +135,66 @@ const bunnySprite = () => {
   s.width = TileSize;
   s.height = TileSize;
   return s;
+};
+
+const northEastSprite = () => {
+  const s = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-NORTHEAST`));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
+};
+
+const northEastMesh = () => {
+  const geometry = PrismGeometry();
+  geometry.rotateZ(degToRad(-90));
+  const m = new THREE.Mesh(geometry, wallTexture);
+  m.position.z = -TileSize / 2;
+  return m;
+};
+
+const northWestSprite = () => {
+  const s = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-NORTHWEST`));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
+};
+
+const northWestMesh = () => {
+  const geometry = PrismGeometry();
+  geometry.rotateZ(degToRad(180));
+  const m = new THREE.Mesh(geometry, wallTexture);
+  m.position.z = -TileSize / 2;
+  return m;
+};
+
+const southEastSprite = () => {
+  const s = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-SOUTHEAST`));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
+};
+
+const southEastMesh = () => {
+  const geometry = PrismGeometry();
+  geometry.rotateZ(degToRad(0));
+  const m = new THREE.Mesh(geometry, wallTexture);
+  m.position.z = -TileSize / 2;
+  return m;
+};
+
+const southWestSprite = () => {
+  const s = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-SOUTHWEST`));
+  s.width = TileSize;
+  s.height = TileSize;
+  return s;
+};
+
+const southWestMesh = () => {
+  const geometry = PrismGeometry();
+  geometry.rotateZ(degToRad(90));
+  const m = new THREE.Mesh(geometry, wallTexture);
+  m.position.z = -TileSize / 2;
+  return m;
 };
 
 export class Tile extends SpaceTrashEntityComponent {
@@ -157,7 +250,7 @@ export class Tile extends SpaceTrashEntityComponent {
     if (pixi !== undefined) {
       comps.push(pixi);
     } else {
-      throw "must have sprite"
+      throw "must have sprite";
     }
 
     // if (matter !== undefined) {
@@ -244,5 +337,113 @@ export class VoidTile extends Tile {
       pixi: new PixiJsRenderableComponent(voidSprite()),
       threejs: new ThreeJsRenderableComponent(voidTile()),
     });
+  }
+}
+
+export class NorthEast extends Tile {
+  constructor(x: number = 0, y: number = 0, d: IDirs) {
+    super(
+      x,
+      y,
+      "NorthEast",
+
+      {
+        dir: new OrdinalDirectionComponent(d),
+
+        pixi: new PixiJsRenderableComponent(northEastSprite()),
+
+        threejs: new ThreeJsRenderableComponent(northEastMesh()),
+        arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+          const cube = ap.add.staticBody(
+            x * TileSize,
+            y * TileSize,
+            TileSize,
+            TileSize
+          );
+          return cube;
+        }),
+      }
+    );
+  }
+}
+
+export class NorthWest extends Tile {
+  constructor(x: number = 0, y: number = 0, d: IDirs) {
+    super(
+      x,
+      y,
+      "NorthEast",
+
+      {
+        dir: new OrdinalDirectionComponent(d),
+
+        pixi: new PixiJsRenderableComponent(northWestSprite()),
+
+        threejs: new ThreeJsRenderableComponent(northWestMesh()),
+        arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+          const cube = ap.add.staticBody(
+            x * TileSize,
+            y * TileSize,
+            TileSize,
+            TileSize
+          );
+          return cube;
+        }),
+      }
+    );
+  }
+}
+
+export class SouthEast extends Tile {
+  constructor(x: number = 0, y: number = 0, d: IDirs) {
+    super(
+      x,
+      y,
+      "SouthEast",
+
+      {
+        dir: new OrdinalDirectionComponent(d),
+
+        pixi: new PixiJsRenderableComponent(southEastSprite()),
+
+        threejs: new ThreeJsRenderableComponent(southEastMesh()),
+        arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+          const cube = ap.add.staticBody(
+            x * TileSize,
+            y * TileSize,
+            TileSize,
+            TileSize
+          );
+          return cube;
+        }),
+      }
+    );
+  }
+}
+
+export class SouthWest extends Tile {
+  constructor(x: number = 0, y: number = 0, d: IDirs) {
+    super(
+      x,
+      y,
+      "SouthEast",
+
+      {
+        dir: new OrdinalDirectionComponent(d),
+
+        pixi: new PixiJsRenderableComponent(southWestSprite()),
+
+        threejs: new ThreeJsRenderableComponent(southWestMesh()),
+        arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+          const cube = ap.add.staticBody(
+            x * TileSize,
+            y * TileSize,
+            TileSize,
+            TileSize
+          );
+          return cube;
+        }),
+      }
+    );
   }
 }

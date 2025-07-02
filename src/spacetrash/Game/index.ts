@@ -18,6 +18,8 @@ import { distanceV2, averageNeighborsInPlace } from "../lib";
 import { GameWithLoad } from "./7-WithLoad";
 import { StoreV2 } from "../../engine/VECS.ts/Store";
 
+let rot = 0;
+
 export class SpaceTrash extends GameWithLoad {
   tick(delta: number): Promise<boolean> {
     return new Promise(async (res) => {
@@ -32,6 +34,18 @@ export class SpaceTrash extends GameWithLoad {
       this.runUpdateUI();
       this.runFloatingPhysics();
       this.rotLighting();
+
+      rot += 0.000001
+      this.components.ThreeJsRenderableComponent.each((x, i) => {
+        const c = this.entities.get(i)[0]
+        if (c === "NorthEast") {
+
+          // x.mesh.rotateX(rot);
+          // x.mesh.rotateZ(rot);
+          // x.mesh.rotateZ(rot);
+          // debugger
+        }
+      })
     });
   }
 
@@ -55,7 +69,7 @@ export class SpaceTrash extends GameWithLoad {
         classification: string;
       };
 
-      if (classification === "SpaceTrashBot") {
+      if (classification === "Actor") {
         // const direction = dds.get(eid);
         const direction =
           this.components.ArcadePhysicsComponent.take(eid)?.arcadeObject
@@ -83,7 +97,7 @@ export class SpaceTrash extends GameWithLoad {
         //   drawables.updateFromArcadePhysics(eid, position);
         // }
       } else if (classification === "Tile") {
-        throw "not implemented";
+        // throw "not implemented";
       } else {
         debugger;
         throw "idk";
@@ -431,7 +445,7 @@ export class SpaceTrash extends GameWithLoad {
         ).updateFromArcadePhysics(f);
         // debugger
       } else if (classification === "Tile") {
-        throw "not implemented";
+        // throw "not implemented";
       } else {
         
         this.components.PixiJsRenderableComponent.withIf((x) => {

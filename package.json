@@ -19,8 +19,11 @@
   },
   "dependencies": {
     "@dimforge/rapier2d-simd": "^0.17.3",
+    "@pixi/assets": "^7.4.3",
     "@pixi/core": "^7.4.3",
     "@pixi/extensions": "^7.4.3",
+    "@pixi/loaders": "^6.5.10",
+    "@pixi/tilemap": "^5.0.1",
     "@stdlib/datasets-female-first-names-en": "^0.2.2",
     "@stdlib/datasets-male-first-names-en": "^0.2.2",
     "@types/matter-js": "^0.19.8",
@@ -40,6 +43,7 @@
     "install": "^0.13.0",
     "matter-js": "^0.20.0",
     "npm": "^11.4.2",
+    "pixi-tiledmap": "^1.10.1",
     "pixi.js": "8.10.1",
     "protochain": "^1.0.5",
     "rbush": "^3.0.1",
@@ -48,6 +52,7 @@
     "react-usestateref": "^1.0.9",
     "restructure": "^3.0.2",
     "rot-js": "^2.2.1",
+    "sharp": "^0.34.2",
     "testeranto": "^0.129.0",
     "three": "^0.177.0"
   }

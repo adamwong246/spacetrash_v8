@@ -11,12 +11,13 @@ import { RotCellularShip } from "../ECS/EntityComponents/ships/RotCellularyShip.
 import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
 import { WarpCore } from "../ECS/EntityComponents/warpcore.ts";
 import { SpaceTrash } from "../Game/index.ts";
+import level4 from "./../ECS/EntityComponents/ships/Ship4.ts"
 
 const SPEED_CONSTANT = 0.05;
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
-    const ship = new BoringShip();
+    const ship = new level4();
     // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
 

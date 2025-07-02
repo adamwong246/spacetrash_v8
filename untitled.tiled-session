@@ -9,6 +9,21 @@
     "fileStates": {
         "": {
             "scaleInDock": 1
+        },
+        "arcade-slopes-128.tsj": {
+            "scaleInDock": 1
+        },
+        "arcade-slopes-128.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "sonicTileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3.3369
+        },
+        "urizen_onebit_tileset__v1d1.tsx": {
+            "scaleInDock": 4.1393,
+            "scaleInEditor": 2.6344
         }
     },
     "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8",
@@ -19,6 +34,9 @@
     ],
     "project": "untitled.tiled-project",
     "recentFiles": [
+        "urizen_onebit_tileset__v1d1.tsx",
+        "arcade-slopes-128.tsx",
+        "sonicTileset.tsx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }

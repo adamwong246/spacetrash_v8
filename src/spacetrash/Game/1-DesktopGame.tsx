@@ -6,11 +6,13 @@ import * as RAPIER from "@dimforge/rapier2d-simd";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 
-
 import brick from "./../Assets/brick.png";
 import stone from "./../Assets/stone.png";
 import voidPng from "./../Assets/void.png";
 
+import slopes32Png from "../tiled/slopes-32.png";
+
+import slopes32Json from "../tiled/slopes-32.json";
 
 import bootScene from "../Scenes/Boot";
 import mainLoopScene from "../Scenes/MainLoop";
@@ -320,11 +322,79 @@ export abstract class DesktopGame<
       brick,
       voidPng,
       "https://pixijs.com/assets/bitmap-font/desyrel.xml",
+      slopes32Png,
     ]).then(() => {
       PIXI.Texture.from("https://pixijs.com/assets/bunny.png");
       PIXI.Texture.from(stone);
       PIXI.Texture.from(brick);
       PIXI.Texture.from(voidPng);
+      PIXI.Texture.from(slopes32Png);
+
+      console.log(slopes32Json);
+
+      let x = 0;
+      let y = 0;
+      for (let i = 0; i < slopes32Json.tilecount; i++) {
+        const z = new PIXI.Texture({
+          label: `slopes32Png-${x} - ${y}`,
+          source: PIXI.Texture.from(slopes32Png).baseTexture,
+
+          frame: new PIXI.Rectangle(
+            x * slopes32Json.tilewidth,
+            y * slopes32Json.tilewidth,
+            TileSize,
+            TileSize
+          ),
+
+          // trim: new PIXI.Rectangle(
+          //   x * slopes32Json.tilewidth,
+          //   y * slopes32Json.tilewidth,
+          //   TileSize,
+          //   TileSize
+
+          // ),
+        });
+
+        if (x === 4 && y === 1) {
+          PIXI.Cache.set(`slopes32Png-EMPTY`, z);
+        }
+
+        if (x === 0 && y === 0) {
+          PIXI.Cache.set(`slopes32Png-FULL`, z);
+        }
+
+        if (x === 5 && y === 0) {
+          PIXI.Cache.set(`slopes32Png-NORTHEAST`, z);
+        }
+
+        if (x === 6 && y === 0) {
+          PIXI.Cache.set(`slopes32Png-NORTHWEST`, z);
+        }
+
+        if (x === 7 && y === 0) {
+          PIXI.Cache.set(`slopes32Png-SOUTHEAST`, z);
+        }
+
+        if (x === 8 && y === 0) {
+          PIXI.Cache.set(`slopes32Png-SOUTHWEST`, z);
+        }
+
+        // console.log(
+        //   x * slopes32Json.tilewidth,
+        //   y * slopes32Json.tilewidth,
+        //   TileSize
+        // );
+        // debugger
+        // PIXI.Cache.set(`slopes32Png-${x} - ${y}`, z);
+
+        x++;
+        if (x > slopes32Json.columns) {
+          x = 0;
+          y++;
+        }
+
+        // console.log(z);
+      }
     });
 
     self.reactRoot.render(
@@ -459,7 +529,7 @@ export abstract class DesktopGame<
       await this.pixi2dApp.init({
         sharedTicker: true,
         view: canvas.getContext("webgl2")?.canvas,
-        backgroundColor: 0xa091bb,
+        backgroundColor: 0x000000,
         width: MapSize * TileSize,
         height: MapSize * TileSize,
       });
