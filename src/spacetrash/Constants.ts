@@ -34,12 +34,14 @@
 
 // const shipsize = (Math.pow(25, 2) * 5)
 
-export const FPS = 60;
-export const shipLength = 64;
-const numberOfShips = 1;
-export const MapSize = Math.round(
-  Math.sqrt(Math.pow(shipLength, 2) * numberOfShips)
-);
+// export const FPS = 60;
+// export const shipLength = 128;
+// const numberOfShips = 1;
+// export const MapSize = Math.round(
+//   Math.sqrt(Math.pow(shipLength, 2) * numberOfShips)
+// );
+
+export const MapSize = 64;
 
 // export const MapSize = 30
 console.log("MapSize: ", MapSize);

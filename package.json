@@ -12,6 +12,7 @@
     "nuke": "rm -rf dist/** && rm -rf node_modules && yarn install",
     "build": "node esbuild.build.js",
     "dev": "node esbuild.dev.js",
+    "samurai": "tsx watch samurai.ts",
     "t-init": "tsx node_modules/testeranto/dist/prebuild/init-docs.mjs",
     "t-build": "tsx node_modules/testeranto/dist/prebuild/build.mjs",
     "t-run": "tsx node_modules/testeranto/dist/prebuild/run.mjs",
@@ -29,6 +30,7 @@
     "@types/matter-js": "^0.19.8",
     "@types/pixi.js": "^5.0.0",
     "@types/react": "^18.3.3",
+    "@types/sat": "^0.0.35",
     "@types/three": "^0.177.0",
     "arcade-physics": "^0.1.0",
     "dockview": "^4.3.1",
@@ -45,15 +47,21 @@
     "npm": "^11.4.2",
     "pixi-tiledmap": "^1.10.1",
     "pixi.js": "8.10.1",
+    "pngjs": "^7.0.0",
+    "pngjs-draw": "^0.0.6",
     "protochain": "^1.0.5",
+    "pureimage": "^0.4.18",
     "rbush": "^3.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-usestateref": "^1.0.9",
     "restructure": "^3.0.2",
     "rot-js": "^2.2.1",
+    "sat": "^0.9.0",
     "sharp": "^0.34.2",
     "testeranto": "^0.129.0",
-    "three": "^0.177.0"
+    "three": "^0.177.0",
+    "tsc-watch": "^7.1.1",
+    "tsx": "^4.20.3"
   }
 }

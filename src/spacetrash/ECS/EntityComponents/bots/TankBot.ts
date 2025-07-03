@@ -48,8 +48,10 @@ export class SpaceTrashBot extends Actor {
         const ball = ap.add.body(x * TileSize, y * TileSize);
         ball.setCircle((TileSize / 2) * 0.51);
         ball.setBounce(0.1);
-        ball.setCollideWorldBounds(true);
-        ball.setFriction(-1, -1);
+        ball.setCollideWorldBounds(false);
+        ball.setFriction(1000, 1000);
+        ball.onOverlap = true
+        ball.onCollide = true
 
         return ball;
       }),

@@ -35,12 +35,19 @@ export class SpaceTrash extends GameWithLoad {
       this.runFloatingPhysics();
       this.rotLighting();
 
-      rot += 0.000001
+      // rot += 0.000001
       this.components.ThreeJsRenderableComponent.each((x, i) => {
-        const c = this.entities.get(i)[0]
-        if (c === "NorthEast") {
 
-          // x.mesh.rotateX(rot);
+        // if (Math.random() > 0.01) {
+        //     x.mesh.visible = false;
+        // } else {
+        //     x.mesh.visible = true;
+        // }
+        
+        const c = this.entities.get(i)[0]
+        if (c === "SouthWest" || c === "NorthWest" || c === "SouthEast" || c === "NorthEast") {
+          
+          // x.mesh.rotateZ(rot);
           // x.mesh.rotateZ(rot);
           // x.mesh.rotateZ(rot);
           // debugger
@@ -421,6 +428,8 @@ export class SpaceTrash extends GameWithLoad {
   }
 
   runArcadePhysics() {
+    
+
     this.components.ArcadePhysicsComponent.each((f, feid) => {
       const classification = this.components.Eid2PM.take(
         feid,

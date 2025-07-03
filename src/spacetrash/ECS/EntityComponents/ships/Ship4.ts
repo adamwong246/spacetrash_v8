@@ -1,46 +1,67 @@
-import * as PIXI from "pixi.js";
-
 import { SpaceTrashEntityComponent } from "..";
 import { Entity } from "../../../../engine/VECS.ts/Entity";
 import { MapSize } from "../../../Constants";
-import { IntegerPositionComponent } from "../../../../engine/game/physical";
-import { Tile, WallTile, FloorTile, NorthEast, NorthWest, SouthEast, SouthWest } from "../tiles";
+import {
+  Tile,
+  WallTile,
+  FloorTile,
+  NorthEast,
+  NorthWest,
+  SouthEast,
+  SouthWest,
+} from "../tiles/subtypes";
 
-import { Assets } from "pixi.js";
-import { CompositeTilemap, Tilemap } from "@pixi/tilemap";
+import sj from "../../../tiled/level13.json";
 
-import sj from "../../../tiled/level6.json";
+const FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+const FLIPPED_VERTICALLY_FLAG = 0x40000000;
+const FLIPPED_DIAGONALLY_FLAG = 0x20000000;
+const FLIPPED_HEX_ROTATE_120_FLAG = 0x10000000; //
 
+const firstgid = sj.tilesets[0].firstgid;
 
-// Assets.add({
-//   alias: "slopesPng",
-//   src: "../../../tiled/slopes-32.png",
-// });
+function isFlippedHorizontal(gid: number) {
+  return (gid & FLIPPED_HORIZONTALLY_FLAG) !== 0;
+}
 
-// Assets.load(["slopesPng"]).then(() => {
-//   // const tilemap = new PIXI.tilemap.Tilemap([
-//   //   baseTexture
-//   // ]);
-//   const tilemap = new CompositeTilemap();
+function isFlippedVertical(gid: number) {
+  return (gid & FLIPPED_VERTICALLY_FLAG) !== 0;
+}
 
-//   // Render your first tile at (0, 0)!
-//   // tilemap.tile('grass.png', 0, 0);
-// });
+function isFlippedBoth(gid: number) {
+  return isFlippedHorizontal(gid) && isFlippedVertical(gid);
+}
 
-// Add the spritesheet into your loader!
+function isFlippedNiether(gid: number) {
+  return !isFlippedHorizontal(gid) && !isFlippedVertical(gid);
+}
 
-//  Loader.shared.add('../../../tiled/slopes-32.png', '../../../tiled/level4.json');
+function isFlippedOnlyVertical(gid: number) {
+  return !isFlippedHorizontal(gid) && isFlippedVertical(gid);
+}
 
-//  // Make the tilemap once the tileset assets are available.
-//  Loader.shared.load(function onTilesetLoaded()
-//  {
-//    debugger
-//       // // The base-texture is shared between all the tile textures.
-//       // const tilemap = new Tilemap([Texture.from('grass.png').baseTexture])
-//       //     .tile('grass.png', 0, 0)
-//       //     .tile('grass.png', 100, 100)
-//       //     .tile('brick_wall.png', 0, 100);
-//  });
+function isFlippedOnlyHorizontal(gid: number) {
+  return isFlippedHorizontal(gid) && !isFlippedVertical(gid);
+}
+
+const decodeGid = (gid: number) => {
+  // const isFlippedHorizontally = (gid & FLIPPED_HORIZONTALLY_FLAG) !== 0;
+  // const isFlippedVertically = (gid & FLIPPED_VERTICALLY_FLAG) !== 0;
+  // const isFlippedDiagonally = (gid & FLIPPED_DIAGONALLY_FLAG) !== 0;
+  // const isFlippedHexRotate120 = (gid & FLIPPED_HEX_ROTATE_120_FLAG) !== 0; // Only relevant for hex maps
+
+  // Clear the flip flags from the GID to get the actual tile ID
+  const tileId =
+    gid &
+    ~(
+      FLIPPED_HORIZONTALLY_FLAG |
+      FLIPPED_VERTICALLY_FLAG |
+      FLIPPED_DIAGONALLY_FLAG |
+      FLIPPED_HEX_ROTATE_120_FLAG
+    );
+
+  return tileId - firstgid;
+};
 
 export default class extends SpaceTrashEntityComponent {
   map: Tile | null[][];
@@ -49,332 +70,148 @@ export default class extends SpaceTrashEntityComponent {
 
   subComponents: SpaceTrashEntityComponent[] = [];
 
-  makeRoom(
-    id: number,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    northDoors: number[],
-    eastDoors: number[],
-    southDoors: number[],
-    westDoors: number[]
-  ) {
-    for (let yy = y; yy < h + y; yy++) {
-      this.addToMap(new WallTile(x, yy));
-      this.addToMap(new WallTile(x + w, yy));
-    }
-
-    for (let xx = x; xx < w + x; xx++) {
-      this.addToMap(new WallTile(xx, y));
-      this.addToMap(new WallTile(xx, y + h - 1));
-    }
-
-    for (let d of northDoors) {
-      this.addToMap(new FloorTile(x + d + 1, y));
-    }
-
-    for (let d of eastDoors) {
-      this.addToMap(new FloorTile(x + w, y + d + 1));
-    }
-
-    for (let d of southDoors) {
-      this.addToMap(new FloorTile(w + x - d - 1, y + h - 1));
-    }
-
-    for (let d of westDoors) {
-      this.addToMap(new FloorTile(x, h + y - d - 2));
-    }
-
-    for (let yy = y + 1; yy < h + y - 1; yy++) {
-      for (let xx = x + 1; xx < w + x; xx++) {
-        this.addToMap(new FloorTile(xx, yy));
-      }
-    }
-  }
-
-  addManyToMap(ts: Tile[]) {
-    for (let t of ts) {
-      this.addToMap(t);
-    }
-  }
-
   addToMap(t: Tile) {
     if (!t) debugger;
 
-    if (t.position.x >= this.shipSize) {
-      console.error("Cannot add tile beyond the upper bound of 32");
+    const x = t.x;
+    const y = t.y;
+
+    if (x >= this.shipSize + 1) {
+      console.error(`Cannot add tile beyond the upper bound of ${MapSize}`);
       return;
     }
-    if (t.position.y < 0) {
+    if (y < 0) {
       console.error("Cannot add tile beyond the lower bound of 0");
       return;
     }
 
-    if (t.position.y >= this.shipSize) {
-      console.error("Cannot add tile beyond the upper bound of 32");
+    if (y >= this.shipSize + 1) {
+      console.error(`Cannot add tile beyond the upper bound of ${MapSize}`);
       return;
     }
-    if (t.position.y < 0) {
+    if (y < 0) {
       console.error("Cannot add tile beyond the lower bound of 0");
       return;
     }
 
-    const p = t.position;
-    // const p = t.components.find((c) => {
-    //   return c.constructor.name === "IntegerPositionComponent";
-    // }) as IntegerPositionComponent;
-
-    const x = p.x;
-    const y = p.y;
-
-    if (y >= this.shipSize) {
+    if (y >= this.shipSize + 1) {
       console.error("out of bounds")!;
     }
     if (!this.map[y]) {
       console.error("idk")!;
     }
-    // const z = this.map[y][x];
 
-    // debugger
     this.map[y][x] = t;
-    // check the map for other pre-existing tiles
-    // if (!this.map[y][x]) {
-    //   // this.subComponents.push(t);
-    //   this.map[y][x] = t;
-    // } else {
-    //   console.error("This EntityComponent has errors! For X and Y", x, y, "the value is", JSON.stringify(this.map[y][x], null, 2), "but I expected it to be null. Be sure not to add a Tile to an existing space!");
-    //   debugger;
-    // }
   }
 
   make() {
-
     const md = sj.layers[0].data;
 
-    
     for (let y = 0; y < this.shipSize; y++) {
       for (let x = 0; x < this.shipSize; x++) {
-        // this.subComponents.push(new FloorTile(x, y));
-        // const z = new FloorTile(x, y);
-        // const z = new FloorTile(x, y);
-        // this.addToMap(z);
-
         const z = y * MapSize + x;
 
-        // if (md[z] === 0) {
-        //   break;
-        // }
-        
-        // debugger
-        if (md[z] === 1 ) {
-          this.addToMap(new WallTile(x, y));
-        } else if (md[z] === 22) {
+        const tid = decodeGid(md[z]);
+
+        if (tid === 1 || tid === 14) {
+          const w = new WallTile(x, y);
+          this.addToMap(w);
+        } else if (tid === 0) {
           this.addToMap(new FloorTile(x, y));
-        } else if (md[z] === 6) {
-          this.addToMap(new NorthEast(x, y));
-        } else if (md[z] === 7) {
-          this.addToMap(new NorthWest(x, y));
-        } else if (md[z] === 8) {
-          this.addToMap(new SouthEast(x, y));
-        } else if (md[z] === 9) {
-          this.addToMap(new SouthWest(x, y));
-        } else {
-          this.addToMap(new FloorTile(x, y));
-        }
-      }
-    }
-
-    // rotRng.setSeed(performance.now());
-    // var map = new rotMap.Digger(MapSize, MapSize);
-    // map.create((x, y, v) => {
-    //   if (v === 0) {
-    //     this.addToMap(new FloorTile(x, y));
-    //   } else {
-    //     this.addToMap(new WallTile(x, y));
-    //   }
-    // });
-
-    // this.cullInteriorWall();
-    // debugger
-    // var display = new ROT.Display({ fontSize: 8 });
-    // SHOW(display.getContainer());
-    // map.create(display.DEBUG);
-
-    // var drawDoor =  (x, y) => {
-    //   // display.draw(x, y, "", "", "red");
-    //   this.addToMap(new WireframeWallTile(x, y));
-    // };
-
-    // var rooms = map.getRooms();
-    // for (var i = 0; i < rooms.length; i++) {
-    //   var room = rooms[i];
-    //   SHOW(
-    //     ROT.Util.format(
-    //       "Room #%s: [%s, %s] => [%s, %s]",
-    //       i + 1,
-    //       room.getLeft(),
-    //       room.getTop(),
-    //       room.getRight(),
-    //       room.getBottom()
-    //     )
-    //   );
-
-    //   room.getDoors(drawDoor);
-    // }
-
-    // the base floor
-    // for (let y = 0; y < this.shipSize; y++) {
-    //   for (let x = 0; x < this.shipSize; x++) {
-    //     // this.subComponents.push(new FloorTile(x, y));
-    //     // const z = new FloorTile(x, y);
-    //     const z = new FloorTile(x, y);
-    //     this.addToMap(z);
-    //   }
-    // }
-
-    // 4 walls on the perimenter
-    // for (let z = 0; z < this.shipSize - 1; z++) {
-    //   this.addToMap(new WallTile(z, 0, "north"));
-    //   this.addToMap(new WallTile(this.shipSize - 1, z, "north"));
-    //   this.addToMap(new WallTile(z + 1, this.shipSize - 1, "north"));
-    //   this.addToMap(new WallTile(0, z + 1, "north"));
-    // }
-
-    // this.makeRoom(0, 1, 1, 7, 8, [0], [0], [0], [0, 3]);
-
-    // this.makeRoom(1, 4, 10, 10, 13, [2], [2, 7], [2], [2]);
-
-    // this.makeRoom(2, 16, 12, 10, 3, [], [0], [], [0]);
-
-    // this.makeRoom(3, 0, 24, 12, 4, [10], [0], [], [0]);
-
-    // this.makeRoom(4, 0, 12, 2, 10, [], [6], [], [0]);
-
-    // this.makeRoom(5, 20, 20, 16, 16, [0], [0], [0], [0]);
-    // this.addToMap(new WireframeWallTile(24, 22));
-    // this.addToMap(new WireframeWallTile(30, 22));
-    // this.addToMap(new WireframeWallTile(31, 22));
-
-    // this.makeRoom(6, 16, 16, 3, 4, [0], [0], [0], [0]);
-
-    // // this.addToMap(new WallTile(15, 15));
-
-    // // a room
-    // this.addToMap(new WallTile(15, 15));
-    // this.addToMap(new WallTile(16, 15));
-    // this.addToMap(new WallTile(17, 15));
-    // this.addToMap(new WallTile(18, 15));
-    // this.addToMap(new WallTile(19, 15));
-    // this.addToMap(new WallTile(20, 15));
-
-    // this.addToMap(new WallTile(20, 16));
-    // this.addToMap(new WallTile(20, 17));
-    // this.addToMap(new WallTile(20, 18));
-    // this.addToMap(new WallTile(20, 19));
-    // this.addToMap(new WallTile(20, 20));
-
-    // this.addToMap(new WallTile(19, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(15, 20));
-
-    // this.addToMap(new WallTile(0, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(15, 20));
-
-    // this.addToMap(new WallTile(15, 16));
-    // this.addToMap(new WallTile(15, 17));
-    // this.addToMap(new WallTile(15, 18));
-    // this.addToMap(new WallTile(15, 19));
-    // this.addToMap(new WallTile(15, 20));
-    // // this.addToMap(new WallTile(20, 15));
-    // this.addToMap(new WallTile(20, 16));
-    // this.addToMap(new WallTile(20, 17));
-    // this.addToMap(new WallTile(20, 18));
-    // this.addToMap(new WallTile(20, 19));
-    // this.addToMap(new WallTile(20, 20));
-    // this.addToMap(new WallTile(15, 20));
-    // this.addToMap(new WallTile(16, 20));
-    // this.addToMap(new WallTile(17, 20));
-    // this.addToMap(new WallTile(18, 20));
-    // this.addToMap(new WallTile(19, 20));
-
-    // for (let i = 0; i < MapSize * 3; i++) {
-    //   this.addToMap(
-    //     new WallTile(
-    //       Math.floor(Math.random() * MapSize),
-    //       Math.floor(Math.random() * MapSize)
-    //     )
-    //   );
-    // }
-
-    // this should error
-    // this.subComponents.push(new WallTile(20, 20));
-    // this.subComponents.push(new WallTile(20, 20));
-  }
-
-  cullInteriorWall() {
-    const facing = (x: number, y: number): boolean => {
-      if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true;
-      return this.map[y][x].tiletype === "WallTile";
-    };
-
-    const northFacing = (x: number, y: number): boolean => {
-      if (facing(x, y - 1)) return true;
-      return false;
-    };
-
-    const southFacing = (x: number, y: number): boolean => {
-      if (facing(x, y + 1)) return true;
-      return false;
-    };
-
-    const eastFacing = (x: number, y: number): boolean => {
-      if (facing(x - 1, y)) return true;
-      return false;
-    };
-
-    const westFacing = (x: number, y: number): boolean => {
-      if (facing(x + 1, y)) return true;
-      return false;
-    };
-
-    const cullings: [number, number][] = [];
-
-    for (let y = 0; y < this.shipSize; y++) {
-      for (let x = 0; x < this.shipSize; x++) {
-        const s = this.map[y][x];
-
-        if (s.tiletype === "WallTile") {
-          let interiorFaces = 0;
-          if (
-            northFacing(x, y) &&
-            southFacing(x, y) &&
-            eastFacing(x, y) &&
-            westFacing(x, y)
-          ) {
-            cullings.push([x, y]);
+        } else if (tid === 2) {
+          if (isFlippedNiether(md[z])) {
+            this.addToMap(new NorthEast(x, y));
+          } else if (isFlippedOnlyHorizontal(md[z])) {
+            this.addToMap(new SouthEast(x, y));
+          } else if (isFlippedOnlyVertical(md[z])) {
+            this.addToMap(new NorthWest(x, y));
+            
+          } else if (isFlippedBoth(md[z])) {
+            this.addToMap(new SouthWest(x, y));
+          } else {
+            throw "that cannot be";
           }
+        } else if (tid === 43) {
+          console.error("TILE_60 not implemented");
+        } else if (tid === 33) {
+          console.error("TILE_50 not implemented");
+        } else if (tid === 44) {
+          console.error("TILE_80 not implemented");
+        } else if (tid === 0) {
+          this.addToMap(new FloorTile(x, y));
+        } else if (tid === 41) {
+          console.error("TILE_20 not implemented");
+        } else if (tid === 42) {
+          console.error("TILE_40 not implemented");
+        } else if (tid === 36) {
+          console.error("TILE_66 not implemented");
+        } else if (tid === 35) {
+          console.error("TILE_75 not implemented");
+        } else if (tid === 34) {
+          console.error("TILE_25 not implemented");
+        } else {
+          console.error(`unknown tile: ${tid}, ${x}, ${y}`);
+          // throw `unknown tile`;
+          // this.addToMap(new FloorTile(x, y));
+          const w = new WallTile(x, y);
         }
       }
     }
-
-    cullings.forEach((c) => {
-      this.map[c[1]][c[0]] = null;
-    });
   }
+
+  // cullInteriorWall() {
+  //   const facing = (x: number, y: number): boolean => {
+  //     if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true;
+  //     return this.map[y][x].tiletype === "WallTile";
+  //   };
+
+  //   const northFacing = (x: number, y: number): boolean => {
+  //     if (facing(x, y - 1)) return true;
+  //     return false;
+  //   };
+
+  //   const southFacing = (x: number, y: number): boolean => {
+  //     if (facing(x, y + 1)) return true;
+  //     return false;
+  //   };
+
+  //   const eastFacing = (x: number, y: number): boolean => {
+  //     if (facing(x - 1, y)) return true;
+  //     return false;
+  //   };
+
+  //   const westFacing = (x: number, y: number): boolean => {
+  //     if (facing(x + 1, y)) return true;
+  //     return false;
+  //   };
+
+  //   const cullings: [number, number][] = [];
+
+  //   for (let y = 0; y < this.shipSize; y++) {
+  //     for (let x = 0; x < this.shipSize; x++) {
+  //       const s = this.map[y][x];
+
+  //       if (s.tiletype === "WallTile") {
+  //         let interiorFaces = 0;
+  //         if (
+  //           northFacing(x, y) &&
+  //           southFacing(x, y) &&
+  //           eastFacing(x, y) &&
+  //           westFacing(x, y)
+  //         ) {
+  //           cullings.push([x, y]);
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   cullings.forEach((c) => {
+  //     this.map[c[1]][c[0]] = null;
+  //   });
+  // }
 
   constructor() {
     super(new Entity(), []);
-
-    // console.log(level);
-    // console.log(tiles);
-    // console.log(tileConfig);
-
     // initialize the internal map, used for validation and level-prerendering
     this.map = [[]];
     for (let y = 0; y < this.shipSize; y++) {

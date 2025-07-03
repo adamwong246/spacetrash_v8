@@ -40,8 +40,9 @@ import { ConsoleRenderableStore } from "../../engine/rendering/console";
 
 import { DesktopGame } from "./1-DesktopGame";
 import { MatterComponent, MatterStore } from "../../engine/physics/matterjs";
+import { SamuraiComponent, SamuraiStore } from "../physics/SamuraiComponent";
 
-export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal" | "matter";
+export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal" | "matter" | "samurai";
 
 export type IRenderings =
   | "2d"
@@ -50,6 +51,7 @@ export type IRenderings =
   | "threejs"
   | "arcadePhysics"
   | "matter"
+  | "samurai"
   | null;
 
 export abstract class GameWithStores extends DesktopGame<
@@ -85,6 +87,7 @@ export abstract class GameWithStores extends DesktopGame<
     ThreeJsRenderableComponent: new ThreeJsRenderableStore(),
     TileComponent: new TileComponentStore(),
     V3AttackComponent: new V3AttackComponentStore(),
+    SamuraiComponent: new SamuraiStore(),
   };
 
   constructor(

@@ -1,0 +1,111 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+        "src/engine/game",
+        ".",
+        "src/spacetrash",
+        "src/spacetrash/tiled",
+        "src"
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "src/spacetrash/tiled/.json.tmj": {
+            "scale": 0.297802734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1024.167896376455,
+                "y": 1025.8468601410066
+            }
+        },
+        "src/spacetrash/tiled/level10.json": {
+            "scale": 0.1111,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1993.6993699369937,
+                "y": 850.5850585058506
+            }
+        },
+        "src/spacetrash/tiled/level11.json": {
+            "scale": 1.0694,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 698.990087899757,
+                "y": 264.16682251729947
+            }
+        },
+        "src/spacetrash/tiled/level12.json": {
+            "scale": 0.0573,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 12801.047120418847,
+                "y": 5296.684118673647
+            }
+        },
+        "src/spacetrash/tiled/level7.tmj": {
+            "scale": 0.95,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 782.1052631578947,
+                "y": 185.78947368421058
+            }
+        },
+        "src/spacetrash/tiled/level8.json": {
+            "scale": 0.3588,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2130.7134894091414,
+                "y": 1818.561872909699
+            }
+        },
+        "src/spacetrash/tiled/level9.json": {
+            "scale": 0.3225,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 959.6899224806202,
+                "y": 801.5503875968991
+            }
+        },
+        "src/spacetrash/tiled/level9.json#tileset3": {
+            "scaleInDock": 1
+        },
+        "src/spacetrash/tiled/tileset3.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.6
+        },
+        "src/spacetrash/tiled/tileset3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "src/spacetrash/tiled/tileset4.json": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1.12
+        }
+    },
+    "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
+    "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
+    "map.height": 64,
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "json",
+    "map.width": 64,
+    "openFiles": [
+    ],
+    "project": "tiled_project_v4.tiled-project",
+    "recentFiles": [
+        "src/spacetrash/tiled/level11.json",
+        "src/spacetrash/tiled/tileset3.json",
+        "src/spacetrash/tiled/level10.json",
+        "src/spacetrash/tiled/level9.json",
+        "src/spacetrash/tiled/tileset4.json",
+        "src/spacetrash/tiled/level8.json",
+        "src/spacetrash/tiled/level7.tmj",
+        "src/spacetrash/tiled/tileset3.tsx",
+        "src/spacetrash/tiled/.json.tmj"
+    ],
+    "tileset.embedInMap": false,
+    "tileset.lastUsedFormat": "json",
+    "tileset.spacing": 2
+}

@@ -36,12 +36,13 @@ import { DataWindow } from "../UI/DataWindow";
 
 import { ThermalWindow } from "../UI/ThermalWindow";
 import { MultiSurfaceGame } from "./0-multisurface";
-import { ArcadePhysics } from "arcade-physics";
+import { ArcadePhysics } from "../../spacetrash/vendor/arcade-physics-main/src";
 import { TileSize, MapSize } from "../Constants";
 import { defToRad } from "../lib";
 import { DirectionComponent } from "../../engine/game/physical";
 import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
 import { StateSpace } from "../../engine/game/StateSpace";
+import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
 // import { MatterWindow } from "../UI/MatterWindow";
 
 // var Engine = Matter.Engine,
@@ -245,6 +246,8 @@ export abstract class DesktopGame<
 
   // rapierWorld: RAPIER.World;
 
+  samuraiCanvasContext: any;
+
   public videoFeed: number = 1;
 
   public bots: {
@@ -445,6 +448,9 @@ export abstract class DesktopGame<
             arcadePhysics: (props: IDockviewPanelHeaderProps<any>) => (
               <ArcadePhysicsWindow game={self} />
             ),
+            customPhysics: (props: IDockviewPanelHeaderProps<any>) => (
+              <CustomPhysicsWindow game={self} />
+            ),
             // bots: (props: IDockviewPanelHeaderProps<any>) => (<BotsWindow game={self} />),
             // fab: (props: IDockviewPanelHeaderProps<any>) => (<FabricatorWindow game={self} />),
             // data: (props: IDockviewPanelHeaderProps<any>) => (<DataWindow game={self} />),
@@ -555,6 +561,28 @@ export abstract class DesktopGame<
       // this.rapierWorld = new RAPIER.World(gravity);
     }
 
+
+    if (key === "samurai") {
+      this.samuraiCanvasContext = canvas.getContext("2d");
+      // canvas.width = 800;
+      // canvas.height = 800;
+
+      // const config = {
+      //   width: 1200,
+      //   height: 1200,
+      //   gravity: {
+      //     x: 0,
+      //     y: 0,
+      //   },
+      // };
+
+      // this.arcadePhysics = new ArcadePhysics(config);
+
+      // let gravity = new RAPIER.Vector2(0.0, -9.81);
+      // this.rapierWorld = new RAPIER.World(gravity);
+    }
+
+
     // if (key === "matter") {
     //   var width = (MapSize) * TileSize,
     //     height = (MapSize) * TileSize;
@@ -608,6 +636,7 @@ export abstract class DesktopGame<
 
       this.pixi2dApp &&
       this.threejsRenderer &&
+      this.samuraiCanvasContext &&
       // this.matterRenderer &&
 
       // this.rapierWorld
@@ -651,10 +680,18 @@ export abstract class DesktopGame<
     term: (props: IDockviewPanelHeaderProps<IState>) => (
       <TerminalWindow game={this} />
     ),
+
+    customPhysics: (props: IDockviewPanelHeaderProps<IState>) => (
+      <CustomPhysicsWindow game={this} />
+    ),
   };
 
   onDockviewReady(event: DockviewReadyEvent) {
     self.dockviewAPI = event.api;
+
+
+    
+    
     event.api.addPanel({
       id: "term",
       component: "term",
@@ -667,6 +704,7 @@ export abstract class DesktopGame<
         game: this,
       },
     });
+
   }
 
   openAllWindows() {
@@ -762,6 +800,18 @@ export abstract class DesktopGame<
       },
       params: {},
     });
+
+    this.dockviewAPI.component.addPanel({
+      id: "customPhysics",
+      component: "customPhysics",
+      floating: {
+        position: { left: 120, top: 190 },
+        width: 600,
+        height: 600,
+      },
+      params: {},
+    });
+
   }
 
   focusWindowById(s: string, x?) {
@@ -1100,18 +1150,18 @@ export abstract class DesktopGame<
     this.arcadePhysicsTick++;
 
     // draw debug
-    this.arcadePhysicsCanvasContext.clearRect(
-      0,
-      0,
-      this.arcadePhysicsCanvasContext.canvas.width,
-      this.arcadePhysicsCanvasContext.canvas.height
-    );
-    this.arcadePhysics.world.bodies.forEach((b) => {
-      b.drawDebug(this.arcadePhysicsCanvasContext);
-    });
-    this.arcadePhysics.world.staticBodies.forEach((b) => {
-      b.drawDebug(this.arcadePhysicsCanvasContext);
-    });
+    // this.arcadePhysicsCanvasContext.clearRect(
+    //   0,
+    //   0,
+    //   this.arcadePhysicsCanvasContext.canvas.width,
+    //   this.arcadePhysicsCanvasContext.canvas.height
+    // );
+    // this.arcadePhysics.world.bodies.forEach((b) => {
+    //   b.drawDebug(this.arcadePhysicsCanvasContext);
+    // });
+    // this.arcadePhysics.world.staticBodies.forEach((b) => {
+    //   b.drawDebug(this.arcadePhysicsCanvasContext);
+    // });
   }
 
   BeginTheGame() {

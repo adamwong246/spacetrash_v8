@@ -1,12 +1,7 @@
 import { Component } from "./Component";
 
 export abstract class StoreV2<IC> {
-  byXandY(x: number, y: number) {
-    throw new Error("Method not implemented.");
-  }
-  at(x: any, y: any) {
-    throw new Error("Method not implemented.");
-  }
+  
   abstract store;
 
   // set

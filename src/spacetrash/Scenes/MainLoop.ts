@@ -1,27 +1,19 @@
 import { SpaceTrashScene } from ".";
 
-import { ActorSize, MapSize, TileSize } from "../Constants";
-import { AiAgentComponent } from "../ECS/Components/v3/ai.ts";
-import { HeatDetectorComponent } from "../ECS/Components/v3/heat.ts";
-import { RadiationDetectorComponent } from "../ECS/Components/v3/radiation.ts";
-import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
+import { MapSize } from "../Constants";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
-import { BoringShip } from "../ECS/EntityComponents/ships/BoringShip.ts";
-import { RotCellularShip } from "../ECS/EntityComponents/ships/RotCellularyShip.ts";
-import { RotDiggerShip } from "../ECS/EntityComponents/ships/RotDiggerShip.ts";
-import { WarpCore } from "../ECS/EntityComponents/warpcore.ts";
 import { SpaceTrash } from "../Game/index.ts";
 import level4 from "./../ECS/EntityComponents/ships/Ship4.ts"
 
-const SPEED_CONSTANT = 0.05;
-
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
+    // const ship = new BoringShip();
     const ship = new level4();
+    // const ship = new level4();
     // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
 
-    const drones = [...new Array(9)].map((n) => {
+    const drones = [...new Array(1)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize * TileSize,
         // Math.random() * MapSize * TileSize,
@@ -37,20 +29,20 @@ class MainScene extends SpaceTrashScene {
       );
     });
 
-    const radiationDetectingDrone = game.setEntitiesComponent([
-      new SpaceTrashBot(
-        Math.random() * MapSize * TileSize,
-        Math.random() * MapSize * TileSize,
-        0,
-        0,
-        0,
-        "idk",
-        [
-          new RadiationDetectorComponent(0),
-          new HeatDetectorComponent()
-        ]
-      ),
-    ])[0];
+    // const radiationDetectingDrone = game.setEntitiesComponent([
+    //   new SpaceTrashBot(
+    //     Math.random() * MapSize * TileSize,
+    //     Math.random() * MapSize * TileSize,
+    //     0,
+    //     0,
+    //     0,
+    //     "idk",
+    //     [
+    //       new RadiationDetectorComponent(0),
+    //       new HeatDetectorComponent()
+    //     ]
+    //   ),
+    // ])[0];
 
     // const moreBots = [...new Array(1)].map((n) => {
     //   return new PuckBot(
@@ -65,59 +57,59 @@ class MainScene extends SpaceTrashScene {
     //   );
     // });
 
-    const moreBots = [...new Array(10)].map((n) => {
-      return new PuckBot(
-        Math.random() * MapSize,
-        Math.random() * MapSize,
-        ActorSize,
-        0,
-        0,
-        String(performance.now()),
-        new AiAgentComponent(
-          "melee",
-          "langdonsAnt",
-          "suicideBomb",
-          "acidCorpse",
-          "heat",
-          "sound",
-          "fly",
-          "vacuum",
-          "explosive"
-        )
-      );
-    });
+    // const moreBots = [...new Array(8)].map((n) => {
+    //   return new PuckBot(
+    //     Math.random() * MapSize,
+    //     Math.random() * MapSize,
+    //     ActorSize,
+    //     0,
+    //     0,
+    //     String(performance.now()),
+    //     new AiAgentComponent(
+    //       "melee",
+    //       "langdonsAnt",
+    //       "suicideBomb",
+    //       "acidCorpse",
+    //       "heat",
+    //       "sound",
+    //       "fly",
+    //       "vacuum",
+    //       "explosive"
+    //     )
+    //   );
+    // });
 
-    const monster1 = new PuckBot(
-      Math.random() * MapSize,
-      Math.random() * MapSize,
-      ActorSize,
-      (Math.random() - 0.5) * SPEED_CONSTANT,
-      (Math.random() - 0.5) * SPEED_CONSTANT,
-      String(performance.now()),
-      new AiAgentComponent(
-        "melee",
-        "wallBounce",
-        "suicideBomb",
-        "acidCorpse",
-        "heat",
-        "sound",
-        "fly",
-        "vacuum",
-        "explosive"
-      )
-    );
+    // const monster1 = new PuckBot(
+    //   Math.random() * MapSize,
+    //   Math.random() * MapSize,
+    //   ActorSize,
+    //   (Math.random() - 0.5) * SPEED_CONSTANT,
+    //   (Math.random() - 0.5) * SPEED_CONSTANT,
+    //   String(performance.now()),
+    //   new AiAgentComponent(
+    //     "melee",
+    //     "wallBounce",
+    //     "suicideBomb",
+    //     "acidCorpse",
+    //     "heat",
+    //     "sound",
+    //     "fly",
+    //     "vacuum",
+    //     "explosive"
+    //   )
+    // );
 
-    const warpcore0 = new WarpCore(
-      100,
-      Math.round(Math.random() * MapSize),
-      Math.round(Math.random() * MapSize)
-    );
+    // const warpcore0 = new WarpCore(
+    //   100,
+    //   Math.round(Math.random() * MapSize),
+    //   Math.round(Math.random() * MapSize)
+    // );
 
-    const warpcore1 = new WarpCore(
-      1000,
-      Math.round(Math.random() * MapSize),
-      Math.round(Math.random() * MapSize)
-    );
+    // const warpcore1 = new WarpCore(
+    //   1000,
+    //   Math.round(Math.random() * MapSize),
+    //   Math.round(Math.random() * MapSize)
+    // );
 
     game.setEntitiesComponent([
       ship,
@@ -139,7 +131,7 @@ class MainScene extends SpaceTrashScene {
       6: [myDoneIds[5], "bones"],
       7: [myDoneIds[6], "han"],
       8: [myDoneIds[7], "luke"],
-      9: [radiationDetectingDrone, "obiwan"],
+      9: [myDoneIds[8], "obiwan"],
     };
 
     game.BeginTheGame();
@@ -386,6 +378,22 @@ const scene = new MainScene({
       //   shipMapMouseX = x;
       //   shipMapMouseY = y;
       // }
+    },
+    "2d",
+  ],
+
+  samurai: [
+    (ecs, reply) => {
+      return [];
+    },
+    (ecs, reply) => {
+      return [
+        async (game: SpaceTrash) => {
+          // await game.renderArcadePhysics();
+        },
+      ];
+    },
+    (ecs, event: any) => {
     },
     "2d",
   ],

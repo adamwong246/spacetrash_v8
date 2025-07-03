@@ -8,6 +8,8 @@ import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
 import { GameWithControls } from "./4-WithControls";
 import { IRenderings } from "./3-WithStores";
 import { Composite } from "matter-js";
+import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
+import { BasePolygons } from "../physics/BasePolygon";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
@@ -27,6 +29,7 @@ export abstract class GameWithLoad extends GameWithControls {
         "threejs",
         "arcadePhysics",
         "matter",
+        "samurai",
       ])
     );
   }
@@ -46,6 +49,7 @@ export abstract class GameWithLoad extends GameWithControls {
     this.setupArcadePhysics();
     this.setupAiAgents();
     this.setupHeat();
+    this.runSamurai();
   }
 
   populateMatterJs() {
@@ -66,7 +70,6 @@ export abstract class GameWithLoad extends GameWithControls {
 
   mapEntitiesToPositions() {
     for (let [eid, [subtype, classification]] of this.entities) {
-
       if (classification === "Actor") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
@@ -78,13 +81,12 @@ export abstract class GameWithLoad extends GameWithControls {
       } else if (classification === "Tile") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
-            this.components.SP_IntegerPositionComponent.take(eid),
+            this.components.SamuraiComponent.take(eid),
             classification
           ),
           eid
         );
-
-      }  else if (classification === "WarpCore") {
+      } else if (classification === "WarpCore") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
             this.components.ArcadePhysicsComponent.take(
@@ -355,49 +357,57 @@ export abstract class GameWithLoad extends GameWithControls {
   }
 
   setupArcadePhysics = () => {
-    const staticGroup: any[] = [];
-    const dynamicGroup: any[] = [];
+    const staticGroup: { eid: number; arcade: ArcadePhysicsComponent }[] = [];
+    const dynamicGroup: { eid: number; arcade: ArcadePhysicsComponent }[] = [];
 
     this.components.ArcadePhysicsComponent.each((v, k) => {
-      if (v.arcadeObject.immovable) staticGroup.push(v.arcadeObject);
-      else dynamicGroup.push(v.arcadeObject);
+      if (v.arcadeObject.immovable) staticGroup.push({ eid: k, arcade: v });
+      else dynamicGroup.push({ eid: k, arcade: v });
     });
 
-    dynamicGroup.forEach((s) => {
-      s.position.x = Math.random() * MapSize * TileSize;
-      s.position.y = Math.random() * MapSize * TileSize;
+    dynamicGroup.forEach(({ arcade }) => {
+      arcade.arcadeObject.position.x = Math.random() * MapSize * TileSize;
+      arcade.arcadeObject.position.y = Math.random() * MapSize * TileSize;
     });
 
-    // dynamicGroup.forEach((d) => {
-    //   staticGroup.forEach((s) => {
-    //     this.arcadePhysics.world.addCollider(
-    //       s,
-    //       d,
-    //       (...a) => {
-    //         const x = a[1];
-    //         for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
-    //           if (z.body === x) {
-    //             // z.callback();
-    //           }
-    //         }
-    //         // const cb = x.getData('onCollide');
-    //         // cb(s, d)
-    //         // debugger
-    //         // Actors.update({
-    //         //   onCollision
-    //         // })
+    dynamicGroup.forEach((x) => {
+      const dynamicBody = x.arcade;
+      staticGroup.forEach((y) => {
+        const staticBody = y.arcade;
 
-    //         // debugger
-    //       },
-    //       () => {
-    //         // debugger
-    //       },
-    //       () => {
-    //         // debugger
-    //       }
-    //     );
-    //   });
-    // });
+        // console.log(this.entities.get(y.eid));
+
+        this.arcadePhysics.world.addOverlap(
+          staticBody.arcadeObject,
+          dynamicBody.arcadeObject,
+          (...a) => {
+            // const x = a[1];
+            // for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
+
+            //   console.log("collision between", y.eid, x.eid)
+            //   if (z.body === x) {
+            //     // z.callback();
+            //   }
+            // }
+            // const cb = x.getData('onCollide');
+            // cb(s, d)
+            // debugger
+            // Actors.update({
+            //   onCollision
+            // })
+
+            console.log("overlap1 between", y.eid, x.eid);
+            debugger;
+          },
+          (x, y, z) => {
+            console.log("overlap2 between", x, y);
+          },
+          (x, y, z) => {
+            console.log("mark3");
+          }
+        );
+      });
+    });
 
     // dynamicGroup.forEach((s) => {
     //   dynamicGroup.forEach((s2) => {
@@ -407,9 +417,12 @@ export abstract class GameWithLoad extends GameWithControls {
     //   });
     // });
 
-    this.arcadePhysics.world.on("collide", (object1, object2, body1, body2) => {
-      // console.log("collide", object1, object2, body1, body2);
-    });
+    // this.arcadePhysics.world.on("collide", (object1, object2, body1, body2) => {
+    //   console.log("collide", object1, object2, body1, body2);
+    // });
+    // this.arcadePhysics.world.on("overlap", (object1, object2, body1, body2) => {
+    //   console.log("overlap", object1, object2, body1, body2);
+    // });
   };
 
   setupAiAgents() {
@@ -480,6 +493,34 @@ export abstract class GameWithLoad extends GameWithControls {
     // GAME.pixi2dThermalApp.stage.addChild(graphics);
     // GAME.pixi2dThermalApp.render();
 
+    // });
+  }
+
+  runSamurai() {
+
+    // const superPolygons = []
+
+    // for (let y = 0; y < MapSize; y++) {
+    //   // this.components.SetPieces.store[y] = [];
+    //   for (let x = 0; x < MapSize; x++) {
+    //     // this.components.SetPieces.store[y][x] = new SetPieceComponent();
+
+    //     const s = this.components.SamuraiComponent.byXandY(x, y);
+
+    //     if (s.samuraiTile.vectors.length) {
+          
+    //       // const geom = BasePolygons[s.samuraiTile];
+
+
+    //       for (let superPolygon in superPolygons) {
+            
+    //       }
+    //     }
+    //   }
+    // }
+
+    // this.components.SamuraiComponent.each((s) => {
+    //   console.log(s);
     // });
   }
 }

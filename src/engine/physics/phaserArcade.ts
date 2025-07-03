@@ -1,10 +1,15 @@
-import { ArcadePhysics } from "arcade-physics";
-import { TileSize } from "../../spacetrash/Constants";
-import { ArcadePhysicsComponent } from "../../spacetrash/ECS/Components/v2/arcadePhysics";
+import { ArcadePhysics } from "../../spacetrash/vendor/arcade-physics-main/src";
+
 import { MapStoreV2 } from "../VECS.ts/Store";
 import { PhysicalComponent } from "./PhysicalComponent";
 
 export class PhaserArcadePhysicalComponent extends PhysicalComponent {
+  X() {
+    throw new Error("Method not implemented.");
+  }
+  Y() {
+    throw new Error("Method not implemented.");
+  }
   creator: (a: ArcadePhysics) => any;
   arcadeObject: any;
 
