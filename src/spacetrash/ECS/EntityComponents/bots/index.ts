@@ -35,7 +35,7 @@ export const cylinder = () => {
   const m = new THREE.Mesh(cylinderGeometry, greenMaterial);
   m.rotateZ(degToRad(90));
   m.rotateX(degToRad(90));
-  return m;
+  return [m];
 };
 
 export const spike = () => {
@@ -45,7 +45,7 @@ export const spike = () => {
   );
   m.rotateZ(degToRad(90));
   m.rotateX(degToRad(90));
-  return m;
+  return [m];
 };
 
 export const bunnySprite = () => {

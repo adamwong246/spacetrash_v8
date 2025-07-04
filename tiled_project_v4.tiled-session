@@ -54,11 +54,11 @@
             }
         },
         "src/spacetrash/tiled/level14.json": {
-            "scale": 0.2062,
+            "scale": 0.4495,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1743.4529582929194,
-                "y": 928.709990300679
+                "x": 1791.9911012235816,
+                "y": 1155.7285873192436
             }
         },
         "src/spacetrash/tiled/level7.tmj": {

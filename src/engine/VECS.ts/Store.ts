@@ -92,9 +92,11 @@ export abstract class OneDStore<I extends []> extends StoreV2<I> {
 export abstract class TwoDStore<I> extends StoreV2<I> {
   store: I[][] = [[]];
 
+  
   make(ic: I, x: number, y: number) {
     return (this.store[y][x] = ic);
   }
+
   take(x: number, y: number) {
     if (!this.store[y][x]) throw "idk";
 

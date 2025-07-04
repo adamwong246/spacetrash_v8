@@ -53,7 +53,7 @@ export class SpaceTrashBot extends Actor {
       new PixiJsRenderableComponent(bunnySprite()),
       new ConsoleRenderableComponent("?"),
 
-      new TankMovingComponent(dx, dy),
+      new TankMovingComponent(0, 0),
       new SP_PhysicalComponent(x, y, physical),
 
 

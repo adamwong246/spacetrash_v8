@@ -765,16 +765,7 @@ export abstract class DesktopGame<
     //   }
     // })
 
-    this.dockviewAPI.component.addPanel({
-      id: "vid",
-      component: "vid",
-      floating: {
-        position: { left: 50, top: 50 },
-        width: 500,
-        height: 500,
-      },
-      params: {},
-    });
+
 
     this.dockviewAPI.component.addPanel({
       id: "map",
@@ -808,6 +799,18 @@ export abstract class DesktopGame<
       },
       params: {},
     });
+
+        this.dockviewAPI.component.addPanel({
+      id: "vid",
+      component: "vid",
+      floating: {
+        position: { left: 50, top: 50 },
+        width: 1000,
+        height: 1000,
+      },
+      params: {},
+        });
+    
   }
 
   focusWindowById(s: string, x?) {

@@ -5,6 +5,12 @@ import { SamuraiTile } from "./BasePolygon";
 import { SP_IntegerPositionComponent } from "../ECS/Components/v4/IntegerPosition";
 
 export class SamuraiTileComponent extends SP_IntegerPositionComponent {
+  setX(x: number) {
+    throw new Error("Method not implemented.");
+  }
+  setY(y: number) {
+    throw new Error("Method not implemented.");
+  }
   samuraiTile: SamuraiTile;
   flippedHorizontally: boolean;
   flippedVertically: boolean;

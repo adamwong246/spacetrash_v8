@@ -4,6 +4,7 @@ import * as THREE from "three";
 import {
   Box,
   Circle,
+  deg2rad,
   Ellipse,
   Line,
   Point,
@@ -21,7 +22,7 @@ import {
 } from "../../../threejs";
 import voidPng from "./../../../Assets/void.png";
 
-import { TileSize } from "../../../Constants";
+import { MapSize, TileSize } from "../../../Constants";
 
 import {
   IDirs,
@@ -64,18 +65,50 @@ const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
 var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 
-const floorTile = () => {
+const floorTile = (x: number, y: number) => {
   const m = new THREE.Mesh(floorGeometry, floorTexture);
   m.position.z = TileSize / 2;
+  m.position.x = x * TileSize;
+  m.position.y = y * TileSize;
+
   m.rotateY(degToRad(180));
 
-  return m;
+  return [m];
 };
 
-const wallTile = () => {
-  const m = new THREE.Mesh(cubeGeo, wallTexture);
+const wallTile = (x: number, y: number) => {
+  const geom = new THREE.PlaneGeometry(TileSize, TileSize);
 
-  return m;
+  const northFaceingWall = new THREE.Mesh(geom, wallTexture);
+  northFaceingWall.position.x = x * TileSize;
+  northFaceingWall.position.y = y * TileSize - TileSize / 2;
+  northFaceingWall.rotation.x = deg2rad(90);
+  northFaceingWall.position.z = 0;
+
+  const southFaceingWall = new THREE.Mesh(geom, wallTexture);
+  southFaceingWall.position.x = x * TileSize;
+  southFaceingWall.position.y = y * TileSize + TileSize / 2;
+  southFaceingWall.rotation.x = -deg2rad(90);
+  southFaceingWall.position.z = 0;
+
+  const eastFacingWall = new THREE.Mesh(geom, wallTexture);
+  eastFacingWall.position.x = x * TileSize + TileSize / 2;
+  eastFacingWall.position.y = y * TileSize;
+  eastFacingWall.rotation.y = deg2rad(90);
+  eastFacingWall.position.z = 0;
+
+  const westFacingWall = new THREE.Mesh(geom, wallTexture);
+  westFacingWall.position.x = x * TileSize - TileSize / 2;
+  westFacingWall.position.y = y * TileSize;
+  westFacingWall.rotation.y = -deg2rad(90);
+  westFacingWall.position.z = 0;
+
+  return [
+    northFaceingWall,
+    southFaceingWall,
+    eastFacingWall,
+    westFacingWall,
+  ];
 };
 
 // const wallTile = () => {
@@ -201,18 +234,14 @@ export class FloorTile extends Tile {
 
     super({
       pixi: new PixiJsRenderableComponent(stoneSprite()),
-      threejs: new ThreeJsRenderableComponent(floorTile()),
+      threejs: new ThreeJsRenderableComponent(floorTile(x, y)),
       samurai,
     });
   }
 }
 
 export class WallTile extends Tile {
-  constructor(
-    x: number = 0,
-    y: number = 0
-    
-  ) {
+  constructor(x: number = 0, y: number = 0) {
     const samurai = new SamuraiTileComponent(
       x,
       y,
@@ -224,7 +253,7 @@ export class WallTile extends Tile {
 
     const physical = new Box({ x, y }, TileSize, TileSize);
 
-    physical.setPosition(x*TileSize, y*TileSize, true); 
+    physical.setPosition(x * TileSize, y * TileSize, true);
     // physical.setPosition(x, y, true);
     // physical.setScale(TileSize, TileSize, true);
     physical.setAngle(0, true);
@@ -233,7 +262,7 @@ export class WallTile extends Tile {
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(brickSprite()),
-      threejs: new ThreeJsRenderableComponent(wallTile()),
+      threejs: new ThreeJsRenderableComponent(wallTile(x, y)),
 
       sp_physical: new SP_PhysicalComponent(x, y, physical),
       // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
@@ -379,3 +408,43 @@ export class SouthWest extends Tile {
     });
   }
 }
+
+const createPlane = (size) => {
+  let planeGeometry = new THREE.PlaneGeometry(size, size, size);
+  let material = new THREE.MeshBasicMaterial({
+    color: 0xffffff * Math.random(),
+    // side: DoubleSide
+  });
+  return new THREE.Mesh(planeGeometry, material);
+};
+
+const createFacesOfCube = () => {
+  let cubeSize = TileSize;
+  // Face 1
+  let face1 = createPlane(cubeSize);
+  // Face 2
+  let face2 = createPlane(cubeSize);
+  face2.position.z = cubeSize;
+  // Face 3
+  let face3 = createPlane(cubeSize);
+  face3.position.x = cubeSize / 2;
+  face3.rotation.y = Math.PI / 2;
+  face3.position.z = cubeSize / 2;
+  // Face 4
+  let face4 = createPlane(cubeSize);
+  face4.position.x = -cubeSize / 2;
+  face4.rotation.y = Math.PI / 2;
+  face4.position.z = cubeSize / 2;
+  // Face 5
+  let face5 = createPlane(cubeSize);
+  face5.position.z = cubeSize / 2;
+  face5.position.y = cubeSize / 2;
+  face5.rotation.x = Math.PI / 2;
+  // Face 6
+  let face6 = createPlane(cubeSize);
+  face6.position.z = cubeSize / 2;
+  face6.position.y = -cubeSize / 2;
+  face6.rotation.x = Math.PI / 2;
+
+  return [face1, face2, face3, face4, face5, face6];
+};

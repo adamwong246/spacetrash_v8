@@ -66,4 +66,4 @@ export const TANK_VELOCITY = 3
 
 export const TANK_VELOCITY_LINEAR = 1;  
 
-// Total faces in the scene: 34888
+// Total faces in the scene: 33304

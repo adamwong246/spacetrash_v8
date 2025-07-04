@@ -47,17 +47,18 @@ export abstract class GameWithLoad extends GameWithControls {
     this.attachAiAgentsToActors();
     this.runInitialMapBoundaryCheck();
     // this.runPlaceImmoveableSetPieces();
-    this.cullInteriorFaces()
+    this.cullInteriorFaces();
     this.setupRenderers();
     this.loadPhysics();
     this.setupAiAgents();
     this.setupHeat();
-    this.measureThreejs(0);
+    this.measureThreejs();
   }
   cullInteriorFaces() {
-    throw new Error("Method not implemented.");
+    // throw new Error("Method not implemented.");
   }
-  measureThreejs(arg0: number) {
+
+  measureThreejs() {
     let totalFaces = 0;
 
     this.scene.traverseVisible(function (object) {
@@ -80,14 +81,14 @@ export abstract class GameWithLoad extends GameWithControls {
     console.log("Total faces in the scene:", totalFaces);
   }
 
-  populateMatterJs() {
-    const bodies: Matter.Body[] = [];
-    for (let b of this.components.MatterComponent.store) {
-      bodies.push(b[1].matterBody);
-    }
-    console.log(bodies);
-    Composite.add(this.matterEngine.world, [...bodies]);
-  }
+  // populateMatterJs() {
+  //   const bodies: Matter.Body[] = [];
+  //   for (let b of this.components.MatterComponent.store) {
+  //     bodies.push(b[1].matterBody);
+  //   }
+  //   console.log(bodies);
+  //   Composite.add(this.matterEngine.world, [...bodies]);
+  // }
 
   // inflateArcadePhysics() {
   //   this.components.ArcadePhysicsComponent.each((apc, eid) => {
@@ -205,7 +206,7 @@ export abstract class GameWithLoad extends GameWithControls {
 
   initializeActors() {
     this.components.FloatPositions.each((ndx, y, aeid) => {
-      const mf = this.components.FloatMovements.find((x) => x[0] === aeid);
+      const mf = this.components.FloatMovingComponent.find((x) => x[0] === aeid);
       const mt = this.components.TankMovingComponent.find((x) => x[0] === aeid);
 
       let motion;
@@ -228,17 +229,17 @@ export abstract class GameWithLoad extends GameWithControls {
     });
   }
 
-  attachArcadePhysicsToActors() {
-    this.components.ArcadePhysicsComponent.each((apc, eid) => {
-      if (!apc.arcadeObject.immovable) {
-        if (this.components.Actors.get(eid)) {
-          this.components.Actors.take(eid).arcadeBody = apc.arcadeObject;
-        } else {
-          this.components.Actors.make({ arcadeBody: apc.arcadeObject }, eid);
-        }
-      }
-    });
-  }
+  // attachArcadePhysicsToActors() {
+  //   this.components.ArcadePhysicsComponent.each((apc, eid) => {
+  //     if (!apc.arcadeObject.immovable) {
+  //       if (this.components.Actors.get(eid)) {
+  //         this.components.Actors.take(eid).arcadeBody = apc.arcadeObject;
+  //       } else {
+  //         this.components.Actors.make({ arcadeBody: apc.arcadeObject }, eid);
+  //       }
+  //     }
+  //   });
+  // }
 
   attachAiAgentsToActors() {
     this.components.AiAgentComponent.each((agent, eid) => {
@@ -351,12 +352,25 @@ export abstract class GameWithLoad extends GameWithControls {
       this.pixi2dApp.stage.addChild(p.sprite);
     });
 
-    this.components.ThreeJsRenderableComponent.each((p, i) => {
-      this.scene.add(p.mesh);
-      const position = this.components.Eid2PM.take(i).position;
+    this.components.ThreeJsRenderableComponent.each((p, eid) => {
 
-      p.mesh.position.x = position.X();
-      p.mesh.position.y = position.Y();
+      // if (this.components.SamuraiTileComponent.get(eid)) {
+        
+      // } else {
+
+      // }
+      const position = this.components.Eid2PM.take(eid).position;
+
+      for (let mesh of p.meshes) {
+        // mesh.translateX(position.X() - mesh.position.x)
+        // mesh.translateY(position.Y() - mesh.position.y)
+        // mesh.position.x = position.X();
+        // mesh.position.y = position.Y();
+        this.scene.add(mesh);
+        
+      }
+
+      
     });
 
     // this.scene.add(spotlight);

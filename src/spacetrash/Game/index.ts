@@ -39,27 +39,27 @@ export class SpaceTrash extends GameWithLoad {
       this.runUpdateUI();
       // this.rotLighting();
 
-      // rot += 0.000001
-      // this.components.ThreeJsRenderableComponent.each((x, i) => {
-      //   // if (Math.random() > 0.01) {
-      //   //     x.mesh.visible = false;
-      //   // } else {
-      //   //     x.mesh.visible = true;
-      //   // }
+      rot += 0.00001;
+      this.components.ThreeJsRenderableComponent.each((x, i) => {
+        // if (Math.random() > 0.01) {
+        //     x.mesh.visible = false;
+        // } else {
+        //     x.mesh.visible = true;
+        // }
 
-      //   const c = this.entities.get(i)[0];
-      //   if (
-      //     c === "SouthWest" ||
-      //     c === "NorthWest" ||
-      //     c === "SouthEast" ||
-      //     c === "NorthEast"
-      //   ) {
-      //     // x.mesh.rotateZ(rot);
-      //     // x.mesh.rotateZ(rot);
-      //     // x.mesh.rotateZ(rot);
-      //     // debugger
-      //   }
-      // });
+        const c = this.entities.get(i)[0];
+        if (c === "WallTile") {
+          for (let mesh of x.meshes) {
+            // mesh.rotateZ(rot);
+            // mesh.rotateX(rot);
+            // mesh.rotateY(rot);
+          }
+
+          // x.mesh.rotateZ(rot);
+          // x.mesh.rotateZ(rot);
+          // debugger
+        }
+      });
     });
   }
 
@@ -191,9 +191,13 @@ export class SpaceTrash extends GameWithLoad {
     // const hasChangedPosition = prevY !== nextY || prevX !== nextX;
     // return hasChangedPosition;
 
-    this.components.SP_PhysicalComponent.each((sppc) => {
+    this.components.SP_PhysicalComponent.each((sppc, eid) => {
       if (!sppc.body.isStatic) {
-        sppc.body.move(delta * 0.01);
+        if (this.components.TankMovingComponent.get(eid)) {
+          // no-op
+        } else if (this.components.FloatMovingComponent.get(eid)) {
+          sppc.body.move(delta * 0.01);
+        }
 
         // sppc.friction(delta);
       }
@@ -219,10 +223,7 @@ export class SpaceTrash extends GameWithLoad {
     // });
   }
 
-  floatCollide(
-    a: FloatMovingComponent,
-    pos: PositionComponent
-  ) {
+  floatCollide(a: FloatMovingComponent, pos: PositionComponent) {
     // spc.dx = spc.dx * -1;
     // spc.dy = spc.dy * -1;
 
@@ -363,10 +364,12 @@ export class SpaceTrash extends GameWithLoad {
         //   gridChanges
         // );
 
-        this.components.ThreeJsRenderableComponent.take(eid).mesh.position.x =
-          position.X();
-        this.components.ThreeJsRenderableComponent.take(eid).mesh.position.y =
-          position.Y();
+        this.components.ThreeJsRenderableComponent.take(
+          eid
+        ).meshes[0].position.x = position.X();
+        this.components.ThreeJsRenderableComponent.take(
+          eid
+        ).meshes[0].position.y = position.Y();
       } else if (classification === "Tile") {
         throw "not implemented";
       } else {

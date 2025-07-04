@@ -3,6 +3,7 @@ import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
 import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
 import { Component } from "../../../../engine/VECS.ts/Component";
+import { MapSize, TileSize } from "../../../Constants";
 import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { HeatConductorComponent } from "../../Components/v3/heat";
@@ -18,26 +19,22 @@ export class Tile extends SpaceTrashEntityComponent {
     threejs,
     arcade,
     samurai,
-    sp_physical
+    sp_physical,
   }: {
     pixi: PixiJsRenderableComponent;
     threejs: ThreeJsRenderableComponent;
     arcade?: ArcadePhysicsComponent;
-      samurai: SamuraiTileComponent;
-    sp_physical?: SP_PhysicalComponent
-
+    samurai: SamuraiTileComponent;
+    sp_physical?: SP_PhysicalComponent;
   }) {
     const spe = new SpaceTrashEntity();
 
-    
     const comps: Component<any, any>[] = [
       pixi,
       threejs,
       samurai,
       new LightIncastingComponent(),
       new HeatConductorComponent(1),
-
-
     ];
 
     if (sp_physical) {
@@ -49,6 +46,15 @@ export class Tile extends SpaceTrashEntityComponent {
     this.x = samurai.x;
     this.y = samurai.y;
 
+    // for (let mesh of threejs.meshes) {
+    //   // mesh.position.x = this.x * TileSize;
+    //   // mesh.position.y = this.y * TileSize;
+
+    //   // mesh.translateX( (this.x * -TileSize))
+    //   // mesh.translateY(  (this.y * TileSize))
+      
+
+    // }
   }
 }
 
