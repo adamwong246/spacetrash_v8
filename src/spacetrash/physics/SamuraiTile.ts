@@ -12,6 +12,7 @@ export class SamuraiTileComponent extends SP_IntegerPositionComponent {
     throw new Error("Method not implemented.");
   }
   samuraiTile: SamuraiTile;
+  samuraiTileKey: IBasePolygons;
   flippedHorizontally: boolean;
   flippedVertically: boolean;
   flippedDiagonally: boolean;
@@ -26,6 +27,7 @@ export class SamuraiTileComponent extends SP_IntegerPositionComponent {
   ) {
     super(x, y);
     this.samuraiTile = BasePolygons[s];
+    this.samuraiTileKey = s;
     this.flippedHorizontally = flippedHorizontally;
     this.flippedDiagonally = flippedDiagonally;
     this.flippedVertically = flippedVertically;

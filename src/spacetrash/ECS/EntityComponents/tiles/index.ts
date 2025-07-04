@@ -32,7 +32,7 @@ export class Tile extends SpaceTrashEntityComponent {
     const comps: Component<any, any>[] = [
       pixi,
       threejs,
-      samurai,
+      samurai, 
       new LightIncastingComponent(),
       new HeatConductorComponent(1),
     ];

@@ -38,11 +38,11 @@
             }
         },
         "src/spacetrash/tiled/level12.json": {
-            "scale": 0.0573,
+            "scale": 0.0561,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 5122.16404886562,
-                "y": 5034.9040139616045
+                "x": 5338.680926916222,
+                "y": 5267.379679144386
             }
         },
         "src/spacetrash/tiled/level13.json": {
@@ -54,11 +54,43 @@
             }
         },
         "src/spacetrash/tiled/level14.json": {
-            "scale": 0.4495,
+            "scale": 0.1761,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1791.9911012235816,
-                "y": 1155.7285873192436
+                "x": 1354.344122657581,
+                "y": 1990.3463940942647
+            }
+        },
+        "src/spacetrash/tiled/level15.json": {
+            "scale": 0.1456,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1624.3131868131868,
+                "y": 1225.961538461538
+            }
+        },
+        "src/spacetrash/tiled/level16.json": {
+            "scale": 0.1387,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2036.7700072098055,
+                "y": 1654.6503244412404
+            }
+        },
+        "src/spacetrash/tiled/level17.json": {
+            "scale": 0.2355,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1343.9490445859874,
+                "y": 995.7537154989385
+            }
+        },
+        "src/spacetrash/tiled/level18.json": {
+            "scale": 0.155,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1932.2580645161293,
+                "y": 887.0967741935483
             }
         },
         "src/spacetrash/tiled/level7.tmj": {
@@ -103,14 +135,15 @@
     },
     "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
     "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
-    "map.height": 90,
+    "map.height": 100,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "json",
-    "map.width": 90,
+    "map.width": 100,
     "openFiles": [
     ],
     "project": "tiled_project_v4.tiled-project",
     "recentFiles": [
+        "src/spacetrash/tiled/level18.json",
         "src/spacetrash/tiled/level11.json",
         "src/spacetrash/tiled/tileset3.json",
         "src/spacetrash/tiled/level10.json",

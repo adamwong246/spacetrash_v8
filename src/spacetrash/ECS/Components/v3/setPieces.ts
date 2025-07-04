@@ -8,6 +8,7 @@ import { ISpaceTrashComponents } from "../v1";
 import { TwoDStore } from "../../../../engine/VECS.ts/Store";
 import { MapSize } from "../../../Constants";
 import { HeatConductorComponent, HeatEmitterComponent } from "./heat";
+import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
 
 export class SetPieceComponent extends TwoDOneD_Component<
   unknown,
@@ -24,6 +25,9 @@ export class SetPieceComponent extends TwoDOneD_Component<
   y: number;
   culledWebgl: boolean;
   FOV: number[][];
+  samuraiTile: SamuraiTileComponent;
+  meshes: THREE.Mesh[];
+
 
   // drawing: DrawableComponent;
   pixiElement;

@@ -47,7 +47,7 @@ export abstract class GameWithLoad extends GameWithControls {
     this.attachAiAgentsToActors();
     this.runInitialMapBoundaryCheck();
     // this.runPlaceImmoveableSetPieces();
-    this.cullInteriorFaces();
+    this.cullInteriorFaces(); 
     this.setupRenderers();
     this.loadPhysics();
     this.setupAiAgents();
@@ -55,7 +55,110 @@ export abstract class GameWithLoad extends GameWithControls {
     this.measureThreejs();
   }
   cullInteriorFaces() {
-    // throw new Error("Method not implemented.");
+    ////////////////////////////////////////////////////////////////////////
+
+    for (let y = 0; y < MapSize; y++) {
+      for (let x = 0; x < MapSize; x++) {
+        const s = this.components.SetPieces.store[y][x];
+
+        if (s.samuraiTile && s.samuraiTile.samuraiTileKey === "tile100") {
+          
+          // check north
+          ///////////////////////////////////////////////////////
+          if (y - 1 >= 0) {
+            const s2 = this.components.SetPieces.store[y - 1][x];
+            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+              for (let a = 0; a < s.meshes.length; a++) {
+                for (let b = 0; b < s2.meshes.length; b++) {
+                  const meshA = s.meshes[a];
+                  const meshb = s2.meshes[b];
+                  if (meshA.position.x === meshb.position.x) {
+                    if (meshA.position.y === meshb.position.y) {
+                      if (meshA.position.z === meshb.position.z) {
+                        s.meshes.splice(a, 1);
+                        s2.meshes.splice(b, 1);
+
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          // check south
+          ///////////////////////////////////////////////////////
+          if (y + 1 < MapSize-1) {
+            const s2 = this.components.SetPieces.store[y + 1][x];
+            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+              for (let a = 0; a < s.meshes.length; a++) {
+                for (let b = 0; b < s2.meshes.length; b++) {
+                  const meshA = s.meshes[a];
+                  const meshb = s2.meshes[b];
+                  if (meshA.position.x === meshb.position.x) {
+                    if (meshA.position.y === meshb.position.y) {
+                      if (meshA.position.z === meshb.position.z) {
+                        s.meshes.splice(a, 1);
+                        s2.meshes.splice(b, 1);
+
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // check east
+          ///////////////////////////////////////////////////////
+          if (x + 1 <= MapSize-1) {
+            const s2 = this.components.SetPieces.store[y][x+1];
+            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+              for (let a = 0; a < s.meshes.length; a++) {
+                for (let b = 0; b < s2.meshes.length; b++) {
+                  const meshA = s.meshes[a];
+                  const meshb = s2.meshes[b];
+                  if (meshA.position.x === meshb.position.x) {
+                    if (meshA.position.y === meshb.position.y) {
+                      if (meshA.position.z === meshb.position.z) {
+                        s.meshes.splice(a, 1);
+                        s2.meshes.splice(b, 1);
+
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // check west
+          ///////////////////////////////////////////////////////
+          if (x - 1 >= 0) {
+            const s2 = this.components.SetPieces.store[y][x-1];
+            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+              for (let a = 0; a < s.meshes.length; a++) {
+                for (let b = 0; b < s2.meshes.length; b++) {
+                  const meshA = s.meshes[a];
+                  const meshb = s2.meshes[b];
+                  if (meshA.position.x === meshb.position.x) {
+                    if (meshA.position.y === meshb.position.y) {
+                      if (meshA.position.z === meshb.position.z) {
+                        s.meshes.splice(a, 1);
+                        s2.meshes.splice(b, 1);
+
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+        }
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////
   }
 
   measureThreejs() {
@@ -202,11 +305,89 @@ export abstract class GameWithLoad extends GameWithControls {
         );
       }, eid);
     });
+
+    this.components.SamuraiTileComponent.each((s, eid) => {
+      this.components.Eid2PM.make(new Eid2PMComponent(s, "_"), eid);
+      this.components.SetPieces.update(
+        {
+          eid,
+          samuraiTile: s,
+        },
+        s.x,
+        s.y
+      );
+
+      this.components.ThreeJsRenderableComponent.withIf((threejselement) => {
+        this.components.SetPieces.update(
+          {
+            meshes: threejselement.meshes,
+          },
+          s.x,
+          s.y
+        );
+      }, eid);
+
+      // debugger;
+      // const t = this.components.TileComponent.get(eid);
+      // if (t) {
+      //   debugger;
+      //   this.components.SetPieces.update(
+      //     {
+      //       tileType: t.tileType,
+      //       incasterId: eid,
+      //     },
+      //     s.x,
+      //     s.y
+      //   );
+      // }
+
+      // this.components.HeatConductorComponent.withIf((dc) => {
+      //   this.components.SetPieces.update(
+      //     {
+      //       heatConductor: dc[1],
+      //     },
+      //     s.x,
+      //     s.y
+      //   );
+      // }, eid);
+
+      // this.components.HeatEmitterComponent.withIf((dc) => {
+      //   this.components.SetPieces.update(
+      //     {
+      //       heatEmitter: dc[1],
+      //     },
+      //     s.x,
+      //     s.y
+      //   );
+      // }, eid);
+
+      // this.components.PixiJsRenderableComponent.withIf((p) => {
+      //   this.components.SetPieces.update(
+      //     {
+      //       pixiElement: p[1],
+      //     },
+      //     s.x,
+      //     s.y
+      //   );
+      // }, eid);
+
+      // this.components.ThreeJsRenderableComponent.withIf((p) => {
+      //   this.components.SetPieces.update(
+      //     {
+      //       threejselement: p[1],
+      //     },
+      //     s.x,
+      //     s.y
+      //   );
+      // }, eid);
+    });
   }
 
   initializeActors() {
     this.components.FloatPositions.each((ndx, y, aeid) => {
-      const mf = this.components.FloatMovingComponent.find((x) => x[0] === aeid);
+      const mf = this.components.FloatMovingComponent.find(
+        (x) => x[0] === aeid
+      );
       const mt = this.components.TankMovingComponent.find((x) => x[0] === aeid);
 
       let motion;
@@ -353,9 +534,8 @@ export abstract class GameWithLoad extends GameWithControls {
     });
 
     this.components.ThreeJsRenderableComponent.each((p, eid) => {
-
       // if (this.components.SamuraiTileComponent.get(eid)) {
-        
+
       // } else {
 
       // }
@@ -367,10 +547,7 @@ export abstract class GameWithLoad extends GameWithControls {
         // mesh.position.x = position.X();
         // mesh.position.y = position.Y();
         this.scene.add(mesh);
-        
       }
-
-      
     });
 
     // this.scene.add(spotlight);

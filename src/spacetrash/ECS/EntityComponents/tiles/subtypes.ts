@@ -166,12 +166,14 @@ const northEastSprite = () => {
   return s;
 };
 
-const northEastMesh = (s: SamuraiTile) => {
+const northEastMesh = (s: SamuraiTile, x: number, y: number) => {
   // const geometry = PrismGeometry();
   const geometry = PrismGeometryV2(s);
   // geometry.rotateZ(degToRad(-90));
   const m = new THREE.Mesh(geometry, wallTexture);
   m.position.z = -TileSize / 2;
+  m.position.x = x * TileSize;
+  m.position.y = y * TileSize;
   return m;
 };
 
@@ -182,12 +184,14 @@ const northWestSprite = () => {
   return s;
 };
 
-const northWestMesh = (s: SamuraiTile) => {
+const northWestMesh = (s: SamuraiTile, x: number, y: number) => {
   // const geometry = PrismGeometry();
   const geometry = PrismGeometryV2(s);
   geometry.rotateZ(degToRad(270));
   const m = new THREE.Mesh(geometry, wallTexture);
   m.position.z = -TileSize / 2;
+  m.position.x = x * TileSize;
+  m.position.y = y * TileSize;
   return m;
 };
 
@@ -198,11 +202,13 @@ const southEastSprite = () => {
   return s;
 };
 
-const southEastMesh = (s: SamuraiTile) => {
+const southEastMesh = (s: SamuraiTile, x: number, y: number) => {
   const geometry = PrismGeometryV2(s);
   geometry.rotateZ(degToRad(90));
   const m = new THREE.Mesh(geometry, wallTexture);
   m.position.z = -TileSize / 2;
+  m.position.x = x * TileSize;
+  m.position.y = y * TileSize;
   return m;
 };
 
@@ -213,11 +219,13 @@ const southWestSprite = () => {
   return s;
 };
 
-const southWestMesh = (s: SamuraiTile) => {
+const southWestMesh = (s: SamuraiTile, x: number, y: number) => {
   const geometry = PrismGeometryV2(s);
   geometry.rotateZ(degToRad(180));
   const m = new THREE.Mesh(geometry, wallTexture);
   m.position.z = -TileSize / 2;
+  m.position.x = x * TileSize;
+  m.position.y = y * TileSize;
   return m;
 };
 
@@ -314,17 +322,17 @@ export class NorthEast extends Tile {
       samurai,
       pixi: new PixiJsRenderableComponent(northEastSprite()),
       threejs: new ThreeJsRenderableComponent(
-        northEastMesh(samurai.samuraiTile)
+        [northEastMesh(samurai.samuraiTile, x, y)]
       ),
-      arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const cube = ap.add.staticBody(
-          x * TileSize,
-          y * TileSize,
-          TileSize,
-          TileSize
-        );
-        return cube;
-      }),
+      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+      //   const cube = ap.add.staticBody(
+      //     x * TileSize,
+      //     y * TileSize,
+      //     TileSize,
+      //     TileSize
+      //   );
+      //   return cube;
+      // }),
     });
   }
 }
@@ -343,17 +351,17 @@ export class NorthWest extends Tile {
       samurai,
       pixi: new PixiJsRenderableComponent(northWestSprite()),
       threejs: new ThreeJsRenderableComponent(
-        northWestMesh(samurai.samuraiTile)
+        [northWestMesh(samurai.samuraiTile, x, y)]
       ),
-      arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const cube = ap.add.staticBody(
-          x * TileSize,
-          y * TileSize,
-          TileSize,
-          TileSize
-        );
-        return cube;
-      }),
+      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+      //   const cube = ap.add.staticBody(
+      //     x * TileSize,
+      //     y * TileSize,
+      //     TileSize,
+      //     TileSize
+      //   );
+      //   return cube;
+      // }),
     });
   }
 }
@@ -372,17 +380,17 @@ export class SouthEast extends Tile {
       samurai,
       pixi: new PixiJsRenderableComponent(southEastSprite()),
       threejs: new ThreeJsRenderableComponent(
-        southEastMesh(samurai.samuraiTile)
+        [southEastMesh(samurai.samuraiTile, x, y)]
       ),
-      arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const cube = ap.add.staticBody(
-          x * TileSize,
-          y * TileSize,
-          TileSize,
-          TileSize
-        );
-        return cube;
-      }),
+      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+      //   const cube = ap.add.staticBody(
+      //     x * TileSize,
+      //     y * TileSize,
+      //     TileSize,
+      //     TileSize
+      //   );
+      //   return cube;
+      // }),
     });
   }
 }
@@ -394,57 +402,57 @@ export class SouthWest extends Tile {
       samurai,
       pixi: new PixiJsRenderableComponent(southWestSprite()),
       threejs: new ThreeJsRenderableComponent(
-        southWestMesh(samurai.samuraiTile)
+        [southWestMesh(samurai.samuraiTile, x, y)]
       ),
-      arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const cube = ap.add.staticBody(
-          x * TileSize,
-          y * TileSize,
-          TileSize,
-          TileSize
-        );
-        return cube;
-      }),
+      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+      //   const cube = ap.add.staticBody(
+      //     x * TileSize,
+      //     y * TileSize,
+      //     TileSize,
+      //     TileSize
+      //   );
+      //   return cube;
+      // }),
     });
   }
 }
 
-const createPlane = (size) => {
-  let planeGeometry = new THREE.PlaneGeometry(size, size, size);
-  let material = new THREE.MeshBasicMaterial({
-    color: 0xffffff * Math.random(),
-    // side: DoubleSide
-  });
-  return new THREE.Mesh(planeGeometry, material);
-};
+// const createPlane = (size) => {
+//   let planeGeometry = new THREE.PlaneGeometry(size, size, size);
+//   let material = new THREE.MeshBasicMaterial({
+//     color: 0xffffff * Math.random(),
+//     // side: DoubleSide
+//   });
+//   return new THREE.Mesh(planeGeometry, material);
+// };
 
-const createFacesOfCube = () => {
-  let cubeSize = TileSize;
-  // Face 1
-  let face1 = createPlane(cubeSize);
-  // Face 2
-  let face2 = createPlane(cubeSize);
-  face2.position.z = cubeSize;
-  // Face 3
-  let face3 = createPlane(cubeSize);
-  face3.position.x = cubeSize / 2;
-  face3.rotation.y = Math.PI / 2;
-  face3.position.z = cubeSize / 2;
-  // Face 4
-  let face4 = createPlane(cubeSize);
-  face4.position.x = -cubeSize / 2;
-  face4.rotation.y = Math.PI / 2;
-  face4.position.z = cubeSize / 2;
-  // Face 5
-  let face5 = createPlane(cubeSize);
-  face5.position.z = cubeSize / 2;
-  face5.position.y = cubeSize / 2;
-  face5.rotation.x = Math.PI / 2;
-  // Face 6
-  let face6 = createPlane(cubeSize);
-  face6.position.z = cubeSize / 2;
-  face6.position.y = -cubeSize / 2;
-  face6.rotation.x = Math.PI / 2;
+// const createFacesOfCube = () => {
+//   let cubeSize = TileSize;
+//   // Face 1
+//   let face1 = createPlane(cubeSize);
+//   // Face 2
+//   let face2 = createPlane(cubeSize);
+//   face2.position.z = cubeSize;
+//   // Face 3
+//   let face3 = createPlane(cubeSize);
+//   face3.position.x = cubeSize / 2;
+//   face3.rotation.y = Math.PI / 2;
+//   face3.position.z = cubeSize / 2;
+//   // Face 4
+//   let face4 = createPlane(cubeSize);
+//   face4.position.x = -cubeSize / 2;
+//   face4.rotation.y = Math.PI / 2;
+//   face4.position.z = cubeSize / 2;
+//   // Face 5
+//   let face5 = createPlane(cubeSize);
+//   face5.position.z = cubeSize / 2;
+//   face5.position.y = cubeSize / 2;
+//   face5.rotation.x = Math.PI / 2;
+//   // Face 6
+//   let face6 = createPlane(cubeSize);
+//   face6.position.z = cubeSize / 2;
+//   face6.position.y = -cubeSize / 2;
+//   face6.rotation.x = Math.PI / 2;
 
-  return [face1, face2, face3, face4, face5, face6];
-};
+//   return [face1, face2, face3, face4, face5, face6];
+// };

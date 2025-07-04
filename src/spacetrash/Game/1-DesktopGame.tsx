@@ -704,7 +704,7 @@ export abstract class DesktopGame<
     });
   }
 
-  openAllWindows() {
+  openAllWindows() {  
     // this.dockviewAPI.component.addPanel({
     //   id: 'bots',
     //   component: 'bots',

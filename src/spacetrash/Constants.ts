@@ -41,7 +41,7 @@
 //   Math.sqrt(Math.pow(shipLength, 2) * numberOfShips)
 // );
 
-export const MapSize = 90;
+export const MapSize = 64;
 
 // export const MapSize = 30
 console.log("MapSize: ", MapSize);
@@ -67,3 +67,7 @@ export const TANK_VELOCITY = 3
 export const TANK_VELOCITY_LINEAR = 1;  
 
 // Total faces in the scene: 33304
+// Total faces in the scene: 20710
+// Total faces in the scene: 20658
+// Total faces in the scene: 20602
+// Total faces in the scene: 20602

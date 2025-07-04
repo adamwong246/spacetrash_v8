@@ -203,24 +203,24 @@ export class SpaceTrash extends GameWithLoad {
       }
     });
 
-    // this.samuraiEngine.update(this.samuraiCanvasContext, (result) => {
-    //   if (!result.a.isStatic && result.b.isStatic) {
-    //     const body = result.a;
-    //     const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
+    this.samuraiEngine.update(this.samuraiCanvasContext, (result) => {
+      if (!result.a.isStatic && result.b.isStatic) {
+        const body = result.a;
+        const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
 
-    //     let mover: MovingComponent = this.components.FloatMovingComponent.get(
-    //       body.SP_EID
-    //     );
-    //     if (mover) {
-    //       this.floatCollide(mover, spc);
-    //     }
+        let mover: MovingComponent = this.components.FloatMovingComponent.get(
+          body.SP_EID
+        );
+        if (mover) {
+          this.floatCollide(mover, spc);
+        }
 
-    //     mover = this.components.TankMovingComponent.get(body.SP_EID);
-    //     if (mover) {
-    //       // this.tankColide();
-    //     }
-    //   }
-    // });
+        mover = this.components.TankMovingComponent.get(body.SP_EID);
+        if (mover) {
+          // this.tankColide();
+        }
+      }
+    });
   }
 
   floatCollide(a: FloatMovingComponent, pos: PositionComponent) {

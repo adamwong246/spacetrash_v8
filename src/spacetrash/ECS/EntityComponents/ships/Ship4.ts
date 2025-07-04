@@ -11,7 +11,7 @@ import {
   SouthWest,
 } from "../tiles/subtypes";
 
-import sj from "../../../tiled/level15.json";
+import sj from "../../../tiled/level17.json";
 
 const FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
 const FLIPPED_VERTICALLY_FLAG = 0x40000000;
