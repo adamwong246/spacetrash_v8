@@ -1009,62 +1009,62 @@
 // //   if (
 // //     setPieces.store[phaseZero[y][x].setId][1].tileType !== "FloorTile"
 // //   ) {
-// //     magX = Math.abs(a.dx);
-// //     magY = Math.abs(a.dy);
-// //     roundX = Math.round(a.x);
-// //     roundY = Math.round(a.y);
+//     magX = Math.abs(a.dx);
+//     magY = Math.abs(a.dy);
+//     roundX = Math.round(a.x);
+//     roundY = Math.round(a.y);
 
-// //     if (x < roundX) {
-// //       if (y < roundY) {
-// //         // NorthWest
-// //         if (magX < magY) {
-// //           a.dy = a.dy * -1;
-// //         } else {
-// //           a.dx = a.dx * -1;
-// //         }
-// //       } else if (y > roundY) {
-// //         // SouthWest
-// //         if (magX > magY) {
-// //           a.dx = a.dx * -1;
-// //         } else {
-// //           a.dy = a.dy * -1;
-// //         }
-// //       } else {
-// //         // West
-// //         a.dx = a.dx * -1;
-// //       }
-// //     } else if (x > roundX) {
-// //       if (y < roundY) {
-// //         // NorthEast
-// //         if (magX > magY) {
-// //           a.dx = a.dx * -1;
-// //         } else {
-// //           a.dy = a.dy * -1;
-// //         }
-// //       } else if (roundY) {
-// //         // SouthEast
+//     if (x < roundX) {
+//       if (y < roundY) {
+//         // NorthWest
+//         if (magX < magY) {
+//           a.dy = a.dy * -1;
+//         } else {
+//           a.dx = a.dx * -1;
+//         }
+//       } else if (y > roundY) {
+//         // SouthWest
+//         if (magX > magY) {
+//           a.dx = a.dx * -1;
+//         } else {
+//           a.dy = a.dy * -1;
+//         }
+//       } else {
+//         // West
+//         a.dx = a.dx * -1;
+//       }
+//     } else if (x > roundX) {
+//       if (y < roundY) {
+//         // NorthEast
+//         if (magX > magY) {
+//           a.dx = a.dx * -1;
+//         } else {
+//           a.dy = a.dy * -1;
+//         }
+//       } else if (roundY) {
+//         // SouthEast
 
-// //         if (magX > magY) {
-// //           a.dy = a.dy * -1;
-// //         } else {
-// //           a.dx = a.dx * -1;
-// //         }
-// //       } else {
-// //         // East
-// //         a.dx = a.dx * -1;
-// //       }
-// //     } else {
-// //       if (y < roundY) {
-// //         // North
-// //         a.dy = a.dy * -1;
-// //       } else {
-// //         // South
-// //         a.dy = a.dy * -1;
-// //       }
-// //     }
-// //   } else {
-// //     // no-opt
-// //   }
+//         if (magX > magY) {
+//           a.dy = a.dy * -1;
+//         } else {
+//           a.dx = a.dx * -1;
+//         }
+//       } else {
+//         // East
+//         a.dx = a.dx * -1;
+//       }
+//     } else {
+//       if (y < roundY) {
+//         // North
+//         a.dy = a.dy * -1;
+//       } else {
+//         // South
+//         a.dy = a.dy * -1;
+//       }
+//     }
+//   } else {
+//     // no-opt
+//   }
 
 // //   if (i === game.bots[game.videoFeed][0]) {
 // //     if (game.forward === true) {

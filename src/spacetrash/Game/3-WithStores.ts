@@ -40,9 +40,19 @@ import { ConsoleRenderableStore } from "../../engine/rendering/console";
 
 import { DesktopGame } from "./1-DesktopGame";
 import { MatterComponent, MatterStore } from "../../engine/physics/matterjs";
-import { SamuraiComponent, SamuraiStore } from "../physics/SamuraiComponent";
+import { SamuraiTileComponent, SamuraiTileStore } from "../physics/SamuraiTile";
+import {
+  SP_PhysicalComponent,
+  SP_PhysicalStore,
+} from "../../engine/physics/SP_Physical";
 
-export type ICanvases = "map" | "bot" | "arcadePhysics" | "thermal" | "matter" | "samurai";
+export type ICanvases =
+  | "map"
+  | "bot"
+  | "arcadePhysics"
+  | "thermal"
+  | "matter"
+  | "samurai";
 
 export type IRenderings =
   | "2d"
@@ -59,7 +69,6 @@ export abstract class GameWithStores extends DesktopGame<
   ICanvases
 > {
   components = {
-    MatterComponent: new MatterStore(),
     Actors: new ActorStore(),
     AiAgentComponent: new AiAgentStore(),
     ArcadePhysicsComponent: new ArcadePhysicsStore(),
@@ -67,7 +76,7 @@ export abstract class GameWithStores extends DesktopGame<
     ConsoleRenderableComponent: new ConsoleRenderableStore(),
     DegreesDirectionComponent: new DegreesDirectionStore(),
     Eid2PM: new Eid2PMStore(),
-    FloatMovements: new FloatMovingStore(),
+    FloatMovingComponent: new FloatMovingStore(),
     FloatPositions: new FloatPositionStore(),
     HeatConductorComponent: new HeatConductorStore(),
     HeatDetectorComponent: new HeatDetectorStore(),
@@ -75,19 +84,21 @@ export abstract class GameWithStores extends DesktopGame<
     IntegerPositionComponent: new IntegerPositionStore(),
     LightIncastingComponent: new LightIncastingStore(),
     LightOutcastingComponent: new LightOutcastingStore(),
+    MatterComponent: new MatterStore(),
     NameableComponent: new NameableStore(),
     OrdinalDirectionComponent: new OrdinalDirectionStore(),
     OridinalMovingComponent: new OridinalMovingStore(),
     PixiJsRenderableComponent: new PixiJsRenderableStore(),
     RadiationDetectorComponent: new RadiationDetectorStore(),
     RadiationEmitterComponent: new RadiationEmitterStore(),
+    SamuraiTileComponent: new SamuraiTileStore(),
     SetPieces: new SetPieceStore(),
     SP_IntegerPositionComponent: new IntegerPositionStore(),
+    SP_PhysicalComponent: new SP_PhysicalStore(),
     TankMovingComponent: new TankMovingStore(),
     ThreeJsRenderableComponent: new ThreeJsRenderableStore(),
     TileComponent: new TileComponentStore(),
     V3AttackComponent: new V3AttackComponentStore(),
-    SamuraiComponent: new SamuraiStore(),
   };
 
   constructor(

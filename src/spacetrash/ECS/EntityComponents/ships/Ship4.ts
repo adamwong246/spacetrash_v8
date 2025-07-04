@@ -11,7 +11,7 @@ import {
   SouthWest,
 } from "../tiles/subtypes";
 
-import sj from "../../../tiled/level13.json";
+import sj from "../../../tiled/level14.json";
 
 const FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
 const FLIPPED_VERTICALLY_FLAG = 0x40000000;
@@ -157,58 +157,62 @@ export default class extends SpaceTrashEntityComponent {
         }
       }
     }
+
+    this.cullInteriorWall()
   }
 
-  // cullInteriorWall() {
-  //   const facing = (x: number, y: number): boolean => {
-  //     if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true;
-  //     return this.map[y][x].tiletype === "WallTile";
-  //   };
+  cullInteriorWall() {
+    const facing = (x: number, y: number): boolean => {
+      if (x < 0 || x >= MapSize || y < 0 || y >= MapSize) return true;
 
-  //   const northFacing = (x: number, y: number): boolean => {
-  //     if (facing(x, y - 1)) return true;
-  //     return false;
-  //   };
+      return this.map[y][x].constructor.name === "WallTile";
+    };
 
-  //   const southFacing = (x: number, y: number): boolean => {
-  //     if (facing(x, y + 1)) return true;
-  //     return false;
-  //   };
+    const northFacing = (x: number, y: number): boolean => {
+      if (facing(x, y - 1)) return true;
+      return false;
+    };
 
-  //   const eastFacing = (x: number, y: number): boolean => {
-  //     if (facing(x - 1, y)) return true;
-  //     return false;
-  //   };
+    const southFacing = (x: number, y: number): boolean => {
+      if (facing(x, y + 1)) return true;
+      return false;
+    };
 
-  //   const westFacing = (x: number, y: number): boolean => {
-  //     if (facing(x + 1, y)) return true;
-  //     return false;
-  //   };
+    const eastFacing = (x: number, y: number): boolean => {
+      if (facing(x - 1, y)) return true;
+      return false;
+    };
 
-  //   const cullings: [number, number][] = [];
+    const westFacing = (x: number, y: number): boolean => {
+      if (facing(x + 1, y)) return true;
+      return false;
+    };
 
-  //   for (let y = 0; y < this.shipSize; y++) {
-  //     for (let x = 0; x < this.shipSize; x++) {
-  //       const s = this.map[y][x];
+    const cullings: [number, number][] = [];
 
-  //       if (s.tiletype === "WallTile") {
-  //         let interiorFaces = 0;
-  //         if (
-  //           northFacing(x, y) &&
-  //           southFacing(x, y) &&
-  //           eastFacing(x, y) &&
-  //           westFacing(x, y)
-  //         ) {
-  //           cullings.push([x, y]);
-  //         }
-  //       }
-  //     }
-  //   }
+    for (let y = 0; y < this.shipSize; y++) {
+      for (let x = 0; x < this.shipSize; x++) {
+        const s = this.map[y][x];
 
-  //   cullings.forEach((c) => {
-  //     this.map[c[1]][c[0]] = null;
-  //   });
-  // }
+        if (s.constructor.name === "WallTile") {
+
+          if (
+            northFacing(x, y) &&
+            southFacing(x, y) &&
+            eastFacing(x, y) &&
+            westFacing(x, y)
+          ) {
+            cullings.push([x, y]);
+          }
+        }
+      }
+    }
+
+    console.log("interior cullings:", cullings.length);
+    cullings.forEach((c) => {
+      this.map[c[1]][c[0]] = null;
+    });
+  }
 
   constructor() {
     super(new Entity(), []);

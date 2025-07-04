@@ -12,42 +12,49 @@ import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { ArcadePhysicsComponent } from "../../Components/v4/PhaserArcade";
 import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
+import { Circle, deg2rad } from "detect-collisions";
+import { FloatMovingComponent } from "../../../../engine/game/physical";
+import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
 
 export class PuckBot extends Actor {
   constructor(
     x: number = 0,
     y: number = 0,
-    r: number = 0,
-    dx: number = 0,
-    dy: number = 0,
-    name?: string,
-    aiAgentConfig: AiAgentComponent
+    // aiAgentConfig: AiAgentComponent
   ) {
     const spe = new SpaceTrashEntity();
+
+    const physical = new Circle({ x, y }, TileSize / 8);
+
+    physical.setPosition(-x, -y, true);
+    physical.setAngle(deg2rad((Math.random()-0.5)*260), true);
+    physical.isStatic = false;
 
     super(
       spe,
       [
-        // new FloatPositionComponent(x, y),
-        // new DegreesDirectionComponent(r),
-        // new FloatMovingComponent(dx, dy),
-        // // new LightOutcastingComponent(1),
         new LightIncastingComponent(1),
-        // // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
-
-        // new DrawableComponent(bunnySprite(), spike(), new Text("?")),
 
         new PixiJsRenderableComponent(bunnySprite()),
         new ThreeJsRenderableComponent(spike()),
+        // aiAgentConfig,
 
-        new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-          const ball = ap.add.body(x * TileSize, y * TileSize);
-          ball.setCircle(TileSize * 0.4);
-          ball.setCollideWorldBounds(true);
-          return ball;
-        }),
+        new SP_PhysicalComponent(x, y, physical), 
+        new FloatMovingComponent((Math.random()-0.5)*3, (Math.random()-0.5) * 3),
+        
+        // new FloatPositionComponent(x, y),
+        // new DegreesDirectionComponent(r),
+        
+        // // new LightOutcastingComponent(1),
 
-        aiAgentConfig,
+        // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
+
+        // new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+        //   const ball = ap.add.body(x * TileSize, y * TileSize);
+        //   ball.setCircle(TileSize * 0.4);
+        //   ball.setCollideWorldBounds(true);
+        //   return ball;
+        // }),
 
         // new MatterComponent(
         //   Matter.Bodies.circle(

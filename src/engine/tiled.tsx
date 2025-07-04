@@ -24,9 +24,6 @@ const config: {
 sharp(imagePath)
   .metadata()
   .then((metadata) => {
-
-
-    
     const splitHeight = Math.floor(metadata.height / 2);
 
     // Extract top half

@@ -30,19 +30,35 @@
             }
         },
         "src/spacetrash/tiled/level11.json": {
-            "scale": 1.0694,
+            "scale": 0.1337,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 698.990087899757,
-                "y": 264.16682251729947
+                "x": 1813.7621540762902,
+                "y": 1888.5564697083018
             }
         },
         "src/spacetrash/tiled/level12.json": {
             "scale": 0.0573,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 12801.047120418847,
-                "y": 5296.684118673647
+                "x": 5122.16404886562,
+                "y": 5034.9040139616045
+            }
+        },
+        "src/spacetrash/tiled/level13.json": {
+            "scale": 0.1783,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1017.9472798653953,
+                "y": 586.0908581043186
+            }
+        },
+        "src/spacetrash/tiled/level14.json": {
+            "scale": 0.2062,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1743.4529582929194,
+                "y": 928.709990300679
             }
         },
         "src/spacetrash/tiled/level7.tmj": {
@@ -87,10 +103,10 @@
     },
     "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
     "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
-    "map.height": 64,
+    "map.height": 90,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "json",
-    "map.width": 64,
+    "map.width": 90,
     "openFiles": [
     ],
     "project": "tiled_project_v4.tiled-project",

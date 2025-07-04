@@ -3,12 +3,13 @@ import { MapStoreV2 } from "../VECS.ts/Store";
 
 // Gives an entity a position on the map
 export abstract class PositionComponent extends Component<unknown, any> {
-
   x: number;
   y: number;
 
   abstract X();
   abstract Y();
+  abstract setX(x: number);
+  abstract setY(y: number);
 
   constructor(x: number = 0, y: number = 0) {
     super();
@@ -32,21 +33,18 @@ export class IntegerPositionComponent extends PositionComponent {
 
     super(x, y);
   }
-
 }
 
 export class IntegerPositionStore extends MapStoreV2<IntegerPositionComponent> {}
 
 // Gives an entity a position above the grid
 export class FloatPositionComponent extends PositionComponent {
-
-    X() {
+  X() {
     return this.x;
   }
   Y() {
     return this.y;
   }
-
 
   getTileXAndY(): { x: number; y: number } {
     throw new Error("Method not implemented.");
@@ -128,20 +126,12 @@ export class FloatMovingComponent extends MovingComponent {
   constructor(dx: number = 0, dy: number = 0) {
     super();
     this.dx = dx;
-    this.dy = dx;
+    this.dy = dy;
   }
 }
 
 export class FloatMovingStore extends MapStoreV2<FloatMovingComponent> {
-  // each() {
-  //   throw new Error("Method not implemented.");
-  // }
-  // constructor() {
-  //   super();
-  // }
-  // make(r: number) {
-  //   return new FloatMovingComponent(r);
-  // }
+
 }
 
 // Gives the entity movement within the grid
@@ -158,15 +148,6 @@ export class OridinalMovingComponent extends MovingComponent {
 }
 
 export class OridinalMovingStore extends MapStoreV2<OridinalMovingComponent> {
-  // each() {
-  //   throw new Error("Method not implemented.");
-  // }
-  // constructor() {
-  //   super();
-  // }
-  // make(d: IDirs, v: number) {
-  //   return new OridinalMovingComponent(d, v);
-  // }
 }
 
 /////////////////////////////////////////////////////////////

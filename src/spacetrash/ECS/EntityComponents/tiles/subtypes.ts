@@ -2,6 +2,16 @@ import * as PIXI from "pixi.js";
 import * as THREE from "three";
 
 import {
+  Box,
+  Circle,
+  Ellipse,
+  Line,
+  Point,
+  Polygon,
+  PotentialVector,
+} from "detect-collisions";
+
+import {
   blueMaterial,
   voidMaterial,
   wallTexture,
@@ -23,10 +33,11 @@ import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
 import { ArcadePhysics } from "../../../vendor/arcade-physics-main/src";
 import { ArcadePhysicsComponent } from "../../Components/v4/PhaserArcade";
-import { SamuraiComponent } from "../../../physics/SamuraiComponent";
+import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
 import { SamuraiTile } from "../../../physics/BasePolygon";
 import { FlipComponent } from "../../Components/v4/FlipComponent";
 import { Tile } from ".";
+import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
 
 const PrismGeometryV2 = function (s: SamuraiTile): THREE.ExtrudeGeometry {
   const vectors = s.vectors.map((s) => {
@@ -179,7 +190,14 @@ const southWestMesh = (s: SamuraiTile) => {
 
 export class FloorTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    const samurai = new SamuraiComponent(x, y, "tile0", false, false, false);
+    const samurai = new SamuraiTileComponent(
+      x,
+      y,
+      "tile0",
+      false,
+      false,
+      false
+    );
 
     super({
       pixi: new PixiJsRenderableComponent(stoneSprite()),
@@ -192,38 +210,57 @@ export class FloorTile extends Tile {
 export class WallTile extends Tile {
   constructor(
     x: number = 0,
-    y: number = 0,
-    // wallConfig: {
-    //   pixi: PixiJsRenderableComponent;
-    //   threejs: ThreeJsRenderableComponent;
-    //   arcade: ArcadePhysicsComponent;
-    //   flip: FlipComponent;
-    // }
+    y: number = 0
+    
   ) {
-    const samurai = new SamuraiComponent(x, y, "tile100", false, false, false);
+    const samurai = new SamuraiTileComponent(
+      x,
+      y,
+      "tile100",
+      false,
+      false,
+      false
+    );
+
+    const physical = new Box({ x, y }, TileSize, TileSize);
+
+    physical.setPosition(x*TileSize, y*TileSize, true); 
+    // physical.setPosition(x, y, true);
+    // physical.setScale(TileSize, TileSize, true);
+    physical.setAngle(0, true);
+    physical.isStatic = true;
 
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(brickSprite()),
       threejs: new ThreeJsRenderableComponent(wallTile()),
-      arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const cube = ap.add.staticBody(
-          x * TileSize,
-          y * TileSize,
-          TileSize,
-          TileSize
-        );
-        cube.onOverlap = true;
-        cube.onCollide = true;
-        return cube;
-      }),
+
+      sp_physical: new SP_PhysicalComponent(x, y, physical),
+      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+      //   const cube = ap.add.staticBody(
+      //     x * TileSize,
+      //     y * TileSize,
+      //     TileSize,
+      //     TileSize
+      //   );
+      //   cube.onOverlap = true;
+      //   cube.onCollide = true;
+      //   return cube;
+      // }),
     });
   }
 }
 
 export class VoidTile extends Tile {
   constructor(x: number = 0, y: number = 0) {
-    const samurai = new SamuraiComponent(x, y, "tile0", false, false, false);
+    const samurai = new SamuraiTileComponent(
+      x,
+      y,
+      "tile0",
+      false,
+      false,
+      false
+    );
 
     super({
       samurai,
@@ -235,7 +272,14 @@ export class VoidTile extends Tile {
 
 export class NorthEast extends Tile {
   constructor(x: number = 0, y: number = 0, d: IDirs) {
-    const samurai = new SamuraiComponent(x, y, "corner", false, false, false);
+    const samurai = new SamuraiTileComponent(
+      x,
+      y,
+      "corner",
+      false,
+      false,
+      false
+    );
 
     super({
       samurai,
@@ -258,7 +302,14 @@ export class NorthEast extends Tile {
 
 export class NorthWest extends Tile {
   constructor(x: number = 0, y: number = 0, d: IDirs) {
-    const samurai = new SamuraiComponent(x, y, "corner", true, false, false);
+    const samurai = new SamuraiTileComponent(
+      x,
+      y,
+      "corner",
+      true,
+      false,
+      false
+    );
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(northWestSprite()),
@@ -280,7 +331,14 @@ export class NorthWest extends Tile {
 
 export class SouthEast extends Tile {
   constructor(x: number = 0, y: number = 0, d: IDirs) {
-    const samurai = new SamuraiComponent(x, y, "corner", false, true, false);
+    const samurai = new SamuraiTileComponent(
+      x,
+      y,
+      "corner",
+      false,
+      true,
+      false
+    );
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(southEastSprite()),
@@ -302,7 +360,7 @@ export class SouthEast extends Tile {
 
 export class SouthWest extends Tile {
   constructor(x: number = 0, y: number = 0, d: IDirs) {
-    const samurai = new SamuraiComponent(x, y, "corner", true, true, false);
+    const samurai = new SamuraiTileComponent(x, y, "corner", true, true, false);
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(southWestSprite()),

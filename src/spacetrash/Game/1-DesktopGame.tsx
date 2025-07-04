@@ -40,9 +40,12 @@ import { ArcadePhysics } from "../../spacetrash/vendor/arcade-physics-main/src";
 import { TileSize, MapSize } from "../Constants";
 import { defToRad } from "../lib";
 import { DirectionComponent } from "../../engine/game/physical";
-import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
+// import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
 import { StateSpace } from "../../engine/game/StateSpace";
 import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
+import { SamuraiEngine } from "../physics/SamuraIEngine";
+import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
+import { Body, Circle } from "detect-collisions";
 // import { MatterWindow } from "../UI/MatterWindow";
 
 // var Engine = Matter.Engine,
@@ -218,6 +221,7 @@ export abstract class DesktopGame<
 
   botsHook: React.Dispatch<any>;
   botHook: React.Dispatch<React.SetStateAction<IBotWindowState>>;
+  botWindowState: IBotWindowState;
 
   threejsBotCanvasRef: HTMLCanvasElement;
   threejsBotParentRef: HTMLElement;
@@ -247,6 +251,12 @@ export abstract class DesktopGame<
   // rapierWorld: RAPIER.World;
 
   samuraiCanvasContext: any;
+
+  samuraiBotCanvasRef: HTMLCanvasElement;
+  samuraiBotParentRef: HTMLElement;
+  // samuraiRenderer: PIXI.Renderer;
+  samuraiPixi: PIXI.Application;
+  samuraiEngine: SamuraiEngine;
 
   public videoFeed: number = 1;
 
@@ -295,8 +305,12 @@ export abstract class DesktopGame<
 
     this.pixijsRenderer = new PIXI.Application();
 
+    this.samuraiPixi = new PIXI.Application();
+
     // this.matterEngine = Engine.create();
     // this.matterEngine.gravity.scale = 0.000001;
+
+    // this.samuraiPixi = new PIX
 
     this.addToHistory(bootScreenTermLine);
 
@@ -468,9 +482,11 @@ export abstract class DesktopGame<
   }
 
   registerBotHook(
-    stateSetter: React.Dispatch<React.SetStateAction<IBotWindowState>>
+    stateSetter: React.Dispatch<React.SetStateAction<IBotWindowState>>,
+    state: IBotWindowState
   ) {
     this.botHook = stateSetter;
+    this.botWindowState = state;
   }
 
   focusMapWindow() {
@@ -488,11 +504,7 @@ export abstract class DesktopGame<
     if (!n || n < 1 || n > 9) throw `${n} is out of range, given ${s}`;
     this.videoFeed = n;
 
-    this.botHook({
-      rads: 100,
-      heat: 99,
-      sound: 101,
-    });
+    this.botHook(this.botWindowState);
 
     this.unFocusOnTermInput();
     this.focusWindowById(`vid`);
@@ -524,9 +536,7 @@ export abstract class DesktopGame<
         context: canvas.getContext("webgl2") as WebGL2RenderingContext,
         antialias: false,
       });
-      // this.threejsRenderer.
-      // this.threejsRenderer.physicallyCorrectLights = true;
-      // this.threejsRenderer.
+
     }
     if (key === "map") {
       this.pixijsBotCanvasRef = canvas;
@@ -541,47 +551,40 @@ export abstract class DesktopGame<
       });
     }
 
-    if (key === "arcadePhysics") {
-      this.arcadePhysicsCanvasContext = canvas.getContext("2d");
-      canvas.width = 800;
-      canvas.height = 800;
-
-      const config = {
-        width: 1200,
-        height: 1200,
-        gravity: {
-          x: 0,
-          y: 0,
-        },
-      };
-
-      this.arcadePhysics = new ArcadePhysics(config);
-
-      // let gravity = new RAPIER.Vector2(0.0, -9.81);
-      // this.rapierWorld = new RAPIER.World(gravity);
-    }
-
+    // if (key === "arcadePhysics") {
+    //   // this.arcadePhysicsCanvasContext = canvas.getContext("2d");
+    //   // canvas.width = 800;
+    //   // canvas.height = 800;
+    //   // const config = {
+    //   //   width: 1200,
+    //   //   height: 1200,
+    //   //   gravity: {
+    //   //     x: 0,
+    //   //     y: 0,
+    //   //   },
+    //   // };
+    //   // this.arcadePhysics = new ArcadePhysics(config);
+    //   // let gravity = new RAPIER.Vector2(0.0, -9.81);
+    //   // this.rapierWorld = new RAPIER.World(gravity);
+    // }
 
     if (key === "samurai") {
+
+      this.samuraiBotCanvasRef = canvas;
+      this.samuraiBotParentRef = parentComponent;
+
       this.samuraiCanvasContext = canvas.getContext("2d");
-      // canvas.width = 800;
-      // canvas.height = 800;
+      canvas.width = 1000;
+      canvas.height = 1000;
+      this.samuraiEngine = new SamuraiEngine();
 
-      // const config = {
-      //   width: 1200,
-      //   height: 1200,
-      //   gravity: {
-      //     x: 0,
-      //     y: 0,
-      //   },
-      // };
+      this.samuraiCanvasContext.strokeStyle = "#FFFFFF";
+      this.samuraiCanvasContext.beginPath();
 
-      // this.arcadePhysics = new ArcadePhysics(config);
+      this.samuraiEngine.system.draw(this.samuraiCanvasContext);
+      this.samuraiCanvasContext.stroke();
 
-      // let gravity = new RAPIER.Vector2(0.0, -9.81);
-      // this.rapierWorld = new RAPIER.World(gravity);
     }
-
 
     // if (key === "matter") {
     //   var width = (MapSize) * TileSize,
@@ -632,17 +635,15 @@ export abstract class DesktopGame<
     // }
 
     if (
-      // this.pixi2dThermalApp &&
-
       this.pixi2dApp &&
       this.threejsRenderer &&
-      this.samuraiCanvasContext &&
-      // this.matterRenderer &&
-
-      // this.rapierWorld
-      this.arcadePhysics
+      // this.samuraiPixi &&
+      this.samuraiEngine
     ) {
+
       this.run();
+    } else {
+      
     }
   }
 
@@ -689,9 +690,6 @@ export abstract class DesktopGame<
   onDockviewReady(event: DockviewReadyEvent) {
     self.dockviewAPI = event.api;
 
-
-    
-    
     event.api.addPanel({
       id: "term",
       component: "term",
@@ -704,7 +702,6 @@ export abstract class DesktopGame<
         game: this,
       },
     });
-
   }
 
   openAllWindows() {
@@ -811,7 +808,6 @@ export abstract class DesktopGame<
       },
       params: {},
     });
-
   }
 
   focusWindowById(s: string, x?) {
@@ -1061,14 +1057,16 @@ export abstract class DesktopGame<
   }
 
   positionOfBot(eid: number): { x: number; y: number } {
-    const arcadeObjectComponent: ArcadePhysicsComponent =
-      this.components.ArcadePhysicsComponent.take(eid);
+    const arcadeObjectComponent: SP_PhysicalComponent =
+      this.components.SP_PhysicalComponent.take(eid);
 
-    if (!arcadeObjectComponent.arcadeObject)
+    if (!arcadeObjectComponent.body)
       return { x: arcadeObjectComponent.x, y: arcadeObjectComponent.y };
+
+
     return {
-      x: arcadeObjectComponent.arcadeObject.position.x,
-      y: arcadeObjectComponent.arcadeObject.position.y,
+      x: arcadeObjectComponent.body.pos.x,
+      y: arcadeObjectComponent.body.pos.y,
     };
   }
 
@@ -1081,14 +1079,14 @@ export abstract class DesktopGame<
   }
 
   rotationOfBot(eid: number): { r: number } {
-    const arcadeObjectComponent =
-      this.components.ArcadePhysicsComponent.take(eid);
+    const spPhysical =
+      this.components.SP_PhysicalComponent.take(eid).body as Circle;
 
-    if (!arcadeObjectComponent.arcadeObject)
-      return { r: arcadeObjectComponent.r };
+    // if (!spPhysical.body)
+    //   return { r: spPhysical.r };
 
     return {
-      r: arcadeObjectComponent?.arcadeObject.rotation,
+      r: spPhysical.angle
     };
   }
 
@@ -1142,12 +1140,12 @@ export abstract class DesktopGame<
   }
 
   async renderArcadePhysics() {
-    this.arcadePhysics.world.update(this.arcadePhysicsTick * 1000, 1000 / 60);
-    this.arcadePhysics.world.postUpdate(
-      this.arcadePhysicsTick * 1000,
-      1000 / 60
-    );
-    this.arcadePhysicsTick++;
+    // this.arcadePhysics.world.update(this.arcadePhysicsTick * 1000, 1000 / 60);
+    // this.arcadePhysics.world.postUpdate(
+    //   this.arcadePhysicsTick * 1000,
+    //   1000 / 60
+    // );
+    // this.arcadePhysicsTick++;
 
     // draw debug
     // this.arcadePhysicsCanvasContext.clearRect(

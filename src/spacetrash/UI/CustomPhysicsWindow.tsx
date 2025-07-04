@@ -29,8 +29,8 @@ export const CustomPhysicsWindow = (props: { game: SpaceTrash }) => {
       <canvas
         ref={canvasRef}
         style={{
-          height: "500",
-          width: "500",
+          height: "1500",
+          width: "1500",
         }}
       ></canvas>
     </div>

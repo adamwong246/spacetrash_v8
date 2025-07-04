@@ -1,9 +1,10 @@
 import { SpaceTrashScene } from ".";
 
-import { MapSize } from "../Constants";
+import { ActorSize, MapSize, SPEED_CONSTANT, TileSize } from "../Constants";
+import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { SpaceTrash } from "../Game/index.ts";
-import level4 from "./../ECS/EntityComponents/ships/Ship4.ts"
+import level4 from "./../ECS/EntityComponents/ships/Ship4.ts";
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
@@ -13,13 +14,16 @@ class MainScene extends SpaceTrashScene {
     // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
 
-    const drones = [...new Array(1)].map((n) => {
+    const drones = [...new Array(9)].map((n) => {
       return new SpaceTrashBot(
         // Math.random() * MapSize * TileSize,
         // Math.random() * MapSize * TileSize,
-        MapSize / 2,
-        MapSize / 2,
+        // 500,
+        // 500,
+        // (MapSize * TileSize) / 2,
+        // (MapSize * TileSize) / 2,
         // 5, 5,
+        0,0,
         0,
         0,
         0
@@ -44,18 +48,9 @@ class MainScene extends SpaceTrashScene {
     //   ),
     // ])[0];
 
-    // const moreBots = [...new Array(1)].map((n) => {
-    //   return new PuckBot(
-    //     // 200, 200,
-    //     Math.random() * MapSize,
-    //     Math.random() * MapSize ,
-    //     // Math.random() * MapSize,
-    //     // Math.random() * MapSize,
-    //     ActorSize,
-    //     (Math.random() - 0.5) * SPEED_CONSTANT,
-    //     (Math.random() - 0.5) * SPEED_CONSTANT
-    //   );
-    // });
+    const moreBots = [...new Array(50)].map((n) => {
+      return new PuckBot(Math.random() * MapSize, Math.random() * MapSize);
+    });
 
     // const moreBots = [...new Array(8)].map((n) => {
     //   return new PuckBot(
@@ -114,7 +109,7 @@ class MainScene extends SpaceTrashScene {
     game.setEntitiesComponent([
       ship,
       ...ship.toTiles(),
-      // ...moreBots,
+      ...moreBots,
       // warpcore0,
       // warpcore1,
       // monster1,
@@ -393,11 +388,9 @@ const scene = new MainScene({
         },
       ];
     },
-    (ecs, event: any) => {
-    },
+    (ecs, event: any) => {},
     "2d",
   ],
-
 });
 
 export default scene;

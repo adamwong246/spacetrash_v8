@@ -20,6 +20,9 @@ import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs
 import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
 import { ConsoleRenderableComponent } from "../../../../engine/rendering/console";
 import { TankMovingComponent } from "../../Components/v4/TankMovingComponent";
+import { Box, Circle } from "detect-collisions";
+import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
+import { FloatMovingComponent } from "../../../../engine/game/physical";
 
 export class SpaceTrashBot extends Actor {
   constructor(
@@ -33,9 +36,15 @@ export class SpaceTrashBot extends Actor {
   ) {
     const spe = new SpaceTrashEntity();
 
+    const physical = new Circle({ x, y }, TileSize/8);
+
+    physical.setPosition(x, y, true);
+    physical.setAngle(0, true);
+    physical.isStatic = false;
+
     super(spe, [
       ...upgrades,
-      new TankMovingComponent(dx, dy),
+      
       new LightOutcastingComponent(1),
       new LightIncastingComponent(1),
       new NameableComponent(name || RandomMaleNames.generate("male", spe)),
@@ -44,18 +53,23 @@ export class SpaceTrashBot extends Actor {
       new PixiJsRenderableComponent(bunnySprite()),
       new ConsoleRenderableComponent("?"),
 
-      new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const ball = ap.add.body(x * TileSize, y * TileSize);
-        ball.setCircle((TileSize / 2) * 0.51);
-        ball.setBounce(0.1);
-        ball.setCollideWorldBounds(false);
-        ball.setFriction(1000, 1000);
-        ball.onOverlap = true
-        ball.onCollide = true
+      new TankMovingComponent(dx, dy),
+      new SP_PhysicalComponent(x, y, physical),
 
-        return ball;
-      }),
 
+      // new FloatMovingComponent(0, 0),
+
+      // new ArcadePhysicsComponent((ap: ArcadePhysics) => {
+      //   const ball = ap.add.body(x * TileSize, y * TileSize);
+      //   ball.setCircle((TileSize / 2) * 0.51);
+      //   ball.setBounce(0.1);
+      //   ball.setCollideWorldBounds(false);
+      //   ball.setFriction(1000, 1000);
+      //   ball.onOverlap = true
+      //   ball.onCollide = true
+
+      //   return ball;
+      // }),
     ]);
   }
 }

@@ -1,8 +1,9 @@
 import { SpaceTrashEntityComponent } from "..";
+import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
 import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
 import { Component } from "../../../../engine/VECS.ts/Component";
-import { SamuraiComponent } from "../../../physics/SamuraiComponent";
+import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { HeatConductorComponent } from "../../Components/v3/heat";
 import { ArcadePhysicsComponent } from "../../Components/v4/PhaserArcade";
@@ -17,11 +18,13 @@ export class Tile extends SpaceTrashEntityComponent {
     threejs,
     arcade,
     samurai,
+    sp_physical
   }: {
     pixi: PixiJsRenderableComponent;
     threejs: ThreeJsRenderableComponent;
     arcade?: ArcadePhysicsComponent;
-    samurai: SamuraiComponent;
+      samurai: SamuraiTileComponent;
+    sp_physical?: SP_PhysicalComponent
 
   }) {
     const spe = new SpaceTrashEntity();
@@ -31,16 +34,16 @@ export class Tile extends SpaceTrashEntityComponent {
       pixi,
       threejs,
       samurai,
-
       new LightIncastingComponent(),
       new HeatConductorComponent(1),
 
 
     ];
 
-    if (arcade) {
-      comps.push(arcade);
+    if (sp_physical) {
+      comps.push(sp_physical);
     }
+
     super(spe, comps);
 
     this.x = samurai.x;

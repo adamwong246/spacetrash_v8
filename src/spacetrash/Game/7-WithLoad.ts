@@ -8,8 +8,10 @@ import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
 import { GameWithControls } from "./4-WithControls";
 import { IRenderings } from "./3-WithStores";
 import { Composite } from "matter-js";
-import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
+// import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
 import { BasePolygons } from "../physics/BasePolygon";
+import { SamuraiTileComponent } from "../physics/SamuraiTile";
+import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
@@ -36,20 +38,46 @@ export abstract class GameWithLoad extends GameWithControls {
 
   load() {
     // this.populateMatterJs();
-    this.inflateArcadePhysics();
+    // this.inflateArcadePhysics();
     this.mapEntitiesToPositions();
     this.initializeSetPieces();
     this.populateSetPiecesWithIntegerPositions();
     this.initializeActors();
-    this.attachArcadePhysicsToActors();
+    // this.attachArcadePhysicsToActors();
     this.attachAiAgentsToActors();
     this.runInitialMapBoundaryCheck();
     // this.runPlaceImmoveableSetPieces();
-    this.setup2dAnd3dGames();
-    this.setupArcadePhysics();
+    this.cullInteriorFaces()
+    this.setupRenderers();
+    this.loadPhysics();
     this.setupAiAgents();
     this.setupHeat();
-    this.runSamurai();
+    this.measureThreejs(0);
+  }
+  cullInteriorFaces() {
+    throw new Error("Method not implemented.");
+  }
+  measureThreejs(arg0: number) {
+    let totalFaces = 0;
+
+    this.scene.traverseVisible(function (object) {
+      if (object.isMesh) {
+        const geometry = object.geometry;
+
+        if (geometry.isBufferGeometry) {
+          // For BufferGeometry, faces are represented by triangles
+          // If indexed geometry, faces = index.count / 3
+          if (geometry.index !== null) {
+            totalFaces += geometry.index.count / 3;
+          } else {
+            // If non-indexed geometry, faces = position.count / 3
+            totalFaces += geometry.attributes.position.count / 3;
+          }
+        }
+      }
+    });
+
+    console.log("Total faces in the scene:", totalFaces);
   }
 
   populateMatterJs() {
@@ -61,39 +89,39 @@ export abstract class GameWithLoad extends GameWithControls {
     Composite.add(this.matterEngine.world, [...bodies]);
   }
 
-  inflateArcadePhysics() {
-    this.components.ArcadePhysicsComponent.each((apc, eid) => {
-      this.components.ArcadePhysicsComponent.take(eid).arcadeObject =
-        apc.creator(this.arcadePhysics);
-    });
-  }
+  // inflateArcadePhysics() {
+  //   this.components.ArcadePhysicsComponent.each((apc, eid) => {
+  //     this.components.ArcadePhysicsComponent.take(eid).arcadeObject =
+  //       apc.creator(this.arcadePhysics);
+  //   });
+  // }
 
   mapEntitiesToPositions() {
     for (let [eid, [subtype, classification]] of this.entities) {
       if (classification === "Actor") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
-            this.components.ArcadePhysicsComponent.take(eid),
-            classification
+            this.components.SP_PhysicalComponent.take(eid),
+            subtype
           ),
           eid
         );
       } else if (classification === "Tile") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
-            this.components.SamuraiComponent.take(eid),
-            classification
+            this.components.SamuraiTileComponent.take(eid),
+            subtype
           ),
           eid
         );
       } else if (classification === "WarpCore") {
         this.components.Eid2PM.make(
           new Eid2PMComponent(
-            this.components.ArcadePhysicsComponent.take(
+            this.components.SP_PhysicalComponent.take(
               eid,
               "WarpCores ought to have an arcade physics component"
             ),
-            classification
+            subtype
           ),
           eid
         );
@@ -313,7 +341,7 @@ export abstract class GameWithLoad extends GameWithControls {
   //   });
   // };
 
-  setup2dAnd3dGames() {
+  setupRenderers() {
     this.components.PixiJsRenderableComponent.each((p, i) => {
       const position = this.components.Eid2PM.take(i).position;
 
@@ -356,56 +384,60 @@ export abstract class GameWithLoad extends GameWithControls {
     // (GAME as SpaceTrash).spotlight = new THREE.SpotLight(0xff0000, 1000);
   }
 
-  setupArcadePhysics = () => {
-    const staticGroup: { eid: number; arcade: ArcadePhysicsComponent }[] = [];
-    const dynamicGroup: { eid: number; arcade: ArcadePhysicsComponent }[] = [];
+  loadPhysics = () => {
+    const staticGroup: { eid: number; samComp: SP_PhysicalComponent }[] = [];
+    const dynamicGroup: { eid: number; samComp: SP_PhysicalComponent }[] = [];
 
-    this.components.ArcadePhysicsComponent.each((v, k) => {
-      if (v.arcadeObject.immovable) staticGroup.push({ eid: k, arcade: v });
-      else dynamicGroup.push({ eid: k, arcade: v });
+    this.components.SP_PhysicalComponent.each((v, k) => {
+      this.samuraiEngine.addBody(v);
+
+      v.body.SP_EID = k;
+
+      if (v.body.isStatic) staticGroup.push({ eid: k, samComp: v });
+      else dynamicGroup.push({ eid: k, samComp: v });
     });
 
-    dynamicGroup.forEach(({ arcade }) => {
-      arcade.arcadeObject.position.x = Math.random() * MapSize * TileSize;
-      arcade.arcadeObject.position.y = Math.random() * MapSize * TileSize;
+    dynamicGroup.forEach(({ samComp }) => {
+      // samComp.body.pos.x = Math.random() * MapSize * TileSize;
+      // samComp.body.pos.y = Math.random() * MapSize * TileSize;
     });
 
     dynamicGroup.forEach((x) => {
-      const dynamicBody = x.arcade;
+      const dynamicBody = x.samComp;
       staticGroup.forEach((y) => {
-        const staticBody = y.arcade;
+        const staticBody = y.samComp;
 
         // console.log(this.entities.get(y.eid));
 
-        this.arcadePhysics.world.addOverlap(
-          staticBody.arcadeObject,
-          dynamicBody.arcadeObject,
-          (...a) => {
-            // const x = a[1];
-            // for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
+        // this.arcadePhysics.world.addOverlap(
+        //   staticBody.samComp,
+        //   dynamicBody.arcadeObject,
+        //   (...a) => {
+        //     // const x = a[1];
+        //     // for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
 
-            //   console.log("collision between", y.eid, x.eid)
-            //   if (z.body === x) {
-            //     // z.callback();
-            //   }
-            // }
-            // const cb = x.getData('onCollide');
-            // cb(s, d)
-            // debugger
-            // Actors.update({
-            //   onCollision
-            // })
+        //     //   console.log("collision between", y.eid, x.eid)
+        //     //   if (z.body === x) {
+        //     //     // z.callback();
+        //     //   }
+        //     // }
+        //     // const cb = x.getData('onCollide');
+        //     // cb(s, d)
+        //     // debugger
+        //     // Actors.update({
+        //     //   onCollision
+        //     // })
 
-            console.log("overlap1 between", y.eid, x.eid);
-            debugger;
-          },
-          (x, y, z) => {
-            console.log("overlap2 between", x, y);
-          },
-          (x, y, z) => {
-            console.log("mark3");
-          }
-        );
+        //     console.log("overlap1 between", y.eid, x.eid);
+        //     debugger;
+        //   },
+        //   (x, y, z) => {
+        //     console.log("overlap2 between", x, y);
+        //   },
+        //   (x, y, z) => {
+        //     console.log("mark3");
+        //   }
+        // );
       });
     });
 
@@ -493,34 +525,6 @@ export abstract class GameWithLoad extends GameWithControls {
     // GAME.pixi2dThermalApp.stage.addChild(graphics);
     // GAME.pixi2dThermalApp.render();
 
-    // });
-  }
-
-  runSamurai() {
-
-    // const superPolygons = []
-
-    // for (let y = 0; y < MapSize; y++) {
-    //   // this.components.SetPieces.store[y] = [];
-    //   for (let x = 0; x < MapSize; x++) {
-    //     // this.components.SetPieces.store[y][x] = new SetPieceComponent();
-
-    //     const s = this.components.SamuraiComponent.byXandY(x, y);
-
-    //     if (s.samuraiTile.vectors.length) {
-          
-    //       // const geom = BasePolygons[s.samuraiTile];
-
-
-    //       for (let superPolygon in superPolygons) {
-            
-    //       }
-    //     }
-    //   }
-    // }
-
-    // this.components.SamuraiComponent.each((s) => {
-    //   console.log(s);
     // });
   }
 }
