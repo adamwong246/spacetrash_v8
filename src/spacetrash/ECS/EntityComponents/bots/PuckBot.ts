@@ -18,8 +18,8 @@ import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
 
 export class PuckBot extends Actor {
   constructor(
-    x: number = 0,
-    y: number = 0,
+    x: number,
+    y: number,
     // aiAgentConfig: AiAgentComponent
   ) {
     const spe = new SpaceTrashEntity();
@@ -27,7 +27,7 @@ export class PuckBot extends Actor {
     const physical = new Circle({ x, y }, TileSize / 8);
 
     physical.setPosition(-x, -y, true);
-    physical.setAngle(deg2rad((Math.random()-0.5)*260), true);
+    physical.setAngle(deg2rad((Math.random()-0.5)*360), true);
     physical.isStatic = false;
 
     super(

@@ -5,11 +5,13 @@ import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { SpaceTrash } from "../Game/index.ts";
 import level4 from "./../ECS/EntityComponents/ships/Ship4.ts";
+import { BoringShip } from "./../ECS/EntityComponents/ships/BoringShip.ts";
+import {EmptyShip} from "./../ECS/EntityComponents/ships/EmptyShip.ts";
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
-    // const ship = new BoringShip();
     const ship = new level4();
+    // const ship = new level4();
     // const ship = new level4();
     // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
@@ -23,7 +25,7 @@ class MainScene extends SpaceTrashScene {
         // (MapSize * TileSize) / 2,
         // (MapSize * TileSize) / 2,
         // 5, 5,
-        0,0,
+        100,100,
         0,
         0,
         0
@@ -48,8 +50,13 @@ class MainScene extends SpaceTrashScene {
     //   ),
     // ])[0];
 
-    const moreBots = [...new Array(50)].map((n) => {
-      return new PuckBot(Math.random() * MapSize, Math.random() * MapSize);
+    // the physics engine cannot do more than 3000
+    const moreBots = [...new Array(100)].map((n) => {
+      return new PuckBot(
+        Math.random() * MapSize * TileSize,
+        Math.random() * MapSize * TileSize,
+
+      );
     });
 
     // const moreBots = [...new Array(8)].map((n) => {

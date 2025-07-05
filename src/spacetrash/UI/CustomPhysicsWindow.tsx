@@ -29,6 +29,8 @@ export const CustomPhysicsWindow = (props: { game: SpaceTrash }) => {
       <canvas
         ref={canvasRef}
         style={{
+          overflowY: "scroll",
+          overflowX: "scroll",
           height: "1500",
           width: "1500",
         }}

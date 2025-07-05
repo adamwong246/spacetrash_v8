@@ -1,3 +1,5 @@
+import {AsciiRenderer} from "./../vendor/ascii-renderer";
+
 import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
@@ -45,7 +47,7 @@ import { StateSpace } from "../../engine/game/StateSpace";
 import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
 import { SamuraiEngine } from "../physics/SamuraIEngine";
 import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
-import { Body, Circle } from "detect-collisions";
+import { Body, Circle, deg2rad } from "detect-collisions";
 // import { MatterWindow } from "../UI/MatterWindow";
 
 // var Engine = Matter.Engine,
@@ -299,6 +301,8 @@ export abstract class DesktopGame<
     this.camera.rotateY(defToRad(90));
 
     this.scene = new THREE.Scene();
+
+    this.scene.fog = new THREE.Fog( 0x000000, 0, 150 );
 
     this.pixi2dApp = new PIXI.Application();
     // this.pixi2dThermalApp = new PIXI.Application();
@@ -574,15 +578,15 @@ export abstract class DesktopGame<
       this.samuraiBotParentRef = parentComponent;
 
       this.samuraiCanvasContext = canvas.getContext("2d");
-      canvas.width = 1000;
-      canvas.height = 1000;
+      canvas.width = 10000;
+      canvas.height = 10000;
       this.samuraiEngine = new SamuraiEngine();
 
-      this.samuraiCanvasContext.strokeStyle = "#FFFFFF";
-      this.samuraiCanvasContext.beginPath();
+      // this.samuraiCanvasContext.strokeStyle = "#FFFFFF";
+      // this.samuraiCanvasContext.beginPath();
 
-      this.samuraiEngine.system.draw(this.samuraiCanvasContext);
-      this.samuraiCanvasContext.stroke();
+      // this.samuraiEngine.system.draw(this.samuraiCanvasContext);
+      // this.samuraiCanvasContext.stroke();
 
     }
 
@@ -1101,15 +1105,38 @@ export abstract class DesktopGame<
   }
 
   async renderBotCanvas() {
+
+
+    
     const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     this.threejsRenderer.setSize(p.width, p.height);
+
+
+    // this.threejsRenderer.setPixelRatio(window.devicePixelRatio / 8)
+
     const position = this.videoFeedPosition();
-    this.camera.position.x = position.x;
-    this.camera.position.y = position.y;
     const rotation = this.videoFeedRotation();
+
+    const mag = Math.sqrt(Math.pow(position.x, 2) + Math.pow(position.y, 2));
+    const unitX = position.x / mag;
+    const unitY = position.y / mag;
+
+    const degrees = rotation.r % 360;
+
+    if (degrees < 180) {
+      this.camera.position.x = position.x + unitX * -TileSize/2;
+      this.camera.position.y = position.y + unitY * -TileSize/2;
+    } else {
+      this.camera.position.x = position.x + unitX * TileSize/2;
+      this.camera.position.y = position.y + unitY * TileSize/2;
+    }
+
+
+
 
     this.camera.rotation.y = -rotation.r;
     // console.log(this.camera.position, this.camera.rotation)
+
 
     let spotlightRot = -rotation.r;
     if (this.camera.rotation.y < -Math.PI / 2) {
@@ -1127,6 +1154,8 @@ export abstract class DesktopGame<
       );
     }
 
+    
+    
     this.threejsRenderer.render(this.scene, this.camera);
   }
 

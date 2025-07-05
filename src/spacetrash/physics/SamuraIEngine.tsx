@@ -25,7 +25,6 @@ export class SamuraiEngine {
 
     context.strokeStyle = "#FFFFFF";
     context.beginPath();
-    // draw whole system
     this.system.draw(context);
     context.stroke();
 

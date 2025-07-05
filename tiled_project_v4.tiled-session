@@ -49,48 +49,56 @@
             "scale": 0.1783,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1017.9472798653953,
-                "y": 586.0908581043186
+                "x": 3485.6982613572636,
+                "y": 670.2187324733595
             }
         },
         "src/spacetrash/tiled/level14.json": {
             "scale": 0.1761,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1354.344122657581,
-                "y": 1990.3463940942647
+                "x": 3852.9244747302673,
+                "y": 2075.525269733106
             }
         },
         "src/spacetrash/tiled/level15.json": {
             "scale": 0.1456,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1624.3131868131868,
-                "y": 1225.961538461538
+                "x": 4646.291208791208,
+                "y": 1328.9835164835163
             }
         },
         "src/spacetrash/tiled/level16.json": {
             "scale": 0.1387,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2036.7700072098055,
-                "y": 1654.6503244412404
+                "x": 5209.084354722422,
+                "y": 1762.7974044700798
             }
         },
         "src/spacetrash/tiled/level17.json": {
-            "scale": 0.2355,
+            "scale": 0.4436,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1343.9490445859874,
-                "y": 995.7537154989385
+                "x": 1921.776375112714,
+                "y": 853.2461677186654
             }
         },
         "src/spacetrash/tiled/level18.json": {
             "scale": 0.155,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1932.2580645161293,
-                "y": 887.0967741935483
+                "x": 4770.967741935484,
+                "y": 983.8709677419356
+            }
+        },
+        "src/spacetrash/tiled/level19.json": {
+            "scale": 0.3133,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1358.1232045962336,
+                "y": 850.6224066390041
             }
         },
         "src/spacetrash/tiled/level7.tmj": {
@@ -135,10 +143,10 @@
     },
     "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
     "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
-    "map.height": 100,
+    "map.height": 64,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "json",
-    "map.width": 100,
+    "map.width": 64,
     "openFiles": [
     ],
     "project": "tiled_project_v4.tiled-project",

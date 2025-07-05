@@ -103,12 +103,7 @@ const wallTile = (x: number, y: number) => {
   westFacingWall.rotation.y = -deg2rad(90);
   westFacingWall.position.z = 0;
 
-  return [
-    northFaceingWall,
-    southFaceingWall,
-    eastFacingWall,
-    westFacingWall,
-  ];
+  return [northFaceingWall, southFaceingWall, eastFacingWall, westFacingWall];
 };
 
 // const wallTile = () => {
@@ -260,10 +255,7 @@ export class WallTile extends Tile {
     );
 
     const physical = new Box({ x, y }, TileSize, TileSize);
-
     physical.setPosition(x * TileSize, y * TileSize, true);
-    // physical.setPosition(x, y, true);
-    // physical.setScale(TileSize, TileSize, true);
     physical.setAngle(0, true);
     physical.isStatic = true;
 
@@ -318,21 +310,24 @@ export class NorthEast extends Tile {
       false
     );
 
+    const physical = new Polygon({ x, y }, [
+      { x: 0, y: 0 },
+      { x: 32, y: 32 },
+      { x: 0, y: 32 },
+      { x: 0, y: 0 },
+    ]);
+
+    physical.setPosition(x * TileSize, y * TileSize, true);
+    physical.setAngle(0, true);
+    physical.isStatic = true;
+
     super({
+      sp_physical: new SP_PhysicalComponent(x, y, physical),
       samurai,
       pixi: new PixiJsRenderableComponent(northEastSprite()),
-      threejs: new ThreeJsRenderableComponent(
-        [northEastMesh(samurai.samuraiTile, x, y)]
-      ),
-      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-      //   const cube = ap.add.staticBody(
-      //     x * TileSize,
-      //     y * TileSize,
-      //     TileSize,
-      //     TileSize
-      //   );
-      //   return cube;
-      // }),
+      threejs: new ThreeJsRenderableComponent([
+        northEastMesh(samurai.samuraiTile, x, y),
+      ]),
     });
   }
 }
@@ -347,27 +342,31 @@ export class NorthWest extends Tile {
       false,
       false
     );
+
+    const physical = new Polygon({ x, y }, [
+      { x: 32, y: 0 },
+      { x: 32, y: 32 },
+      { x: 0, y: 32 },
+      { x: 32, y: 0 },
+    ]);
+
+    physical.setPosition(x * TileSize, y * TileSize, true);
+    physical.setAngle(0, true);
+    physical.isStatic = true;
+
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(northWestSprite()),
-      threejs: new ThreeJsRenderableComponent(
-        [northWestMesh(samurai.samuraiTile, x, y)]
-      ),
-      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-      //   const cube = ap.add.staticBody(
-      //     x * TileSize,
-      //     y * TileSize,
-      //     TileSize,
-      //     TileSize
-      //   );
-      //   return cube;
-      // }),
+      threejs: new ThreeJsRenderableComponent([
+        northWestMesh(samurai.samuraiTile, x, y),
+      ]),
+      sp_physical: new SP_PhysicalComponent(x, y, physical),
     });
   }
 }
 
 export class SouthEast extends Tile {
-  constructor(x: number = 0, y: number = 0, d: IDirs) {
+  constructor(x: number, y: number, d: IDirs) {
     const samurai = new SamuraiTileComponent(
       x,
       y,
@@ -376,83 +375,53 @@ export class SouthEast extends Tile {
       true,
       false
     );
+
+
+    const physical = new Polygon({ x, y }, [
+      { x: 32, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 32 },
+      { x: 32, y: 0 },
+    ]);
+    physical.isStatic = true;
+    physical.setPosition(x * TileSize, y * TileSize, true);
+
+    console.log(x, y)
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(southEastSprite()),
-      threejs: new ThreeJsRenderableComponent(
-        [southEastMesh(samurai.samuraiTile, x, y)]
-      ),
-      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-      //   const cube = ap.add.staticBody(
-      //     x * TileSize,
-      //     y * TileSize,
-      //     TileSize,
-      //     TileSize
-      //   );
-      //   return cube;
-      // }),
+      threejs: new ThreeJsRenderableComponent([
+        southEastMesh(samurai.samuraiTile, x, y),
+      ]),
+      sp_physical: new SP_PhysicalComponent(x, y, physical)
     });
   }
 }
 
 export class SouthWest extends Tile {
   constructor(x: number = 0, y: number = 0, d: IDirs) {
+    
     const samurai = new SamuraiTileComponent(x, y, "corner", true, true, false);
+
+
+    const physical = new Polygon({ x, y }, [
+      { x: 0, y: 0 },
+      { x: 32, y: 32 },
+      { x: 32, y: 0 },
+      { x: 0, y: 0 },
+    ]);
+
+    physical.isStatic = true;
+    physical.setPosition(x * TileSize, y * TileSize, true);
+
+
     super({
       samurai,
       pixi: new PixiJsRenderableComponent(southWestSprite()),
-      threejs: new ThreeJsRenderableComponent(
-        [southWestMesh(samurai.samuraiTile, x, y)]
-      ),
-      // arcade: new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-      //   const cube = ap.add.staticBody(
-      //     x * TileSize,
-      //     y * TileSize,
-      //     TileSize,
-      //     TileSize
-      //   );
-      //   return cube;
-      // }),
+      threejs: new ThreeJsRenderableComponent([
+        southWestMesh(samurai.samuraiTile, x, y),
+      ]),
+      sp_physical: new SP_PhysicalComponent(x, y, physical)
     });
   }
 }
-
-// const createPlane = (size) => {
-//   let planeGeometry = new THREE.PlaneGeometry(size, size, size);
-//   let material = new THREE.MeshBasicMaterial({
-//     color: 0xffffff * Math.random(),
-//     // side: DoubleSide
-//   });
-//   return new THREE.Mesh(planeGeometry, material);
-// };
-
-// const createFacesOfCube = () => {
-//   let cubeSize = TileSize;
-//   // Face 1
-//   let face1 = createPlane(cubeSize);
-//   // Face 2
-//   let face2 = createPlane(cubeSize);
-//   face2.position.z = cubeSize;
-//   // Face 3
-//   let face3 = createPlane(cubeSize);
-//   face3.position.x = cubeSize / 2;
-//   face3.rotation.y = Math.PI / 2;
-//   face3.position.z = cubeSize / 2;
-//   // Face 4
-//   let face4 = createPlane(cubeSize);
-//   face4.position.x = -cubeSize / 2;
-//   face4.rotation.y = Math.PI / 2;
-//   face4.position.z = cubeSize / 2;
-//   // Face 5
-//   let face5 = createPlane(cubeSize);
-//   face5.position.z = cubeSize / 2;
-//   face5.position.y = cubeSize / 2;
-//   face5.rotation.x = Math.PI / 2;
-//   // Face 6
-//   let face6 = createPlane(cubeSize);
-//   face6.position.z = cubeSize / 2;
-//   face6.position.y = -cubeSize / 2;
-//   face6.rotation.x = Math.PI / 2;
-
-//   return [face1, face2, face3, face4, face5, face6];
-// };

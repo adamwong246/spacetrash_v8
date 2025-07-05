@@ -4,6 +4,9 @@ import brick from "./Assets/brick.png";
 import stone from "./Assets/stone.png";
 import voidPng from "./Assets/void.png";
 
+import wall from "./Assets/M.E.GAmesTexturePack1.0/texture (20).png";
+import floor from "./Assets/M.E.GAmesTexturePack1.0/texture (21).png";
+
 export const blankMaterial = new THREE.MeshBasicMaterial({
   color: "yellow",
   // wireframe: true,
@@ -32,12 +35,12 @@ export const redMaterial = new THREE.MeshBasicMaterial({
 // });
 
 
-const brickTexture = new THREE.TextureLoader().load( brick );
+const brickTexture = new THREE.TextureLoader().load( wall );
 brickTexture.wrapS = THREE.RepeatWrapping;
 brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 4);
 
-const stoneTexture = new THREE.TextureLoader().load( stone );
+const stoneTexture = new THREE.TextureLoader().load( floor );
 brickTexture.wrapS = THREE.RepeatWrapping;
 brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 4);

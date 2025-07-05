@@ -196,7 +196,7 @@ export class SpaceTrash extends GameWithLoad {
         if (this.components.TankMovingComponent.get(eid)) {
           // no-op
         } else if (this.components.FloatMovingComponent.get(eid)) {
-          sppc.body.move(delta * 0.01);
+          // sppc.body.move(delta * 0.01);
         }
 
         // sppc.friction(delta);
@@ -204,21 +204,86 @@ export class SpaceTrash extends GameWithLoad {
     });
 
     this.samuraiEngine.update(this.samuraiCanvasContext, (result) => {
+      // ball to wall
       if (!result.a.isStatic && result.b.isStatic) {
+
+        // const motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
+        // const samuraiTile = this.components.SamuraiTileComponent.take(result.b.SP_EID);
+
         const body = result.a;
-        const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
+        // const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
+
+        // const z = this.samuraiEngine.system.getCollisionPoints(result.a, result.b);
+        // debugger
 
         let mover: MovingComponent = this.components.FloatMovingComponent.get(
           body.SP_EID
         );
+
         if (mover) {
-          this.floatCollide(mover, spc);
+          const position = this.components.SP_PhysicalComponent.take(result.a.SP_EID);
+          
+          if (!position.body.setPosition) throw "idk"
+
+          // reset the position
+          position.body.setPosition(position.body.pos.x - mover.DX() * 2, position.body.pos.y - mover.DY() * 2, false);
+          this.samuraiEngine.system.separate();
+
+          // bounce the object base on normal vector
+          (mover as FloatMovingComponent).bounce(result.overlapN)
+          position.body.setAngle(mover.direction(), false);
+          
+          // update the physics body
+          position.body.updateBody()
+
         }
 
         mover = this.components.TankMovingComponent.get(body.SP_EID);
         if (mover) {
           // this.tankColide();
         }
+      }
+
+      // ball to ball
+      if (!result.a.isStatic && !result.b.isStatic) {
+        // debugger
+
+        let motionA: FloatMovingComponent | TankMovingComponent;
+        let motionB: FloatMovingComponent | TankMovingComponent;
+
+        const [classificationA] = this.entities.get(result.a.SP_EID);
+        const [classificationB] = this.entities.get(result.b.SP_EID);
+
+        if (
+          classificationA === "SpaceTrashBot" &&
+          classificationB === "PuckBot"
+        ) {
+          // motionA = this.components.TankMovingComponent.take(result.a.SP_EID)
+          // motionB = this.components.FloatMovingComponent.take(result.b.SP_EID)
+          // motionB.glance(this.components.TankMovingComponent.take(result.a.SP_EID))
+        } else if (
+          classificationA === "PuckBot" &&
+          classificationB === "PuckBot"
+        ) {
+          motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
+          motionB = this.components.FloatMovingComponent.take(result.b.SP_EID);
+
+          let tx = motionA.DX();
+          let ty = motionA.DY();
+          motionA.setMotion(motionB.DX()* Math.random() - 0.5, motionB.DY()* Math.random() - 0.5);
+          motionB.setMotion(tx* Math.random() - 0.5, ty * Math.random() - 0.5);
+        }
+
+        // if (classificationB === "SpaceTrashBot") {
+        //   motionB = this.components.TankMovingComponent.take(result.b.SP_EID)
+        // } else if (classificationA === "PuckBot") {
+        //   motionB = this.components.FloatMovingComponent.take(result.b.SP_EID)
+        // }
+
+        // if (!motionA) throw "idk"
+
+        // debugger
+        return;
       }
     });
   }
