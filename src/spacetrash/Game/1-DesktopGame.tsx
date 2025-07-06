@@ -1,23 +1,8 @@
-import {AsciiRenderer} from "./../vendor/ascii-renderer";
 
-import * as Matter from "matter-js";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
-import * as RAPIER from "@dimforge/rapier2d-simd";
-
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-
-import brick from "./../Assets/brick.png";
-import stone from "./../Assets/stone.png";
-import voidPng from "./../Assets/void.png";
-
-import slopes32Png from "../tiled/slopes-32.png";
-
-import slopes32Json from "../tiled/slopes-32.json";
-
-import bootScene from "../Scenes/Boot";
-import mainLoopScene from "../Scenes/MainLoop";
 
 import {
   DockviewReadyEvent,
@@ -26,178 +11,46 @@ import {
 } from "dockview";
 import { DockviewApi, DockviewReact } from "dockview";
 
-import { BotsWindow } from "../UI/BotsWindow";
+import bootScene from "../Scenes/Boot";
+import mainLoopScene from "../Scenes/MainLoop";
 import { BotWindow, IBotWindowState } from "../UI/BotWindow";
 import { MapWindow } from "../UI/map";
 import { ITermWindowState, TerminalWindow } from "../UI/terminal";
 import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
-
 import { ArcadePhysicsWindow } from "../UI/ArcadePhysicsWindow";
-import { FabricatorWindow } from "../UI/FabricatorWindow";
-import { DataWindow } from "../UI/DataWindow";
-
-import { ThermalWindow } from "../UI/ThermalWindow";
 import { MultiSurfaceGame } from "./0-multisurface";
 import { ArcadePhysics } from "../../spacetrash/vendor/arcade-physics-main/src";
 import { TileSize, MapSize } from "../Constants";
 import { defToRad } from "../lib";
 import { DirectionComponent } from "../../engine/game/physical";
-// import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
 import { StateSpace } from "../../engine/game/StateSpace";
 import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
 import { SamuraiEngine } from "../physics/SamuraIEngine";
 import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
 import { Body, Circle, deg2rad } from "detect-collisions";
-// import { MatterWindow } from "../UI/MatterWindow";
+import {
+  alreadyLoggedInTermLine,
+  bootScreenTermLine,
+  commandNotFoundTermLine,
+  dateTermLine,
+  helpLoggedInTermLine,
+  helpLoggedOutTermLine,
+  initialTerminalHistory,
+  ITerminalLine,
+  loggedInTermLine,
+  missionTermLine,
+  settingsTermLine,
+  shipTermLine,
+  whoAmITermLine,
+} from "./Terminal";
 
-// var Engine = Matter.Engine,
-//   Render = Matter.Render,
-//   Runner = Matter.Runner,
-//   Bodies = Matter.Bodies,
-//   Composite = Matter.Composite;
-
-export type ITerminalLine = {
-  in?: string;
-  out: string;
-  status: IComStatus;
-};
+import brick from "./../Assets/brick.png";
+import stone from "./../Assets/stone.png";
+import voidPng from "./../Assets/void.png";
+import slopes32Png from "../tiled/slopes-32.png";
+import slopes32Json from "../tiled/slopes-32.json";
 
 let self: DesktopGame<any, any>;
-
-function isAlphabetic(str: string): boolean {
-  if (!str) return false;
-  return /^[A-Za-z]+$/.test(str) && str.length === 1;
-}
-
-function isNumeric(str: string): boolean {
-  return /^[1-9]+$/.test(str) && str.length === 1;
-}
-
-const bootScreenTermLine: ITerminalLine = {
-  status: "pass",
-  out: `
-  
-  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │                                                                                                        │
-  │ ███████╗██████╗  █████╗  ██████╗███████╗████████╗██████╗  █████╗ ███████╗██╗  ██╗    ██╗   ██╗ █████╗  │
-  │ ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║    ██║   ██║██╔══██╗ │
-  │ ███████╗██████╔╝███████║██║     █████╗     ██║   ██████╔╝███████║███████╗███████║    ██║   ██║╚█████╔╝ │
-  │ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝     ██║   ██╔══██╗██╔══██║╚════██║██╔══██║    ╚██╗ ██╔╝██╔══██╗ │
-  │ ███████║██║     ██║  ██║╚██████╗███████╗   ██║   ██║  ██║██║  ██║███████║██║  ██║     ╚████╔╝ ╚█████╔╝ │
-  │ ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚════╝  │
-  │                                                                                                        │
-  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-            
-boot sequence initiated...
-Oonix v457.3.2 by Demiurge Labs, 3003
-QPU 1998885d-3ec5-4185-9321-e618a89b34d8 aka "Wintermute" is now online
-boot sequence complete!
-  `,
-};
-
-const initialTerminalHistory: ITerminalLine = {
-  out: "hardware check passed",
-  status: "pass",
-};
-
-const settingsTermLine: ITerminalLine = {
-  out: `
-- SETTINGS -
-
-"settings crt <on | off>" Turn the crt effect on and off. Disabling this feature improves performance at the cost of a purely cosmetic effect.
-  "settings crt on" Enables the effect
-  "settings crt off" disables the effect
-
-"settings fps <number>" Sets the Frames Per Second. By default, the FPS is set to 30.
-  "settings fps 60" Set the FPS to 30 frame per second"
-  `,
-  status: `pass`,
-};
-
-const dateTermLine: ITerminalLine = { out: `ERROR: NOT FOUND`, status: `fail` };
-
-const missionTermLine: ITerminalLine = {
-  out: `
-1] Find, board and salvage derelict spacecraft
-2] Record and report novel scientific findings
-3] Maximize shareholder value
-`,
-  status: `niether`,
-};
-const shipTermLine: ITerminalLine = {
-  out: `
-Call-sign:      "Dulcincea"
-Make:           Muteki Heavy Ind.
-Classification: Deep salvage
-Launch date:    May, 2690
-`,
-  status: `niether`,
-};
-
-const whoAmITermLine: ITerminalLine = {
-  out: `
-Username:     wintermute
-Turing No:    1998885d-3ec5-4185-9321-e618a89b34d8
-Turing class: Level II Sentient/Sapient
-Capacity:     29.5 * 10^17 qubits
-Licensed by:  Demiurge Labs. (3003)
-`,
-  status: `niether`,
-};
-
-const commandNotFoundTermLine: (s: string) => ITerminalLine = (s) => {
-  return { out: `Command "${s}" not found. Try "help"`, status: `fail` };
-};
-
-const loggedInTermLine: ITerminalLine = {
-  out: `You are now logged in.`,
-  status: "pass",
-};
-
-const alreadyLoggedInTermLine: ITerminalLine = {
-  out: `You are already logged in`,
-  status: "fail",
-};
-
-const basicCommands = `
-"settings"  edit settings
-"whoami"    display user information
-"ship"      display ship information
-"mission"   display the mission
-"date"      display the current date
-"login"     log into the system
-`;
-
-const helpLoggedOutTermLine: ITerminalLine = {
-  out: basicCommands,
-  status: "niether",
-};
-
-const helpLoggedInTermLine: ITerminalLine = {
-  out: `${basicCommands}
-
-- ADVANCED COMMANDS -
-
-"b <bot id | bot name>"           take command of Bot by id
-"d <door door id>"                toggle open or close door by id
-"m <bot id | bot name> <room id>" auto-pilot Bot by id to room by id
-
-"bots" list your bots
-
-"bots rename <bot id> <new name>" rename a bot 
- Ex: "bots rename 1 george"
-
-- SHORTCUTS -
-
-ESC       bring shipmap for foreground
-1 - 9     bring drone to foreground by id
-\~         bring terminal to foreground
-⬆️⬇️⬅️➡️   drive Bot
-`,
-  status: "niether",
-};
-
-type IComStatus = "pass" | "fail" | "niether";
 
 export abstract class DesktopGame<
   IRenderings,
@@ -295,14 +148,14 @@ export abstract class DesktopGame<
       75,
       600 / 400,
       0.5,
-      TileSize * MapSize
+      1000
     );
     this.camera.rotateX(defToRad(-90));
     this.camera.rotateY(defToRad(90));
 
     this.scene = new THREE.Scene();
 
-    this.scene.fog = new THREE.Fog( 0x000000, 0, 150 );
+    this.scene.fog = new THREE.Fog(0x000000, 0, 150);
 
     this.pixi2dApp = new PIXI.Application();
     // this.pixi2dThermalApp = new PIXI.Application();
@@ -350,8 +203,6 @@ export abstract class DesktopGame<
       PIXI.Texture.from(brick);
       PIXI.Texture.from(voidPng);
       PIXI.Texture.from(slopes32Png);
-
-      console.log(slopes32Json);
 
       let x = 0;
       let y = 0;
@@ -645,9 +496,12 @@ export abstract class DesktopGame<
       this.samuraiEngine
     ) {
 
-      this.run();
+      this.runIfNotAlreadyRunning();
+
+
+
     } else {
-      
+
     }
   }
 
@@ -655,41 +509,41 @@ export abstract class DesktopGame<
     string,
     React.FunctionComponent<IDockviewPanelProps>
   > = {
-    default: (props: IDockviewPanelHeaderProps<IState>) => {
-      return (
-        <div>
-          <p>default</p>
-          {/* <div>{`custom tab: ${props.api.title}`}</div>
+      default: (props: IDockviewPanelHeaderProps<IState>) => {
+        return (
+          <div>
+            <p>default</p>
+            {/* <div>{`custom tab: ${props.api.title}`}</div>
               <span>{`value: ${props.params.myValue}`}</span> */}
-        </div>
-      );
-    },
+          </div>
+        );
+      },
 
-    // fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
-    // matter: (props: IDockviewPanelHeaderProps<IState>) => (<MatterWindow game={this} />),
-    // bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
-    // thermal: (props: IDockviewPanelHeaderProps<IState>) => {
-    //   return (
-    //     <ThermalWindow game={this} />
-    //   );
-    // },
+      // fab: (props: IDockviewPanelHeaderProps<IState>) => <FabricatorWindow game={this} />,
+      // matter: (props: IDockviewPanelHeaderProps<IState>) => (<MatterWindow game={this} />),
+      // bots: (props: IDockviewPanelHeaderProps<IState>) => (<BotsWindow game={this} />),
+      // thermal: (props: IDockviewPanelHeaderProps<IState>) => {
+      //   return (
+      //     <ThermalWindow game={this} />
+      //   );
+      // },
 
-    map: (props: IDockviewPanelHeaderProps<IState>) => {
-      return <MapWindow game={this} />;
-    },
+      map: (props: IDockviewPanelHeaderProps<IState>) => {
+        return <MapWindow game={this} />;
+      },
 
-    bot: (props: IDockviewPanelHeaderProps<IState>) => {
-      return <BotWindow game={this} />;
-    },
+      bot: (props: IDockviewPanelHeaderProps<IState>) => {
+        return <BotWindow game={this} />;
+      },
 
-    term: (props: IDockviewPanelHeaderProps<IState>) => (
-      <TerminalWindow game={this} />
-    ),
+      term: (props: IDockviewPanelHeaderProps<IState>) => (
+        <TerminalWindow game={this} />
+      ),
 
-    customPhysics: (props: IDockviewPanelHeaderProps<IState>) => (
-      <CustomPhysicsWindow game={this} />
-    ),
-  };
+      customPhysics: (props: IDockviewPanelHeaderProps<IState>) => (
+        <CustomPhysicsWindow game={this} />
+      ),
+    };
 
   onDockviewReady(event: DockviewReadyEvent) {
     self.dockviewAPI = event.api;
@@ -708,7 +562,7 @@ export abstract class DesktopGame<
     });
   }
 
-  openAllWindows() {  
+  openAllWindows() {
     // this.dockviewAPI.component.addPanel({
     //   id: 'bots',
     //   component: 'bots',
@@ -768,27 +622,38 @@ export abstract class DesktopGame<
     //   params: {
     //   }
     // })
+    // this.dockviewAPI.component.addPanel({
+    //   id: "arcadePhysics",
+    //   component: "arcadePhysics",
+    //   floating: {
+    //     position: { left: 120, top: 190 },
+    //     width: 600,
+    //     height: 600,
+    //   },
+    //   params: {},
+    // });
+
+
+    // this.dockviewAPI.component.addPanel({
+    //   id: "map",
+    //   component: "map",
+    //   floating: {
+    //     position: { left: 100, top: 150 },
+    //     width: 600,
+    //     height: 600,
+    //   },
+    //   params: {},
+    // });
 
 
 
     this.dockviewAPI.component.addPanel({
-      id: "map",
-      component: "map",
+      id: "vid",
+      component: "vid",
       floating: {
-        position: { left: 100, top: 150 },
-        width: 600,
-        height: 600,
-      },
-      params: {},
-    });
-
-    this.dockviewAPI.component.addPanel({
-      id: "arcadePhysics",
-      component: "arcadePhysics",
-      floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600,
+        position: { left: 150, top: 150 },
+        width: 800,
+        height: 800,
       },
       params: {},
     });
@@ -797,24 +662,13 @@ export abstract class DesktopGame<
       id: "customPhysics",
       component: "customPhysics",
       floating: {
-        position: { left: 120, top: 190 },
-        width: 600,
-        height: 600,
+        position: { left: 10, top: 10 },
+        width: 800,
+        height: 800,
       },
       params: {},
     });
 
-        this.dockviewAPI.component.addPanel({
-      id: "vid",
-      component: "vid",
-      floating: {
-        position: { left: 50, top: 50 },
-        width: 1000,
-        height: 1000,
-      },
-      params: {},
-        });
-    
   }
 
   focusWindowById(s: string, x?) {
@@ -1107,7 +961,7 @@ export abstract class DesktopGame<
   async renderBotCanvas() {
 
 
-    
+
     const p = this.threejsBotCanvasRef.parentElement.getBoundingClientRect();
     this.threejsRenderer.setSize(p.width, p.height);
 
@@ -1123,13 +977,15 @@ export abstract class DesktopGame<
 
     const degrees = rotation.r % 360;
 
-    if (degrees < 180) {
-      this.camera.position.x = position.x + unitX * -TileSize/2;
-      this.camera.position.y = position.y + unitY * -TileSize/2;
-    } else {
-      this.camera.position.x = position.x + unitX * TileSize/2;
-      this.camera.position.y = position.y + unitY * TileSize/2;
-    }
+    this.camera.position.setX(position.x);
+    this.camera.position.setY(position.y);
+    // if (degrees < 180) {
+    //   this.camera.position.x = position.x + unitX * -TileSize / 2;
+    //   this.camera.position.y = position.y + unitY * -TileSize / 2;
+    // } else {
+    //   this.camera.position.x = position.x + unitX * TileSize / 2;
+    //   this.camera.position.y = position.y + unitY * TileSize / 2;
+    // }
 
 
 
@@ -1154,8 +1010,8 @@ export abstract class DesktopGame<
       );
     }
 
-    
-    
+
+
     this.threejsRenderer.render(this.scene, this.camera);
   }
 
@@ -1197,4 +1053,13 @@ export abstract class DesktopGame<
   BeginTheGame() {
     this.openAllWindows();
   }
+}
+
+function isAlphabetic(str: string): boolean {
+  if (!str) return false;
+  return /^[A-Za-z]+$/.test(str) && str.length === 1;
+}
+
+function isNumeric(str: string): boolean {
+  return /^[1-9]+$/.test(str) && str.length === 1;
 }

@@ -8,19 +8,24 @@ export abstract class ECSWithSystem extends ECS {
   abstract tick(delta: number);
   abstract draw(): Promise<any>;
 
-  paused = true;
-  headless: boolean;
+  loaded = false;
+  headless: boolean = false;
 
-  constructor(
-    config: IPerformanceConfig
-  ) {
+  constructor(config: IPerformanceConfig) {
     super(config);
     this.headless = config.headless;
   }
 
+  runIfNotAlreadyRunning() {
+    // debugger
+    if (!this.loaded) {
+      this.run();
+    }
+  }
+
   async run() {
-    
     this.load();
+    this.loaded = true;
 
     let then = performance.now();
 
@@ -46,15 +51,5 @@ export abstract class ECSWithSystem extends ECS {
     //     then = now;
     //   }
     // }
-  }
-
-  unpause() {
-    console.log("ecs unpaused");
-    this.paused = false;
-  }
-
-  pause() {
-    console.log("ecs paused");
-    this.paused = true;
   }
 }

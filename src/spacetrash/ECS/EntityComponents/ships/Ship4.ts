@@ -1,67 +1,9 @@
 import { SpaceTrashEntityComponent } from "..";
 import { Entity } from "../../../../engine/VECS.ts/Entity";
 import { MapSize } from "../../../Constants";
-import {
-  Tile,
-  WallTile,
-  FloorTile,
-  NorthEast,
-  NorthWest,
-  SouthEast,
-  SouthWest,
-} from "../tiles/subtypes";
+import { Tile } from "../tiles";
 
 import sj from "../../../tiled/levl20.json";
-
-const FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
-const FLIPPED_VERTICALLY_FLAG = 0x40000000;
-const FLIPPED_DIAGONALLY_FLAG = 0x20000000;
-const FLIPPED_HEX_ROTATE_120_FLAG = 0x10000000; //
-
-const firstgid = sj.tilesets[0].firstgid;
-
-function isFlippedHorizontal(gid: number) {
-  return (gid & FLIPPED_HORIZONTALLY_FLAG) !== 0;
-}
-
-function isFlippedVertical(gid: number) {
-  return (gid & FLIPPED_VERTICALLY_FLAG) !== 0;
-}
-
-function isFlippedBoth(gid: number) {
-  return isFlippedHorizontal(gid) && isFlippedVertical(gid);
-}
-
-function isFlippedNiether(gid: number) {
-  return !isFlippedHorizontal(gid) && !isFlippedVertical(gid);
-}
-
-function isFlippedOnlyVertical(gid: number) {
-  return !isFlippedHorizontal(gid) && isFlippedVertical(gid);
-}
-
-function isFlippedOnlyHorizontal(gid: number) {
-  return isFlippedHorizontal(gid) && !isFlippedVertical(gid);
-}
-
-const decodeGid = (gid: number) => {
-  // const isFlippedHorizontally = (gid & FLIPPED_HORIZONTALLY_FLAG) !== 0;
-  // const isFlippedVertically = (gid & FLIPPED_VERTICALLY_FLAG) !== 0;
-  // const isFlippedDiagonally = (gid & FLIPPED_DIAGONALLY_FLAG) !== 0;
-  // const isFlippedHexRotate120 = (gid & FLIPPED_HEX_ROTATE_120_FLAG) !== 0; // Only relevant for hex maps
-
-  // Clear the flip flags from the GID to get the actual tile ID
-  const tileId =
-    gid &
-    ~(
-      FLIPPED_HORIZONTALLY_FLAG |
-      FLIPPED_VERTICALLY_FLAG |
-      FLIPPED_DIAGONALLY_FLAG |
-      FLIPPED_HEX_ROTATE_120_FLAG
-    );
-
-  return tileId - firstgid;
-};
 
 export default class extends SpaceTrashEntityComponent {
   map: Tile | null[][];
@@ -110,51 +52,8 @@ export default class extends SpaceTrashEntityComponent {
     for (let y = 0; y < this.shipSize; y++) {
       for (let x = 0; x < this.shipSize; x++) {
         const z = y * MapSize + x;
-
-        const tid = decodeGid(md[z]);
-
-        if (tid === 1 || tid === 14) {
-          const w = new WallTile(x, y);
-          this.addToMap(w);
-        } else if (tid === 0) {
-          this.addToMap(new FloorTile(x, y));
-        } else if (tid === 2) {
-          if (isFlippedNiether(md[z])) {
-            this.addToMap(new NorthEast(x, y));
-          } else if (isFlippedOnlyHorizontal(md[z])) {
-            this.addToMap(new SouthEast(x, y));
-          } else if (isFlippedOnlyVertical(md[z])) {
-            this.addToMap(new NorthWest(x, y));
-            
-          } else if (isFlippedBoth(md[z])) {
-            this.addToMap(new SouthWest(x, y));
-          } else {
-            throw "that cannot be";
-          }
-        } else if (tid === 43) {
-          console.error("TILE_60 not implemented");
-        } else if (tid === 33) {
-          console.error("TILE_50 not implemented");
-        } else if (tid === 44) {
-          console.error("TILE_80 not implemented");
-        } else if (tid === 0) {
-          this.addToMap(new FloorTile(x, y));
-        } else if (tid === 41) {
-          console.error("TILE_20 not implemented");
-        } else if (tid === 42) {
-          console.error("TILE_40 not implemented");
-        } else if (tid === 36) {
-          console.error("TILE_66 not implemented");
-        } else if (tid === 35) {
-          console.error("TILE_75 not implemented");
-        } else if (tid === 34) {
-          console.error("TILE_25 not implemented");
-        } else {
-          console.error(`unknown tile: ${tid}, ${x}, ${y}`);
-          // throw `unknown tile`;
-          // this.addToMap(new FloorTile(x, y));
-          const w = new WallTile(x, y);
-        }
+        // this.addToMap(Tile.fromGid(md[z], x, y));
+        this.addToMap(Tile.fromGid(md[z], x, y));
       }
     }
 
@@ -195,7 +94,6 @@ export default class extends SpaceTrashEntityComponent {
         const s = this.map[y][x];
 
         if (s.constructor.name === "WallTile") {
-
           if (
             northFacing(x, y) &&
             southFacing(x, y) &&
@@ -246,3 +144,5 @@ export default class extends SpaceTrashEntityComponent {
     return t;
   }
 }
+
+

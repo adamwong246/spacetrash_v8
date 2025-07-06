@@ -129,6 +129,7 @@
             "scaleInDock": 1
         },
         "src/spacetrash/tiled/tileset3.json": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 5.6
         },

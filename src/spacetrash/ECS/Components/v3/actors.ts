@@ -1,20 +1,44 @@
+import { Box, Circle, Polygon } from "detect-collisions";
+import * as THREE from "three";
+
 import { Component } from "../../../../engine/VECS.ts/Component";
 
-import { FloatMovingComponent, FloatPositionComponent } from "../../../../engine/game/physical";
-import { AiAgentComponent, IBehaviors } from "./ai";
-import { SpaceTrash } from "../../../Game/6-WithStateSpace";
-import { ISpaceTrashComponents } from "../v1";
+import {
+  FloatMovingComponent,
+  FloatPositionComponent,
+} from "../../../../engine/game/physical";
+
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
 import { TileSize } from "../../../Constants";
+import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
+import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
+
+import { AiAgentComponent, IBehaviors } from "./ai";
+import { ISpaceTrashComponents } from "../v1";
 
 export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
   actorId: number;
   agent: AiAgentComponent;
-  arcadeBody: any;
   friendly: boolean;
   motion: FloatMovingComponent;
   position: FloatPositionComponent;
   FOV: any;
+  meshes: THREE.Mesh[];
+  physical: Box | Polygon | Circle;
+
+  constructor({
+    physical,
+    meshes,
+  }: {
+    physical: Box | Polygon | Circle;
+    meshes: THREE.Mesh[];
+  }) {
+    
+    super();
+
+    this.physical = physical;
+    this.meshes = meshes;
+  }
 }
 
 export class ActorStore extends MapStoreV2<ActorComponent> {
@@ -23,8 +47,8 @@ export class ActorStore extends MapStoreV2<ActorComponent> {
 
     this.each((ac, eid) => {
       if (
-        Math.round(ac.arcadeBody.position.x / TileSize) === x &&
-        Math.round(ac.arcadeBody.position.y / TileSize) === y
+        Math.round(ac.physical.pos.x / TileSize) === x &&
+        Math.round(ac.physical.pos.y / TileSize) === y
       ) {
         toReturn.push(eid);
       }

@@ -136,6 +136,9 @@ export abstract class MovingComponent extends Component<unknown, any> {
 // Gives the entity movement above the grid
 // moves by dx and dy every tick
 export class FloatMovingComponent extends MovingComponent {
+  direction() {
+    throw new Error("Method not implemented.");
+  }
   dx: number;
   dy: number;
 
@@ -157,61 +160,7 @@ export class FloatMovingComponent extends MovingComponent {
     this.dy = ty;
   }
 
-    // the direction, given the vector <dx, dy>
-  direction() {
-    // Math.atan2(y, x) is the standard way to calculate the angle in all quadrants
-    const radians = Math.atan2(this.dy, this.dx); 
-    // If you need the angle in degrees (0 to 360)
-    let degrees = radians * 180 / Math.PI; 
-    if (degrees < 0) {
-        degrees += 360; 
-    }
-    return degrees;
-  }
-
-    // the magnitude of the vector
-  magnitude() {
-    // You can use multiplication for squaring for a minor optimization
-    return Math.sqrt(this.dx * this.dx + this.dy * this.dy); 
-  }
-
-   // the unit vector
-  unit() {
-    const m = this.magnitude();
-
-    // Handle the case where the magnitude is zero (zero vector)
-    if (m === 0) {
-        // You can return a zero vector or a specific value indicating a zero vector
-        return { x: 0, y: 0 }; 
-    }
-
-    return {
-      x: this.dx / m,
-      y: this.dy / m,
-    };
-  }
-
-  // rebound the object off a surface with normal vector <x, y>
-  bounce(v: { x: number; y: number }) {
-    // Normalize the normal vector v
-    const vMag = Math.sqrt(v.x * v.x + v.y * v.y);
-    if (vMag === 0) {
-      // Handle the case where the normal vector has zero magnitude
-      // Perhaps return without reflecting or throw an error
-      return; 
-    }
-    const n = { x: v.x / vMag, y: v.y / vMag }; // Unit normal vector
-
-    // The incident vector is the current velocity
-    const d = { x: this.dx, y: this.dy }; 
-
-    // Calculate the dot product of the incident vector and the unit normal vector
-    const dotProduct = d.x * n.x + d.y * n.y; 
-
-    // Calculate the reflected vector using the reflection formula
-    this.dx = d.x - 2 * dotProduct * n.x; 
-    this.dy = d.y - 2 * dotProduct * n.y;
-  }
+  
 }
 
 export class FloatMovingStore extends MapStoreV2<FloatMovingComponent> {}

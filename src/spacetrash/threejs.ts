@@ -1,11 +1,7 @@
 import * as THREE from "three";
 
-import brick from "./Assets/brick.png";
-import stone from "./Assets/stone.png";
-import voidPng from "./Assets/void.png";
-
-import wall from "./Assets/M.E.GAmesTexturePack1.0/texture (20).png";
-import floor from "./Assets/M.E.GAmesTexturePack1.0/texture (21).png";
+import floor from "./Assets/M.E.GAmesTexturePack1.0/texture (20).png";
+import wall from "./Assets/M.E.GAmesTexturePack1.0/texture (21).png";
 
 export const blankMaterial = new THREE.MeshBasicMaterial({
   color: "yellow",
@@ -46,9 +42,9 @@ brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 4);
 
 // export const wallTexture = new THREE.MeshBasicMaterial({ map: brickTexture })
-export const wallTexture = new THREE.MeshBasicMaterial({ map: brickTexture })
+export const wallTexture = new THREE.MeshPhongMaterial({ map: brickTexture })
 
-export const floorTexture = new THREE.MeshBasicMaterial({ map: stoneTexture })
+export const floorTexture = new THREE.MeshPhongMaterial({ map: stoneTexture })
 
 export const blueMaterial = new THREE.MeshBasicMaterial({
   color: "blue",

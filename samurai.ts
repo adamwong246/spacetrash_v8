@@ -30,7 +30,7 @@ async function processSvgGrid(
 
     svgContent += `<rect x="${0}" y="${0}" width="${SIZE}" height="${SIZE}" fill="white"  />`;
 
-    const points = sp().vectors.reduce((mm, lm, ndx) => {
+    const points = sp.vectors.reduce((mm, lm, ndx) => {
       mm += `${lm.x},${lm.y} `
       return mm
 

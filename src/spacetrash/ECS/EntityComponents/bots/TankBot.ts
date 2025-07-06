@@ -40,7 +40,7 @@ export class SpaceTrashBot extends Actor {
 
     physical.setPosition(x, y, true);
     physical.setAngle(0, true);
-    physical.isStatic = false;
+    physical.isStatic = true;
 
     super(spe, [
       ...upgrades,
@@ -54,22 +54,9 @@ export class SpaceTrashBot extends Actor {
       new ConsoleRenderableComponent("?"),
 
       new TankMovingComponent(0, 0),
-      new SP_PhysicalComponent(x, y, physical),
+      new SP_PhysicalComponent(physical),
 
 
-      // new FloatMovingComponent(0, 0),
-
-      // new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-      //   const ball = ap.add.body(x * TileSize, y * TileSize);
-      //   ball.setCircle((TileSize / 2) * 0.51);
-      //   ball.setBounce(0.1);
-      //   ball.setCollideWorldBounds(false);
-      //   ball.setFriction(1000, 1000);
-      //   ball.onOverlap = true
-      //   ball.onCollide = true
-
-      //   return ball;
-      // }),
     ]);
   }
 }

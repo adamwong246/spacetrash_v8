@@ -11,7 +11,7 @@ import {EmptyShip} from "./../ECS/EntityComponents/ships/EmptyShip.ts";
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
     const ship = new level4();
-    // const ship = new level4();
+    // const ship = new BoringShip();
     // const ship = new level4();
     // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
@@ -53,8 +53,8 @@ class MainScene extends SpaceTrashScene {
     // the physics engine cannot do more than 3000
     const moreBots = [...new Array(100)].map((n) => {
       return new PuckBot(
-        Math.random() * MapSize * TileSize,
-        Math.random() * MapSize * TileSize,
+        (MapSize * TileSize) / 2,
+        (MapSize * TileSize) / 2,
 
       );
     });

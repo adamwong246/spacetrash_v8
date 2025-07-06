@@ -24,24 +24,25 @@ export class PuckBot extends Actor {
   ) {
     const spe = new SpaceTrashEntity();
 
-    const physical = new Circle({ x, y }, TileSize / 8);
+    const physical = new Circle({ x, y }, TileSize / 5);
 
-    physical.setPosition(-x, -y, true);
-    physical.setAngle(deg2rad((Math.random()-0.5)*360), true);
+    physical.setPosition(x, y, true);
+    physical.setAngle(deg2rad((Math.random() - 0.5) * 360), true);
+  
     physical.isStatic = false;
+    physical.updateBody(true)
 
     super(
       spe,
       [
+        new SP_PhysicalComponent(physical, 0.1), 
         new LightIncastingComponent(1),
 
         new PixiJsRenderableComponent(bunnySprite()),
         new ThreeJsRenderableComponent(spike()),
-        // aiAgentConfig,
 
-        new SP_PhysicalComponent(x, y, physical), 
-        new FloatMovingComponent((Math.random()-0.5)*3, (Math.random()-0.5) * 3),
-        
+        // aiAgentConfig,
+        // new FloatMovingComponent((Math.random()-0.5)*3, (Math.random()-0.5) * 3),        
         // new FloatPositionComponent(x, y),
         // new DegreesDirectionComponent(r),
         

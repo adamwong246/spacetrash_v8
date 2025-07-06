@@ -26,7 +26,8 @@ let rot = 0;
 export class SpaceTrash extends GameWithLoad {
   tick(delta: number): Promise<boolean> {
     return new Promise(async (res) => {
-      this.updateSetPieces(delta);
+      // this.updateSetPieces(delta);
+      this.updateActors(delta);
       this.runTankPhysics(delta);
       this.runFloatingMotion();
       this.runPhysics(delta);
@@ -36,31 +37,48 @@ export class SpaceTrash extends GameWithLoad {
       // this.runArcadePhysics();
       // this.runRadiationScan();
       // this.runHeatSpread();
-      this.runUpdateUI();
+      // this.runUpdateUI();
       // this.rotLighting();
 
-      rot += 0.00001;
-      this.components.ThreeJsRenderableComponent.each((x, i) => {
-        // if (Math.random() > 0.01) {
-        //     x.mesh.visible = false;
-        // } else {
-        //     x.mesh.visible = true;
-        // }
+      // rot += 0.00001;
+      // this.components.ThreeJsRenderableComponent.each((x, i) => {
+      //   // if (Math.random() > 0.01) {
+      //   //     x.mesh.visible = false;
+      //   // } else {
+      //   //     x.mesh.visible = true;
+      //   // }
 
-        const c = this.entities.get(i)[0];
-        if (c === "WallTile") {
-          for (let mesh of x.meshes) {
-            // mesh.rotateZ(rot);
-            // mesh.rotateX(rot);
-            // mesh.rotateY(rot);
-          }
+      //   const c = this.entities.get(i)[0];
+      //   if (c === "WallTile") {
+      //     for (let mesh of x.meshes) {
+      //       // mesh.rotateZ(rot);
+      //       // mesh.rotateX(rot);
+      //       // mesh.rotateY(rot);
+      //     }
 
-          // x.mesh.rotateZ(rot);
-          // x.mesh.rotateZ(rot);
-          // debugger
-        }
+      //     // x.mesh.rotateZ(rot);
+      //     // x.mesh.rotateZ(rot);
+      //     // debugger
+      //   }
+      // });
+    });
+  }
+
+  updateActors(delta: number) {
+    this.components.Actors.each((actor) => {
+      actor.meshes.forEach((mesh) => {
+        mesh.position.x = actor.physical.pos.x;
+        mesh.position.y = actor.physical.pos.y;
       });
     });
+    // for (let y = 0; y < MapSize; y++) {
+    //   for (let x = 0; x < MapSize; x++) {
+    //     if (!this.components.SetPieces.store[y][x]) throw "wtf";
+
+    //     this.components.SetPieces.store[y][x].actorIds =
+    //       this.components.Actors.byXandY(x, y);
+    //   }
+    // }
   }
 
   updateTankMovement(f: TankMovingComponent, eid: number) {
@@ -180,6 +198,7 @@ export class SpaceTrash extends GameWithLoad {
   }
 
   runPhysics(delta: number) {
+    this.samuraiEngine.system.update();
     // this.updateFloatingMovement(f);
     // const prevX = Math.round(p.x);
     // const prevY = Math.round(p.y);
@@ -192,12 +211,16 @@ export class SpaceTrash extends GameWithLoad {
     // return hasChangedPosition;
 
     this.components.SP_PhysicalComponent.each((sppc, eid) => {
+      this.boundarySP_Physics(sppc);
+
       if (!sppc.body.isStatic) {
-        if (this.components.TankMovingComponent.get(eid)) {
-          // no-op
-        } else if (this.components.FloatMovingComponent.get(eid)) {
-          // sppc.body.move(delta * 0.01);
-        }
+        sppc.move(delta);
+
+        // if (this.components.TankMovingComponent.get(eid)) {
+        //   // no-op
+        // } else if (this.components.FloatMovingComponent.get(eid)) {
+        //   // sppc.body.move(delta * 0.01);
+        // }
 
         // sppc.friction(delta);
       }
@@ -206,7 +229,6 @@ export class SpaceTrash extends GameWithLoad {
     this.samuraiEngine.update(this.samuraiCanvasContext, (result) => {
       // ball to wall
       if (!result.a.isStatic && result.b.isStatic) {
-
         // const motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
         // const samuraiTile = this.components.SamuraiTileComponent.take(result.b.SP_EID);
 
@@ -216,40 +238,34 @@ export class SpaceTrash extends GameWithLoad {
         // const z = this.samuraiEngine.system.getCollisionPoints(result.a, result.b);
         // debugger
 
-        let mover: MovingComponent = this.components.FloatMovingComponent.get(
-          body.SP_EID
-        );
+        let mover = this.components.SP_PhysicalComponent.get(body.SP_EID);
 
         if (mover) {
-          const position = this.components.SP_PhysicalComponent.take(result.a.SP_EID);
-          
-          if (!position.body.setPosition) throw "idk"
+          const position = this.components.SP_PhysicalComponent.take(
+            result.a.SP_EID
+          );
 
-          // reset the position
-          position.body.setPosition(position.body.pos.x - mover.DX() * 2, position.body.pos.y - mover.DY() * 2, false);
-          this.samuraiEngine.system.separate();
+          if (!position.body.setPosition) throw "idk";
 
+          // this.samuraiEngine.system.separate();
           // bounce the object base on normal vector
-          (mover as FloatMovingComponent).bounce(result.overlapN)
-          position.body.setAngle(mover.direction(), false);
-          
+          mover.bounce(result.overlapN);
           // update the physics body
-          position.body.updateBody()
-
+          position.body.updateBody();
         }
 
-        mover = this.components.TankMovingComponent.get(body.SP_EID);
-        if (mover) {
-          // this.tankColide();
-        }
+        // mover = this.components.TankMovingComponent.get(body.SP_EID);
+        // if (mover) {
+        //   // this.tankColide();
+        // }
       }
 
-      // ball to ball
+      // // ball to ball
       if (!result.a.isStatic && !result.b.isStatic) {
         // debugger
 
-        let motionA: FloatMovingComponent | TankMovingComponent;
-        let motionB: FloatMovingComponent | TankMovingComponent;
+        let motionA: SP_PhysicalComponent;
+        let motionB: SP_PhysicalComponent;
 
         const [classificationA] = this.entities.get(result.a.SP_EID);
         const [classificationB] = this.entities.get(result.b.SP_EID);
@@ -265,13 +281,24 @@ export class SpaceTrash extends GameWithLoad {
           classificationA === "PuckBot" &&
           classificationB === "PuckBot"
         ) {
-          motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
-          motionB = this.components.FloatMovingComponent.take(result.b.SP_EID);
+          motionA = this.components.SP_PhysicalComponent.take(result.a.SP_EID);
+          motionB = this.components.SP_PhysicalComponent.take(result.b.SP_EID);
 
-          let tx = motionA.DX();
-          let ty = motionA.DY();
-          motionA.setMotion(motionB.DX()* Math.random() - 0.5, motionB.DY()* Math.random() - 0.5);
-          motionB.setMotion(tx* Math.random() - 0.5, ty * Math.random() - 0.5);
+          motionA.bounce(result.overlapN);
+          motionB.bounce(result.overlapN);
+
+          motionA.body.updateBody();
+          motionB.body.updateBody();
+
+          // SP_PhysicalComponent.swapMotion(
+          //   this.components.SP_PhysicalComponent.take(result.a.SP_EID),
+          //   this.components.SP_PhysicalComponent.take(result.b.SP_EID)
+          // )
+
+          // let tx = motionA.DX();
+          // let ty = motionA.DY();
+          // motionA.setMotion(motionB.DX()* Math.random() - 0.5, motionB.DY()* Math.random() - 0.5);
+          // motionB.setMotion(tx* Math.random() - 0.5, ty * Math.random() - 0.5);
         }
 
         // if (classificationB === "SpaceTrashBot") {
@@ -286,6 +313,23 @@ export class SpaceTrash extends GameWithLoad {
         return;
       }
     });
+
+    // this.samuraiEngine.system.separate();
+  }
+
+  boundarySP_Physics(fpc: SP_PhysicalComponent) {
+    if (fpc.X() < 0) {
+      fpc.setX(MapSize * TileSize);
+    }
+    if (fpc.X() > MapSize * TileSize) {
+      fpc.setX(0);
+    }
+    if (fpc.Y() < 0) {
+      fpc.setY(MapSize * TileSize);
+    }
+    if (fpc.Y() > MapSize * TileSize) {
+      fpc.setY(0);
+    }
   }
 
   floatCollide(a: FloatMovingComponent, pos: PositionComponent) {

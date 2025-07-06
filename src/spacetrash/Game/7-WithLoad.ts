@@ -12,6 +12,7 @@ import { Composite } from "matter-js";
 import { BasePolygons } from "../physics/BasePolygon";
 import { SamuraiTileComponent } from "../physics/SamuraiTile";
 import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
+import { ActorComponent } from "../ECS/Components/v3/actors";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
@@ -47,13 +48,14 @@ export abstract class GameWithLoad extends GameWithControls {
     this.attachAiAgentsToActors();
     this.runInitialMapBoundaryCheck();
     // this.runPlaceImmoveableSetPieces();
-    this.cullInteriorFaces(); 
+    // this.cullInteriorFaces();
     this.setupRenderers();
     this.loadPhysics();
     this.setupAiAgents();
     this.setupHeat();
     this.measureThreejs();
   }
+
   cullInteriorFaces() {
     ////////////////////////////////////////////////////////////////////////
 
@@ -62,7 +64,6 @@ export abstract class GameWithLoad extends GameWithControls {
         const s = this.components.SetPieces.store[y][x];
 
         if (s.samuraiTile && s.samuraiTile.samuraiTileKey === "tile100") {
-          
           // check north
           ///////////////////////////////////////////////////////
           if (y - 1 >= 0) {
@@ -77,7 +78,6 @@ export abstract class GameWithLoad extends GameWithControls {
                       if (meshA.position.z === meshb.position.z) {
                         s.meshes.splice(a, 1);
                         s2.meshes.splice(b, 1);
-
                       }
                     }
                   }
@@ -87,7 +87,7 @@ export abstract class GameWithLoad extends GameWithControls {
           }
           // check south
           ///////////////////////////////////////////////////////
-          if (y + 1 < MapSize-1) {
+          if (y + 1 < MapSize - 1) {
             const s2 = this.components.SetPieces.store[y + 1][x];
             if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
               for (let a = 0; a < s.meshes.length; a++) {
@@ -99,7 +99,6 @@ export abstract class GameWithLoad extends GameWithControls {
                       if (meshA.position.z === meshb.position.z) {
                         s.meshes.splice(a, 1);
                         s2.meshes.splice(b, 1);
-
                       }
                     }
                   }
@@ -110,8 +109,8 @@ export abstract class GameWithLoad extends GameWithControls {
 
           // check east
           ///////////////////////////////////////////////////////
-          if (x + 1 <= MapSize-1) {
-            const s2 = this.components.SetPieces.store[y][x+1];
+          if (x + 1 <= MapSize - 1) {
+            const s2 = this.components.SetPieces.store[y][x + 1];
             if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
               for (let a = 0; a < s.meshes.length; a++) {
                 for (let b = 0; b < s2.meshes.length; b++) {
@@ -122,7 +121,6 @@ export abstract class GameWithLoad extends GameWithControls {
                       if (meshA.position.z === meshb.position.z) {
                         s.meshes.splice(a, 1);
                         s2.meshes.splice(b, 1);
-
                       }
                     }
                   }
@@ -134,7 +132,7 @@ export abstract class GameWithLoad extends GameWithControls {
           // check west
           ///////////////////////////////////////////////////////
           if (x - 1 >= 0) {
-            const s2 = this.components.SetPieces.store[y][x-1];
+            const s2 = this.components.SetPieces.store[y][x - 1];
             if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
               for (let a = 0; a < s.meshes.length; a++) {
                 for (let b = 0; b < s2.meshes.length; b++) {
@@ -145,7 +143,6 @@ export abstract class GameWithLoad extends GameWithControls {
                       if (meshA.position.z === meshb.position.z) {
                         s.meshes.splice(a, 1);
                         s2.meshes.splice(b, 1);
-
                       }
                     }
                   }
@@ -153,7 +150,6 @@ export abstract class GameWithLoad extends GameWithControls {
               }
             }
           }
-
         }
       }
     }
@@ -327,10 +323,8 @@ export abstract class GameWithLoad extends GameWithControls {
         );
       }, eid);
 
-      // debugger;
       // const t = this.components.TileComponent.get(eid);
       // if (t) {
-      //   debugger;
       //   this.components.SetPieces.update(
       //     {
       //       tileType: t.tileType,
@@ -384,29 +378,39 @@ export abstract class GameWithLoad extends GameWithControls {
   }
 
   initializeActors() {
-    this.components.FloatPositions.each((ndx, y, aeid) => {
-      const mf = this.components.FloatMovingComponent.find(
-        (x) => x[0] === aeid
-      );
-      const mt = this.components.TankMovingComponent.find((x) => x[0] === aeid);
+    this.components.SP_PhysicalComponent.each((sp, aeid) => {
+      // const mf = this.components.FloatMovingComponent.find(
+      //   (x) => x[0] === aeid
+      // );
+      // const mt = this.components.TankMovingComponent.find((x) => x[0] === aeid);
 
-      let motion;
-      if (mf) {
-        motion = mf[1];
-      } else if (mt) {
-        motion = mt[1];
-      } else if (!mf && !mt) {
-        motion = null;
-      } else if (mf && mt)
-        throw "an entity cannot have both tank motion and floating motion";
-      else {
-        throw "IDK";
-      }
+      // let motion;
+      // if (mf) {
+      //   motion = mf[1];
+      // } else if (mt) {
+      //   motion = mt[1];
+      // } else if (!mf && !mt) {
+      //   motion = null;
+      // } else if (mf && mt)
+      //   throw "an entity cannot have both tank motion and floating motion";
+      // else {
+      //   throw "IDK";
+      // }
 
-      this.components.Actors.take(aeid).actorId = ndx;
-      this.components.Actors.take(aeid).friendly = this.isFriendly(ndx);
-      this.components.Actors.take(aeid).position = y;
-      this.components.Actors.take(aeid).motion = motion;
+      this.components.Actors.make(new ActorComponent({
+        physical: sp.body,
+        meshes: this.components.ThreeJsRenderableComponent.take(aeid).meshes
+      }), aeid)
+      // const actor = this.components.Actors.take(aeid);
+      // actor.actorId = aeid;
+      // actor.physical = sp.body;
+      // actor.meshes = this.components.ThreeJsRenderableComponent.take(aeid).meshes
+
+      // actor.friendly = this.isFriendly(k);
+      // actor.position = y;
+      // actor.motion = mt;
+
+      
     });
   }
 
@@ -533,6 +537,7 @@ export abstract class GameWithLoad extends GameWithControls {
       this.pixi2dApp.stage.addChild(p.sprite);
     });
 
+
     this.components.ThreeJsRenderableComponent.each((p, eid) => {
       // if (this.components.SamuraiTileComponent.get(eid)) {
 
@@ -542,33 +547,41 @@ export abstract class GameWithLoad extends GameWithControls {
       const position = this.components.Eid2PM.take(eid).position;
 
       for (let mesh of p.meshes) {
-        // mesh.translateX(position.X() - mesh.position.x)
-        // mesh.translateY(position.Y() - mesh.position.y)
+        // mesh.translateX(position.X())
+        // mesh.translateY(position.Y())
         // mesh.position.x = position.X();
         // mesh.position.y = position.Y();
         this.scene.add(mesh);
       }
     });
 
-    // this.scene.add(spotlight);
+    const spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.position.z
+    );
+    spotLight.rotateX(this.camera.rotation.x)
+    this.scene.add(spotLight);
+
     // const pointlight = new THREE.PointLight(0x00ff00, 1000, 0, 2);
     // pointlight.position.set(
-    //   (GAME as SpaceTrash).camera.position.x,
-    //   (GAME as SpaceTrash).camera.position.y,
-    //   (GAME as SpaceTrash).camera.position.z
+    //   this.camera.position.x,
+    //   this.camera.position.y,
+    //   this.camera.position.z
     // );
     // pointlight.position.z = -10;
 
-    // (GAME as SpaceTrash).scene.add(pointlight);
+    // this.scene.add(pointlight);
 
-    const ambientLight = new THREE.AmbientLight(0x0000ff, 1000);
-    // ambientLight.position.set(
-    //   (GAME as SpaceTrash).camera.position.x,
-    //   (GAME as SpaceTrash).camera.position.y,
-    //   (GAME as SpaceTrash).camera.position.z
-    // );
+    const ambientLight = new THREE.AmbientLight(0xFFdddd, 1);
+    // // ambientLight.position.set(
+    // //   (GAME as SpaceTrash).camera.position.x,
+    // //   (GAME as SpaceTrash).camera.position.y,
+    // //   (GAME as SpaceTrash).camera.position.z
+    // // );
 
-    ambientLight.position.z = -10;
+    // // ambientLight.position.z = -10;
 
     this.scene.add(ambientLight);
 
@@ -576,61 +589,61 @@ export abstract class GameWithLoad extends GameWithControls {
   }
 
   loadPhysics = () => {
-    const staticGroup: { eid: number; samComp: SP_PhysicalComponent }[] = [];
-    const dynamicGroup: { eid: number; samComp: SP_PhysicalComponent }[] = [];
+    // const staticGroup: { eid: number; samComp: SP_PhysicalComponent }[] = [];
+    // const dynamicGroup: { eid: number; samComp: SP_PhysicalComponent }[] = [];
 
     this.components.SP_PhysicalComponent.each((v, k) => {
       this.samuraiEngine.addBody(v);
 
       v.body.SP_EID = k;
 
-      if (v.body.isStatic) staticGroup.push({ eid: k, samComp: v });
-      else dynamicGroup.push({ eid: k, samComp: v });
+      // if (v.body.isStatic) staticGroup.push({ eid: k, samComp: v });
+      // else dynamicGroup.push({ eid: k, samComp: v });
     });
 
-    dynamicGroup.forEach(({ samComp }) => {
-      // samComp.body.pos.x = Math.random() * MapSize * TileSize;
-      // samComp.body.pos.y = Math.random() * MapSize * TileSize;
-    });
+    // dynamicGroup.forEach(({ samComp }) => {
+    //   // samComp.body.pos.x = Math.random() * MapSize * TileSize;
+    //   // samComp.body.pos.y = Math.random() * MapSize * TileSize;
+    // });
 
-    dynamicGroup.forEach((x) => {
-      const dynamicBody = x.samComp;
-      staticGroup.forEach((y) => {
-        const staticBody = y.samComp;
+    // dynamicGroup.forEach((x) => {
+    //   const dynamicBody = x.samComp;
+    //   staticGroup.forEach((y) => {
+    //     const staticBody = y.samComp;
 
-        // console.log(this.entities.get(y.eid));
+    //     // console.log(this.entities.get(y.eid));
 
-        // this.arcadePhysics.world.addOverlap(
-        //   staticBody.samComp,
-        //   dynamicBody.arcadeObject,
-        //   (...a) => {
-        //     // const x = a[1];
-        //     // for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
+    //     // this.arcadePhysics.world.addOverlap(
+    //     //   staticBody.samComp,
+    //     //   dynamicBody.arcadeObject,
+    //     //   (...a) => {
+    //     //     // const x = a[1];
+    //     //     // for (let z of arcadeBodiesToAgentOnCollisionCallbacks) {
 
-        //     //   console.log("collision between", y.eid, x.eid)
-        //     //   if (z.body === x) {
-        //     //     // z.callback();
-        //     //   }
-        //     // }
-        //     // const cb = x.getData('onCollide');
-        //     // cb(s, d)
-        //     // debugger
-        //     // Actors.update({
-        //     //   onCollision
-        //     // })
+    //     //     //   console.log("collision between", y.eid, x.eid)
+    //     //     //   if (z.body === x) {
+    //     //     //     // z.callback();
+    //     //     //   }
+    //     //     // }
+    //     //     // const cb = x.getData('onCollide');
+    //     //     // cb(s, d)
+    //     //     // debugger
+    //     //     // Actors.update({
+    //     //     //   onCollision
+    //     //     // })
 
-        //     console.log("overlap1 between", y.eid, x.eid);
-        //     debugger;
-        //   },
-        //   (x, y, z) => {
-        //     console.log("overlap2 between", x, y);
-        //   },
-        //   (x, y, z) => {
-        //     console.log("mark3");
-        //   }
-        // );
-      });
-    });
+    //     //     console.log("overlap1 between", y.eid, x.eid);
+    //     //     debugger;
+    //     //   },
+    //     //   (x, y, z) => {
+    //     //     console.log("overlap2 between", x, y);
+    //     //   },
+    //     //   (x, y, z) => {
+    //     //     console.log("mark3");
+    //     //   }
+    //     // );
+    //   });
+    // });
 
     // dynamicGroup.forEach((s) => {
     //   dynamicGroup.forEach((s2) => {
