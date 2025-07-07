@@ -42,7 +42,7 @@ brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 4);
 
 // export const wallTexture = new THREE.MeshBasicMaterial({ map: brickTexture })
-export const wallTexture = new THREE.MeshPhongMaterial({ map: brickTexture })
+export const wallTexture = new THREE.MeshPhongMaterial({ map: brickTexture, side: THREE.DoubleSide })
 
 export const floorTexture = new THREE.MeshPhongMaterial({ map: stoneTexture })
 

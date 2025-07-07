@@ -251,7 +251,7 @@ const PrismGeometryV2 = function (s: SamuraiTile): THREE.ExtrudeGeometry {
 
 const floorGeometry = new THREE.PlaneGeometry(TileSize, TileSize);
 
-var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
+// var cubeGeo = new THREE.BoxGeometry(TileSize, TileSize, TileSize);
 
 const floorTile = (x: number, y: number) => {
   const m = new THREE.Mesh(floorGeometry, floorTexture);
@@ -411,7 +411,7 @@ export class WallTile extends Tile {
       hFlip,
       vFlip,
       dFlip,
-      "corner"
+      "tile100"
     );
 
     const physical = new Box({ x, y }, TileSize, TileSize);

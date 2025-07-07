@@ -48,8 +48,10 @@ export abstract class GameWithLoad extends GameWithControls {
     this.attachAiAgentsToActors();
     this.runInitialMapBoundaryCheck();
     // this.runPlaceImmoveableSetPieces();
-    // this.cullInteriorFaces();
+
     this.setupRenderers();
+    // this.cullInteriorFaces();
+
     this.loadPhysics();
     this.setupAiAgents();
     this.setupHeat();
@@ -59,100 +61,180 @@ export abstract class GameWithLoad extends GameWithControls {
   cullInteriorFaces() {
     ////////////////////////////////////////////////////////////////////////
 
-    for (let y = 0; y < MapSize; y++) {
-      for (let x = 0; x < MapSize; x++) {
-        const s = this.components.SetPieces.store[y][x];
+    const meshes = this.scene.children.filter(
+      (obj) => obj instanceof THREE.Mesh
+    );
+    const uniqueMeshes: THREE.Mesh[] = [];
 
-        if (s.samuraiTile && s.samuraiTile.samuraiTileKey === "tile100") {
-          // check north
-          ///////////////////////////////////////////////////////
-          if (y - 1 >= 0) {
-            const s2 = this.components.SetPieces.store[y - 1][x];
-            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
-              for (let a = 0; a < s.meshes.length; a++) {
-                for (let b = 0; b < s2.meshes.length; b++) {
-                  const meshA = s.meshes[a];
-                  const meshb = s2.meshes[b];
-                  if (meshA.position.x === meshb.position.x) {
-                    if (meshA.position.y === meshb.position.y) {
-                      if (meshA.position.z === meshb.position.z) {
-                        s.meshes.splice(a, 1);
-                        s2.meshes.splice(b, 1);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          // check south
-          ///////////////////////////////////////////////////////
-          if (y + 1 < MapSize - 1) {
-            const s2 = this.components.SetPieces.store[y + 1][x];
-            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
-              for (let a = 0; a < s.meshes.length; a++) {
-                for (let b = 0; b < s2.meshes.length; b++) {
-                  const meshA = s.meshes[a];
-                  const meshb = s2.meshes[b];
-                  if (meshA.position.x === meshb.position.x) {
-                    if (meshA.position.y === meshb.position.y) {
-                      if (meshA.position.z === meshb.position.z) {
-                        s.meshes.splice(a, 1);
-                        s2.meshes.splice(b, 1);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+    // debugger
+    for (let i = 0; i < meshes.length; i++) {
+      let isDuplicate = false;
 
-          // check east
-          ///////////////////////////////////////////////////////
-          if (x + 1 <= MapSize - 1) {
-            const s2 = this.components.SetPieces.store[y][x + 1];
-            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
-              for (let a = 0; a < s.meshes.length; a++) {
-                for (let b = 0; b < s2.meshes.length; b++) {
-                  const meshA = s.meshes[a];
-                  const meshb = s2.meshes[b];
-                  if (meshA.position.x === meshb.position.x) {
-                    if (meshA.position.y === meshb.position.y) {
-                      if (meshA.position.z === meshb.position.z) {
-                        s.meshes.splice(a, 1);
-                        s2.meshes.splice(b, 1);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+      for (let j = 0; j < uniqueMeshes.length; j++) {
+        if (
+          meshes[i].geometry === uniqueMeshes[j].geometry && // Compare geometries
+          meshes[i].material === uniqueMeshes[j].material && // Compare materials
+          meshes[i].matrixWorld.equals(uniqueMeshes[j].matrixWorld)  // Compare world matrices
+          // meshes[i].position === uniqueMeshes[j].position
+        ) {
+          isDuplicate = true;
+          debugger
 
-          // check west
-          ///////////////////////////////////////////////////////
-          if (x - 1 >= 0) {
-            const s2 = this.components.SetPieces.store[y][x - 1];
-            if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
-              for (let a = 0; a < s.meshes.length; a++) {
-                for (let b = 0; b < s2.meshes.length; b++) {
-                  const meshA = s.meshes[a];
-                  const meshb = s2.meshes[b];
-                  if (meshA.position.x === meshb.position.x) {
-                    if (meshA.position.y === meshb.position.y) {
-                      if (meshA.position.z === meshb.position.z) {
-                        s.meshes.splice(a, 1);
-                        s2.meshes.splice(b, 1);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          break;
         }
       }
+
+      if (isDuplicate) {
+        // Remove and dispose of the duplicate mesh
+        const duplicateMesh = meshes[i];
+        this.scene.remove(duplicateMesh);
+        duplicateMesh.geometry.dispose();
+        duplicateMesh.material.dispose();
+        // Dispose of textures if any
+        // if (duplicateMesh.material.map) duplicateMesh.material.map.dispose();
+        // ... (dispose of other texture types)
+        // duplicateMesh = undefined;
+      } else {
+        uniqueMeshes.push(meshes[i]);
+      }
     }
+
+    // // re-use vectors for performance
+    // let worldPositionA = new THREE.Vector3();
+    // let worldPositionB = new THREE.Vector3();
+
+    // const deletions = []
+
+    // for (let y = 0; y < MapSize; y++) {
+    //   for (let x = 0; x < MapSize; x++) {
+    //     const s = this.components.SetPieces.store[y][x];
+
+    //     if (s.samuraiTile && s.samuraiTile.samuraiTileKey === "tile100") {
+
+    //       // check north
+    //       ///////////////////////////////////////////////////////
+    //         if (y - 1 >= 0) {
+    //           const s2 = this.components.SetPieces.store[y - 1][x];
+    //           if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+    //             for (let a = 0; a < s.meshes.length; a++) {
+    //               for (let b = 0; b < s2.meshes.length; b++) {
+    //                 const meshA = s.meshes[a];
+    //                 const meshB = s2.meshes[b];
+
+    //                 // if (meshA) {
+    //                 //   meshA.getWorldPosition(worldPositionA);
+
+    //                 //   if (meshB) {
+    //                 //     meshB.getWorldPosition(worldPositionB);
+
+    //                 //     if (worldPositionA.x === worldPositionB.x) {
+    //                 //       if (worldPositionA.y === worldPositionB.y) {
+    //                 //         if (worldPositionA.z === worldPositionB.z) {
+    //                 //           debugger
+    //                 //           s.meshes.splice(a, 1);
+    //                 //           s2.meshes.splice(b, 1);
+    //                 //         }
+    //                 //       }
+    //                 //     }
+    //                 //   }
+    //                 // }
+    //               }
+    //             }
+    //           }
+    //         }
+
+    //       // // check south
+    //       // ///////////////////////////////////////////////////////
+    //       // if (y + 1 < MapSize - 1) {
+    //       //   const s2 = this.components.SetPieces.store[y + 1][x];
+    //       //   if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+    //       //     for (let a = 0; a < s.meshes.length; a++) {
+    //       //       for (let b = 0; b < s2.meshes.length; b++) {
+    //       //         const meshA = s.meshes[a];
+    //       //         const meshB = s2.meshes[b];
+    //       //         if (meshA) {
+    //       //           meshA.getWorldPosition(worldPositionA);
+
+    //       //           if (meshB) {
+    //       //             meshB.getWorldPosition(worldPositionB);
+
+    //       //             if (worldPositionA.x === worldPositionB.x) {
+    //       //               if (worldPositionA.y === worldPositionB.y) {
+    //       //                 if (worldPositionA.z === worldPositionB.z) {
+    //       //                   s.meshes.splice(a, 1);
+    //       //                   s2.meshes.splice(b, 1);
+    //       //                 }
+    //       //               }
+    //       //             }
+    //       //           }
+    //       //         }
+    //       //       }
+    //       //     }
+    //       //   }
+    //       // }
+
+    //       // // check east
+    //       // ///////////////////////////////////////////////////////
+    //       // if (x + 1 <= MapSize - 1) {
+    //       //   const s2 = this.components.SetPieces.store[y][x + 1];
+    //       //   if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+    //       //     for (let a = 0; a < s.meshes.length; a++) {
+    //       //       for (let b = 0; b < s2.meshes.length; b++) {
+    //       //         const meshA = s.meshes[a];
+    //       //         const meshB = s2.meshes[b];
+    //       //         if (meshA) {
+    //       //           meshA.getWorldPosition(worldPositionA);
+
+    //       //           if (meshB) {
+    //       //             meshB.getWorldPosition(worldPositionB);
+
+    //       //             if (worldPositionA.x === worldPositionB.x) {
+    //       //               if (worldPositionA.y === worldPositionB.y) {
+    //       //                 if (worldPositionA.z === worldPositionB.z) {
+    //       //                   s.meshes.splice(a, 1);
+    //       //                   s2.meshes.splice(b, 1);
+    //       //                 }
+    //       //               }
+    //       //             }
+    //       //           }
+    //       //         }
+    //       //       }
+    //       //     }
+    //       //   }
+    //       // }
+
+    //       // // check west
+    //       // ///////////////////////////////////////////////////////
+    //       // if (x - 1 >= 0) {
+    //       //   const s2 = this.components.SetPieces.store[y][x - 1];
+    //       //   if (s2.samuraiTile && s2.samuraiTile.samuraiTileKey === "tile100") {
+    //       //     for (let a = 0; a < s.meshes.length; a++) {
+    //       //       for (let b = 0; b < s2.meshes.length; b++) {
+    //       //         const meshA = s.meshes[a];
+    //       //         const meshB = s2.meshes[b];
+    //       //         if (meshA) {
+    //       //           meshA.getWorldPosition(worldPositionA);
+
+    //       //           if (meshB) {
+    //       //             meshB.getWorldPosition(worldPositionB);
+
+    //       //             if (worldPositionA.x === worldPositionB.x) {
+    //       //               if (worldPositionA.y === worldPositionB.y) {
+    //       //                 if (worldPositionA.z === worldPositionB.z) {
+    //       //                   s.meshes.splice(a, 1);
+    //       //                   s2.meshes.splice(b, 1);
+    //       //                 }
+    //       //               }
+    //       //             }
+    //       //           }
+    //       //         }
+    //       //       }
+    //       //     }
+    //       //   }
+    //       // }
+    //     }
+    //   }
+    // }
 
     //////////////////////////////////////////////////////////////////
   }
@@ -397,10 +479,13 @@ export abstract class GameWithLoad extends GameWithControls {
       //   throw "IDK";
       // }
 
-      this.components.Actors.make(new ActorComponent({
-        physical: sp.body,
-        meshes: this.components.ThreeJsRenderableComponent.take(aeid).meshes
-      }), aeid)
+      this.components.Actors.make(
+        new ActorComponent({
+          physical: sp.body,
+          meshes: this.components.ThreeJsRenderableComponent.take(aeid).meshes,
+        }),
+        aeid
+      );
       // const actor = this.components.Actors.take(aeid);
       // actor.actorId = aeid;
       // actor.physical = sp.body;
@@ -409,8 +494,6 @@ export abstract class GameWithLoad extends GameWithControls {
       // actor.friendly = this.isFriendly(k);
       // actor.position = y;
       // actor.motion = mt;
-
-      
     });
   }
 
@@ -537,7 +620,6 @@ export abstract class GameWithLoad extends GameWithControls {
       this.pixi2dApp.stage.addChild(p.sprite);
     });
 
-
     this.components.ThreeJsRenderableComponent.each((p, eid) => {
       // if (this.components.SamuraiTileComponent.get(eid)) {
 
@@ -561,7 +643,7 @@ export abstract class GameWithLoad extends GameWithControls {
       this.camera.position.y,
       this.camera.position.z
     );
-    spotLight.rotateX(this.camera.rotation.x)
+    spotLight.rotateX(this.camera.rotation.x);
     this.scene.add(spotLight);
 
     // const pointlight = new THREE.PointLight(0x00ff00, 1000, 0, 2);
@@ -574,7 +656,7 @@ export abstract class GameWithLoad extends GameWithControls {
 
     // this.scene.add(pointlight);
 
-    const ambientLight = new THREE.AmbientLight(0xFFdddd, 1);
+    const ambientLight = new THREE.AmbientLight(0xffdddd, 1);
     // // ambientLight.position.set(
     // //   (GAME as SpaceTrash).camera.position.x,
     // //   (GAME as SpaceTrash).camera.position.y,

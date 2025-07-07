@@ -21,12 +21,12 @@ export class SamuraiEngine {
   }
 
   update(context, callback) {
-    // context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    // context.strokeStyle = "#FFFFFF";
-    // context.beginPath();
-    // this.system.draw(context);
-    // context.stroke();
+    context.strokeStyle = "#FFFFFF";
+    context.beginPath();
+    this.system.draw(context);
+    context.stroke();
 
     // if (this.system.checkAll(callback)) {
     //   // Do something yourself
