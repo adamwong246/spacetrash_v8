@@ -1,4 +1,4 @@
-import { Component } from "../../../../engine/VECS.ts/Component";
+import { Component } from "../../../engine/VECS/Component";
 import { AttackableComponent } from "./casting/in";
 import { MeleeComponent } from "./casting/out";
 

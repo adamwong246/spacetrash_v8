@@ -1,5 +1,6 @@
 import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-import { ITiles } from "../../EntityComponents";
+import { ITiles } from "../../EntityComponents/tiles";
+
 
 import { PhysicsComponent } from "./physics";
 

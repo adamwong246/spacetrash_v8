@@ -1,5 +1,4 @@
 import { TankMovingStore } from "../ECS/Components/v4/TankMovingComponent";
-import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
 
 import { ActorStore } from "../ECS/Components/v3/actors";
 
@@ -32,18 +31,18 @@ import {
   IntegerPositionStore,
   OrdinalDirectionStore,
   OridinalMovingStore,
-} from "../../engine/game/physical";
-import { ThreeJsRenderableStore } from "../../engine/rendering/threejs";
-import { PixiJsRenderableStore } from "../../engine/rendering/pixijs";
-import { ConsoleRenderableStore } from "../../engine/rendering/console";
+} from "../../demiurge/game/physical";
+import { ThreeJsRenderableStore } from "../../demiurge/rendering/threejs";
+import { PixiJsRenderableStore } from "../../demiurge/rendering/pixijs";
+import { ConsoleRenderableStore } from "../../demiurge/rendering/console";
 
 import { DesktopGame } from "./1-DesktopGame";
 
 import { SamuraiTileComponent, SamuraiTileStore } from "../physics/SamuraiTile";
-import {
-  SP_PhysicalComponent,
-  SP_PhysicalStore,
-} from "../../engine/physics/SP_Physical";
+
+import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
+
+import { SP_PhysicalStore } from "../../demiurge/physics/SP_Physical";
 
 export type ICanvases =
   | "map"

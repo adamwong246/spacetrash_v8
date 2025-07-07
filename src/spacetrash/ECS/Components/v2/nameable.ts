@@ -1,7 +1,7 @@
 // Gives an entity a name
 
-import { Component } from "../../../../engine/VECS.ts/Component";
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { Component } from "../../../engine/VECS/Component"; 
+import { MapStoreV2 } from "../../../engine/VECS/Store";
 
 import { ISpaceTrashComponents } from "../v1";
 

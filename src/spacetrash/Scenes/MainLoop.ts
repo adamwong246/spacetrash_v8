@@ -3,37 +3,82 @@ import { SpaceTrashScene } from ".";
 import { ActorSize, MapSize, SPEED_CONSTANT, TileSize } from "../Constants";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
-import { SpaceTrash } from "../Game/index.ts";
+import { SpaceTrash } from "../Game/9-WithTiled.ts";
 import level4 from "./../ECS/EntityComponents/ships/Ship4.ts";
 import { BoringShip } from "./../ECS/EntityComponents/ships/BoringShip.ts";
-import {EmptyShip} from "./../ECS/EntityComponents/ships/EmptyShip.ts";
+import { EmptyShip } from "./../ECS/EntityComponents/ships/EmptyShip.ts";
 
 class MainScene extends SpaceTrashScene {
   async boot(game: SpaceTrash) {
-    const ship = new level4();
+    game.loadLevel("levl20", () => {
+      const drones = [...new Array(9)].map((n) => {
+        return new SpaceTrashBot(
+          // Math.random() * MapSize * TileSize,
+          // Math.random() * MapSize * TileSize,
+          // 500,
+          // 500,
+          // (MapSize * TileSize) / 2,
+          // (MapSize * TileSize) / 2,
+          // 5, 5,
+          100,
+          100,
+          0,
+          0,
+          0
+          // 0.01, 0.01
+          // (Math.random() - 0.5) * SPEED_CONSTANT,
+          // (Math.random() - 0.5) * SPEED_CONSTANT
+        );
+      });
+
+      // the physics engine cannot do more than 3000
+      const moreBots = [...new Array(100)].map((n) => {
+        return new PuckBot((MapSize * TileSize) / 2, (MapSize * TileSize) / 2);
+      });
+
+      const myDoneIds = game.setEntitiesComponent(drones);
+
+      game.bots = {
+        1: [myDoneIds[0], "larry"],
+        2: [myDoneIds[1], "curly"],
+        3: [myDoneIds[2], "moe"],
+        4: [myDoneIds[3], "kirk"],
+        5: [myDoneIds[4], "spock"],
+        6: [myDoneIds[5], "bones"],
+        7: [myDoneIds[6], "han"],
+        8: [myDoneIds[7], "luke"],
+        9: [myDoneIds[8], "obiwan"],
+      };
+
+      return [...drones, ...moreBots]
+    });
+
+    game.BeginTheGame();
+
+    // const ship = new level4();
     // const ship = new BoringShip();
     // const ship = new level4();
     // const ship = new RotCellularShip();
     // const ship = new RotDiggerShip();
 
-    const drones = [...new Array(9)].map((n) => {
-      return new SpaceTrashBot(
-        // Math.random() * MapSize * TileSize,
-        // Math.random() * MapSize * TileSize,
-        // 500,
-        // 500,
-        // (MapSize * TileSize) / 2,
-        // (MapSize * TileSize) / 2,
-        // 5, 5,
-        100,100,
-        0,
-        0,
-        0
-        // 0.01, 0.01
-        // (Math.random() - 0.5) * SPEED_CONSTANT,
-        // (Math.random() - 0.5) * SPEED_CONSTANT
-      );
-    });
+    // const drones = [...new Array(9)].map((n) => {
+    //   return new SpaceTrashBot(
+    //     // Math.random() * MapSize * TileSize,
+    //     // Math.random() * MapSize * TileSize,
+    //     // 500,
+    //     // 500,
+    //     // (MapSize * TileSize) / 2,
+    //     // (MapSize * TileSize) / 2,
+    //     // 5, 5,
+    //     100,100,
+    //     0,
+    //     0,
+    //     0
+    //     // 0.01, 0.01
+    //     // (Math.random() - 0.5) * SPEED_CONSTANT,
+    //     // (Math.random() - 0.5) * SPEED_CONSTANT
+    //   );
+    // });
 
     // const radiationDetectingDrone = game.setEntitiesComponent([
     //   new SpaceTrashBot(
@@ -50,14 +95,10 @@ class MainScene extends SpaceTrashScene {
     //   ),
     // ])[0];
 
-    // the physics engine cannot do more than 3000
-    const moreBots = [...new Array(100)].map((n) => {
-      return new PuckBot(
-        (MapSize * TileSize) / 2,
-        (MapSize * TileSize) / 2,
-
-      );
-    });
+    // // the physics engine cannot do more than 3000
+    // const moreBots = [...new Array(100)].map((n) => {
+    //   return new PuckBot((MapSize * TileSize) / 2, (MapSize * TileSize) / 2);
+    // });
 
     // const moreBots = [...new Array(8)].map((n) => {
     //   return new PuckBot(
@@ -113,30 +154,30 @@ class MainScene extends SpaceTrashScene {
     //   Math.round(Math.random() * MapSize)
     // );
 
-    game.setEntitiesComponent([
-      ship,
-      ...ship.toTiles(),
-      ...moreBots,
-      // warpcore0,
-      // warpcore1,
-      // monster1,
-    ]);
+    // game.setEntitiesComponent([
+    //   ship,
+    //   ...ship.toTiles(),
+    //   ...moreBots,
+    //   // warpcore0,
+    //   // warpcore1,
+    //   // monster1,
+    // ]);
 
-    const myDoneIds = game.setEntitiesComponent(drones);
+    // const myDoneIds = game.setEntitiesComponent(drones);
 
-    game.bots = {
-      1: [myDoneIds[0], "larry"],
-      2: [myDoneIds[1], "curly"],
-      3: [myDoneIds[2], "moe"],
-      4: [myDoneIds[3], "kirk"],
-      5: [myDoneIds[4], "spock"],
-      6: [myDoneIds[5], "bones"],
-      7: [myDoneIds[6], "han"],
-      8: [myDoneIds[7], "luke"],
-      9: [myDoneIds[8], "obiwan"],
-    };
+    // game.bots = {
+    //   1: [myDoneIds[0], "larry"],
+    //   2: [myDoneIds[1], "curly"],
+    //   3: [myDoneIds[2], "moe"],
+    //   4: [myDoneIds[3], "kirk"],
+    //   5: [myDoneIds[4], "spock"],
+    //   6: [myDoneIds[5], "bones"],
+    //   7: [myDoneIds[6], "han"],
+    //   8: [myDoneIds[7], "luke"],
+    //   9: [myDoneIds[8], "obiwan"],
+    // };
 
-    game.BeginTheGame();
+    // game.BeginTheGame();
   }
 
   update(e: SpaceTrash) {

@@ -1,5 +1,5 @@
-import { MovingComponent } from "../../../../engine/game/physical";
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { MovingComponent } from "../../../engine/game/physical";
+import { MapStoreV2 } from "../../../engine/VECS/Store";
 
 export type ITankDirections = {
   i: `left` | `right` | "none";

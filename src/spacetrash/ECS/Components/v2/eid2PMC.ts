@@ -1,5 +1,5 @@
-import { Component } from "../../../../engine/VECS.ts/Component";
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { Component } from "../../../engine/VECS/Component";
+import { MapStoreV2 } from "../../../engine/VECS/Store";
 import {} from "../../../../engine/VECS.ts/types";
 import { ISpaceTrashComponents } from "../v1";
 import { DrawableComponent } from "./drawable";

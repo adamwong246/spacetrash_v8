@@ -15,12 +15,10 @@ import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { HeatConductorComponent } from "../../Components/v3/heat";
 import { SpaceTrashEntity } from "../../Entity";
 
-import sj from "../../../tiled/levl20.json";
+// import sj from "../../../tiled/levl20.json";
 import {
   floorTexture,
   wallTexture,
-  voidMaterial,
-  blueMaterial,
 } from "../../../threejs";
 
 export const cornerGID = 2;
@@ -30,7 +28,7 @@ const FLIPPED_VERTICALLY_FLAG = 0x40000000;
 const FLIPPED_DIAGONALLY_FLAG = 0x20000000;
 const FLIPPED_HEX_ROTATE_120_FLAG = 0x10000000;
 
-const firstgid = sj.tilesets[0].firstgid;
+// const firstgid = sj.tilesets[0].firstgid;
 
 function isFlippedDiagonally(gid: number) {
   return (gid & FLIPPED_DIAGONALLY_FLAG) !== 0;

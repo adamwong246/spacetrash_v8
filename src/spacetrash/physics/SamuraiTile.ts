@@ -1,6 +1,6 @@
 import { BasePolygons, IBasePolygons } from "./BasePolygon";
 
-import { MapStoreV2 } from "../../engine/VECS.ts/Store";
+import { MapStoreV2 } from "../../engine/VECS/Store";
 import { SamuraiTile } from "./BasePolygon";
 import { SP_IntegerPositionComponent } from "../ECS/Components/v4/IntegerPosition";
 

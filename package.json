@@ -32,10 +32,13 @@
     "@types/react": "^18.3.3",
     "@types/sat": "^0.0.35",
     "@types/three": "^0.177.0",
+    "@workadventure/tiled-map-type-guard": "^2.1.2",
     "detect-collisions": "^9.27.6",
     "dockview": "^4.3.1",
     "esbuild": "0.25.5",
+    "esbuild-plugin-import-glob": "^0.1.1",
     "esbuild-plugin-wasm": "^1.1.0",
+    "esbuild-raw-plugin": "^0.3.1",
     "esbuild-sass-plugin": "^3.3.1",
     "eventemitter3": "^4.0.7",
     "graphology": "^0.25.4",
@@ -54,6 +57,7 @@
     "testeranto": "^0.129.0",
     "three": "^0.177.0",
     "tsc-watch": "^7.1.1",
-    "tsx": "^4.20.3"
+    "tsx": "^4.20.3",
+    "xml2js": "^0.6.2"
   }
 }

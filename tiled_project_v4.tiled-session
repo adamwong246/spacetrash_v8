@@ -13,6 +13,9 @@
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
         "src/spacetrash/tiled/.json.tmj": {
             "scale": 0.297802734375,
             "selectedLayer": 0,
@@ -97,8 +100,8 @@
             "scale": 0.3133,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1358.1232045962336,
-                "y": 850.6224066390041
+                "x": 777.210341525694,
+                "y": 566.5496329396744
             }
         },
         "src/spacetrash/tiled/level7.tmj": {
@@ -128,6 +131,17 @@
         "src/spacetrash/tiled/level9.json#tileset3": {
             "scaleInDock": 1
         },
+        "src/spacetrash/tiled/levl20.json": {
+            "scale": 0.2893,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 347.3902523332183,
+                "y": 1221.9149671621155
+            }
+        },
+        "src/spacetrash/tiled/levl20.json#tileset3": {
+            "dynamicWrapping": false
+        },
         "src/spacetrash/tiled/tileset3.json": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
@@ -145,14 +159,16 @@
     "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
     "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
     "last.objectTemplatePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
+    "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "map.height": 64,
-    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "json",
     "map.width": 64,
     "openFiles": [
     ],
     "project": "tiled_project_v4.tiled-project",
     "recentFiles": [
+        "src/spacetrash/tiled/levl20.json",
         "src/spacetrash/tiled/level18.json",
         "src/spacetrash/tiled/level11.json",
         "src/spacetrash/tiled/tileset3.json",

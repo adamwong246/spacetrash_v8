@@ -16,10 +16,10 @@ import mainLoopScene from "../Scenes/MainLoop";
 import { BotWindow, IBotWindowState } from "../UI/BotWindow";
 import { MapWindow } from "../UI/map";
 import { ITermWindowState, TerminalWindow } from "../UI/terminal";
-import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
+
 import { ArcadePhysicsWindow } from "../UI/ArcadePhysicsWindow";
 import { MultiSurfaceGame } from "./0-multisurface";
-import { ArcadePhysics } from "../../spacetrash/vendor/arcade-physics-main/src";
+
 import { TileSize, MapSize } from "../Constants";
 import { defToRad } from "../lib";
 import { DirectionComponent } from "../../engine/game/physical";
@@ -27,7 +27,7 @@ import { StateSpace } from "../../engine/game/StateSpace";
 import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
 import { SamuraiEngine } from "../physics/SamuraIEngine";
 import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
-import { Body, Circle, deg2rad } from "detect-collisions";
+import { Circle } from "detect-collisions";
 import {
   alreadyLoggedInTermLine,
   bootScreenTermLine,
@@ -43,12 +43,8 @@ import {
   shipTermLine,
   whoAmITermLine,
 } from "./Terminal";
-
-import brick from "./../Assets/brick.png";
-import stone from "./../Assets/stone.png";
-import voidPng from "./../Assets/void.png";
-import slopes32Png from "../tiled/slopes-32.png";
-import slopes32Json from "../tiled/slopes-32.json";
+import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
+import { IAssets } from "../../demiurge/abstractClasses/3-WithRendering";
 
 let self: DesktopGame<any, any>;
 
@@ -96,15 +92,6 @@ export abstract class DesktopGame<
   // pixijsThermalRenderer: PIXI.Application;
   // pixi2dThermalApp: PIXI.Application;
 
-  arcadePhysics: ArcadePhysics;
-  arcadePhysicsTick: any;
-  arcadePhysicsCanvasContext: any;
-
-  // matterEngine: Matter.Engine;
-  // matterRenderer: Matter.Render;
-
-  // rapierWorld: RAPIER.World;
-
   samuraiCanvasContext: any;
 
   samuraiBotCanvasRef: HTMLCanvasElement;
@@ -132,7 +119,7 @@ export abstract class DesktopGame<
   constructor(
     config: IPerformanceConfig,
     renderings: Set<IRenderings>,
-    domNode: HTMLElement
+    domNode: HTMLElement,
   ) {
     super(config, renderings);
     this.reactRoot = createRoot(domNode);
@@ -164,11 +151,6 @@ export abstract class DesktopGame<
 
     this.samuraiPixi = new PIXI.Application();
 
-    // this.matterEngine = Engine.create();
-    // this.matterEngine.gravity.scale = 0.000001;
-
-    // this.samuraiPixi = new PIX
-
     this.addToHistory(bootScreenTermLine);
 
     document.addEventListener("keydown", function (event) {
@@ -187,87 +169,8 @@ export abstract class DesktopGame<
     });
   }
 
-  async start() {
-    super.start();
-
-    PIXI.Assets.load([
-      "https://pixijs.com/assets/bunny.png",
-      stone,
-      brick,
-      voidPng,
-      "https://pixijs.com/assets/bitmap-font/desyrel.xml",
-      slopes32Png,
-    ]).then(() => {
-      PIXI.Texture.from("https://pixijs.com/assets/bunny.png");
-      PIXI.Texture.from(stone);
-      PIXI.Texture.from(brick);
-      PIXI.Texture.from(voidPng);
-      PIXI.Texture.from(slopes32Png);
-
-      let x = 0;
-      let y = 0;
-      for (let i = 0; i < slopes32Json.tilecount; i++) {
-        const z = new PIXI.Texture({
-          label: `slopes32Png-${x} - ${y}`,
-          source: PIXI.Texture.from(slopes32Png).baseTexture,
-
-          frame: new PIXI.Rectangle(
-            x * slopes32Json.tilewidth,
-            y * slopes32Json.tilewidth,
-            TileSize,
-            TileSize
-          ),
-
-          // trim: new PIXI.Rectangle(
-          //   x * slopes32Json.tilewidth,
-          //   y * slopes32Json.tilewidth,
-          //   TileSize,
-          //   TileSize
-
-          // ),
-        });
-
-        if (x === 4 && y === 1) {
-          PIXI.Cache.set(`slopes32Png-EMPTY`, z);
-        }
-
-        if (x === 0 && y === 0) {
-          PIXI.Cache.set(`slopes32Png-FULL`, z);
-        }
-
-        if (x === 5 && y === 0) {
-          PIXI.Cache.set(`slopes32Png-NORTHEAST`, z);
-        }
-
-        if (x === 6 && y === 0) {
-          PIXI.Cache.set(`slopes32Png-NORTHWEST`, z);
-        }
-
-        if (x === 7 && y === 0) {
-          PIXI.Cache.set(`slopes32Png-SOUTHEAST`, z);
-        }
-
-        if (x === 8 && y === 0) {
-          PIXI.Cache.set(`slopes32Png-SOUTHWEST`, z);
-        }
-
-        // console.log(
-        //   x * slopes32Json.tilewidth,
-        //   y * slopes32Json.tilewidth,
-        //   TileSize
-        // );
-        // debugger
-        // PIXI.Cache.set(`slopes32Png-${x} - ${y}`, z);
-
-        x++;
-        if (x > slopes32Json.columns) {
-          x = 0;
-          y++;
-        }
-
-        // console.log(z);
-      }
-    });
+  async start(config: IAssets) {
+    super.start(config)
 
     self.reactRoot.render(
       <div>

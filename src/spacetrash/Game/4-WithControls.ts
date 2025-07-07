@@ -1,4 +1,5 @@
-import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
+
+import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
 import { GameWithStores } from "./3-WithStores";
 
 export abstract class GameWithControls extends GameWithStores {
@@ -10,9 +11,13 @@ export abstract class GameWithControls extends GameWithStores {
   constructor(
     domNode: HTMLElement,
     performanceConfig: IPerformanceConfig,
-    renderings: Set<any>
+    renderings: Set<any>,
   ) {
-    super(domNode, performanceConfig, renderings);
+    super(
+      domNode,
+      performanceConfig,
+      renderings,
+    );
 
     const self = this;
     document.addEventListener("keydown", function (event) {

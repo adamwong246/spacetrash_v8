@@ -1,4 +1,4 @@
-import { IntegerPositionComponent } from "../../../../engine/game/physical";
+import { IntegerPositionComponent } from "../../../engine/game/physical";
 import { TileSize } from "../../../Constants";
 
 export class SP_IntegerPositionComponent extends IntegerPositionComponent {

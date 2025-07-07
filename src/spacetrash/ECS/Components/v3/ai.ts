@@ -10,7 +10,7 @@ import AttackPatterns from "./behaviorPatterns/attacks";
 import ExplorePatterns from "./behaviorPatterns/explore";
 import { FovSense } from "./senses/fov";
 import { RadiationSense } from "./senses/radiation";
-import { SpaceTrash } from "../../../Game";
+import { SpaceTrash } from "../../../Game/9-WithTiled";
 import { distanceV2 } from "../../../lib";
 
 export type IBehaviors =

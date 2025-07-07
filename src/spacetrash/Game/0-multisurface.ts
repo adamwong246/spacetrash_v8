@@ -1,18 +1,16 @@
-// Allows a game with multiple HTML canvases
-// It is not platform specific and needs to target node-canvas as well as client canvases
+import { GameWithRendering } from "../../demiurge/abstractClasses/3-WithRendering";
+import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
 
-import { Game } from "../../engine/game/Game";
-
-import { IPerformanceConfig } from "../../engine/VECS.ts/ECS";
+import { ICanvases } from "./3-WithStores";
 
 export abstract class MultiSurfaceGame<
   IRenderings,
-> extends Game {
+> extends GameWithRendering {
   renderings: Set<IRenderings>;
 
   constructor(
     config: IPerformanceConfig,
-    renderings: Set<IRenderings>
+    renderings: Set<IRenderings>,
   ) {
     super(config);
     this.renderings = renderings;

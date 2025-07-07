@@ -3,7 +3,7 @@ import level4 from "../ECS/EntityComponents/ships/Ship4"
 import React, { useEffect, useRef } from "react";
 
 import { MapSize, TileSize } from "../Constants";
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/8-WithTicks";
 
 
 export const CustomPhysicsWindow = (props: { game: SpaceTrash }) => {

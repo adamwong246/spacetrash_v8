@@ -3,7 +3,7 @@ import { Entity } from "../../../../engine/VECS.ts/Entity";
 import { MapSize } from "../../../Constants";
 import { Tile } from "../tiles";
 
-import sj from "../../../tiled/levl20.json";
+// import sj from "../../../tiled/levl20.json";
 
 export default class extends SpaceTrashEntityComponent {
   map: Tile | null[][];

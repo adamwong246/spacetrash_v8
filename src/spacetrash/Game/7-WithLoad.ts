@@ -1,17 +1,14 @@
-import * as PIXI from "pixi.js";
+// This class contains all the details for loading a game. 
+// This phase is after the initialization of the game, but before the run phase
 
 import * as THREE from "three";
-import { MapSize, MapBoundLow, MapBoundHigh, TileSize } from "../Constants";
+
+import { MapSize, MapBoundLow, MapBoundHigh } from "../Constants";
 import { Eid2PMComponent } from "../ECS/Components/v2/eid2PMC";
 import { HeatConductorComponent } from "../ECS/Components/v3/heat";
 import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
 import { GameWithControls } from "./4-WithControls";
 import { IRenderings } from "./3-WithStores";
-import { Composite } from "matter-js";
-// import { ArcadePhysicsComponent } from "../ECS/Components/v4/PhaserArcade";
-import { BasePolygons } from "../physics/BasePolygon";
-import { SamuraiTileComponent } from "../physics/SamuraiTile";
-import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
 import { ActorComponent } from "../ECS/Components/v3/actors";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
@@ -33,7 +30,7 @@ export abstract class GameWithLoad extends GameWithControls {
         "arcadePhysics",
         "matter",
         "samurai",
-      ])
+      ]),
     );
   }
 

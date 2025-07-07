@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { SpaceTrash } from "../Game";
+import { SpaceTrash } from "../Game/8-WithTicks";
 import { rad2deg } from "detect-collisions";
 
 export type IBotWindowState = {
