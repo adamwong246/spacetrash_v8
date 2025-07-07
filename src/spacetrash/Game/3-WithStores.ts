@@ -25,7 +25,6 @@ import {
   HeatEmitterStore,
 } from "../ECS/Components/v3/heat";
 
-import { ArcadePhysicsStore } from "../ECS/Components/v4/PhaserArcade";
 import {
   DegreesDirectionStore,
   FloatMovingStore,
@@ -39,7 +38,7 @@ import { PixiJsRenderableStore } from "../../engine/rendering/pixijs";
 import { ConsoleRenderableStore } from "../../engine/rendering/console";
 
 import { DesktopGame } from "./1-DesktopGame";
-import { MatterComponent, MatterStore } from "../../engine/physics/matterjs";
+
 import { SamuraiTileComponent, SamuraiTileStore } from "../physics/SamuraiTile";
 import {
   SP_PhysicalComponent,
@@ -71,7 +70,6 @@ export abstract class GameWithStores extends DesktopGame<
   components = {
     Actors: new ActorStore(),
     AiAgentComponent: new AiAgentStore(),
-    ArcadePhysicsComponent: new ArcadePhysicsStore(),
     AttackableComponent: new AttackableStore(),
     ConsoleRenderableComponent: new ConsoleRenderableStore(),
     DegreesDirectionComponent: new DegreesDirectionStore(),
@@ -84,7 +82,6 @@ export abstract class GameWithStores extends DesktopGame<
     IntegerPositionComponent: new IntegerPositionStore(),
     LightIncastingComponent: new LightIncastingStore(),
     LightOutcastingComponent: new LightOutcastingStore(),
-    MatterComponent: new MatterStore(),
     NameableComponent: new NameableStore(),
     OrdinalDirectionComponent: new OrdinalDirectionStore(),
     OridinalMovingComponent: new OridinalMovingStore(),
