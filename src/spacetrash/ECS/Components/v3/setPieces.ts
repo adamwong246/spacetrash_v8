@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import * as PIXI from "pixi.js";
 
-import { TwoDOneD_Component } from "../../../../engine/VECS.ts/Component";
+import { TwoDOneD_Component } from "../../../../demiurge/ecs/Component";
 
 import { ISpaceTrashComponents } from "../v1";
 // import { DrawableComponent } from "../v2/drawable";
-import { TwoDStore } from "../../../../engine/VECS.ts/Store";
+import { TwoDStore } from "../../../../demiurge/ecs/Store";
 import { MapSize } from "../../../Constants";
 import { HeatConductorComponent, HeatEmitterComponent } from "./heat";
 import { SamuraiTileComponent } from "../../../physics/SamuraiTile";

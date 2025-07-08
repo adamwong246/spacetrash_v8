@@ -1,4 +1,4 @@
-import { ECS, IPerformanceConfig } from "../VECS.ts/ECS";
+import { ECS, IPerformanceConfig } from "../ecs/ECS";
 
 export abstract class ECSWithSystem extends ECS {
   

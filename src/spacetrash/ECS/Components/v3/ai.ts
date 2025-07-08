@@ -1,7 +1,7 @@
 import { FOV } from "rot-js";
 
-import { Component } from "../../../../engine/VECS.ts/Component";
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { Component } from "../../../../demiurge/ecs/Component";
+import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
 import { MapSize, TileSize } from "../../../Constants";
 import { ActorComponent } from "./actors";
 import { SetPieceComponent, SetPieceStore } from "./setPieces";

@@ -1,4 +1,4 @@
-import { IntegerPositionComponent } from "../../../engine/game/physical";
+import { IntegerPositionComponent } from "../../../../demiurge/game/physical";
 import { TileSize } from "../../../Constants";
 
 export class SP_IntegerPositionComponent extends IntegerPositionComponent {
@@ -27,7 +27,3 @@ export class SP_IntegerPositionComponent extends IntegerPositionComponent {
     };
   }
 }
-
-// export class IntegerPositionStore extends MapStoreV2<IntegerPositionComponent> {
-
-// }

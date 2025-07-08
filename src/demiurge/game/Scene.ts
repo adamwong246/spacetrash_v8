@@ -1,7 +1,7 @@
 import { Tree } from "./Tree";
 
 import { Game } from "./Game";
-import { ECS } from "../VECS.ts/ECS";
+import { ECS } from "../ecs/ECS";
 
 type IReply = (ecs: any) => void;
 

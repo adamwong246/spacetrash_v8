@@ -1,4 +1,4 @@
-import { EntityComponent } from "../../../engine/VECS.ts/EntityComponent";
+import { EntityComponent } from "../../../demiurge/ecs/EntityComponent";
 
 
 

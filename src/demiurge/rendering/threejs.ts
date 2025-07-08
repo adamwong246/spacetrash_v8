@@ -1,8 +1,8 @@
 import * as THREE from "three";
 
 import { RenderableComponent } from "./RenderableComponent";
-import { MapStoreV2 } from "../VECS.ts/Store";
-import { ArcadePhysicsComponent } from "../../spacetrash/ECS/Components/v4/PhaserArcade";
+import { MapStoreV2 } from "../ecs/Store";
+
 
 export class ThreeJsRenderableComponent extends RenderableComponent {
   
@@ -24,14 +24,14 @@ export class ThreeJsRenderableComponent extends RenderableComponent {
     this.dirty = true;
   }
 
-  updateFromArcadePhysics(f: ArcadePhysicsComponent) {
+  // updateFromArcadePhysics(f: ArcadePhysicsComponent) {
 
-    for (let mesh of this.meshes) {
-      mesh.position.x = f.arcadeObject.position.x;
-      mesh.position.y = f.arcadeObject.position.y;
-    }
+  //   for (let mesh of this.meshes) {
+  //     mesh.position.x = f.arcadeObject.position.x;
+  //     mesh.position.y = f.arcadeObject.position.y;
+  //   }
     
-  }
+  // }
 
 }
 

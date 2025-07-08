@@ -7,7 +7,7 @@ import { IntegerPositionComponent } from "../../Components/v2/physical";
 import { TileComponent } from "../../Components/v2/tileable";
 import { HeatConductorComponent } from "../../Components/v3/heat";
 import { SpaceTrashEntity } from "../../Entity";
-import { Component } from "../../../../engine/VECS.ts/Component";
+import { Component } from "../../../../demiurge/ecs/Component";
 
 export class Upgrade extends SpaceTrashEntityComponent {
   constructor() {

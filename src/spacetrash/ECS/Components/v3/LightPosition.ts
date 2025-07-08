@@ -1,6 +1,6 @@
 
 
-// import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+// import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
 // import { TileSize } from "../../../Constants";
 // import { LightIncastingComponent } from "../v1/casting/in";
 // import { DrawableComponent } from "../v2/drawable";

@@ -1,6 +1,6 @@
 import { Map as rotMap, RNG as rotRng } from "rot-js";
 import { SpaceTrashEntityComponent } from "..";
-import { Entity } from "../../../../engine/VECS.ts/Entity";
+import { Entity } from "../../../../engine/ecs/Entity";
 import { MapSize } from "../../../Constants";
 import { IntegerPositionComponent } from "../../../../engine/game/physical";
 import { Tile, WallTile, FloorTile } from "../tiles";

@@ -1,6 +1,6 @@
 import { ISpaceTrashComponents } from "..";
-import { Component } from "../../../../../engine/VECS.ts/Component";
-import { MapStoreV2 } from "../../../../../engine/VECS.ts/Store";
+import { Component } from "../../../../../demiurge/ecs/Component";
+import { MapStoreV2 } from "../../../../../demiurge/ecs/Store";
 
 
 

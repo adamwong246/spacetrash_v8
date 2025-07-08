@@ -1,5 +1,5 @@
 import { SpaceTrashEntityComponent } from "..";
-import { Entity } from "../../../../engine/VECS.ts/Entity";
+import { Entity } from "../../../../engine/ecs/Entity";
 import { MapSize } from "../../../Constants";
 import { Tile } from "../tiles";
 

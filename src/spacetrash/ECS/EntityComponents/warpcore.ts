@@ -5,7 +5,7 @@ import { SpaceTrashEntityComponent } from ".";
 import { AttackableComponent } from "../Components/v1/casting/in";
 import { IntegerPositionComponent } from "../../../engine/game/physical";
 import { SpaceTrashEntity } from "../Entity";
-import { Component } from "../../../engine/VECS.ts/Component";
+import { Component } from "../../../demiurge/ecs/Component";
 import { RadiationEmitterComponent } from "../Components/v3/radiation";
 import { TileSize } from "../../Constants";
 import { bunnySprite, cylinder } from "./bots";

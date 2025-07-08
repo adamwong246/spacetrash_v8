@@ -1,5 +1,5 @@
 import { GameWithRendering } from "../../demiurge/abstractClasses/3-WithRendering";
-import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
+import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 
 import { ICanvases } from "./3-WithStores";
 

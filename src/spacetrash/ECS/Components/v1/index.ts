@@ -1,4 +1,5 @@
-import { Component } from "../../../engine/VECS/Component";
+
+import { Component } from "../../../../demiurge/ecs/Component";
 import { AttackableComponent } from "./casting/in";
 import { MeleeComponent } from "./casting/out";
 

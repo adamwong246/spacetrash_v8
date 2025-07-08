@@ -83,11 +83,8 @@ export function averageNeighborsInPlace(s: SetPieceStore, GAME) {
 
       // ThermalColors[newGrade];
       // console.log(generateRandomHexColor(), ThermalColors[newGrade])
-      // debugger
       console.log(oldHeat, newHeat, oldGrade,newGrade)
       if (oldGrade !== newGrade) {
-        // console.log("mark1", newGrade, ThermalColors.get(newGrade));
-        // debugger
         GAME.pixi2dThermalApp.stage.addChild(
           HeatConductorComponent.thermalGraphic(
             col,

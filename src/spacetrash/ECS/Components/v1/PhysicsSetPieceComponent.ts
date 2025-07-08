@@ -1,4 +1,4 @@
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
 import { ITiles } from "../../EntityComponents/tiles";
 
 

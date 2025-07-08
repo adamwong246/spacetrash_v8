@@ -1,5 +1,5 @@
+import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 
-import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
 import { GameWithStores } from "./3-WithStores";
 
 export abstract class GameWithControls extends GameWithStores {

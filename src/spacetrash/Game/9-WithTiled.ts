@@ -6,13 +6,13 @@ import { ITiledMapLayer } from "@workadventure/tiled-map-type-guard";
 import * as tiledProject from "../tiled/*";
 
 import { GameWithTicks } from "./8-WithTicks";
+import { Tile } from "../ECS/EntityComponents/tiles";
 
 export class SpaceTrash extends GameWithTicks {
-  
-  tiledProject;
+  tiledProject = tiledProject;
 
   uiHooks: any;
-  
+
   tilelayer(
     layer: Partial<ITiledMapLayer>,
     x: number,
@@ -22,20 +22,25 @@ export class SpaceTrash extends GameWithTicks {
     vFlip: boolean,
     dFlip: boolean
   ) {
-    throw new Error("Method not implemented.");
+    this.setEntitiesComponent([
+      Tile.fromTid(
+        tid,
+        x,
+        y,
+        hFlip,
+        vFlip,
+        dFlip,
+        this.three_d_textures,
+        this.two_d_images
+      ),
+    ]);
   }
 
   objectlayer() {
-    throw new Error("Method not implemented.");
+    console.error("not yet implemented");
   }
 
   constructor(domNode: HTMLElement) {
     super(domNode);
-    debugger;
   }
-
-  // async start(c) {
-  //   super.start(c)
-
-  // }
 }

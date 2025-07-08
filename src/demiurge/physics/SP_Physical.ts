@@ -1,11 +1,10 @@
 import { Box, Circle, Polygon } from "detect-collisions";
-import { MapStoreV2 } from "../../engine/VECS.ts/Store";
+import { MapStoreV2 } from "../../demiurge/ecs/Store";
 
-import { Component } from "../VECS.ts/Component";
+import { Component } from "../ecs/Component";
 
 export class SP_PhysicalComponent extends Component<any, any> {
   static swapMotion(a: SP_PhysicalComponent, b: SP_PhysicalComponent) {
-    debugger;
     let av = a.body.angle;
     let bv = b.body.angle;
     let temp = av;

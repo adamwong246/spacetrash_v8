@@ -1,9 +1,8 @@
-
+import { Circle } from "detect-collisions";
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-
 import {
   DockviewReadyEvent,
   IDockviewPanelHeaderProps,
@@ -22,12 +21,12 @@ import { MultiSurfaceGame } from "./0-multisurface";
 
 import { TileSize, MapSize } from "../Constants";
 import { defToRad } from "../lib";
-import { DirectionComponent } from "../../engine/game/physical";
-import { StateSpace } from "../../engine/game/StateSpace";
+import { DirectionComponent } from "../../demiurge/game/physical";
+
 import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
 import { SamuraiEngine } from "../physics/SamuraIEngine";
-import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
-import { Circle } from "detect-collisions";
+import { SP_PhysicalComponent } from "../../demiurge/physics/SP_Physical";
+
 import {
   alreadyLoggedInTermLine,
   bootScreenTermLine,
@@ -43,8 +42,9 @@ import {
   shipTermLine,
   whoAmITermLine,
 } from "./Terminal";
-import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
+import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 import { IAssets } from "../../demiurge/abstractClasses/3-WithRendering";
+import { StateSpace } from "../../demiurge/game/StateSpace";
 
 let self: DesktopGame<any, any>;
 
@@ -142,7 +142,7 @@ export abstract class DesktopGame<
 
     this.scene = new THREE.Scene();
 
-    this.scene.fog = new THREE.Fog(0x000000, 0, 150);
+    // this.scene.fog = new THREE.Fog(0x000000, 0, 150);
 
     this.pixi2dApp = new PIXI.Application();
     // this.pixi2dThermalApp = new PIXI.Application();
@@ -377,7 +377,6 @@ export abstract class DesktopGame<
     // }
 
     // if (key === "thermal") {
-    //   // debugger
     //   this.pixijsThermalCanvasRef = canvas;
     //   this.pixijsThermalParentRef = parentComponent;
 

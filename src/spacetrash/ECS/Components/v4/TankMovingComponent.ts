@@ -1,5 +1,5 @@
-import { MovingComponent } from "../../../engine/game/physical";
-import { MapStoreV2 } from "../../../engine/VECS/Store";
+import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { MovingComponent } from "../../../../demiurge/game/physical";
 
 export type ITankDirections = {
   i: `left` | `right` | "none";
@@ -9,6 +9,15 @@ export type ITankDirections = {
 // Gives the entity movement above the grid
 // moves by dx and dy every tick
 export class TankMovingComponent extends MovingComponent {
+  DX() {
+    throw new Error("Method not implemented.");
+  }
+  DY() {
+    throw new Error("Method not implemented.");
+  }
+  direction() {
+    throw new Error("Method not implemented.");
+  }
   i: `left` | `right` | "none";
   j: `back` | `forth` | "none";
 
@@ -20,13 +29,5 @@ export class TankMovingComponent extends MovingComponent {
 }
 
 export class TankMovingStore extends MapStoreV2<TankMovingComponent> {
-  // each() {
-  //   throw new Error("Method not implemented.");
-  // }
-  // constructor() {
-  //   super();
-  // }
-  // make(i, j) {
-  //   return new TankMovingComponent(i, j);
-  // }
+  
 }

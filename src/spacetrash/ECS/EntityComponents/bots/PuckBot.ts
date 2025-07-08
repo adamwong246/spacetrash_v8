@@ -1,25 +1,24 @@
-import { ArcadePhysics } from "../../../vendor/arcade-physics-main/src";
-
-import { Text } from "pixi.js";
+import { Circle, deg2rad } from "detect-collisions";
+import * as THREE from "three";
 
 import { SpaceTrashEntity } from "../../Entity";
-
-import { Actor, bunnySprite, spike } from ".";
 import { TileSize } from "../../../Constants";
-
-import { AiAgentComponent } from "../../Components/v3/ai";
 import { LightIncastingComponent } from "../../Components/v1/casting/in";
-import { ArcadePhysicsComponent } from "../../Components/v4/PhaserArcade";
-import { PixiJsRenderableComponent } from "../../../../engine/rendering/pixijs";
-import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
-import { Circle, deg2rad } from "detect-collisions";
-import { FloatMovingComponent } from "../../../../engine/game/physical";
-import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
+import { SP_PhysicalComponent } from "../../../../demiurge/physics/SP_Physical";
+import { PixiJsRenderableComponent } from "../../../../demiurge/rendering/pixijs";
+import { ThreeJsRenderableComponent } from "../../../../demiurge/rendering/threejs";
+
+import { Actor, bunnySprite } from ".";
+import { degToRad } from "three/src/math/MathUtils.js";
+
+const redMaterial = new THREE.MeshBasicMaterial({ color: "FF0000" });
 
 export class PuckBot extends Actor {
   constructor(
     x: number,
     y: number,
+    image,
+    textures
     // aiAgentConfig: AiAgentComponent
   ) {
     const spe = new SpaceTrashEntity();
@@ -28,53 +27,31 @@ export class PuckBot extends Actor {
 
     physical.setPosition(x, y, true);
     physical.setAngle(deg2rad((Math.random() - 0.5) * 360), true);
-  
+
     physical.isStatic = false;
-    physical.updateBody(true)
+    physical.updateBody(true);
+
+    const m = new THREE.Mesh(
+      new THREE.CylinderGeometry(TileSize / 2, 0, TileSize),
+      new THREE.MeshBasicMaterial({color: 'red', wireframe: true})
+    );
+    m.rotateZ(degToRad(90));
+    m.rotateX(degToRad(90));
 
     super(
       spe,
       [
-        new SP_PhysicalComponent(physical, 0.1), 
+        new SP_PhysicalComponent(physical, 0.1),
         new LightIncastingComponent(1),
-
         new PixiJsRenderableComponent(bunnySprite()),
-        new ThreeJsRenderableComponent(spike()),
+        new ThreeJsRenderableComponent([m]),
 
         // aiAgentConfig,
-        // new FloatMovingComponent((Math.random()-0.5)*3, (Math.random()-0.5) * 3),        
+        // new FloatMovingComponent((Math.random()-0.5)*3, (Math.random()-0.5) * 3),
         // new FloatPositionComponent(x, y),
         // new DegreesDirectionComponent(r),
-        
+
         // // new LightOutcastingComponent(1),
-
-        // new NameableComponent(name || RandomMaleNames.generate("male", spe)),
-
-        // new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        //   const ball = ap.add.body(x * TileSize, y * TileSize);
-        //   ball.setCircle(TileSize * 0.4);
-        //   ball.setCollideWorldBounds(true);
-        //   return ball;
-        // }),
-
-        // new MatterComponent(
-        //   Matter.Bodies.circle(
-        //     (x * TileSize) / 4,
-        //     (y * TileSize) / 4,
-        //     TileSize / 3 / 4,
-        //     {
-        //       isStatic: false,
-        //       // collisionFilter: {
-        //       //   category: 0,
-        //       // },
-        //       render: {
-        //         fillStyle: "red",
-        //         strokeStyle: "blue",
-        //         lineWidth: 3,
-        //       },
-        //     }
-        //   )
-        // ),
       ]
 
       // V2

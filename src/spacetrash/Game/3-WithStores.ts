@@ -36,13 +36,12 @@ import { ThreeJsRenderableStore } from "../../demiurge/rendering/threejs";
 import { PixiJsRenderableStore } from "../../demiurge/rendering/pixijs";
 import { ConsoleRenderableStore } from "../../demiurge/rendering/console";
 
-import { DesktopGame } from "./1-DesktopGame";
+import { SamuraiTileStore } from "../physics/SamuraiTile";
 
-import { SamuraiTileComponent, SamuraiTileStore } from "../physics/SamuraiTile";
-
-import { IPerformanceConfig } from "../../demiurge/VECS.ts/ECS";
+import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 
 import { SP_PhysicalStore } from "../../demiurge/physics/SP_Physical";
+import { GamWithAssets as GameWithAssets } from "./2-WithAssets";
 
 export type ICanvases =
   | "map"
@@ -62,10 +61,7 @@ export type IRenderings =
   | "samurai"
   | null;
 
-export abstract class GameWithStores extends DesktopGame<
-  IRenderings,
-  ICanvases
-> {
+export abstract class GameWithStores extends GameWithAssets<IRenderings> {
   components = {
     Actors: new ActorStore(),
     AiAgentComponent: new AiAgentStore(),
@@ -102,6 +98,7 @@ export abstract class GameWithStores extends DesktopGame<
     performanceConfig: IPerformanceConfig,
     renderings: Set<IRenderings>
   ) {
-    super(performanceConfig, renderings, domNode);
+    super(domNode, performanceConfig, renderings);
   }
+
 }

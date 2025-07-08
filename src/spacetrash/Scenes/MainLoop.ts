@@ -1,56 +1,56 @@
 import { SpaceTrashScene } from ".";
 
-import { ActorSize, MapSize, SPEED_CONSTANT, TileSize } from "../Constants";
+import { MapSize, TileSize } from "../Constants";
 import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
 import { SpaceTrash } from "../Game/9-WithTiled.ts";
-import level4 from "./../ECS/EntityComponents/ships/Ship4.ts";
-import { BoringShip } from "./../ECS/EntityComponents/ships/BoringShip.ts";
-import { EmptyShip } from "./../ECS/EntityComponents/ships/EmptyShip.ts";
+import { DesktopGame } from "../Game/1-DesktopGame.tsx";
 
 class MainScene extends SpaceTrashScene {
-  async boot(game: SpaceTrash) {
-    game.loadLevel("levl20", () => {
+  
+  async boot(game: DesktopGame<any, any>) {
+    game.loadLevel("levl20", (two_d_images, three_d_textures) => {
       const drones = [...new Array(9)].map((n) => {
         return new SpaceTrashBot(
-          // Math.random() * MapSize * TileSize,
-          // Math.random() * MapSize * TileSize,
-          // 500,
-          // 500,
-          // (MapSize * TileSize) / 2,
-          // (MapSize * TileSize) / 2,
-          // 5, 5,
           100,
           100,
           0,
           0,
-          0
-          // 0.01, 0.01
-          // (Math.random() - 0.5) * SPEED_CONSTANT,
-          // (Math.random() - 0.5) * SPEED_CONSTANT
+          0,
+          "",
+          [],
+          two_d_images,
+          three_d_textures
         );
       });
 
-      // the physics engine cannot do more than 3000
-      const moreBots = [...new Array(100)].map((n) => {
-        return new PuckBot((MapSize * TileSize) / 2, (MapSize * TileSize) / 2);
-      });
-
-      const myDoneIds = game.setEntitiesComponent(drones);
+      const myDrones = game.setEntitiesComponent(drones);
 
       game.bots = {
-        1: [myDoneIds[0], "larry"],
-        2: [myDoneIds[1], "curly"],
-        3: [myDoneIds[2], "moe"],
-        4: [myDoneIds[3], "kirk"],
-        5: [myDoneIds[4], "spock"],
-        6: [myDoneIds[5], "bones"],
-        7: [myDoneIds[6], "han"],
-        8: [myDoneIds[7], "luke"],
-        9: [myDoneIds[8], "obiwan"],
+        1: [myDrones[0], "larry"],
+        2: [myDrones[1], "curly"],
+        3: [myDrones[2], "moe"],
+        4: [myDrones[3], "kirk"],
+        5: [myDrones[4], "spock"],
+        6: [myDrones[5], "bones"],
+        7: [myDrones[6], "han"],
+        8: [myDrones[7], "luke"],
+        9: [myDrones[8], "obiwan"],
       };
 
-      return [...drones, ...moreBots]
+      // the physics engine cannot do more than 3000
+      const puckBots = [...new Array(100)].map((n) => {
+        return new PuckBot(
+          (MapSize * TileSize) / 2,
+          (MapSize * TileSize) / 2,
+          two_d_images,
+          three_d_textures
+        );
+      });
+
+      game.setEntitiesComponent(puckBots);
+
+
     });
 
     game.BeginTheGame();
@@ -183,6 +183,7 @@ class MainScene extends SpaceTrashScene {
   update(e: SpaceTrash) {
     throw new Error("Method not implemented.");
   }
+
   event(e: SpaceTrash) {
     throw new Error("Method not implemented.");
   }

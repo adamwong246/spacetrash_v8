@@ -6,9 +6,6 @@ import {
 
 import { GameWithScenes } from "./1-WithScenes";
 
-import { EntityComponent } from "../VECS.ts/EntityComponent";
-import { IPerformanceConfig } from "../VECS.ts/ECS";
-
 const formats = ["tsj", "tmj", "tj"];
 
 const throwErrorMessageWrongExtension = (t: string) => {
@@ -47,11 +44,11 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
 
   abstract tiledProject: { default: object[]; filenames: string[] };
 
-  "levels": Map<string, ITiledMap> = new Map();
+  "levels": Map<string, object> = new Map();
   "tilesets": Map<string, ITiledMapTileset> = new Map();
   "templates": Map<string, object> = new Map();
 
-  async qstart() {
+  async start(...a) {
     if (
       !this.tiledProject.default ||
       !this.tiledProject.filenames ||
@@ -67,12 +64,10 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
       const jsonFileData = this.tiledProject.default[ndx];
 
       if (extension === "tmj") {
-        this.levels.set(basename, ITiledMap.parse(jsonFileData));
+        // this.levels.set(basename, ITiledMap.parse(jsonFileData));
+        this.levels.set(basename, jsonFileData);
       } else if (extension === "tsj") {
-        this.tilesets.set(
-          basename,
-          ITiledMapTileset.parse(jsonFileData)
-        );
+        this.tilesets.set(basename, ITiledMapTileset.parse(jsonFileData));
       } else if (extension === "tj") {
         this.templates.set(basename, jsonFileData);
       } else {
@@ -88,8 +83,6 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
   static FLIPPED_VERTICALLY_FLAG = 0x40000000;
   static FLIPPED_DIAGONALLY_FLAG = 0x20000000;
   static FLIPPED_HEX_ROTATE_120_FLAG = 0x10000000;
-
-  // const firstgid = sj.tilesets[0].firstgid;
 
   static isFlippedDiagonally(gid: number) {
     return (gid & GameWithTiledEditor.FLIPPED_DIAGONALLY_FLAG) !== 0;
@@ -120,6 +113,7 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
     gid: number,
     firstgid: number
   ): [number, boolean, boolean, boolean] => {
+
     // Extract flip flags
     const flipFlags =
       gid &
@@ -131,7 +125,6 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
     // Clear the flip flags from the GID to get the actual tile ID
     const tileId = gid & ~flipFlags;
 
-    // return tileId - firstgid;
     return [
       tileId - firstgid,
       GameWithTiledEditor.isFlippedHorizontal(gid),
@@ -149,56 +142,6 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
     vFlip: boolean,
     dFlip: boolean
   );
+
   abstract objectlayer();
-
-  loadLevel(levelFileBasename: string, cb: () => EntityComponent[]) {
-    const level = this.tiledProject.levels.get(levelFileBasename);
-    if (!level) {
-      console.error(
-        `${this.loadLevelErrorMessage(
-          levelFileBasename
-        )}. Possible alternatives are :${Object.entries(
-          this.tiledProject.levels
-        ).toString()}`
-      );
-      throw this.loadLevelErrorMessage(levelFileBasename);
-    }
-
-    for (let layer of level.layers) {
-      if (layer.type === "tilelayer") {
-        const { ["data"]: justTheLayerData, ...layerMinusData } = layer.data;
-
-        let x = 0;
-        let y = 0;
-        for (let [tileDatum, tndx] of (
-          layer as {
-            data: number[];
-          }
-        ).data) {
-          this.tilelayer(
-            layerMinusData,
-            x,
-            y,
-            ...GameWithTiledEditor.decodeGid(
-              tileDatum,
-              level.tilesets[0].firstgid
-            )
-          );
-          x++;
-          if (x > layer.width) {
-            x = 0;
-            y++;
-          }
-        }
-      } else if (layer.type === "objectgroup") {
-        for (let [objectData, ondx] of (
-          layer as {
-            objects: object[];
-          }
-        ).objects) {
-          this.objectlayer();
-        }
-      }
-    }
-  }
 }

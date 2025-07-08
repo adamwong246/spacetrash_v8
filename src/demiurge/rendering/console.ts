@@ -1,5 +1,5 @@
 
-import { MapStoreV2 } from "../VECS.ts/Store";
+import { MapStoreV2 } from "../ecs/Store";
 import { RenderableComponent } from "./RenderableComponent";
 
 export class ConsoleRenderableComponent extends RenderableComponent {

@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
-import { Component } from "../../../../engine/VECS.ts/Component";
+import { Component } from "../../../../demiurge/ecs/Component";
 
 import { ISpaceTrashComponents } from "../v1";
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
 import { TileSize } from "../../../Constants";
 
 export class HeatEmitterComponent extends Component<

@@ -1,268 +1,58 @@
 yarn run v1.22.22
 warning ../../package.json: No license field
 $ node esbuild.build.js
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v2/eid2PMC.ts:1:26:
-      1 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v2/eid2PMC.ts:2:27:
-      2 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v3/heat.ts:2:26:
-      2 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v3/setPieces.ts:4:35:
-      4 │ ...{ TwoDOneD_Component } from "../../../../engine/VECS.ts/Component";
-        ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v3/heat.ts:5:27:
-      5 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v3/actors.ts:4:26:
-      4 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v3/actors.ts:11:27:
-      11 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-         ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v3/setPieces.ts:8:26:
-      8 │ import { TwoDStore } from "../../../../engine/VECS.ts/Store";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../engine/VECS.ts/Store"
-
-    src/demiurge/physics/SP_Physical.ts:2:27:
-      2 │ import { MapStoreV2 } from "../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v2/nameable.ts:3:26:
-      3 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../engine/VECS.ts/Store"
-
-    src/spacetrash/physics/SamuraiTile.ts:3:27:
-      3 │ import { MapStoreV2 } from "../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v2/tileable.ts:3:26:
-      3 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v2/tileable.ts:4:27:
-      4 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v2/nameable.ts:4:27:
-      4 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v3/attack.ts:1:26:
-      1 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v1/casting/in.ts:2:27:
-      2 │ import { MapStoreV2 } from "../../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v3/radiation.ts:1:26:
-      1 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v1/casting/out.ts:2:26:
-      2 │ import { Component } from "../../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v3/ai.ts:3:26:
-      3 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v3/ai.ts:4:27:
-      4 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/game/physical"
+✘ [ERROR] Could not resolve "../../../demiurge/game/physical"
 
     src/spacetrash/ECS/Components/v4/TankMovingComponent.ts:1:32:
-      1 │ import { MovingComponent } from "../../../../engine/game/physical";
-        ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      1 │ import { MovingComponent } from "../../../demiurge/game/physical";
+        ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v3/radiation.ts:4:27:
-      4 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v3/attack.ts:2:27:
-      2 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/game/physical"
-
-    src/spacetrash/ECS/Components/v4/IntegerPosition.ts:1:41:
-      1 │ ...IntegerPositionComponent } from "../../../../engine/game/physical";
-        ╵                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
-
-    src/spacetrash/ECS/Components/v1/index.ts:1:26:
-      1 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../../engine/VECS.ts/Store"
-
-    src/spacetrash/ECS/Components/v1/casting/out.ts:3:27:
-      3 │ import { MapStoreV2 } from "../../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
+✘ [ERROR] Could not resolve "../../../demiurge/ecs/Store"
 
     src/spacetrash/ECS/Components/v4/TankMovingComponent.ts:2:27:
-      2 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      2 │ import { MapStoreV2 } from "../../../demiurge/ecs/Store";
+        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
+✘ [ERROR] Could not resolve "../../../demiurge/ecs/Component"
 
-    src/spacetrash/ECS/Components/v1/PhysicsActorComponent.ts:1:27:
-      1 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    src/spacetrash/ECS/Components/v1/index.ts:1:26:
+      1 │ import { Component } from "../../../demiurge/ecs/Component";
+        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Store"
+✘ [ERROR] Could not resolve "../../../demiurge/game/physical"
 
-    src/spacetrash/ECS/Components/v1/PhysicsSetPieceComponent.ts:1:27:
-      1 │ import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
-        ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    src/spacetrash/ECS/Components/v4/IntegerPosition.ts:1:41:
+      1 │ ... IntegerPositionComponent } from "../../../demiurge/game/physical";
+        ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-✘ [ERROR] Could not resolve "../../engine/game/StateSpace"
+✘ [ERROR] Could not resolve "../../demiurge/ecs/game/StateSpace"
 
     src/spacetrash/Game/1-DesktopGame.tsx:26:27:
-      26 │ import { StateSpace } from "../../engine/game/StateSpace";
-         ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      26 │ import { StateSpace } from "../../demiurge/ecs/game/StateSpace";
+         ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-✘ [ERROR] Could not resolve "../../../../engine/VECS.ts/Component"
+✘ [ERROR] Syntax error "\x0A"
 
-    src/spacetrash/ECS/Components/v1/physics.ts:2:26:
-      2 │ import { Component } from "../../../../engine/VECS.ts/Component";
-        ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    src/spacetrash/ECS/EntityComponents/bots/TankBot.ts:1:49:
+      1 │ import { Box, Circle } from "detect-collisions";\
+        ╵                                                  ^
 
-✘ [ERROR] Could not resolve "../../../../engine/rendering/threejs"
-
-    src/spacetrash/ECS/EntityComponents/bots/TankBot.ts:19:43:
-      19 │ ...RenderableComponent } from "../../../../engine/rendering/threejs";
-         ╵                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/rendering/pixijs"
-
-    src/spacetrash/ECS/EntityComponents/bots/PuckBot.ts:13:42:
-      13 │ ...sRenderableComponent } from "../../../../engine/rendering/pixijs";
-         ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/rendering/pixijs"
-
-    src/spacetrash/ECS/EntityComponents/bots/TankBot.ts:20:42:
-      20 │ ...sRenderableComponent } from "../../../../engine/rendering/pixijs";
-         ╵                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../engine/game/Scene"
+✘ [ERROR] Could not resolve "../../demiurge/ecs/game/Scene"
 
     src/spacetrash/Scenes/index.ts:3:22:
-      3 │ import { Scene } from "../../engine/game/Scene";
-        ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/rendering/console"
-
-    src/spacetrash/ECS/EntityComponents/bots/TankBot.ts:21:43:
-      21 │ ...RenderableComponent } from "../../../../engine/rendering/console";
-         ╵                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/rendering/threejs"
-
-    src/spacetrash/ECS/EntityComponents/bots/PuckBot.ts:14:43:
-      14 │ ...RenderableComponent } from "../../../../engine/rendering/threejs";
-         ╵                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/physics/SP_Physical"
-
-    src/spacetrash/ECS/EntityComponents/bots/PuckBot.ts:17:37:
-      17 │ ...PhysicalComponent } from "../../../../engine/physics/SP_Physical";
-         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../engine/VECS.ts/Entity"
-
-    src/spacetrash/ECS/Entity.ts:1:23:
-      1 │ import { Entity } from "../../engine/VECS.ts/Entity";
-        ╵                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../../engine/physics/SP_Physical"
-
-    src/spacetrash/ECS/EntityComponents/bots/TankBot.ts:24:37:
-      24 │ ...PhysicalComponent } from "../../../../engine/physics/SP_Physical";
-         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../threejs"
-
-    src/spacetrash/ECS/EntityComponents/bots/index.ts:7:43:
-      7 │ import { greenMaterial, redMaterial } from "../../../threejs";
-        ╵                                            ~~~~~~~~~~~~~~~~~~
-
-✘ [ERROR] Could not resolve "../../../engine/VECS.ts/EntityComponent"
-
-    src/spacetrash/ECS/EntityComponents/index.ts:1:32:
-      1 │ ...{ EntityComponent } from "../../../engine/VECS.ts/EntityComponent";
-        ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      3 │ import { Scene } from "../../demiurge/ecs/game/Scene";
+        ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /Users/adam/Code/spacetrash_v8/node_modules/esbuild/lib/main.js:1463
   let error = new Error(text);
               ^
 
-Error: Build failed with 42 errors:
-src/demiurge/physics/SP_Physical.ts:2:27: ERROR: Could not resolve "../../engine/VECS.ts/Store"
-src/spacetrash/ECS/Components/v1/PhysicsActorComponent.ts:1:27: ERROR: Could not resolve "../../../../engine/VECS.ts/Store"
-src/spacetrash/ECS/Components/v1/PhysicsSetPieceComponent.ts:1:27: ERROR: Could not resolve "../../../../engine/VECS.ts/Store"
-src/spacetrash/ECS/Components/v1/casting/in.ts:2:27: ERROR: Could not resolve "../../../../../engine/VECS.ts/Store"
-src/spacetrash/ECS/Components/v1/casting/out.ts:2:26: ERROR: Could not resolve "../../../../../engine/VECS.ts/Component"
+Error: Build failed with 7 errors:
+src/spacetrash/ECS/Components/v1/index.ts:1:26: ERROR: Could not resolve "../../../demiurge/ecs/Component"
+src/spacetrash/ECS/Components/v4/IntegerPosition.ts:1:41: ERROR: Could not resolve "../../../demiurge/game/physical"
+src/spacetrash/ECS/Components/v4/TankMovingComponent.ts:1:32: ERROR: Could not resolve "../../../demiurge/game/physical"
+src/spacetrash/ECS/Components/v4/TankMovingComponent.ts:2:27: ERROR: Could not resolve "../../../demiurge/ecs/Store"
+src/spacetrash/ECS/EntityComponents/bots/TankBot.ts:1:49: ERROR: Syntax error "\x0A"
 ...
     at failureErrorWithLog (/Users/adam/Code/spacetrash_v8/node_modules/esbuild/lib/main.js:1463:15)
     at /Users/adam/Code/spacetrash_v8/node_modules/esbuild/lib/main.js:924:25

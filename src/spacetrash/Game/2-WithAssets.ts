@@ -3,29 +3,35 @@ import * as THREE from "three";
 
 import { DesktopGame } from "./1-DesktopGame";
 
+import { TileSize } from "../Constants";
+
 import brick from "./../Assets/brick.png";
 import stone from "./../Assets/stone.png";
 import voidPng from "./../Assets/void.png";
-import slopes32Png from "../tiled/slopes-32.png";
-import slopes32Json from "../tiled/slopes-32.json";
+import slopes32Png from "../Assets/slopes-32.png";
+import slopes32Json from "../Assets/slopes-32.json";
 import floor from "../Assets/M.E.GAmesTexturePack1.0/texture (20).png";
-import wall from "../ /Assets/M.E.GAmesTexturePack1.0/texture (21).png";
-import { TileSize } from "../Constants";
+import wall from "../Assets/M.E.GAmesTexturePack1.0/texture (21).png";
+import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 
-export abstract class GameWithAssets<IRenderings> extends DesktopGame<
+export abstract class GamWithAssets<IRenderings> extends DesktopGame<
   IRenderings,
   any
 > {
-  async start() {
-    super.start({
-      
-      threeD: {
-        assets: {
-          floor,
-          wall,
-        },
+  constructor(
+    domNode: HTMLElement,
+    performanceConfig: IPerformanceConfig,
+    renderings: Set<IRenderings>
+  ) {
+    super(performanceConfig, renderings, domNode);
+  }
 
-        callback: function (textures): void {
+  async start(...a) {
+    super.start({
+      threeD: {
+        assets: [floor, wall],
+
+        callback: function (textures) {
           textures.brick.wrapS = THREE.RepeatWrapping;
           textures.brick.wrapT = THREE.RepeatWrapping;
           textures.brick.repeat.set(4, 4);
@@ -38,6 +44,7 @@ export abstract class GameWithAssets<IRenderings> extends DesktopGame<
             materials: {
               blank: new THREE.MeshBasicMaterial({
                 color: "yellow",
+                wireframe: true,
               }),
 
               void: new THREE.MeshBasicMaterial({
@@ -56,10 +63,14 @@ export abstract class GameWithAssets<IRenderings> extends DesktopGame<
                 color: "green",
               }),
 
-              wall: new THREE.MeshPhongMaterial({
-                map: textures.brick,
-                side: THREE.DoubleSide,
+              wall: new THREE.MeshBasicMaterial({
+                color: "green",
               }),
+              
+              // wall: new THREE.MeshPhongMaterial({
+              //   map: textures.brick,
+              //   side: THREE.DoubleSide,
+              // }),
 
               floor: new THREE.MeshPhongMaterial({ map: textures.stone }),
 
@@ -73,21 +84,21 @@ export abstract class GameWithAssets<IRenderings> extends DesktopGame<
       },
 
       twoD: {
-        assets: {
-          bunny: "https://pixijs.com/assets/bunny.png",
+        assets: [
+          "https://pixijs.com/assets/bunny.png",
           stone,
           brick,
           voidPng,
-          font: "https://pixijs.com/assets/bitmap-font/desyrel.xml",
+          "https://pixijs.com/assets/bitmap-font/desyrel.xml",
           slopes32Png,
-        },
-        
+        ],
+
         callback: (assets) => {
-          PIXI.Texture.from(assets.bunny);
-          PIXI.Texture.from(assets.stone);
-          PIXI.Texture.from(assets.brick);
-          PIXI.Texture.from(assets.voidPng);
-          PIXI.Texture.from(assets.slopes32Png);
+          // PIXI.Texture.from(assets.bunny);
+          // PIXI.Texture.from(assets.stone);
+          // PIXI.Texture.from(assets.brick);
+          // PIXI.Texture.from(assets.voidPng);
+          // PIXI.Texture.from(assets.slopes32Png);
 
           let x = 0;
           let y = 0;
@@ -142,7 +153,6 @@ export abstract class GameWithAssets<IRenderings> extends DesktopGame<
             //   y * slopes32Json.tilewidth,
             //   TileSize
             // );
-            // debugger
             // PIXI.Cache.set(`slopes32Png-${x} - ${y}`, z);
 
             x++;

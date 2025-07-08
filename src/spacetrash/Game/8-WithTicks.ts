@@ -19,6 +19,7 @@ export abstract class GameWithTicks extends GameWithLoad {
     super(domNode);
   }
 
+  
   tick(delta: number): Promise<boolean> {
     return new Promise(async (res) => {
       // this.updateSetPieces(delta);
@@ -53,7 +54,6 @@ export abstract class GameWithTicks extends GameWithLoad {
 
       //     // x.mesh.rotateZ(rot);
       //     // x.mesh.rotateZ(rot);
-      //     // debugger
       //   }
       // });
     });
@@ -231,7 +231,6 @@ export abstract class GameWithTicks extends GameWithLoad {
         // const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
 
         // const z = this.samuraiEngine.system.getCollisionPoints(result.a, result.b);
-        // debugger
 
         let mover = this.components.SP_PhysicalComponent.get(body.SP_EID);
 
@@ -257,8 +256,6 @@ export abstract class GameWithTicks extends GameWithLoad {
 
       // // ball to ball
       if (!result.a.isStatic && !result.b.isStatic) {
-        // debugger
-
         let motionA: SP_PhysicalComponent;
         let motionB: SP_PhysicalComponent;
 
@@ -304,7 +301,6 @@ export abstract class GameWithTicks extends GameWithLoad {
 
         // if (!motionA) throw "idk"
 
-        // debugger
         return;
       }
     });
@@ -750,7 +746,6 @@ export abstract class GameWithTicks extends GameWithLoad {
 
   //     //   this.components.ArcadePhysics.each((apo, eid) => {
   //     //     // apo.arcadeObject.visible = true;
-  //     //     // debugger
 
   //     //     // console.log(Math.round(apo.arcadeObject.position.x/TileSize), x)
 
@@ -857,7 +852,6 @@ export abstract class GameWithTicks extends GameWithLoad {
   //       this.components.PixiJsRenderableComponent.take(
   //         feid
   //       ).updateFromArcadePhysics(f);
-  //       // debugger
   //     } else if (classification === "Tile") {
   //       // throw "not implemented";
   //     } else {

@@ -1,5 +1,5 @@
 import { ISpaceTrashComponents } from ".";
-import { Component } from "../../../../engine/VECS.ts/Component";
+import { Component } from "../../../../demiurge/ecs/Component";
 
 export class PhysicsComponent extends Component<
   unknown,

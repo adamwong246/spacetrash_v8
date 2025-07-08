@@ -1,5 +1,5 @@
-import { Component } from "../VECS.ts/Component";
-import { MapStoreV2 } from "../VECS.ts/Store";
+import { Component } from "../ecs/Component";
+import { MapStoreV2 } from "../ecs/Store";
 
 // Gives an entity a position on the map
 export abstract class PositionComponent extends Component<unknown, any> {

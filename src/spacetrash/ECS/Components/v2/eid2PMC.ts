@@ -1,10 +1,8 @@
-import { Component } from "../../../engine/VECS/Component";
-import { MapStoreV2 } from "../../../engine/VECS/Store";
-import {} from "../../../../engine/VECS.ts/types";
+import { Component } from "react";
+import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { PositionComponent } from "../../../../demiurge/game/physical";
 import { ISpaceTrashComponents } from "../v1";
-import { DrawableComponent } from "./drawable";
 
-import { PositionComponent } from "../../../../engine/game/physical";
 
 export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   position: PositionComponent;

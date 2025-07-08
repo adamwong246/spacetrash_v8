@@ -5,7 +5,6 @@ import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
 //   console.info(result);
 //   if (!result.a.isStatic && result.b.isStatic) {
 //     const body = result.a;
-//     debugger
 //   }
 // };
 

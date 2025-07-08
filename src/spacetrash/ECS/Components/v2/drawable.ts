@@ -4,7 +4,7 @@
 
 // import { Sprite } from "pixi.js";
 
-// import { Component } from "../../../../engine/VECS.ts/Component";
+// import { Component } from "../../../../demiurge/ecs/Component";
 
 // import {
 //   DegreesDirectionComponent,
@@ -17,7 +17,7 @@
 // import { ArcadePhysicsComponent } from "./arcadePhysics";
 // import { ISpaceTrashComponents } from "../v1";
 // import { LightIncastingComponent } from "../v1/casting/in";
-// import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+// import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
 
 // export type IChars = Text;
 

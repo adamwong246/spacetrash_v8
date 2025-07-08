@@ -34,6 +34,7 @@ export abstract class GameWithLoad extends GameWithControls {
     );
   }
 
+
   load() {
     // this.populateMatterJs();
     // this.inflateArcadePhysics();
@@ -63,7 +64,6 @@ export abstract class GameWithLoad extends GameWithControls {
     );
     const uniqueMeshes: THREE.Mesh[] = [];
 
-    // debugger
     for (let i = 0; i < meshes.length; i++) {
       let isDuplicate = false;
 
@@ -75,8 +75,6 @@ export abstract class GameWithLoad extends GameWithControls {
           // meshes[i].position === uniqueMeshes[j].position
         ) {
           isDuplicate = true;
-          debugger
-
           break;
         }
       }
@@ -127,7 +125,6 @@ export abstract class GameWithLoad extends GameWithControls {
     //                 //     if (worldPositionA.x === worldPositionB.x) {
     //                 //       if (worldPositionA.y === worldPositionB.y) {
     //                 //         if (worldPositionA.z === worldPositionB.z) {
-    //                 //           debugger
     //                 //           s.meshes.splice(a, 1);
     //                 //           s2.meshes.splice(b, 1);
     //                 //         }
@@ -653,7 +650,7 @@ export abstract class GameWithLoad extends GameWithControls {
 
     // this.scene.add(pointlight);
 
-    const ambientLight = new THREE.AmbientLight(0xffdddd, 1);
+    const ambientLight = new THREE.AmbientLight(0xffdddd, 10000);
     // // ambientLight.position.set(
     // //   (GAME as SpaceTrash).camera.position.x,
     // //   (GAME as SpaceTrash).camera.position.y,
@@ -706,13 +703,11 @@ export abstract class GameWithLoad extends GameWithControls {
     //     //     // }
     //     //     // const cb = x.getData('onCollide');
     //     //     // cb(s, d)
-    //     //     // debugger
     //     //     // Actors.update({
     //     //     //   onCollision
     //     //     // })
 
     //     //     console.log("overlap1 between", y.eid, x.eid);
-    //     //     debugger;
     //     //   },
     //     //   (x, y, z) => {
     //     //     console.log("overlap2 between", x, y);

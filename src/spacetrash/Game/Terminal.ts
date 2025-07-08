@@ -4,7 +4,6 @@ export type ITerminalLine = {
   status: IComStatus;
 };
 
-
 export const bootScreenTermLine: ITerminalLine = {
   status: "pass",
   out: `

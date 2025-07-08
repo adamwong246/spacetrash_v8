@@ -1,5 +1,5 @@
 import { StateSpace } from "../game/StateSpace";
-import { IPerformanceConfig } from "../VECS.ts/ECS";
+import { IPerformanceConfig } from "../ecs/ECS";
 import { ECSWithSystem } from "./0-WithSystem";
 
 export abstract class GameWithScenes extends ECSWithSystem {

@@ -1,5 +1,5 @@
-import { Component } from "../../../../engine/VECS.ts/Component";
-import { MapStoreV2, StoreV2 } from "../../../../engine/VECS.ts/Store";
+import { Component } from "../../../../demiurge/ecs/Component";
+import { MapStoreV2, StoreV2 } from "../../../../demiurge/ecs/Store";
 
 export class FlipComponent extends Component<any, any> {
 

@@ -1,20 +1,14 @@
 import { Box, Circle, Polygon } from "detect-collisions";
 import * as THREE from "three";
 
-import { Component } from "../../../../engine/VECS.ts/Component";
+import { Component } from "../../../../demiurge/ecs/Component";
 
-import {
-  FloatMovingComponent,
-  FloatPositionComponent,
-} from "../../../../engine/game/physical";
-
-import { MapStoreV2 } from "../../../../engine/VECS.ts/Store";
+import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
 import { TileSize } from "../../../Constants";
-import { ThreeJsRenderableComponent } from "../../../../engine/rendering/threejs";
-import { SP_PhysicalComponent } from "../../../../engine/physics/SP_Physical";
 
 import { AiAgentComponent, IBehaviors } from "./ai";
 import { ISpaceTrashComponents } from "../v1";
+import { FloatMovingComponent, FloatPositionComponent } from "../../../../demiurge/game/physical";
 
 export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
   actorId: number;

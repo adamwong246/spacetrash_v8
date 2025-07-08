@@ -1,7 +1,6 @@
-
-import { SpaceTrash } from "..";
-import { Scene } from "../../engine/game/Scene";
-import { ECS } from "../../engine/VECS.ts/ECS";
+import { ECS } from "../../demiurge/ecs/ECS";
+import { Scene } from "../../demiurge/game/Scene";
+import { SpaceTrash } from "../Game/9-WithTiled";
 
 type IReply = (ecs: any) => void;
 
