@@ -1,7 +1,10 @@
 import { Box, Circle, Polygon } from "detect-collisions";
+
 import { MapStoreV2 } from "../../demiurge/ecs/Store";
+import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 
 import { Component } from "../ecs/Component";
+
 
 export class SP_PhysicalComponent extends Component<any, any> {
   static swapMotion(a: SP_PhysicalComponent, b: SP_PhysicalComponent) {
@@ -58,15 +61,15 @@ export class SP_PhysicalComponent extends Component<any, any> {
   // }
 
   // Recalculates velocity components (deltaX and deltaY) based on angle and speed
-  Velocity(): { x: number; y: number } {
-    return {
-      x: this.speed * Math.cos(this.body.angle),
-      y: this.speed * Math.sin(this.body.angle),
-    };
+  Velocity(): SP_2d_Vector {
+    return new SP_2d_Vector(
+      this.speed * Math.cos(this.body.angle),
+      this.speed * Math.sin(this.body.angle)
+    );
   }
 
   // rebound the object off a surface with normal vector <x, y>
-  bounce(v: { x: number; y: number }) {
+  bounce(v: SP_2d_Vector) {
     const collisionNormal = {
       x: v.x,
       y: v.y,
