@@ -19,7 +19,6 @@ export abstract class GameWithTicks extends GameWithLoad {
     super(domNode);
   }
 
-  
   tick(delta: number): Promise<boolean> {
     return new Promise(async (res) => {
       // this.updateSetPieces(delta);

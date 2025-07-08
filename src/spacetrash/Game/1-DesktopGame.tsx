@@ -294,6 +294,7 @@ export abstract class DesktopGame<
         context: canvas.getContext("webgl2") as WebGL2RenderingContext,
         antialias: false,
       });
+      // (canvas.getContext("webgl2")).imageSmoothingEnabled = false
 
     }
     if (key === "map") {

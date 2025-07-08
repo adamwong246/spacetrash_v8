@@ -36,72 +36,72 @@
             "scale": 0.1337,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1813.7621540762902,
-                "y": 1888.5564697083018
+                "x": 1869.857890800299,
+                "y": 86.0134629768138
             }
         },
         "src/spacetrash/tiled/level12.json": {
             "scale": 0.0561,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 5338.680926916222,
-                "y": 5267.379679144386
+                "x": 5472.370766488415,
+                "y": 971.4795008912656
             }
         },
         "src/spacetrash/tiled/level13.json": {
             "scale": 0.1783,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 3485.6982613572636,
-                "y": 670.2187324733595
+                "x": 1060.011217049916,
+                "y": -765.5636567582726
             }
         },
         "src/spacetrash/tiled/level14.json": {
             "scale": 0.1761,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 3852.9244747302673,
-                "y": 2075.525269733106
+                "x": 1396.9335604770017,
+                "y": 621.8057921635435
             }
         },
         "src/spacetrash/tiled/level15.json": {
             "scale": 0.1456,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 4646.291208791208,
-                "y": 1328.9835164835163
+                "x": 1675.8241758241757,
+                "y": -429.25824175824164
             }
         },
         "src/spacetrash/tiled/level16.json": {
             "scale": 0.1387,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 5209.084354722422,
-                "y": 1762.7974044700798
+                "x": 2090.843547224225,
+                "y": -82.91276135544354
             }
         },
         "src/spacetrash/tiled/level17.json": {
             "scale": 0.4436,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1921.776375112714,
-                "y": 853.2461677186654
+                "x": 946.7989179440937,
+                "y": 276.1496844003607
             }
         },
         "src/spacetrash/tiled/level18.json": {
             "scale": 0.155,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 4770.967741935484,
-                "y": 983.8709677419356
+                "x": 1980.645161290323,
+                "y": -667.741935483871
             }
         },
         "src/spacetrash/tiled/level19.json": {
             "scale": 0.3133,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 777.210341525694,
-                "y": 566.5496329396744
+                "x": -22.34280242579007,
+                "y": 33.51420363868499
             }
         },
         "src/spacetrash/tiled/level7.tmj": {
@@ -142,6 +142,18 @@
         "src/spacetrash/tiled/levl20.json#tileset3": {
             "dynamicWrapping": false
         },
+        "src/spacetrash/tiled/levl20.tmj": {
+            "expandedObjectLayers": [
+                3,
+                2
+            ],
+            "scale": 0.36691894531249997,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 534.1779226828133,
+                "y": 153.9849624060151
+            }
+        },
         "src/spacetrash/tiled/tileset3.json": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
@@ -157,7 +169,7 @@
         }
     },
     "last.exportedFilePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
-    "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
+    "last.imagePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/Assets",
     "last.objectTemplatePath": "/Users/adam/Code/spacetrash_v8/src/spacetrash/tiled",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "map.height": 64,
@@ -167,18 +179,20 @@
     "openFiles": [
     ],
     "project": "tiled_project_v4.tiled-project",
+    "property.type": "color",
     "recentFiles": [
-        "src/spacetrash/tiled/levl20.json",
-        "src/spacetrash/tiled/level18.json",
+        "src/spacetrash/tiled/level12.json",
         "src/spacetrash/tiled/level11.json",
-        "src/spacetrash/tiled/tileset3.json",
-        "src/spacetrash/tiled/level10.json",
-        "src/spacetrash/tiled/level9.json",
-        "src/spacetrash/tiled/tileset4.json",
-        "src/spacetrash/tiled/level8.json",
-        "src/spacetrash/tiled/level7.tmj",
-        "src/spacetrash/tiled/tileset3.tsx",
-        "src/spacetrash/tiled/.json.tmj"
+        "src/spacetrash/tiled/level13.json",
+        "src/spacetrash/tiled/level14.json",
+        "src/spacetrash/tiled/level15.json",
+        "src/spacetrash/tiled/level16.json",
+        "src/spacetrash/tiled/level17.json",
+        "src/spacetrash/tiled/level18.json",
+        "src/spacetrash/tiled/level19.json",
+        "src/spacetrash/tiled/levl20.tmj",
+        "src/spacetrash/tiled/levl20.json",
+        "src/spacetrash/tiled/tileset3.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFormat": "json",

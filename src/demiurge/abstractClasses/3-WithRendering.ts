@@ -48,55 +48,7 @@ export abstract class GameWithRendering extends GameWithTiledEditor {
     levelFileBasename: string,
     cb: (images, textures) => EntityComponent[]
   ) {
-    const level = this.levels.get(levelFileBasename);
-    if (!level) {
-      console.error(
-        `${this.loadLevelErrorMessage(
-          levelFileBasename
-        )}. Possible alternatives are :${Object.entries(
-          this.levels
-        ).toString()}`
-      );
-      throw this.loadLevelErrorMessage(levelFileBasename);
-    }
-
-    for (let layer of level.layers) {
-      if (layer.type === "tilelayer") {
-        const { ["data"]: justTheLayerData, ...layerMinusData } = layer;
-
-        let x = 0;
-        let y = 0;
-
-        for (let tileDatum of (
-          layer as {
-            data: number[];
-          }
-        ).data) {
-          this.tilelayer(
-            layerMinusData,
-            x,
-            y,
-            ...GameWithTiledEditor.decodeGid(
-              tileDatum,
-              level.tilesets[0].firstgid
-            )
-          );
-          x++;
-          if (x >= layer.width) {
-            x = 0;
-            y++;
-          }
-        }
-      } else if (layer.type === "objectgroup") {
-        for (let objectData of (
-          layer as {
-            objects: object[];
-          }
-        ).objects) {
-          this.objectlayer();
-        }
-      }
-    }
+    super.loadLevel(levelFileBasename);
 
     cb(
       this.two_d_images,

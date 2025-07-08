@@ -2,22 +2,24 @@ import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { Box, deg2rad, Polygon } from "detect-collisions";
-
-import { SamuraiTile } from "../../../physics/BasePolygon";
+import { ITiledMapTileset } from "@workadventure/tiled-map-type-guard";
 
 import { Component } from "../../../../demiurge/ecs/Component";
-import { TileSize } from "../../../Constants";
-import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
-import { LightIncastingComponent } from "../../Components/v1/casting/in";
-import { HeatConductorComponent } from "../../Components/v3/heat";
-import { SpaceTrashEntity } from "../../Entity";
 import { SP_PhysicalComponent } from "../../../../demiurge/physics/SP_Physical";
 import { PixiJsRenderableComponent } from "../../../../demiurge/rendering/pixijs";
 import { ThreeJsRenderableComponent } from "../../../../demiurge/rendering/threejs";
 
+import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
+import { SamuraiTile } from "../../../physics/BasePolygon";
+import { TileSize } from "../../../Constants";
+import { SpaceTrashEntity } from "../../Entity";
+import { LightIncastingComponent } from "../../Components/v1/casting/in";
+import { HeatConductorComponent } from "../../Components/v3/heat";
+
 import { SpaceTrashEntityComponent } from "..";
 
 export class Tile extends SpaceTrashEntityComponent {
+
   x: number;
   y: number;
 
@@ -53,36 +55,40 @@ export class Tile extends SpaceTrashEntityComponent {
   }
 
   static fromTid(
-    tid: number,
+    tiled: {
+      tid: number;
+      hFlip: boolean;
+      vFlip: boolean;
+      dFlip: boolean;
+      tileset: ITiledMapTileset;
+    },
     x: number,
     y: number,
-    isFlippedHorizontal: boolean,
-    isFlippedVertical: boolean,
-    isFlippedDiagonally: boolean,
     textures,
     images
   ) {
     const p: [number, number, boolean, boolean, boolean, any, any] = [
       x,
       y,
-      isFlippedHorizontal,
-      isFlippedVertical,
-      isFlippedDiagonally,
+      tiled.hFlip,
+      tiled.vFlip,
+      tiled.dFlip,
       textures,
       images,
     ];
-
-    if (tid === 0) {
+    debugger
+    if (tiled.tid === 0) {
       return new FloorTile(...p);
     }
-    if (tid === 1) {
+    if (tiled.tid === 1) {
       return new WallTile(...p);
     }
-    if (tid === 2) {
+    if (tiled.tid === 2) {
       return new CornerTile(...p);
     }
 
-    return new FloorTile(...p);
+    
+    // return new FloorTile(...p);
   }
 }
 
@@ -130,7 +136,7 @@ export class FloorTile extends Tile {
       floorGeometry,
       new THREE.MeshBasicMaterial({
         color: "blue",
-        wireframe: true
+        wireframe: true,
       })
     );
     threejs.position.z = TileSize / 2;
@@ -149,7 +155,7 @@ export class FloorTile extends Tile {
 const orange = new THREE.MeshBasicMaterial({
   color: "orange",
   side: THREE.DoubleSide,
-  wireframe: true
+  wireframe: true,
 });
 
 export class WallTile extends Tile {
@@ -196,16 +202,10 @@ export class WallTile extends Tile {
 
     // geom.translate(0, 0, 16);
 
-    const northFaceingWall = new THREE.Mesh(
-      geom.translate(0, 0, 16),
-      orange
-    );
+    const northFaceingWall = new THREE.Mesh(geom.translate(0, 0, 16), orange);
     northFaceingWall.rotation.x = deg2rad(90);
 
-    const southFaceingWall = new THREE.Mesh(
-      geom.translate(0, 0, 0),
-      orange
-    );
+    const southFaceingWall = new THREE.Mesh(geom.translate(0, 0, 0), orange);
     southFaceingWall.rotation.x = -deg2rad(90);
 
     const eastFacingWall = new THREE.Mesh(geom.translate(0, 0, 0), orange);
@@ -230,7 +230,7 @@ export class WallTile extends Tile {
 
 const g = new THREE.MeshBasicMaterial({
   color: "green",
-  wireframe: true
+  wireframe: true,
 });
 
 export class CornerTile extends Tile {

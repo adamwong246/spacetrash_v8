@@ -1,4 +1,4 @@
-// This class contains all the details for loading a game. 
+// This class contains all the details for loading a game.
 // This phase is after the initialization of the game, but before the run phase
 
 import * as THREE from "three";
@@ -10,6 +10,7 @@ import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
 import { GameWithControls } from "./4-WithControls";
 import { IRenderings } from "./3-WithStores";
 import { ActorComponent } from "../ECS/Components/v3/actors";
+import { Tile } from "../ECS/EntityComponents/tiles";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
@@ -30,16 +31,16 @@ export abstract class GameWithLoad extends GameWithControls {
         "arcadePhysics",
         "matter",
         "samurai",
-      ]),
+      ])
     );
   }
 
-
   load() {
-    // this.populateMatterJs();
-    // this.inflateArcadePhysics();
-    this.mapEntitiesToPositions();
+    this.inflateLevel();
     this.initializeSetPieces();
+
+    this.mapEntitiesToPositions();
+
     this.populateSetPiecesWithIntegerPositions();
     this.initializeActors();
     // this.attachArcadePhysicsToActors();
@@ -54,6 +55,24 @@ export abstract class GameWithLoad extends GameWithControls {
     this.setupAiAgents();
     this.setupHeat();
     this.measureThreejs();
+  }
+
+  inflateLevel() {
+    for (let y = 0; y < MapSize; y++) {
+      for (let x = 0; x < MapSize; x++) {
+        
+
+        const t = Tile.fromTid(
+            this.level.tileLayer("Tile Layer 1").get(x, y),
+            x,
+            y,
+            this.three_d_textures,
+            this.two_d_images
+        )
+        
+        if (t) this.setEntitiesComponent([t]);
+      }
+    }
   }
 
   cullInteriorFaces() {
@@ -71,7 +90,7 @@ export abstract class GameWithLoad extends GameWithControls {
         if (
           meshes[i].geometry === uniqueMeshes[j].geometry && // Compare geometries
           meshes[i].material === uniqueMeshes[j].material && // Compare materials
-          meshes[i].matrixWorld.equals(uniqueMeshes[j].matrixWorld)  // Compare world matrices
+          meshes[i].matrixWorld.equals(uniqueMeshes[j].matrixWorld) // Compare world matrices
           // meshes[i].position === uniqueMeshes[j].position
         ) {
           isDuplicate = true;
@@ -255,22 +274,6 @@ export abstract class GameWithLoad extends GameWithControls {
 
     console.log("Total faces in the scene:", totalFaces);
   }
-
-  // populateMatterJs() {
-  //   const bodies: Matter.Body[] = [];
-  //   for (let b of this.components.MatterComponent.store) {
-  //     bodies.push(b[1].matterBody);
-  //   }
-  //   console.log(bodies);
-  //   Composite.add(this.matterEngine.world, [...bodies]);
-  // }
-
-  // inflateArcadePhysics() {
-  //   this.components.ArcadePhysicsComponent.each((apc, eid) => {
-  //     this.components.ArcadePhysicsComponent.take(eid).arcadeObject =
-  //       apc.creator(this.arcadePhysics);
-  //   });
-  // }
 
   mapEntitiesToPositions() {
     for (let [eid, [subtype, classification]] of this.entities) {

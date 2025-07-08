@@ -2,7 +2,7 @@
 
 // @import './engine/index.scss';
 
-// @import './crt.scss';
+@import './crt.scss';
 
 
 td {
@@ -37,4 +37,9 @@ td {
 
 html, body {
   overscroll-behavior-x: none;
+}
+
+canvas{
+  // filter: url(#pixelate)
+  image-rendering: pixelated;
 }
