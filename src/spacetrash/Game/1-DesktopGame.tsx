@@ -24,7 +24,7 @@ import { defToRad } from "../lib";
 import { DirectionComponent } from "../../demiurge/game/physical";
 
 import { CustomPhysicsWindow } from "../UI/CustomPhysicsWindow";
-import { SamuraiEngine } from "../physics/SamuraIEngine";
+import { SamuraiEngine } from "../../demiurge/physics/SamuraIEngine";
 import { SP_PhysicalComponent } from "../../demiurge/physics/SP_Physical";
 
 import {
