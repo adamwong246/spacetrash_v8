@@ -3,8 +3,6 @@ import { Entity } from "../../../../engine/ecs/Entity";
 import { MapSize } from "../../../Constants";
 import { Tile } from "../tiles";
 
-// import sj from "../../../tiled/levl20.json";
-
 export default class extends SpaceTrashEntityComponent {
   map: Tile | null[][];
 

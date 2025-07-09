@@ -5,7 +5,6 @@ import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 
 import { Component } from "../ecs/Component";
 
-
 export class SP_PhysicalComponent extends Component<any, any> {
   static swapMotion(a: SP_PhysicalComponent, b: SP_PhysicalComponent) {
     let av = a.body.angle;

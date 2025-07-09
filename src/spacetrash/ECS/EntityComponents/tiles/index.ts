@@ -17,11 +17,14 @@ import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { HeatConductorComponent } from "../../Components/v3/heat";
 
 import { SpaceTrashEntityComponent } from "..";
+import { SP_MultiPolygon, SP_Polygon } from "../../../../demiurge/physics/SP_Polygon";
 
 export class Tile extends SpaceTrashEntityComponent {
 
   x: number;
   y: number;
+
+  samuraitile: SamuraiTileComponent
 
   constructor({
     pixi,
@@ -35,6 +38,8 @@ export class Tile extends SpaceTrashEntityComponent {
     sp_physical?: SP_PhysicalComponent;
   }) {
     const spe = new SpaceTrashEntity();
+
+    
 
     const comps: Component<any, any>[] = [
       pixi,
@@ -50,10 +55,16 @@ export class Tile extends SpaceTrashEntityComponent {
 
     super(spe, comps);
 
+    this.samuraitile = samurai;
+
     this.x = samurai.x;
     this.y = samurai.y;
   }
 
+  polygon(): SP_Polygon {
+    return this.samuraitile.polygon()
+  }
+  
   static fromTid(
     tiled: {
       tid: number;
@@ -76,7 +87,6 @@ export class Tile extends SpaceTrashEntityComponent {
       textures,
       images,
     ];
-    debugger
     if (tiled.tid === 0) {
       return new FloorTile(...p);
     }
@@ -88,7 +98,7 @@ export class Tile extends SpaceTrashEntityComponent {
     }
 
     
-    // return new FloorTile(...p);
+    return new BlankTile(...p);
   }
 }
 
@@ -117,6 +127,40 @@ export type ITiles =
   | `WallTile`;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export class BlankTile extends Tile {
+  constructor(
+    x: number,
+    y: number,
+    hFlip: boolean,
+    vFlip: boolean,
+    dFlip: boolean,
+    images,
+    textures
+  ) {
+    const pixi = new PIXI.Sprite(PIXI.Cache.get(`slopes32Png-EMPTY`));
+    pixi.width = TileSize;
+    pixi.height = TileSize;
+
+    const threejs = new THREE.Mesh(
+      floorGeometry,
+      new THREE.MeshBasicMaterial({
+        color: "yellow",
+        wireframe: true,
+      })
+    );
+    threejs.position.z = TileSize / 2;
+    threejs.position.x = x * TileSize;
+    threejs.position.y = y * TileSize;
+    threejs.rotateY(degToRad(180));
+
+    super({
+      pixi: new PixiJsRenderableComponent(pixi),
+      threejs: new ThreeJsRenderableComponent([threejs]),
+      samurai: new SamuraiTileComponent(x, y, hFlip, vFlip, dFlip, "tile0"),
+    });
+  }
+}
 
 export class FloorTile extends Tile {
   constructor(

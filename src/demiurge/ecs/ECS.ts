@@ -75,7 +75,6 @@ export abstract class ECS {
       toReturn.push(i);
 
       e.components.forEach((c: Component<any, any>) => {
-        // if (c.constructor.name === "DrawableComponent") debugger
         if (!c.constructor.name) {
           console.error("constructor-name not found.", c);
         } else {

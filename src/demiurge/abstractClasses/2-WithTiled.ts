@@ -56,7 +56,8 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
         get: (x: number, y: number) => {
           const ndx = y * level.width + x;
           const gid = foundLayer.data[ndx];
-          return this.decodeGid(gid);
+
+          if (gid != 0) return this.decodeGid(gid);
         },
       };
     },
@@ -115,7 +116,6 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
     const internalTilesetConfig = this.tiledProject.levels
       .get(this.currentLevel)
       .tilesets.find((ts) => {
-        debugger;
         return ts.source === foundTileSet.source;
       });
 

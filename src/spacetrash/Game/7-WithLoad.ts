@@ -1,9 +1,10 @@
 // This class contains all the details for loading a game.
 // This phase is after the initialization of the game, but before the run phase
 
+const polyPart = require("poly-partition")
 import * as THREE from "three";
 
-import { MapSize, MapBoundLow, MapBoundHigh } from "../Constants";
+import { MapSize, MapBoundLow, MapBoundHigh, TileSize } from "../Constants";
 import { Eid2PMComponent } from "../ECS/Components/v2/eid2PMC";
 import { HeatConductorComponent } from "../ECS/Components/v3/heat";
 import { SetPieceComponent } from "../ECS/Components/v3/setPieces";
@@ -11,6 +12,8 @@ import { GameWithControls } from "./4-WithControls";
 import { IRenderings } from "./3-WithStores";
 import { ActorComponent } from "../ECS/Components/v3/actors";
 import { Tile } from "../ECS/EntityComponents/tiles";
+import { SP_MultiPolygon, SP_Polygon } from "../../demiurge/physics/SP_Polygon";
+import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 
 const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
 
@@ -34,6 +37,26 @@ export abstract class GameWithLoad extends GameWithControls {
       ])
     );
   }
+
+  Space = new SP_MultiPolygon([
+    new SP_Polygon(new SP_2d_Vector(0, 0), [
+      new SP_2d_Vector(0, 0),
+      new SP_2d_Vector(MapSize * TileSize, 0),
+      new SP_2d_Vector(MapSize * TileSize, MapSize * TileSize),
+      new SP_2d_Vector(0, MapSize * TileSize),
+      // new SP_2d_Vector(0, 0)
+    ]),
+  ]);
+
+  NegativeSpace = new SP_MultiPolygon([
+    new SP_Polygon(new SP_2d_Vector(0, 0), []),
+  ]);
+
+  NegativeSpaceCollapsed: SP_MultiPolygon;
+  PositiveSpaceCollapsed: SP_MultiPolygon;
+
+  convexPositive: any;
+  triangleNegative: any;
 
   load() {
     this.inflateLevel();
@@ -60,19 +83,46 @@ export abstract class GameWithLoad extends GameWithControls {
   inflateLevel() {
     for (let y = 0; y < MapSize; y++) {
       for (let x = 0; x < MapSize; x++) {
-        
+        const tile = this.level.tileLayer("Tile Layer 1").get(x, y);
 
-        const t = Tile.fromTid(
-            this.level.tileLayer("Tile Layer 1").get(x, y),
+        if (tile) {
+          const t = Tile.fromTid(
+            tile,
             x,
             y,
             this.three_d_textures,
             this.two_d_images
-        )
-        
-        if (t) this.setEntitiesComponent([t]);
+          );
+          const polygon: SP_Polygon = t.polygon();
+          if (polygon.points.length) this.NegativeSpace.addPolygons([polygon]);
+
+          if (t) this.setEntitiesComponent([t]);
+        }
       }
     }
+
+    this.NegativeSpaceCollapsed = this.NegativeSpace.union();
+
+    this.Space.addMultiPolygon(this.NegativeSpaceCollapsed);
+    this.PositiveSpaceCollapsed = this.Space.difference();
+
+    // console.log("this.PositiveSpaceCollapsed.polygons", this.PositiveSpaceCollapsed.polygons)
+
+
+    const pxs = this.PositiveSpaceCollapsed.polygons.reduce((mm, plgn) => {
+      mm.push(plgn.points);
+      return mm;
+    }, [])
+
+    console.log("mark1", this.PositiveSpaceCollapsed.polygons[0].points)
+    console.log("nark2", pxs);
+    debugger
+
+    const merged = polyPart.removeHoles(this.PositiveSpaceCollapsed.polygons[0].points, [this.PositiveSpaceCollapsed.polygons[1].points], true);
+
+    this.convexPositive = polyPart.convexPartition(merged);
+    // this.triangleNegative = polyPart.triangulate(this.NegativeSpaceCollapsed.polygons[0].points)
+
   }
 
   cullInteriorFaces() {

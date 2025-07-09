@@ -9,7 +9,7 @@ import { DesktopGame } from "../Game/1-DesktopGame.tsx";
 class MainScene extends SpaceTrashScene {
   
   async boot(game: DesktopGame<any, any>) {
-    game.loadLevel("levl20", (two_d_images, three_d_textures) => {
+    game.loadLevel("level23", (two_d_images, three_d_textures) => {
       const drones = [...new Array(9)].map((n) => {
         return new SpaceTrashBot(
           100,

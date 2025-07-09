@@ -220,89 +220,104 @@ export abstract class GameWithTicks extends GameWithLoad {
       }
     });
 
-    this.samuraiEngine.update(this.samuraiCanvasContext, (result) => {
-      // ball to wall
-      if (!result.a.isStatic && result.b.isStatic) {
-        // const motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
-        // const samuraiTile = this.components.SamuraiTileComponent.take(result.b.SP_EID);
+    this.samuraiEngine.update(
+      this.samuraiCanvasContext,
+      (result) => {
+        // ball to wall
+        if (!result.a.isStatic && result.b.isStatic) {
+          // const motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
+          // const samuraiTile = this.components.SamuraiTileComponent.take(result.b.SP_EID);
 
-        const body = result.a;
-        // const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
+          const body = result.a;
+          // const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
 
-        // const z = this.samuraiEngine.system.getCollisionPoints(result.a, result.b);
+          // const z = this.samuraiEngine.system.getCollisionPoints(result.a, result.b);
 
-        let mover = this.components.SP_PhysicalComponent.get(body.SP_EID);
+          let mover = this.components.SP_PhysicalComponent.get(body.SP_EID);
 
-        if (mover) {
-          const position = this.components.SP_PhysicalComponent.take(
-            result.a.SP_EID
-          );
+          if (mover) {
+            const position = this.components.SP_PhysicalComponent.take(
+              result.a.SP_EID
+            );
 
-          if (!position.body.setPosition) throw "idk";
+            if (!position.body.setPosition) throw "idk";
 
-          // this.samuraiEngine.system.separate();
-          // bounce the object base on normal vector
-          mover.bounce(result.overlapN);
-          // update the physics body
-          position.body.updateBody();
+            // this.samuraiEngine.system.separate();
+            // bounce the object base on normal vector
+            mover.bounce(result.overlapN);
+            // update the physics body
+            position.body.updateBody();
+          }
+
+          // mover = this.components.TankMovingComponent.get(body.SP_EID);
+          // if (mover) {
+          //   // this.tankColide();
+          // }
         }
 
-        // mover = this.components.TankMovingComponent.get(body.SP_EID);
-        // if (mover) {
-        //   // this.tankColide();
-        // }
-      }
+        // // ball to ball
+        if (!result.a.isStatic && !result.b.isStatic) {
+          let motionA: SP_PhysicalComponent;
+          let motionB: SP_PhysicalComponent;
 
-      // // ball to ball
-      if (!result.a.isStatic && !result.b.isStatic) {
-        let motionA: SP_PhysicalComponent;
-        let motionB: SP_PhysicalComponent;
+          const [classificationA] = this.entities.get(result.a.SP_EID);
+          const [classificationB] = this.entities.get(result.b.SP_EID);
 
-        const [classificationA] = this.entities.get(result.a.SP_EID);
-        const [classificationB] = this.entities.get(result.b.SP_EID);
+          if (
+            classificationA === "SpaceTrashBot" &&
+            classificationB === "PuckBot"
+          ) {
+            // motionA = this.components.TankMovingComponent.take(result.a.SP_EID)
+            // motionB = this.components.FloatMovingComponent.take(result.b.SP_EID)
+            // motionB.glance(this.components.TankMovingComponent.take(result.a.SP_EID))
+          } else if (
+            classificationA === "PuckBot" &&
+            classificationB === "PuckBot"
+          ) {
+            motionA = this.components.SP_PhysicalComponent.take(
+              result.a.SP_EID
+            );
+            motionB = this.components.SP_PhysicalComponent.take(
+              result.b.SP_EID
+            );
 
-        if (
-          classificationA === "SpaceTrashBot" &&
-          classificationB === "PuckBot"
-        ) {
-          // motionA = this.components.TankMovingComponent.take(result.a.SP_EID)
-          // motionB = this.components.FloatMovingComponent.take(result.b.SP_EID)
-          // motionB.glance(this.components.TankMovingComponent.take(result.a.SP_EID))
-        } else if (
-          classificationA === "PuckBot" &&
-          classificationB === "PuckBot"
-        ) {
-          motionA = this.components.SP_PhysicalComponent.take(result.a.SP_EID);
-          motionB = this.components.SP_PhysicalComponent.take(result.b.SP_EID);
+            motionA.bounce(result.overlapN);
+            motionB.bounce(result.overlapN);
 
-          motionA.bounce(result.overlapN);
-          motionB.bounce(result.overlapN);
+            motionA.body.updateBody();
+            motionB.body.updateBody();
 
-          motionA.body.updateBody();
-          motionB.body.updateBody();
+            // SP_PhysicalComponent.swapMotion(
+            //   this.components.SP_PhysicalComponent.take(result.a.SP_EID),
+            //   this.components.SP_PhysicalComponent.take(result.b.SP_EID)
+            // )
 
-          // SP_PhysicalComponent.swapMotion(
-          //   this.components.SP_PhysicalComponent.take(result.a.SP_EID),
-          //   this.components.SP_PhysicalComponent.take(result.b.SP_EID)
-          // )
+            // let tx = motionA.DX();
+            // let ty = motionA.DY();
+            // motionA.setMotion(motionB.DX()* Math.random() - 0.5, motionB.DY()* Math.random() - 0.5);
+            // motionB.setMotion(tx* Math.random() - 0.5, ty * Math.random() - 0.5);
+          }
 
-          // let tx = motionA.DX();
-          // let ty = motionA.DY();
-          // motionA.setMotion(motionB.DX()* Math.random() - 0.5, motionB.DY()* Math.random() - 0.5);
-          // motionB.setMotion(tx* Math.random() - 0.5, ty * Math.random() - 0.5);
+          // if (classificationB === "SpaceTrashBot") {
+          //   motionB = this.components.TankMovingComponent.take(result.b.SP_EID)
+          // } else if (classificationA === "PuckBot") {
+          //   motionB = this.components.FloatMovingComponent.take(result.b.SP_EID)
+          // }
+
+          // if (!motionA) throw "idk"
+
+          return;
         }
-
-        // if (classificationB === "SpaceTrashBot") {
-        //   motionB = this.components.TankMovingComponent.take(result.b.SP_EID)
-        // } else if (classificationA === "PuckBot") {
-        //   motionB = this.components.FloatMovingComponent.take(result.b.SP_EID)
-        // }
-
-        // if (!motionA) throw "idk"
-
-        return;
-      }
-    });
+      },
+      this.Space, // works
+      this.PositiveSpaceCollapsed,
+      this.NegativeSpace, // nothing
+      this.NegativeSpaceCollapsed, // works
+      
+      
+      this.convexPositive,
+      this.triangleNegative,
+    );
 
     // this.samuraiEngine.system.separate();
   }
