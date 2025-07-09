@@ -1,8 +1,18 @@
 // This class contains all the details for loading a game.
 // This phase is after the initialization of the game, but before the run phase
 
-const polyPart = require("poly-partition")
+const polyPart = require("poly-partition");
+var centroid = require("polygon-centroid");
+
+import {
+  intersectLineLine,
+  Polygon,
+  polygonInPolygon,
+  SATVector,
+} from "detect-collisions";
+
 import * as THREE from "three";
+import * as SAT from "sat";
 
 import { MapSize, MapBoundLow, MapBoundHigh, TileSize } from "../Constants";
 import { Eid2PMComponent } from "../ECS/Components/v2/eid2PMC";
@@ -14,8 +24,8 @@ import { ActorComponent } from "../ECS/Components/v3/actors";
 import { Tile } from "../ECS/EntityComponents/tiles";
 import { SP_MultiPolygon, SP_Polygon } from "../../demiurge/physics/SP_Polygon";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
-
-const arcadeBodiesToAgentOnCollisionCallbacks: { body; callback }[] = [];
+import Graph from "graphology";
+import { doPolygonsShareAnEdge } from "./navmesh";
 
 export abstract class GameWithLoad extends GameWithControls {
   constructor(domNode: HTMLElement) {
@@ -44,7 +54,6 @@ export abstract class GameWithLoad extends GameWithControls {
       new SP_2d_Vector(MapSize * TileSize, 0),
       new SP_2d_Vector(MapSize * TileSize, MapSize * TileSize),
       new SP_2d_Vector(0, MapSize * TileSize),
-      // new SP_2d_Vector(0, 0)
     ]),
   ]);
 
@@ -57,6 +66,10 @@ export abstract class GameWithLoad extends GameWithControls {
 
   convexPositive: any;
   triangleNegative: any;
+
+  centroids: SP_2d_Vector[];
+
+  graphOfCentroid = new Graph();
 
   load() {
     this.inflateLevel();
@@ -108,21 +121,66 @@ export abstract class GameWithLoad extends GameWithControls {
 
     // console.log("this.PositiveSpaceCollapsed.polygons", this.PositiveSpaceCollapsed.polygons)
 
-
     const pxs = this.PositiveSpaceCollapsed.polygons.reduce((mm, plgn) => {
       mm.push(plgn.points);
       return mm;
-    }, [])
+    }, []);
 
-    console.log("mark1", this.PositiveSpaceCollapsed.polygons[0].points)
-    console.log("nark2", pxs);
-    debugger
-
-    const merged = polyPart.removeHoles(this.PositiveSpaceCollapsed.polygons[0].points, [this.PositiveSpaceCollapsed.polygons[1].points], true);
+    const merged = polyPart.removeHoles(
+      this.PositiveSpaceCollapsed.polygons[0].points,
+      [this.PositiveSpaceCollapsed.polygons[1].points],
+      true
+    );
 
     this.convexPositive = polyPart.convexPartition(merged);
-    // this.triangleNegative = polyPart.triangulate(this.NegativeSpaceCollapsed.polygons[0].points)
 
+    this.centroids = this.convexPositive.map(
+      (cnvxPlgn: SP_2d_Vector[], ndx) => {
+        const c = centroid(cnvxPlgn);
+        const key = `centroid-${ndx}`;
+
+        this.graphOfCentroid.addNode(key);
+
+        this.graphOfCentroid.setNodeAttribute(key, "x", c.x);
+        this.graphOfCentroid.setNodeAttribute(key, "y", c.y);
+
+        return c;
+      }
+    );
+
+    let satCnvxp1: SAT.Polygon;
+    let satCnvxp2: SAT.Polygon;
+
+    this.convexPositive.forEach((cnvcp1, ndx1) => {
+      satCnvxp1 = new SAT.Polygon(
+        new SATVector(0, 0),
+        cnvcp1.map((cnvcp) => {
+          return new SATVector(cnvcp.x, cnvcp.y);
+        })
+      );
+
+      this.convexPositive.forEach((cnvcp2, ndx2) => {
+        satCnvxp2 = new SAT.Polygon(
+          new SATVector(0, 0),
+          cnvcp2.map((cnvcp) => {
+            return new SATVector(cnvcp.x, cnvcp.y);
+          })
+        );
+
+        if (ndx1 !== ndx2) {
+          var response = new SAT.Response();
+          
+          
+          if (doPolygonsShareAnEdge(satCnvxp1, satCnvxp2)) {
+            this.graphOfCentroid.addEdge(
+                `centroid-${ndx1}`,
+                `centroid-${ndx2}`
+              );
+          }
+
+        }
+      });
+    });
   }
 
   cullInteriorFaces() {

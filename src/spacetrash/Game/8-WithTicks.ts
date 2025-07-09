@@ -317,6 +317,9 @@ export abstract class GameWithTicks extends GameWithLoad {
       
       this.convexPositive,
       this.triangleNegative,
+
+      this.centroids,
+      this.graphOfCentroid,
     );
 
     // this.samuraiEngine.system.separate();

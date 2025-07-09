@@ -118,10 +118,10 @@ export class SP_MultiPolygon {
   difference(): SP_MultiPolygon {
     // This ps will be the list of obstacle polygons derived from the map.
     const ps: [number, number][][][] = this.polygonsPolygonClippingStyle();
-    console.log(
-      "Input obstacle polygons for difference (before filtering):",
-      JSON.stringify(ps)
-    );
+    // console.log(
+    //   "Input obstacle polygons for difference (before filtering):",
+    //   JSON.stringify(ps)
+    // );
 
     const filteredPs = ps.filter((polygon) =>
       polygon.some((ring) => ring.length >= 3)
@@ -173,10 +173,10 @@ export class SP_MultiPolygon {
       // ...positiveSpaceMultiPolygon
     );
 
-    console.log(
-      "Output from polyclip.difference (Negative Space):",
-      JSON.stringify(negativeSpaceResult)
-    );
+    // console.log(
+    //   "Output from polyclip.difference (Negative Space):",
+    //   JSON.stringify(negativeSpaceResult)
+    // );
     return new SP_MultiPolygon(
       this.clippingStyleBackToSpPolygons(negativeSpaceResult)
     );

@@ -1,8 +1,21 @@
+import { render } from "graphology-canvas";
+
+const polyPart = require("poly-partition");
+var centroid = require("polygon-centroid");
+
+import { intersectLineLine, polygonInPolygon } from "detect-collisions";
+
+import * as THREE from "three";
+import * as SAT from "sat";
+
 var area = require("area-polygon");
 
-import { System } from "detect-collisions";
-import { SP_PhysicalComponent } from "../../engine/physics/SP_Physical";
+import { Polygon, System, drawPolygon } from "detect-collisions";
+
 import { SP_MultiPolygon } from "./SP_Polygon";
+import { TileSize } from "../../spacetrash/Constants";
+import { SP_PhysicalComponent } from "./SP_Physical";
+import { renderGraphToCanvas } from "./renderGraphToCanvas";
 
 // const callback = (result) => {
 //   console.info(result);
@@ -30,7 +43,9 @@ export class SamuraiEngine {
     negativeSpace: SP_MultiPolygon,
     NegativeSpaceCollapsed: SP_MultiPolygon,
     convexPositive: any,
-    triangleNegative
+    triangleNegative,
+    centroids,
+    graphOfCentroid
   ) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -153,7 +168,7 @@ export class SamuraiEngine {
       context.stroke();
     });
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // // ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // console.log("positive space ", PositiveSpaceCollapsed);
     // context.strokeStyle = "#ffff00";
     // PositiveSpaceCollapsed.polygons.forEach((polygon) => {
@@ -188,10 +203,10 @@ export class SamuraiEngine {
     //   context.stroke();
     // });
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // // console.log("convex", convexPositive);
-    context.strokeStyle = "#00ff0066";
+    // console.log("convex", convexPositive);
+    context.strokeStyle = "#0000ff";
     convexPositive.forEach((polygon) => {
       polygon.forEach((point, ndx) => {
         if (ndx === 0) {
@@ -204,14 +219,27 @@ export class SamuraiEngine {
         if (ndx === polygon.length - 1) {
           context.lineTo(polygon[0].x, polygon[0].y);
 
-          // context.fillStyle = "#00ff0066";
-          // context.fill();
+          context.fillStyle = "#0000ff33";
+          context.fill();
         }
       });
 
       context.closePath();
       context.stroke();
     });
+
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // context.strokeStyle = "#00ff00";
+    // context.fillStyle = "#00ff0066";
+
+    // centroids.forEach((cntrd) => {
+    //   context.beginPath();
+    //   context.arc(cntrd.x, cntrd.y, TileSize/8, 0, 2 * Math.PI);
+    //   context.stroke();
+    //   context.fill();
+    //   // context.endPath();
+    // });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -251,9 +279,48 @@ export class SamuraiEngine {
     // this.system.drawBVH(context);
     // context.stroke();
 
-    // debugger
+    //     const p1 = new Polygon({ x: 0, y: 0 }, [
+    //       { x: 100, y: 100 },
+    //       { x: 300, y: 100 },
+    //       { x: 300, y: 300 },
+    //       { x: 100, y: 300 },
+    //       { x: 100, y: 100 },
+    //     ]);
+    //     const p2 = new Polygon({ x: 0, y: 0 }, [
+    //       { x: 100, y: 300 },
+    //       { x: 300, y: 310 },
+    //       { x: 400, y: 400 },
+    //       { x: 200, y: 400 },
+    //       { x: 100, y: 300 },
+    //     ]);
 
-    // body.drawBVH(context);
+    // context.strokeStyle = "#FFAC1C";
+    // context.beginPath();
+    // drawPolygon(context, p1)
+    // context.stroke();
+
+    // context.beginPath();
+    // drawPolygon(context, p2)
+    // context.stroke();
+
+    // const intersectionOfPolys = polygonInPolygon(p1, p2); // returns false
+    // const intersectionOfPolys2 = SAT.testPolygonPolygon(p1, p2) // returns true
+
+    // console.log(graphOfCentroid);
+
+    // context.beginPath();
+    renderGraphToCanvas(graphOfCentroid, context, {
+      backgroundColor: "transparent",
+      nodes: {
+        defaultColor: "#00ff00",
+        radius:2
+      },
+      edges: {
+        defaultColor: "#00ff00",
+        width:1
+      },
+    });
+    // context.stroke();
 
     if (this.system.checkAll(callback)) {
       // Do something yourself
