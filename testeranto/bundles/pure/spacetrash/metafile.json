@@ -1,0 +1,597 @@
+{
+  "errors": [],
+  "warnings": [],
+  "metafile": {
+    "inputs": {
+      "node_modules/chai/chai.js": {
+        "bytes": 143246,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/sat/SAT.js": {
+        "bytes": 36851,
+        "imports": [],
+        "format": "cjs"
+      },
+      "src/demiurge/physics/SP_2d_Vector.ts": {
+        "bytes": 2669,
+        "imports": [
+          {
+            "path": "node_modules/sat/SAT.js",
+            "kind": "import-statement",
+            "original": "sat"
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/lib/index.ts": {
+        "bytes": 3697,
+        "imports": [
+          {
+            "path": "../PM/pure.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../PM/node.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../PM/web.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../Types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./abstractBase.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./types.js",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/lib/pmProxy.ts": {
+        "bytes": 8884,
+        "imports": [
+          {
+            "path": "./types",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/lib/abstractBase.ts": {
+        "bytes": 11313,
+        "imports": [
+          {
+            "path": "../Types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": ".",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../testeranto/src/lib/pmProxy.ts",
+            "kind": "import-statement",
+            "original": "./pmProxy.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/lib/basebuilder.ts": {
+        "bytes": 6058,
+        "imports": [
+          {
+            "path": "stream",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../Types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": ".",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./abstractBase.js",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/lib/classBuilder.ts": {
+        "bytes": 3492,
+        "imports": [
+          {
+            "path": "../Types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../testeranto/src/lib/basebuilder.ts",
+            "kind": "import-statement",
+            "original": "./basebuilder.js"
+          },
+          {
+            "path": "./types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./index.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "./abstractBase.js",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/lib/core.ts": {
+        "bytes": 4755,
+        "imports": [
+          {
+            "path": "../Types.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../testeranto/src/lib/index.ts",
+            "kind": "import-statement",
+            "original": "./index.js"
+          },
+          {
+            "path": "../testeranto/src/lib/abstractBase.ts",
+            "kind": "import-statement",
+            "original": "./abstractBase.js"
+          },
+          {
+            "path": "../testeranto/src/lib/classBuilder.ts",
+            "kind": "import-statement",
+            "original": "./classBuilder.js"
+          },
+          {
+            "path": "./types",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/PM/index.ts": {
+        "bytes": 1838,
+        "imports": [
+          {
+            "path": "puppeteer-core",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "puppeteer-core/lib/esm/puppeteer",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../lib",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/PM/pure.ts": {
+        "bytes": 5858,
+        "imports": [
+          {
+            "path": "puppeteer-core",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "puppeteer-core/lib/esm/puppeteer",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "stream",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../lib",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../testeranto/src/PM/index.ts",
+            "kind": "import-statement",
+            "original": "."
+          }
+        ],
+        "format": "esm"
+      },
+      "../testeranto/src/Pure.ts": {
+        "bytes": 1797,
+        "imports": [
+          {
+            "path": "../testeranto/src/lib/core.ts",
+            "kind": "import-statement",
+            "original": "./lib/core.js"
+          },
+          {
+            "path": "../testeranto/src/lib/index.ts",
+            "kind": "import-statement",
+            "original": "./lib/index.js"
+          },
+          {
+            "path": "../testeranto/src/PM/pure.ts",
+            "kind": "import-statement",
+            "original": "./PM/pure.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/demiurge/physics/SP_2d_Vector.test.ts": {
+        "bytes": 8378,
+        "imports": [
+          {
+            "path": "node_modules/chai/chai.js",
+            "kind": "import-statement",
+            "original": "chai"
+          },
+          {
+            "path": "testeranto/src/lib/types",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "testeranto/src/Types",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "./SP_2d_Vector"
+          },
+          {
+            "path": "../testeranto/src/Pure.ts",
+            "kind": "import-statement",
+            "original": "testeranto/src/Pure"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/demiurge/physics/SP_Polygon.ts": {
+        "bytes": 4615,
+        "imports": [
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "./SP_2d_Vector"
+          },
+          {
+            "path": "node_modules/sat/SAT.js",
+            "kind": "import-statement",
+            "original": "sat"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/demiurge/physics/SP_Polygon.test.ts": {
+        "bytes": 7351,
+        "imports": [
+          {
+            "path": "node_modules/chai/chai.js",
+            "kind": "import-statement",
+            "original": "chai"
+          },
+          {
+            "path": "testeranto/src/lib/types",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "testeranto/src/Types",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "./SP_2d_Vector"
+          },
+          {
+            "path": "src/demiurge/physics/SP_Polygon.ts",
+            "kind": "import-statement",
+            "original": "./SP_Polygon"
+          },
+          {
+            "path": "../testeranto/src/Pure.ts",
+            "kind": "import-statement",
+            "original": "testeranto/src/Pure"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/bignumber.js/bignumber.mjs": {
+        "bytes": 84691,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/splaytree-ts/dist/esm/index.js": {
+        "bytes": 17966,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/polyclip-ts/dist/esm/index.js": {
+        "bytes": 39981,
+        "imports": [
+          {
+            "path": "node_modules/bignumber.js/bignumber.mjs",
+            "kind": "import-statement",
+            "original": "bignumber.js"
+          },
+          {
+            "path": "node_modules/bignumber.js/bignumber.mjs",
+            "kind": "import-statement",
+            "original": "bignumber.js"
+          },
+          {
+            "path": "node_modules/splaytree-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "splaytree-ts"
+          },
+          {
+            "path": "node_modules/splaytree-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "splaytree-ts"
+          },
+          {
+            "path": "node_modules/splaytree-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "splaytree-ts"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/demiurge/physics/SP_MultiPolygon.ts": {
+        "bytes": 8121,
+        "imports": [
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "./SP_2d_Vector"
+          },
+          {
+            "path": "src/demiurge/physics/SP_Polygon.ts",
+            "kind": "import-statement",
+            "original": "./SP_Polygon"
+          },
+          {
+            "path": "node_modules/polyclip-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "polyclip-ts"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/demiurge/physics/SP_MultiPolygon.test.ts": {
+        "bytes": 5704,
+        "imports": [
+          {
+            "path": "node_modules/chai/chai.js",
+            "kind": "import-statement",
+            "original": "chai"
+          },
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "./SP_2d_Vector"
+          },
+          {
+            "path": "src/demiurge/physics/SP_Polygon.ts",
+            "kind": "import-statement",
+            "original": "./SP_Polygon"
+          },
+          {
+            "path": "src/demiurge/physics/SP_MultiPolygon.ts",
+            "kind": "import-statement",
+            "original": "./SP_MultiPolygon"
+          },
+          {
+            "path": "../testeranto/src/Pure.ts",
+            "kind": "import-statement",
+            "original": "testeranto/src/Pure"
+          },
+          {
+            "path": "testeranto/src/Types",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      }
+    },
+    "outputs": {
+      "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs": {
+        "imports": [
+          {
+            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "kind": "import-statement"
+          }
+        ],
+        "exports": [
+          "default",
+          "imp",
+          "spec"
+        ],
+        "entryPoint": "src/demiurge/physics/SP_2d_Vector.test.ts",
+        "inputs": {
+          "src/demiurge/physics/SP_2d_Vector.test.ts": {
+            "bytesInOutput": 6876
+          }
+        },
+        "bytes": 7163
+      },
+      "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs": {
+        "imports": [
+          {
+            "path": "testeranto/bundles/pure/spacetrash/chunk-SJZOYZYM.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "kind": "import-statement"
+          }
+        ],
+        "exports": [
+          "default",
+          "imp",
+          "spec"
+        ],
+        "entryPoint": "src/demiurge/physics/SP_Polygon.test.ts",
+        "inputs": {
+          "src/demiurge/physics/SP_Polygon.test.ts": {
+            "bytesInOutput": 5774
+          }
+        },
+        "bytes": 6117
+      },
+      "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_MultiPolygon.test.mjs": {
+        "imports": [
+          {
+            "path": "testeranto/bundles/pure/spacetrash/chunk-SJZOYZYM.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "kind": "import-statement"
+          }
+        ],
+        "exports": [
+          "default",
+          "imp",
+          "spec"
+        ],
+        "entryPoint": "src/demiurge/physics/SP_MultiPolygon.test.ts",
+        "inputs": {
+          "node_modules/bignumber.js/bignumber.mjs": {
+            "bytesInOutput": 42766
+          },
+          "node_modules/splaytree-ts/dist/esm/index.js": {
+            "bytesInOutput": 18190
+          },
+          "node_modules/polyclip-ts/dist/esm/index.js": {
+            "bytesInOutput": 40083
+          },
+          "src/demiurge/physics/SP_MultiPolygon.ts": {
+            "bytesInOutput": 4258
+          },
+          "src/demiurge/physics/SP_MultiPolygon.test.ts": {
+            "bytesInOutput": 4269
+          }
+        },
+        "bytes": 110102
+      },
+      "testeranto/bundles/pure/spacetrash/chunk-SJZOYZYM.mjs": {
+        "imports": [
+          {
+            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "kind": "import-statement"
+          }
+        ],
+        "exports": [
+          "SP_Polygon"
+        ],
+        "inputs": {
+          "src/demiurge/physics/SP_Polygon.ts": {
+            "bytesInOutput": 4183
+          }
+        },
+        "bytes": 4416
+      },
+      "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs": {
+        "imports": [],
+        "exports": [
+          "Pure_default",
+          "SP_2d_Vector",
+          "__toESM",
+          "assert",
+          "require_SAT"
+        ],
+        "inputs": {
+          "node_modules/sat/SAT.js": {
+            "bytesInOutput": 19512
+          },
+          "node_modules/chai/chai.js": {
+            "bytesInOutput": 134481
+          },
+          "src/demiurge/physics/SP_2d_Vector.ts": {
+            "bytesInOutput": 2615
+          },
+          "../testeranto/src/lib/index.ts": {
+            "bytesInOutput": 558
+          },
+          "../testeranto/src/lib/pmProxy.ts": {
+            "bytesInOutput": 3201
+          },
+          "../testeranto/src/lib/abstractBase.ts": {
+            "bytesInOutput": 6833
+          },
+          "../testeranto/src/lib/basebuilder.ts": {
+            "bytesInOutput": 2740
+          },
+          "../testeranto/src/lib/classBuilder.ts": {
+            "bytesInOutput": 2248
+          },
+          "../testeranto/src/lib/core.ts": {
+            "bytesInOutput": 2704
+          },
+          "../testeranto/src/PM/index.ts": {
+            "bytesInOutput": 20
+          },
+          "../testeranto/src/PM/pure.ts": {
+            "bytesInOutput": 3131
+          },
+          "../testeranto/src/Pure.ts": {
+            "bytesInOutput": 809
+          }
+        },
+        "bytes": 188387
+      }
+    }
+  }
+}

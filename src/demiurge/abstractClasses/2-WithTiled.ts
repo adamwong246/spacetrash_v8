@@ -1,8 +1,8 @@
-import {
-  ITiledMap,
-  ITiledMapLayer,
-  ITiledMapTileset,
-} from "@workadventure/tiled-map-type-guard";
+// import {
+//   ITiledMap,
+//   ITiledMapLayer,
+//   ITiledMapTileset,
+// } from "@workadventure/tiled-map-type-guard";
 
 import { GameWithScenes } from "./1-WithScenes";
 import { MapSize } from "../../spacetrash/Constants";

@@ -4,10 +4,8 @@
 const polyPart = require("poly-partition");
 var centroid = require("polygon-centroid");
 
+import Graph from "graphology";
 import {
-  intersectLineLine,
-  Polygon,
-  polygonInPolygon,
   SATVector,
 } from "detect-collisions";
 
@@ -24,7 +22,6 @@ import { ActorComponent } from "../ECS/Components/v3/actors";
 import { Tile } from "../ECS/EntityComponents/tiles";
 import { SP_Polygon } from "../../demiurge/physics/SP_Polygon";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
-import Graph from "graphology";
 import { doPolygonsShareAnEdge } from "./navmesh";
 import { SP_MultiPolygon } from "../../demiurge/physics/SP_MultiPolygon";
 

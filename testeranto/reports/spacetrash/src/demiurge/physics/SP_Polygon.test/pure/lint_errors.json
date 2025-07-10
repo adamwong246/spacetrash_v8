@@ -1,0 +1,25 @@
+[
+  {
+    "filePath": "/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'Check' is defined but never used.",
+        "line": 222,
+        "column": 3,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 222,
+        "endColumn": 8
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]

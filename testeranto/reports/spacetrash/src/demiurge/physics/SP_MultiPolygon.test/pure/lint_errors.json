@@ -1,0 +1,69 @@
+[
+  {
+    "filePath": "/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'tr' is defined but never used.",
+        "line": 141,
+        "column": 39,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 141,
+        "endColumn": 41
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'utils' is defined but never used.",
+        "line": 141,
+        "column": 43,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 141,
+        "endColumn": 48
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'tr' is defined but never used.",
+        "line": 144,
+        "column": 25,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 144,
+        "endColumn": 27
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'pm' is defined but never used.",
+        "line": 144,
+        "column": 29,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 144,
+        "endColumn": 31
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'Check' is defined but never used.",
+        "line": 181,
+        "column": 3,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 181,
+        "endColumn": 8
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 5,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]
