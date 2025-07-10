@@ -3,11 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "src/spacetrash/tiled/level23.tmj",
     "expandedProjectPaths": [
         "src/engine/game",
         ".",
         "src/spacetrash",
+        "src/spacetrash/Assets",
         "src/spacetrash/tiled",
         "src"
     ],
@@ -120,6 +121,14 @@
                 "y": 276.8499486125385
             }
         },
+        "src/spacetrash/tiled/level23.tmj": {
+            "scale": 0.5636,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1497.515968772179,
+                "y": 346.8772178850249
+            }
+        },
         "src/spacetrash/tiled/level7.tmj": {
             "scale": 0.95,
             "selectedLayer": 0,
@@ -198,13 +207,17 @@
     "map.lastUsedFormat": "json",
     "map.width": 64,
     "openFiles": [
+        "src/spacetrash/tiled/tileset3.tsj",
+        "src/spacetrash/tiled/level22.tmj",
+        "src/spacetrash/tiled/level23.tmj"
     ],
     "project": "tiled_project_v4.tiled-project",
     "property.type": "color",
     "recentFiles": [
-        "src/spacetrash/tiled/level22.tmj",
-        "src/spacetrash/tiled/tileset3.json",
         "src/spacetrash/tiled/tileset3.tsj",
+        "src/spacetrash/tiled/level22.tmj",
+        "src/spacetrash/tiled/level23.tmj",
+        "src/spacetrash/tiled/tileset3.json",
         "src/spacetrash/tiled/level21.tmj",
         "src/spacetrash/tiled/level12.json",
         "src/spacetrash/tiled/level11.json",
@@ -212,8 +225,7 @@
         "src/spacetrash/tiled/level14.json",
         "src/spacetrash/tiled/level15.json",
         "src/spacetrash/tiled/level16.json",
-        "src/spacetrash/tiled/level17.json",
-        "src/spacetrash/tiled/level18.json"
+        "src/spacetrash/tiled/level17.json"
     ],
     "tileset.embedInMap": false,
     "tileset.lastUsedFormat": "json",

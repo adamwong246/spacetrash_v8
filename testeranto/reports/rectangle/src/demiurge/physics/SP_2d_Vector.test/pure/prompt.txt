@@ -1,0 +1,21 @@
+
+/add src/demiurge/physics/SP_2d_Vector.ts
+/add ../testeranto/src/lib/index.ts
+/add ../testeranto/src/lib/pmProxy.ts
+/add ../testeranto/src/lib/abstractBase.ts
+/add ../testeranto/src/lib/basebuilder.ts
+/add ../testeranto/src/lib/classBuilder.ts
+/add ../testeranto/src/lib/core.ts
+/add ../testeranto/src/PM/index.ts
+/add ../testeranto/src/PM/pure.ts
+/add ../testeranto/src/Pure.ts
+/add src/demiurge/physics/SP_2d_Vector.test.ts
+
+/read testeranto/reports/rectangle/src/demiurge/physics/SP_2d_Vector.test/pure/lint_errors.json
+/read testeranto/reports/rectangle/src/demiurge/physics/SP_2d_Vector.test/pure/type_errors.txt
+/read testeranto/reports/rectangle/pure/src/demiurge/physics/SP_2d_Vector.test/tests.json
+
+/load testeranto/reports/rectangle/pure/src/demiurge/physics/SP_2d_Vector.test/featurePrompt.txt
+
+/code Fix the failing tests described in testeranto/reports/rectangle/pure/src/demiurge/physics/SP_2d_Vector.test/tests.json. Correct any type signature errors described in the files testeranto/reports/rectangle/src/demiurge/physics/SP_2d_Vector.test/pure/type_errors.txt. Implement any method which throws "Function not implemented. Resolve the lint errors described in testeranto/reports/rectangle/src/demiurge/physics/SP_2d_Vector.test/pure/lint_errors.json"
+          

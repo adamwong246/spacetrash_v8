@@ -1,0 +1,179 @@
+{
+  "name": "Testing an implementation of a 2d polygon",
+  "givens": [
+    {
+      "key": "test0",
+      "name": "Default",
+      "whens": [],
+      "thens": [
+        {
+          "name": "area: 0",
+          "error": false
+        },
+        {
+          "name": "pointCount: 0",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Empty polygon has zero area"
+      ]
+    },
+    {
+      "key": "test1",
+      "name": "Rectangle",
+      "whens": [
+        {
+          "name": "setWidth: 4"
+        },
+        {
+          "name": "setHeight: 5"
+        }
+      ],
+      "thens": [
+        {
+          "name": "getWidth: 4",
+          "error": false
+        },
+        {
+          "name": "getHeight: 5",
+          "error": false
+        },
+        {
+          "name": "area: 20",
+          "error": false
+        },
+        {
+          "name": "AreaPlusCircumference: 38",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Rectangles have width and height"
+      ]
+    },
+    {
+      "key": "test2",
+      "name": "FromPoints",
+      "whens": [],
+      "thens": [
+        {
+          "name": "area: 0.5",
+          "error": false
+        },
+        {
+          "name": "pointCount: 3",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Triangle area calculation"
+      ]
+    },
+    {
+      "key": "test3",
+      "name": "Rectangle",
+      "whens": [],
+      "thens": [
+        {
+          "name": "contains: 0.4",
+          "error": false
+        },
+        {
+          "name": "contains: 1.1",
+          "error": false
+        },
+        {
+          "name": "area: 1",
+          "error": false
+        },
+        {
+          "name": "centroid: 0",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Square contains point check"
+      ]
+    },
+    {
+      "key": "test4",
+      "name": "Rectangle",
+      "whens": [
+        {
+          "name": "translate: 2"
+        }
+      ],
+      "thens": [
+        {
+          "name": "contains: 2.4",
+          "error": {
+            "message": "Point SP_2d_Vector(2.4, 3.4) should be contained: expected false to equal true",
+            "actual": false,
+            "expected": true,
+            "showDiff": true,
+            "operator": "strictEqual",
+            "name": "AssertionError",
+            "ok": false,
+            "stack": "AssertionError: Point SP_2d_Vector(2.4, 3.4) should be contained: expected false to equal true\n    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5876:14)\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5288:29\n    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5913:12)\n    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5580:42)\n    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5283:17)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5214:34)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5113:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5363:19\n    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5391:29)\n    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5761:12)"
+          }
+        },
+        {
+          "name": "contains: 2.6",
+          "error": false
+        },
+        {
+          "name": "centroid: 2",
+          "error": false
+        }
+      ],
+      "error": null,
+      "failed": true,
+      "features": [
+        "Translated rectangle"
+      ]
+    },
+    {
+      "key": "test5",
+      "name": "Rectangle",
+      "whens": [
+        {
+          "name": "rotate: 1.5707963267948966"
+        }
+      ],
+      "thens": [
+        {
+          "name": "contains: 0",
+          "error": false
+        },
+        {
+          "name": "contains: 1",
+          "error": false
+        },
+        {
+          "name": "contains: 0",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Rotated rectangle"
+      ]
+    }
+  ],
+  "checks": [],
+  "fails": 1,
+  "failed": true,
+  "features": [
+    "Empty polygon has zero area",
+    "Rectangles have width and height",
+    "Triangle area calculation",
+    "Square contains point check",
+    "Translated rectangle",
+    "Rotated rectangle"
+  ]
+}

@@ -7,7 +7,8 @@ const config: IProject = {
 
       tests: [
         // the Rectangle class, tested on all 3 environments
-        ["./src/Rectangle/Rectangle.test.node.ts", "node", { ports: 0 }, []],
+        // ["./src/demiurge/physics/SP_2d_Vector.test.ts", "pure", { ports: 0 }, []],
+        ["./src/demiurge/physics/SP_Polygon.test.ts", "pure", { ports: 0 }, []],
         // ["./src/Rectangle/Rectangle.test.web.ts", "web", { ports: 0 }, []],
         // ["./src/Rectangle/Rectangle.test.pure.ts", "pure", { ports: 0 }, []],
       ],

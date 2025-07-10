@@ -1,0 +1,50 @@
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (121,30): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector, utils: PM) => SP_2d_Vector'.
+  Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (143,42): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector, utils: PM) => SP_2d_Vector'.
+  Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (182,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
+  Type 'Promise<void>' is not assignable to type 'Promise<null>'.
+    Type 'void' is not assignable to type 'null'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (338,17): Property 'magnitude' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (346,17): Property 'add' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (354,17): Property 'multiply' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (362,17): Property 'dot' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (370,17): Property 'distance' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (40,5): Type 'Vector' is not assignable to type 'this'.
+  'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (25,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (176,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (178,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (179,3): Property 'recommendedFsPath' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (182,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (183,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (272,7): Type 'unknown' is not assignable to type 'Error'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (304,12): 'e' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (317,9): Type 'unknown' is not assignable to type 'boolean'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (330,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (434,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (439,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (37,3): Property 'assertThis' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (48,3): Property 'puppetMaster' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (84,13): Argument of type '(fPath: string, value: string | Buffer | PassThrough) => any' is not assignable to parameter of type '(fPath: string, value: unknown) => void'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | Buffer<ArrayBufferLike> | PassThrough'.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (85,15): This expression is not callable.
+  Not all constituents of type 'void | ((fPath: any, value: string | Buffer<ArrayBufferLike> | PassThrough) => void)' are callable.
+    Type 'void' has no call signatures.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: { name: string; error: string; }[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; feat...'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (99,28): A spread argument must either have a tuple type or be passed to a rest parameter.
+/Users/adam/Code/testeranto/src/lib/core.ts (44,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: { [K in keyof O["suites"]]: string; }; givens: { [K in keyof O["givens"]]: (...Ig: O["givens"][K]) => I["given"]; }; whens: { [K in keyof O["whens"]]: (...Iw: O["whens"][K]) => (zel: I["iselection"], tr: ITTestResourceConfiguration, utils: PM) => Promise<...>; }; thens: { [K in keyof O["thens"]]: (......'.
+  Type 'Omit<{ suites: { [K in keyof O["suites"]]: string; }; givens: { [K in keyof O["givens"]]: (...Ig: O["givens"][K]) => I["given"]; }; whens: { [K in keyof O["whens"]]: (...Iw: O["whens"][K]) => (zel: I["iselection"], tr: ITTestResourceConfiguration, utils: PM) => Promise<...>; }; thens: { [K in keyof O["thens"]]: (......' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
+/Users/adam/Code/testeranto/src/lib/index.ts (34,3): Type '(store: IT["istore"], thenCb: (s: IT["iselection"]) => Promise<IT["isubject"]>) => Promise<unknown>' is not assignable to type '(store: unknown, thenCB: unknown, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<unknown>'.
+  Types of parameters 'thenCb' and 'thenCB' are incompatible.
+    Type 'unknown' is not assignable to type '(s: unknown) => Promise<unknown>'.
+/Users/adam/Code/testeranto/src/lib/index.ts (46,11): 'whenCB' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/PM/index.ts (9,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/PM/web.ts (47,3): Property 'screencast' in type 'PM_Web' is not assignable to the same property in base type 'PM'.
+  Type '(opts: ScreencastOptions, page: Page) => Promise<any>' is not assignable to type '(o: ScreenRecorderOptions, p: string | Page) => any'.
+    Types of parameters 'page' and 'p' are incompatible.
+      Type 'string | Page' is not assignable to type 'Page'.
+        Type 'string' is not assignable to type 'Page'.

@@ -27,6 +27,7 @@
     "@pixi/tilemap": "^5.0.1",
     "@stdlib/datasets-female-first-names-en": "^0.2.2",
     "@stdlib/datasets-male-first-names-en": "^0.2.2",
+    "@types/chai": "^5.2.2",
     "@types/matter-js": "^0.19.8",
     "@types/pixi.js": "^5.0.0",
     "@types/react": "^18.3.3",
@@ -60,10 +61,11 @@
     "rot-js": "^2.2.1",
     "sat": "^0.9.0",
     "sharp": "^0.34.2",
-    "testeranto": "^0.129.0",
+    "testeranto": "../testeranto",
     "three": "^0.177.0",
     "tsc-watch": "^7.1.1",
     "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
     "xml2js": "^0.6.2"
   }
 }

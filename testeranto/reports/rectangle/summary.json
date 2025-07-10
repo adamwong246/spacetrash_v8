@@ -1,0 +1,9 @@
+{
+  "./src/demiurge/physics/SP_Polygon.test.ts": {
+    "runTimeError": 1,
+    "typeErrors": 31,
+    "staticErrors": 2,
+    "prompt": "aider --model deepseek/deepseek-chat --load testeranto/rectangle/reports/pure/./src/demiurge/physics/SP_Polygon.test/prompt.txt",
+    "failingFeatures": {}
+  }
+}

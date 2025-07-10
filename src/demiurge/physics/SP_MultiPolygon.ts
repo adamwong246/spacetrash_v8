@@ -1,7 +1,6 @@
-import SAT from "sat";
+import { SP_2d_Vector } from "./SP_2d_Vector";
 import { SP_Polygon } from "./SP_Polygon";
 import * as polyclip from "polyclip-ts";
-import { MapSize, TileSize } from "../../spacetrash/Constants";
 
 export class SP_MultiPolygon {
   polygons: SP_Polygon[];
@@ -195,7 +194,7 @@ export class SP_MultiPolygon {
           continue;
         }
 
-        const satVectors: SAT.Vector[] = [];
+        const satVectors: SP_2d_Vector[] = [];
         for (const c of ringCoords) {
           // `c` is now a coordinate pair `[x,y]`
           if (
@@ -212,11 +211,11 @@ export class SP_MultiPolygon {
             );
             continue;
           }
-          satVectors.push(new SAT.Vector(c[0], c[1])); // <--- Important: Pass x and y separately!
+          satVectors.push(new SP_2d_Vector(c[0], c[1])); // <--- Important: Pass x and y separately!
         }
 
         if (satVectors.length >= 3) {
-          spPolygons.push(new SP_Polygon(new SAT.Vector(0, 0), satVectors));
+          spPolygons.push(new SP_Polygon(new SP_2d_Vector(0, 0), satVectors));
         } else {
           console.warn(
             "Skipped creating SP_Polygon due to insufficient valid vertices:",

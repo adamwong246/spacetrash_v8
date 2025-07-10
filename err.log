@@ -1,0 +1,43 @@
+yarn run v1.22.22
+warning ../../package.json: No license field
+$ tsx node_modules/testeranto/dist/prebuild/run.mjs rectangle once
+hello space trash
+[7mPress 'x' to shutdown forcefully.[27m
+testeranto is running rectangle once
+[32m[7m! pure, ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+test failed 3 AssertionError: Point SP_2d_Vector(2.4, 3.4) should be contained: expected false to equal true
+    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5876:14)
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5288:29
+    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5913:12)
+    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5580:42)
+    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5283:17)
+    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5214:34)
+    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5113:22)
+    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5363:19
+    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5391:29)
+    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5761:12) {
+  actual: false,
+  expected: true,
+  showDiff: true,
+  operator: 'strictEqual'
+}
+toObj error undefined
+toObj error undefined
+toObj error undefined
+toObj error undefined
+[31m[7m> ./src/demiurge/physics/SP_Polygon.test.ts failed 1 times[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[32m[7mtsc < ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+Retrieving /Users/adam/Code/spacetrash_v8/tsconfig.json
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[32m[7meslint < ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[7mcheckForShutdown[27m
+[7mrectangle has been tested. Goodbye.[27m
+Done in 3.45s.
