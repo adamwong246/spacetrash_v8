@@ -1,9 +1,23 @@
 {
+  "./src/demiurge/physics/SP_2d_Vector.test.ts": {
+    "runTimeError": 1,
+    "typeErrors": 34,
+    "staticErrors": 1,
+    "prompt": "aider --model deepseek/deepseek-chat --load testeranto/rectangle/reports/pure/./src/demiurge/physics/SP_2d_Vector.test/prompt.txt",
+    "failingFeatures": {}
+  },
   "./src/demiurge/physics/SP_Polygon.test.ts": {
     "runTimeError": 1,
     "typeErrors": 31,
-    "staticErrors": 2,
+    "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/rectangle/reports/pure/./src/demiurge/physics/SP_Polygon.test/prompt.txt",
+    "failingFeatures": {}
+  },
+  "./src/demiurge/physics/SP_MultiPolygon.test.ts": {
+    "runTimeError": 0,
+    "typeErrors": 38,
+    "staticErrors": 1,
+    "prompt": "aider --model deepseek/deepseek-chat --load testeranto/rectangle/reports/pure/./src/demiurge/physics/SP_MultiPolygon.test/prompt.txt",
     "failingFeatures": {}
   }
 }

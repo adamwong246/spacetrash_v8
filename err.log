@@ -4,21 +4,97 @@ $ tsx node_modules/testeranto/dist/prebuild/run.mjs rectangle once
 hello space trash
 [7mPress 'x' to shutdown forcefully.[27m
 testeranto is running rectangle once
+[32m[7m! pure, ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
 [32m[7m! pure, ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[32m[7m! pure, ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[32m[7mtsc < ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+Retrieving /Users/adam/Code/spacetrash_v8/tsconfig.json
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[32m[7meslint < ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[32m[7mtsc < ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+Retrieving /Users/adam/Code/spacetrash_v8/tsconfig.json
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[32m[7meslint < ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+toObj error undefined
+[32m[7m> ./src/demiurge/physics/SP_MultiPolygon.test.ts completed successfully?!?[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
 test failed 3 AssertionError: Point SP_2d_Vector(2.4, 3.4) should be contained: expected false to equal true
-    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5876:14)
-    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5288:29
-    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5913:12)
-    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5580:42)
-    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5283:17)
-    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5214:34)
-    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5113:22)
-    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5363:19
-    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5391:29)
-    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139311815:5761:12) {
+    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139523568:113:14)
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5144:29
+    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752139523568:150:12)
+    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5436:42)
+    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5139:17)
+    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5070:34)
+    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:4969:22)
+    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5219:19
+    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5247:29)
+    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5617:12) {
   actual: false,
   expected: true,
   showDiff: true,
+  operator: 'strictEqual'
+}
+test failed 3 AssertionError: {"x":-1,"y":0}, rotated by 4.71238898038469, y component: expected 1 to be close to -1 +/- 0.000001
+    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752139523567:94:14)
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5144:29
+    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752139523567:135:12)
+    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5436:42)
+    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5139:17)
+    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5070:34)
+    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:4969:22)
+    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5219:19
+    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5247:29)
+    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/rectangle/chunk-QBT6DAMV.mjs:5617:12) {
+  actual: 1,
+  expected: undefined,
+  showDiff: false,
   operator: 'strictEqual'
 }
 toObj error undefined
@@ -27,17 +103,44 @@ toObj error undefined
 toObj error undefined
 [31m[7m> ./src/demiurge/physics/SP_Polygon.test.ts failed 1 times[27m[39m
 [7mcheckForShutdown[27m
-[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 runTimeError ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
 [34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
-[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
-[32m[7mtsc < ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[31m[7m> ./src/demiurge/physics/SP_2d_Vector.test.ts failed 1 times[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 typeErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[32m[7mtsc < ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
 Retrieving /Users/adam/Code/spacetrash_v8/tsconfig.json
 [7mcheckForShutdown[27m
-[34m[7m🕕 prompt ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 prompt ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
 [34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
-[32m[7meslint < ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[32m[7meslint < ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[33m[7m< change SP_MultiPolygon.test.mjs[27m[39m
+[32m[7m! pure, ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+toObj error undefined
+[32m[7m> ./src/demiurge/physics/SP_MultiPolygon.test.ts completed successfully?!?[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_2d_Vector.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
 [7mcheckForShutdown[27m
 [34m[7m🕕 staticErrors ./src/demiurge/physics/SP_Polygon.test.ts[27m[39m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
+[7mcheckForShutdown[27m
+[34m[7m🕕 staticErrors ./src/demiurge/physics/SP_MultiPolygon.test.ts[27m[39m
 [7mcheckForShutdown[27m
 [7mrectangle has been tested. Goodbye.[27m
-Done in 3.45s.
+Done in 4.54s.

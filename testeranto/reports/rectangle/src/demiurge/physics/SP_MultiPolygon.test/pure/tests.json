@@ -1,0 +1,53 @@
+{
+  "name": "Testing basic MultiPolygon operations",
+  "givens": [
+    {
+      "key": "test0",
+      "name": "Default",
+      "whens": [],
+      "thens": [
+        {
+          "name": "polygonCount: 0",
+          "error": false
+        },
+        {
+          "name": "totalArea: 0",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Empty MultiPolygon has zero polygons"
+      ]
+    },
+    {
+      "key": "test1",
+      "name": "Default",
+      "whens": [
+        {
+          "name": "addPolygon: [object Object]"
+        }
+      ],
+      "thens": [
+        {
+          "name": "polygonCount: 1",
+          "error": false
+        },
+        {
+          "name": "totalArea: 0.5",
+          "error": false
+        }
+      ],
+      "error": null,
+      "features": [
+        "Can add polygons to MultiPolygon"
+      ]
+    }
+  ],
+  "checks": [],
+  "fails": 0,
+  "features": [
+    "Empty MultiPolygon has zero polygons",
+    "Can add polygons to MultiPolygon"
+  ]
+}

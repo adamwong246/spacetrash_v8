@@ -1,0 +1,12 @@
+
+/add src/demiurge/physics/SP_MultiPolygon.ts
+/add src/demiurge/physics/SP_MultiPolygon.test.ts
+
+/read testeranto/reports/rectangle/src/demiurge/physics/SP_MultiPolygon.test/pure/lint_errors.json
+/read testeranto/reports/rectangle/src/demiurge/physics/SP_MultiPolygon.test/pure/type_errors.txt
+/read testeranto/reports/rectangle/pure/src/demiurge/physics/SP_MultiPolygon.test/tests.json
+
+/load testeranto/reports/rectangle/pure/src/demiurge/physics/SP_MultiPolygon.test/featurePrompt.txt
+
+/code Fix the failing tests described in testeranto/reports/rectangle/pure/src/demiurge/physics/SP_MultiPolygon.test/tests.json. Correct any type signature errors described in the files testeranto/reports/rectangle/src/demiurge/physics/SP_MultiPolygon.test/pure/type_errors.txt. Implement any method which throws "Function not implemented. Resolve the lint errors described in testeranto/reports/rectangle/src/demiurge/physics/SP_MultiPolygon.test/pure/lint_errors.json"
+          
