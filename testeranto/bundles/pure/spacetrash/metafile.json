@@ -264,7 +264,7 @@
         "format": "esm"
       },
       "src/demiurge/physics/SP_2d_Vector.test.ts": {
-        "bytes": 9624,
+        "bytes": 9579,
         "imports": [
           {
             "path": "node_modules/chai/chai.js",

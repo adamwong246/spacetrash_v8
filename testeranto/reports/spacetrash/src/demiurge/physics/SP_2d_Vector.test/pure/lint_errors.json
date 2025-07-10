@@ -5,28 +5,17 @@
       {
         "ruleId": "@typescript-eslint/no-unused-vars",
         "severity": 2,
-        "message": "'PM' is defined but never used.",
-        "line": 3,
-        "column": 15,
-        "nodeType": null,
-        "messageId": "unusedVar",
-        "endLine": 3,
-        "endColumn": 17
-      },
-      {
-        "ruleId": "@typescript-eslint/no-unused-vars",
-        "severity": 2,
         "message": "'Check' is defined but never used.",
-        "line": 242,
+        "line": 241,
         "column": 3,
         "nodeType": null,
         "messageId": "unusedVar",
-        "endLine": 242,
+        "endLine": 241,
         "endColumn": 8
       }
     ],
     "suppressedMessages": [],
-    "errorCount": 2,
+    "errorCount": 1,
     "fatalErrorCount": 0,
     "warningCount": 0,
     "fixableErrorCount": 0,

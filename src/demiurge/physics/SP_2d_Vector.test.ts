@@ -1,6 +1,5 @@
 import { assert } from "chai";
 
-import type { PM } from "testeranto/src/PM";
 import { IPM } from "testeranto/src/lib/types";
 import {
   Ibdd_in,
