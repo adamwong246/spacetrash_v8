@@ -22,10 +22,11 @@ import { GameWithControls } from "./4-WithControls";
 import { IRenderings } from "./3-WithStores";
 import { ActorComponent } from "../ECS/Components/v3/actors";
 import { Tile } from "../ECS/EntityComponents/tiles";
-import { SP_MultiPolygon, SP_Polygon } from "../../demiurge/physics/SP_Polygon";
+import { SP_Polygon } from "../../demiurge/physics/SP_Polygon";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 import Graph from "graphology";
 import { doPolygonsShareAnEdge } from "./navmesh";
+import { SP_MultiPolygon } from "../../demiurge/physics/SP_MultiPolygon";
 
 export abstract class GameWithLoad extends GameWithControls {
   constructor(domNode: HTMLElement) {
@@ -169,15 +170,13 @@ export abstract class GameWithLoad extends GameWithControls {
 
         if (ndx1 !== ndx2) {
           var response = new SAT.Response();
-          
-          
+
           if (doPolygonsShareAnEdge(satCnvxp1, satCnvxp2)) {
             this.graphOfCentroid.addEdge(
-                `centroid-${ndx1}`,
-                `centroid-${ndx2}`
-              );
+              `centroid-${ndx1}`,
+              `centroid-${ndx2}`
+            );
           }
-
         }
       });
     });
