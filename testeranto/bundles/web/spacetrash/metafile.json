@@ -30,7 +30,7 @@
         "format": "esm"
       },
       "../testeranto/src/PM/web.ts": {
-        "bytes": 4095,
+        "bytes": 4174,
         "imports": [
           {
             "path": "stream",
@@ -165,7 +165,7 @@
         "format": "esm"
       },
       "../testeranto/src/lib/classBuilder.ts": {
-        "bytes": 3492,
+        "bytes": 3529,
         "imports": [
           {
             "path": "../Types.js",
@@ -196,7 +196,7 @@
         "format": "esm"
       },
       "../testeranto/src/lib/core.ts": {
-        "bytes": 4755,
+        "bytes": 4918,
         "imports": [
           {
             "path": "../Types.js",
@@ -247,56 +247,103 @@
         ],
         "format": "esm"
       },
-      "node_modules/events/events.js": {
-        "bytes": 14890,
-        "imports": [],
-        "format": "cjs"
-      },
-      "node_modules/graphology/dist/graphology.mjs": {
-        "bytes": 178150,
+      "src/demiurge/ecs/Store.ts": {
+        "bytes": 3037,
         "imports": [
           {
-            "path": "node_modules/events/events.js",
+            "path": "./Component",
             "kind": "import-statement",
-            "original": "events"
+            "external": true
           }
         ],
         "format": "esm"
       },
-      "node_modules/detect-collisions/esm/index.js": {
-        "bytes": 120071,
+      "src/demiurge/ecs/Component.ts": {
+        "bytes": 647,
         "imports": [],
         "format": "esm"
       },
-      "node_modules/three/build/three.core.js": {
-        "bytes": 1387567,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/three/build/three.module.js": {
-        "bytes": 599539,
+      "src/demiurge/game/physical.ts": {
+        "bytes": 4223,
         "imports": [
           {
-            "path": "node_modules/three/build/three.core.js",
+            "path": "src/demiurge/ecs/Component.ts",
             "kind": "import-statement",
-            "original": "./three.core.js"
+            "original": "../ecs/Component"
           },
           {
-            "path": "node_modules/three/build/three.core.js",
+            "path": "src/demiurge/ecs/Store.ts",
             "kind": "import-statement",
-            "original": "./three.core.js"
+            "original": "../ecs/Store"
           }
         ],
         "format": "esm"
       },
-      "node_modules/sat/SAT.js": {
-        "bytes": 36851,
-        "imports": [],
-        "format": "cjs"
+      "src/spacetrash/ECS/Components/v4/TankMovingComponent.ts": {
+        "bytes": 773,
+        "imports": [
+          {
+            "path": "src/demiurge/ecs/Store.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Store"
+          },
+          {
+            "path": "src/demiurge/game/physical.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/game/physical"
+          }
+        ],
+        "format": "esm"
       },
       "src/spacetrash/Constants.ts": {
         "bytes": 1798,
         "imports": [],
+        "format": "esm"
+      },
+      "src/spacetrash/ECS/Components/v3/actors.ts": {
+        "bytes": 1329,
+        "imports": [
+          {
+            "path": "detect-collisions",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "three",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/demiurge/ecs/Component.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Component"
+          },
+          {
+            "path": "src/demiurge/ecs/Store.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Store"
+          },
+          {
+            "path": "src/spacetrash/Constants.ts",
+            "kind": "import-statement",
+            "original": "../../../Constants"
+          },
+          {
+            "path": "./ai",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../v1",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../../../../demiurge/game/physical",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
         "format": "esm"
       },
       "node_modules/react/cjs/react.development.js": {
@@ -315,11 +362,21 @@
         ],
         "format": "cjs"
       },
-      "src/demiurge/ecs/Store.ts": {
-        "bytes": 3037,
+      "src/spacetrash/ECS/Components/v2/nameable.ts": {
+        "bytes": 420,
         "imports": [
           {
-            "path": "./Component",
+            "path": "node_modules/react/index.js",
+            "kind": "import-statement",
+            "original": "react"
+          },
+          {
+            "path": "src/demiurge/ecs/Store.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Store"
+          },
+          {
+            "path": "../v1",
             "kind": "import-statement",
             "external": true
           }
@@ -346,6 +403,871 @@
           },
           {
             "path": "../v1",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/ECS/Components/v2/tileable.ts": {
+        "bytes": 502,
+        "imports": [
+          {
+            "path": "node_modules/react/index.js",
+            "kind": "import-statement",
+            "original": "react"
+          },
+          {
+            "path": "src/demiurge/ecs/Store.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Store"
+          },
+          {
+            "path": "../../EntityComponents/tiles",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../v1",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/ECS/Components/v3/attack.ts": {
+        "bytes": 2886,
+        "imports": [
+          {
+            "path": "src/demiurge/ecs/Component.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Component"
+          },
+          {
+            "path": "src/demiurge/ecs/Store.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Store"
+          },
+          {
+            "path": "../v1/PhysicsActorComponent",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../v1/PhysicsSetPieceComponent",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/rng.js": {
+        "bytes": 4052,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/backend.js": {
+        "bytes": 184,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/canvas.js": {
+        "bytes": 1414,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/backend.js",
+            "kind": "import-statement",
+            "original": "./backend.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/util.js": {
+        "bytes": 1511,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/hex.js": {
+        "bytes": 4859,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/canvas.js",
+            "kind": "import-statement",
+            "original": "./canvas.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/util.js",
+            "kind": "import-statement",
+            "original": "../util.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/rect.js": {
+        "bytes": 3872,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/canvas.js",
+            "kind": "import-statement",
+            "original": "./canvas.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/tile.js": {
+        "bytes": 3204,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/canvas.js",
+            "kind": "import-statement",
+            "original": "./canvas.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/color.js": {
+        "bytes": 10020,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/util.js",
+            "kind": "import-statement",
+            "original": "./util.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "./rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/tile-gl.js": {
+        "bytes": 9828,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/backend.js",
+            "kind": "import-statement",
+            "original": "./backend.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/color.js",
+            "kind": "import-statement",
+            "original": "../color.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/term.js": {
+        "bytes": 3086,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/backend.js",
+            "kind": "import-statement",
+            "original": "./backend.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/color.js",
+            "kind": "import-statement",
+            "original": "../color.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/text.js": {
+        "bytes": 6379,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/constants.js": {
+        "bytes": 8022,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/display/display.js": {
+        "bytes": 9467,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/display/hex.js",
+            "kind": "import-statement",
+            "original": "./hex.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/display/rect.js",
+            "kind": "import-statement",
+            "original": "./rect.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/display/tile.js",
+            "kind": "import-statement",
+            "original": "./tile.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/display/tile-gl.js",
+            "kind": "import-statement",
+            "original": "./tile-gl.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/display/term.js",
+            "kind": "import-statement",
+            "original": "./term.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/text.js",
+            "kind": "import-statement",
+            "original": "../text.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/stringgenerator.js": {
+        "bytes": 4371,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "./rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/MinHeap.js": {
+        "bytes": 3089,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/eventqueue.js": {
+        "bytes": 1630,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/MinHeap.js",
+            "kind": "import-statement",
+            "original": "./MinHeap.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/scheduler/scheduler.js": {
+        "bytes": 1468,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/eventqueue.js",
+            "kind": "import-statement",
+            "original": "../eventqueue.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/scheduler/simple.js": {
+        "bytes": 442,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/scheduler/scheduler.js",
+            "kind": "import-statement",
+            "original": "./scheduler.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/scheduler/speed.js": {
+        "bytes": 720,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/scheduler/scheduler.js",
+            "kind": "import-statement",
+            "original": "./scheduler.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/scheduler/action.js": {
+        "bytes": 1365,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/scheduler/scheduler.js",
+            "kind": "import-statement",
+            "original": "./scheduler.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/scheduler/index.js": {
+        "bytes": 142,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/scheduler/simple.js",
+            "kind": "import-statement",
+            "original": "./simple.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/scheduler/speed.js",
+            "kind": "import-statement",
+            "original": "./speed.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/scheduler/action.js",
+            "kind": "import-statement",
+            "original": "./action.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/fov/fov.js": {
+        "bytes": 1856,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/fov/discrete-shadowcasting.js": {
+        "bytes": 3393,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/fov/fov.js",
+            "kind": "import-statement",
+            "original": "./fov.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/fov/precise-shadowcasting.js": {
+        "bytes": 5042,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/fov/fov.js",
+            "kind": "import-statement",
+            "original": "./fov.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/fov/recursive-shadowcasting.js": {
+        "bytes": 5967,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/fov/fov.js",
+            "kind": "import-statement",
+            "original": "./fov.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/fov/index.js": {
+        "bytes": 283,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/fov/discrete-shadowcasting.js",
+            "kind": "import-statement",
+            "original": "./discrete-shadowcasting.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/fov/precise-shadowcasting.js",
+            "kind": "import-statement",
+            "original": "./precise-shadowcasting.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/fov/recursive-shadowcasting.js",
+            "kind": "import-statement",
+            "original": "./recursive-shadowcasting.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/map.js": {
+        "bytes": 634,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/arena.js": {
+        "bytes": 466,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/dungeon.js": {
+        "bytes": 544,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/features.js": {
+        "bytes": 10129,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/uniform.js": {
+        "bytes": 11891,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/dungeon.js",
+            "kind": "import-statement",
+            "original": "./dungeon.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/features.js",
+            "kind": "import-statement",
+            "original": "./features.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/cellular.js": {
+        "bytes": 11255,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/digger.js": {
+        "bytes": 7584,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/dungeon.js",
+            "kind": "import-statement",
+            "original": "./dungeon.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/features.js",
+            "kind": "import-statement",
+            "original": "./features.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/ellermaze.js": {
+        "bytes": 2421,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/dividedmaze.js": {
+        "bytes": 3405,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/iceymaze.js": {
+        "bytes": 3261,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/rogue.js": {
+        "bytes": 13475,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/map.js",
+            "kind": "import-statement",
+            "original": "./map.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/map/index.js": {
+        "bytes": 388,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/map/arena.js",
+            "kind": "import-statement",
+            "original": "./arena.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/uniform.js",
+            "kind": "import-statement",
+            "original": "./uniform.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/cellular.js",
+            "kind": "import-statement",
+            "original": "./cellular.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/digger.js",
+            "kind": "import-statement",
+            "original": "./digger.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/ellermaze.js",
+            "kind": "import-statement",
+            "original": "./ellermaze.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/dividedmaze.js",
+            "kind": "import-statement",
+            "original": "./dividedmaze.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/iceymaze.js",
+            "kind": "import-statement",
+            "original": "./iceymaze.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/rogue.js",
+            "kind": "import-statement",
+            "original": "./rogue.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/noise/noise.js": {
+        "bytes": 63,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/noise/simplex.js": {
+        "bytes": 3939,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/noise/noise.js",
+            "kind": "import-statement",
+            "original": "./noise.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "../rng.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/util.js",
+            "kind": "import-statement",
+            "original": "../util.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/noise/index.js": {
+        "bytes": 64,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/noise/simplex.js",
+            "kind": "import-statement",
+            "original": "./simplex.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/path/path.js": {
+        "bytes": 1409,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "../constants.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/path/dijkstra.js": {
+        "bytes": 1768,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/path/path.js",
+            "kind": "import-statement",
+            "original": "./path.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/path/astar.js": {
+        "bytes": 2734,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/path/path.js",
+            "kind": "import-statement",
+            "original": "./path.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/path/index.js": {
+        "bytes": 106,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/path/dijkstra.js",
+            "kind": "import-statement",
+            "original": "./dijkstra.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/path/astar.js",
+            "kind": "import-statement",
+            "original": "./astar.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/engine.js": {
+        "bytes": 1105,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/lighting.js": {
+        "bytes": 5989,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/color.js",
+            "kind": "import-statement",
+            "original": "./color.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/rot-js/lib/index.js": {
+        "bytes": 854,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/rng.js",
+            "kind": "import-statement",
+            "original": "./rng.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/display/display.js",
+            "kind": "import-statement",
+            "original": "./display/display.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/stringgenerator.js",
+            "kind": "import-statement",
+            "original": "./stringgenerator.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/eventqueue.js",
+            "kind": "import-statement",
+            "original": "./eventqueue.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/scheduler/index.js",
+            "kind": "import-statement",
+            "original": "./scheduler/index.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/fov/index.js",
+            "kind": "import-statement",
+            "original": "./fov/index.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/map/index.js",
+            "kind": "import-statement",
+            "original": "./map/index.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/noise/index.js",
+            "kind": "import-statement",
+            "original": "./noise/index.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/path/index.js",
+            "kind": "import-statement",
+            "original": "./path/index.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/engine.js",
+            "kind": "import-statement",
+            "original": "./engine.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/lighting.js",
+            "kind": "import-statement",
+            "original": "./lighting.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/constants.js",
+            "kind": "import-statement",
+            "original": "./constants.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/util.js",
+            "kind": "import-statement",
+            "original": "./util.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/color.js",
+            "kind": "import-statement",
+            "original": "./color.js"
+          },
+          {
+            "path": "node_modules/rot-js/lib/text.js",
+            "kind": "import-statement",
+            "original": "./text.js"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/ECS/Components/v3/senses/index.ts": {
+        "bytes": 172,
+        "imports": [
+          {
+            "path": "./fov",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/ECS/Components/v3/senses/fov.ts": {
+        "bytes": 1938,
+        "imports": [
+          {
+            "path": "node_modules/rot-js/lib/index.js",
+            "kind": "import-statement",
+            "original": "rot-js"
+          },
+          {
+            "path": "src/spacetrash/ECS/Components/v3/senses/index.ts",
+            "kind": "import-statement",
+            "original": "."
+          },
+          {
+            "path": "src/spacetrash/Constants.ts",
+            "kind": "import-statement",
+            "original": "../../../../Constants"
+          },
+          {
+            "path": "../setPieces",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../../../../Game/6-WithStateSpace",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../ai",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/ECS/Components/v3/senses/radiation.ts": {
+        "bytes": 672,
+        "imports": [
+          {
+            "path": "rot-js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/spacetrash/ECS/Components/v3/senses/index.ts",
+            "kind": "import-statement",
+            "original": "."
+          },
+          {
+            "path": "src/spacetrash/Constants.ts",
+            "kind": "import-statement",
+            "original": "../../../../Constants"
+          },
+          {
+            "path": "../setPieces",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../../../../Game/6-WithStateSpace",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../ai",
             "kind": "import-statement",
             "external": true
           }
@@ -16849,11 +17771,6 @@
         ],
         "format": "esm"
       },
-      "src/demiurge/ecs/Component.ts": {
-        "bytes": 647,
-        "imports": [],
-        "format": "esm"
-      },
       "src/spacetrash/ECS/Components/v3/heat.ts": {
         "bytes": 2250,
         "imports": [
@@ -16881,1016 +17798,6 @@
             "path": "src/spacetrash/Constants.ts",
             "kind": "import-statement",
             "original": "../../../Constants"
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v3/setPieces.ts": {
-        "bytes": 1971,
-        "imports": [
-          {
-            "path": "three",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "pixi.js",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "src/demiurge/ecs/Component.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Component"
-          },
-          {
-            "path": "../v1",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Store"
-          },
-          {
-            "path": "src/spacetrash/Constants.ts",
-            "kind": "import-statement",
-            "original": "../../../Constants"
-          },
-          {
-            "path": "./heat",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../../../physics/SamuraiTile",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "src/demiurge/game/physical.ts": {
-        "bytes": 4223,
-        "imports": [
-          {
-            "path": "src/demiurge/ecs/Component.ts",
-            "kind": "import-statement",
-            "original": "../ecs/Component"
-          },
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../ecs/Store"
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v4/TankMovingComponent.ts": {
-        "bytes": 773,
-        "imports": [
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Store"
-          },
-          {
-            "path": "src/demiurge/game/physical.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/game/physical"
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v3/actors.ts": {
-        "bytes": 1329,
-        "imports": [
-          {
-            "path": "detect-collisions",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "three",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "src/demiurge/ecs/Component.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Component"
-          },
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Store"
-          },
-          {
-            "path": "src/spacetrash/Constants.ts",
-            "kind": "import-statement",
-            "original": "../../../Constants"
-          },
-          {
-            "path": "./ai",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../v1",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../../../../demiurge/game/physical",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v2/nameable.ts": {
-        "bytes": 420,
-        "imports": [
-          {
-            "path": "node_modules/react/index.js",
-            "kind": "import-statement",
-            "original": "react"
-          },
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Store"
-          },
-          {
-            "path": "../v1",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v2/tileable.ts": {
-        "bytes": 502,
-        "imports": [
-          {
-            "path": "node_modules/react/index.js",
-            "kind": "import-statement",
-            "original": "react"
-          },
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Store"
-          },
-          {
-            "path": "../../EntityComponents/tiles",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../v1",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v3/attack.ts": {
-        "bytes": 2886,
-        "imports": [
-          {
-            "path": "src/demiurge/ecs/Component.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Component"
-          },
-          {
-            "path": "src/demiurge/ecs/Store.ts",
-            "kind": "import-statement",
-            "original": "../../../../demiurge/ecs/Store"
-          },
-          {
-            "path": "../v1/PhysicsActorComponent",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../v1/PhysicsSetPieceComponent",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/rng.js": {
-        "bytes": 4052,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/backend.js": {
-        "bytes": 184,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/canvas.js": {
-        "bytes": 1414,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/backend.js",
-            "kind": "import-statement",
-            "original": "./backend.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/util.js": {
-        "bytes": 1511,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/hex.js": {
-        "bytes": 4859,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/canvas.js",
-            "kind": "import-statement",
-            "original": "./canvas.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/util.js",
-            "kind": "import-statement",
-            "original": "../util.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/rect.js": {
-        "bytes": 3872,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/canvas.js",
-            "kind": "import-statement",
-            "original": "./canvas.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/tile.js": {
-        "bytes": 3204,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/canvas.js",
-            "kind": "import-statement",
-            "original": "./canvas.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/color.js": {
-        "bytes": 10020,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/util.js",
-            "kind": "import-statement",
-            "original": "./util.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "./rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/tile-gl.js": {
-        "bytes": 9828,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/backend.js",
-            "kind": "import-statement",
-            "original": "./backend.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/color.js",
-            "kind": "import-statement",
-            "original": "../color.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/term.js": {
-        "bytes": 3086,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/backend.js",
-            "kind": "import-statement",
-            "original": "./backend.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/color.js",
-            "kind": "import-statement",
-            "original": "../color.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/text.js": {
-        "bytes": 6379,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/constants.js": {
-        "bytes": 8022,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/display/display.js": {
-        "bytes": 9467,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/display/hex.js",
-            "kind": "import-statement",
-            "original": "./hex.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/display/rect.js",
-            "kind": "import-statement",
-            "original": "./rect.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/display/tile.js",
-            "kind": "import-statement",
-            "original": "./tile.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/display/tile-gl.js",
-            "kind": "import-statement",
-            "original": "./tile-gl.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/display/term.js",
-            "kind": "import-statement",
-            "original": "./term.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/text.js",
-            "kind": "import-statement",
-            "original": "../text.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/stringgenerator.js": {
-        "bytes": 4371,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "./rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/MinHeap.js": {
-        "bytes": 3089,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/eventqueue.js": {
-        "bytes": 1630,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/MinHeap.js",
-            "kind": "import-statement",
-            "original": "./MinHeap.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/scheduler/scheduler.js": {
-        "bytes": 1468,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/eventqueue.js",
-            "kind": "import-statement",
-            "original": "../eventqueue.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/scheduler/simple.js": {
-        "bytes": 442,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/scheduler/scheduler.js",
-            "kind": "import-statement",
-            "original": "./scheduler.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/scheduler/speed.js": {
-        "bytes": 720,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/scheduler/scheduler.js",
-            "kind": "import-statement",
-            "original": "./scheduler.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/scheduler/action.js": {
-        "bytes": 1365,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/scheduler/scheduler.js",
-            "kind": "import-statement",
-            "original": "./scheduler.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/scheduler/index.js": {
-        "bytes": 142,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/scheduler/simple.js",
-            "kind": "import-statement",
-            "original": "./simple.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/scheduler/speed.js",
-            "kind": "import-statement",
-            "original": "./speed.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/scheduler/action.js",
-            "kind": "import-statement",
-            "original": "./action.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/fov/fov.js": {
-        "bytes": 1856,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/fov/discrete-shadowcasting.js": {
-        "bytes": 3393,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/fov/fov.js",
-            "kind": "import-statement",
-            "original": "./fov.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/fov/precise-shadowcasting.js": {
-        "bytes": 5042,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/fov/fov.js",
-            "kind": "import-statement",
-            "original": "./fov.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/fov/recursive-shadowcasting.js": {
-        "bytes": 5967,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/fov/fov.js",
-            "kind": "import-statement",
-            "original": "./fov.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/fov/index.js": {
-        "bytes": 283,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/fov/discrete-shadowcasting.js",
-            "kind": "import-statement",
-            "original": "./discrete-shadowcasting.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/fov/precise-shadowcasting.js",
-            "kind": "import-statement",
-            "original": "./precise-shadowcasting.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/fov/recursive-shadowcasting.js",
-            "kind": "import-statement",
-            "original": "./recursive-shadowcasting.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/map.js": {
-        "bytes": 634,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/arena.js": {
-        "bytes": 466,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/dungeon.js": {
-        "bytes": 544,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/features.js": {
-        "bytes": 10129,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/uniform.js": {
-        "bytes": 11891,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/dungeon.js",
-            "kind": "import-statement",
-            "original": "./dungeon.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/features.js",
-            "kind": "import-statement",
-            "original": "./features.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/cellular.js": {
-        "bytes": 11255,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/digger.js": {
-        "bytes": 7584,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/dungeon.js",
-            "kind": "import-statement",
-            "original": "./dungeon.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/features.js",
-            "kind": "import-statement",
-            "original": "./features.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/ellermaze.js": {
-        "bytes": 2421,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/dividedmaze.js": {
-        "bytes": 3405,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/iceymaze.js": {
-        "bytes": 3261,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/rogue.js": {
-        "bytes": 13475,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/map.js",
-            "kind": "import-statement",
-            "original": "./map.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/map/index.js": {
-        "bytes": 388,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/map/arena.js",
-            "kind": "import-statement",
-            "original": "./arena.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/uniform.js",
-            "kind": "import-statement",
-            "original": "./uniform.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/cellular.js",
-            "kind": "import-statement",
-            "original": "./cellular.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/digger.js",
-            "kind": "import-statement",
-            "original": "./digger.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/ellermaze.js",
-            "kind": "import-statement",
-            "original": "./ellermaze.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/dividedmaze.js",
-            "kind": "import-statement",
-            "original": "./dividedmaze.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/iceymaze.js",
-            "kind": "import-statement",
-            "original": "./iceymaze.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/rogue.js",
-            "kind": "import-statement",
-            "original": "./rogue.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/noise/noise.js": {
-        "bytes": 63,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/noise/simplex.js": {
-        "bytes": 3939,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/noise/noise.js",
-            "kind": "import-statement",
-            "original": "./noise.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "../rng.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/util.js",
-            "kind": "import-statement",
-            "original": "../util.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/noise/index.js": {
-        "bytes": 64,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/noise/simplex.js",
-            "kind": "import-statement",
-            "original": "./simplex.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/path/path.js": {
-        "bytes": 1409,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "../constants.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/path/dijkstra.js": {
-        "bytes": 1768,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/path/path.js",
-            "kind": "import-statement",
-            "original": "./path.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/path/astar.js": {
-        "bytes": 2734,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/path/path.js",
-            "kind": "import-statement",
-            "original": "./path.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/path/index.js": {
-        "bytes": 106,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/path/dijkstra.js",
-            "kind": "import-statement",
-            "original": "./dijkstra.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/path/astar.js",
-            "kind": "import-statement",
-            "original": "./astar.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/engine.js": {
-        "bytes": 1105,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/lighting.js": {
-        "bytes": 5989,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/color.js",
-            "kind": "import-statement",
-            "original": "./color.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/rot-js/lib/index.js": {
-        "bytes": 854,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/rng.js",
-            "kind": "import-statement",
-            "original": "./rng.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/display/display.js",
-            "kind": "import-statement",
-            "original": "./display/display.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/stringgenerator.js",
-            "kind": "import-statement",
-            "original": "./stringgenerator.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/eventqueue.js",
-            "kind": "import-statement",
-            "original": "./eventqueue.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/scheduler/index.js",
-            "kind": "import-statement",
-            "original": "./scheduler/index.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/fov/index.js",
-            "kind": "import-statement",
-            "original": "./fov/index.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/map/index.js",
-            "kind": "import-statement",
-            "original": "./map/index.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/noise/index.js",
-            "kind": "import-statement",
-            "original": "./noise/index.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/path/index.js",
-            "kind": "import-statement",
-            "original": "./path/index.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/engine.js",
-            "kind": "import-statement",
-            "original": "./engine.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/lighting.js",
-            "kind": "import-statement",
-            "original": "./lighting.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/constants.js",
-            "kind": "import-statement",
-            "original": "./constants.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/util.js",
-            "kind": "import-statement",
-            "original": "./util.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/color.js",
-            "kind": "import-statement",
-            "original": "./color.js"
-          },
-          {
-            "path": "node_modules/rot-js/lib/text.js",
-            "kind": "import-statement",
-            "original": "./text.js"
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v3/senses/index.ts": {
-        "bytes": 172,
-        "imports": [
-          {
-            "path": "./fov",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v3/senses/fov.ts": {
-        "bytes": 1938,
-        "imports": [
-          {
-            "path": "node_modules/rot-js/lib/index.js",
-            "kind": "import-statement",
-            "original": "rot-js"
-          },
-          {
-            "path": "src/spacetrash/ECS/Components/v3/senses/index.ts",
-            "kind": "import-statement",
-            "original": "."
-          },
-          {
-            "path": "src/spacetrash/Constants.ts",
-            "kind": "import-statement",
-            "original": "../../../../Constants"
-          },
-          {
-            "path": "../setPieces",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../../../../Game/6-WithStateSpace",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../ai",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/ECS/Components/v3/senses/radiation.ts": {
-        "bytes": 672,
-        "imports": [
-          {
-            "path": "rot-js",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "src/spacetrash/ECS/Components/v3/senses/index.ts",
-            "kind": "import-statement",
-            "original": "."
-          },
-          {
-            "path": "src/spacetrash/Constants.ts",
-            "kind": "import-statement",
-            "original": "../../../../Constants"
-          },
-          {
-            "path": "../setPieces",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../../../../Game/6-WithStateSpace",
-            "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "../ai",
-            "kind": "import-statement",
-            "external": true
           }
         ],
         "format": "esm"
@@ -18108,6 +18015,52 @@
         ],
         "format": "esm"
       },
+      "src/spacetrash/ECS/Components/v3/setPieces.ts": {
+        "bytes": 1971,
+        "imports": [
+          {
+            "path": "three",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "pixi.js",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/demiurge/ecs/Component.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Component"
+          },
+          {
+            "path": "../v1",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/demiurge/ecs/Store.ts",
+            "kind": "import-statement",
+            "original": "../../../../demiurge/ecs/Store"
+          },
+          {
+            "path": "src/spacetrash/Constants.ts",
+            "kind": "import-statement",
+            "original": "../../../Constants"
+          },
+          {
+            "path": "./heat",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "../../../physics/SamuraiTile",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
       "src/spacetrash/ECS/Components/v3/radiation.ts": {
         "bytes": 706,
         "imports": [
@@ -18217,6 +18170,11 @@
           }
         ],
         "format": "esm"
+      },
+      "node_modules/sat/SAT.js": {
+        "bytes": 36851,
+        "imports": [],
+        "format": "cjs"
       },
       "src/demiurge/physics/SP_2d_Vector.ts": {
         "bytes": 2669,
@@ -18335,6 +18293,27 @@
             "path": "src/demiurge/ecs/Component.ts",
             "kind": "import-statement",
             "original": "../ecs/Component"
+          }
+        ],
+        "format": "esm"
+      },
+      "node_modules/three/build/three.core.js": {
+        "bytes": 1387567,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/three/build/three.module.js": {
+        "bytes": 599539,
+        "imports": [
+          {
+            "path": "node_modules/three/build/three.core.js",
+            "kind": "import-statement",
+            "original": "./three.core.js"
+          },
+          {
+            "path": "node_modules/three/build/three.core.js",
+            "kind": "import-statement",
+            "original": "./three.core.js"
           }
         ],
         "format": "esm"
@@ -20437,6 +20416,11 @@
         ],
         "format": "esm"
       },
+      "node_modules/detect-collisions/esm/index.js": {
+        "bytes": 120071,
+        "imports": [],
+        "format": "esm"
+      },
       "src/demiurge/ecs/Entity.ts": {
         "bytes": 40,
         "imports": [],
@@ -21109,6 +21093,22 @@
         "imports": [],
         "format": "esm"
       },
+      "node_modules/events/events.js": {
+        "bytes": 14890,
+        "imports": [],
+        "format": "cjs"
+      },
+      "node_modules/graphology/dist/graphology.mjs": {
+        "bytes": 178150,
+        "imports": [
+          {
+            "path": "node_modules/events/events.js",
+            "kind": "import-statement",
+            "original": "events"
+          }
+        ],
+        "format": "esm"
+      },
       "src/demiurge/game/DirectedGraph.ts": {
         "bytes": 376,
         "imports": [
@@ -21524,6 +21524,79 @@
         ],
         "format": "esm"
       },
+      "node_modules/bignumber.js/bignumber.mjs": {
+        "bytes": 84691,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/splaytree-ts/dist/esm/index.js": {
+        "bytes": 17966,
+        "imports": [],
+        "format": "esm"
+      },
+      "node_modules/polyclip-ts/dist/esm/index.js": {
+        "bytes": 39981,
+        "imports": [
+          {
+            "path": "node_modules/bignumber.js/bignumber.mjs",
+            "kind": "import-statement",
+            "original": "bignumber.js"
+          },
+          {
+            "path": "node_modules/bignumber.js/bignumber.mjs",
+            "kind": "import-statement",
+            "original": "bignumber.js"
+          },
+          {
+            "path": "node_modules/splaytree-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "splaytree-ts"
+          },
+          {
+            "path": "node_modules/splaytree-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "splaytree-ts"
+          },
+          {
+            "path": "node_modules/splaytree-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "splaytree-ts"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/demiurge/physics/SP_MultiPolygon.ts": {
+        "bytes": 8121,
+        "imports": [
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "./SP_2d_Vector"
+          },
+          {
+            "path": "src/demiurge/physics/SP_Polygon.ts",
+            "kind": "import-statement",
+            "original": "./SP_Polygon"
+          },
+          {
+            "path": "node_modules/polyclip-ts/dist/esm/index.js",
+            "kind": "import-statement",
+            "original": "polyclip-ts"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/game/navmesh.ts": {
+        "bytes": 6684,
+        "imports": [
+          {
+            "path": "sat",
+            "kind": "import-statement",
+            "external": true
+          }
+        ],
+        "format": "esm"
+      },
       "src/spacetrash/ECS/EntityComponents/tiles/index.ts": {
         "bytes": 21429,
         "imports": [
@@ -21615,141 +21688,18 @@
         ],
         "format": "esm"
       },
-      "src/spacetrash/game/navmesh.ts": {
-        "bytes": 6684,
+      "src/spacetrash/game/7-5-WithLevel.ts": {
+        "bytes": 3549,
         "imports": [
-          {
-            "path": "sat",
-            "kind": "import-statement",
-            "external": true
-          }
-        ],
-        "format": "esm"
-      },
-      "node_modules/bignumber.js/bignumber.mjs": {
-        "bytes": 84691,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/splaytree-ts/dist/esm/index.js": {
-        "bytes": 17966,
-        "imports": [],
-        "format": "esm"
-      },
-      "node_modules/polyclip-ts/dist/esm/index.js": {
-        "bytes": 39981,
-        "imports": [
-          {
-            "path": "node_modules/bignumber.js/bignumber.mjs",
-            "kind": "import-statement",
-            "original": "bignumber.js"
-          },
-          {
-            "path": "node_modules/bignumber.js/bignumber.mjs",
-            "kind": "import-statement",
-            "original": "bignumber.js"
-          },
-          {
-            "path": "node_modules/splaytree-ts/dist/esm/index.js",
-            "kind": "import-statement",
-            "original": "splaytree-ts"
-          },
-          {
-            "path": "node_modules/splaytree-ts/dist/esm/index.js",
-            "kind": "import-statement",
-            "original": "splaytree-ts"
-          },
-          {
-            "path": "node_modules/splaytree-ts/dist/esm/index.js",
-            "kind": "import-statement",
-            "original": "splaytree-ts"
-          }
-        ],
-        "format": "esm"
-      },
-      "src/demiurge/physics/SP_MultiPolygon.ts": {
-        "bytes": 8121,
-        "imports": [
-          {
-            "path": "src/demiurge/physics/SP_2d_Vector.ts",
-            "kind": "import-statement",
-            "original": "./SP_2d_Vector"
-          },
-          {
-            "path": "src/demiurge/physics/SP_Polygon.ts",
-            "kind": "import-statement",
-            "original": "./SP_Polygon"
-          },
-          {
-            "path": "node_modules/polyclip-ts/dist/esm/index.js",
-            "kind": "import-statement",
-            "original": "polyclip-ts"
-          }
-        ],
-        "format": "esm"
-      },
-      "src/spacetrash/game/7-WithLoad.ts": {
-        "bytes": 28087,
-        "imports": [
-          {
-            "path": "node_modules/graphology/dist/graphology.mjs",
-            "kind": "import-statement",
-            "original": "graphology"
-          },
-          {
-            "path": "node_modules/detect-collisions/esm/index.js",
-            "kind": "import-statement",
-            "original": "detect-collisions"
-          },
-          {
-            "path": "node_modules/three/build/three.module.js",
-            "kind": "import-statement",
-            "original": "three"
-          },
-          {
-            "path": "node_modules/sat/SAT.js",
-            "kind": "import-statement",
-            "original": "sat"
-          },
-          {
-            "path": "src/spacetrash/Constants.ts",
-            "kind": "import-statement",
-            "original": "../Constants"
-          },
-          {
-            "path": "src/spacetrash/ECS/Components/v2/eid2PMC.ts",
-            "kind": "import-statement",
-            "original": "../ECS/Components/v2/eid2PMC"
-          },
-          {
-            "path": "src/spacetrash/ECS/Components/v3/heat.ts",
-            "kind": "import-statement",
-            "original": "../ECS/Components/v3/heat"
-          },
-          {
-            "path": "src/spacetrash/ECS/Components/v3/setPieces.ts",
-            "kind": "import-statement",
-            "original": "../ECS/Components/v3/setPieces"
-          },
           {
             "path": "src/spacetrash/game/4-WithControls.ts",
             "kind": "import-statement",
             "original": "./4-WithControls"
           },
           {
-            "path": "./3-WithStores",
+            "path": "src/demiurge/physics/SP_MultiPolygon.ts",
             "kind": "import-statement",
-            "external": true
-          },
-          {
-            "path": "src/spacetrash/ECS/Components/v3/actors.ts",
-            "kind": "import-statement",
-            "original": "../ECS/Components/v3/actors"
-          },
-          {
-            "path": "src/spacetrash/ECS/EntityComponents/tiles/index.ts",
-            "kind": "import-statement",
-            "original": "../ECS/EntityComponents/tiles"
+            "original": "../../demiurge/physics/SP_MultiPolygon"
           },
           {
             "path": "src/demiurge/physics/SP_Polygon.ts",
@@ -21762,14 +21712,34 @@
             "original": "../../demiurge/physics/SP_2d_Vector"
           },
           {
+            "path": "src/spacetrash/Constants.ts",
+            "kind": "import-statement",
+            "original": "../Constants"
+          },
+          {
+            "path": "node_modules/graphology/dist/graphology.mjs",
+            "kind": "import-statement",
+            "original": "graphology"
+          },
+          {
+            "path": "node_modules/sat/SAT.js",
+            "kind": "import-statement",
+            "original": "sat"
+          },
+          {
+            "path": "node_modules/detect-collisions/esm/index.js",
+            "kind": "import-statement",
+            "original": "detect-collisions"
+          },
+          {
             "path": "src/spacetrash/game/navmesh.ts",
             "kind": "import-statement",
             "original": "./navmesh"
           },
           {
-            "path": "src/demiurge/physics/SP_MultiPolygon.ts",
+            "path": "src/spacetrash/ECS/EntityComponents/tiles/index.ts",
             "kind": "import-statement",
-            "original": "../../demiurge/physics/SP_MultiPolygon"
+            "original": "../ECS/EntityComponents/tiles"
           },
           {
             "path": "node_modules/poly-partition/lib/index.js",
@@ -21785,7 +21755,7 @@
         "format": "esm"
       },
       "src/spacetrash/game/7-WithLoad.test.ts": {
-        "bytes": 4288,
+        "bytes": 4338,
         "imports": [
           {
             "path": "node_modules/chai/chai.js",
@@ -21803,9 +21773,55 @@
             "external": true
           },
           {
-            "path": "src/spacetrash/game/7-WithLoad.ts",
+            "path": "./7-WithLoad",
             "kind": "import-statement",
-            "original": "./7-WithLoad"
+            "external": true
+          },
+          {
+            "path": "src/spacetrash/game/7-5-WithLevel.ts",
+            "kind": "import-statement",
+            "original": "./7-5-WithLevel"
+          }
+        ],
+        "format": "esm"
+      },
+      "src/spacetrash/game/7-5-WithLevel.test.ts": {
+        "bytes": 5904,
+        "imports": [
+          {
+            "path": "node_modules/chai/chai.js",
+            "kind": "import-statement",
+            "original": "chai"
+          },
+          {
+            "path": "../testeranto/src/Web.ts",
+            "kind": "import-statement",
+            "original": "testeranto/src/Web"
+          },
+          {
+            "path": "testeranto/src/Types",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/spacetrash/game/7-5-WithLevel.ts",
+            "kind": "import-statement",
+            "original": "./7-5-WithLevel"
+          },
+          {
+            "path": "../../demiurge/physics/SP_MultiPolygon",
+            "kind": "import-statement",
+            "external": true
+          },
+          {
+            "path": "src/demiurge/physics/SP_Polygon.ts",
+            "kind": "import-statement",
+            "original": "../../demiurge/physics/SP_Polygon"
+          },
+          {
+            "path": "src/demiurge/physics/SP_2d_Vector.ts",
+            "kind": "import-statement",
+            "original": "../../demiurge/physics/SP_2d_Vector"
           }
         ],
         "format": "esm"
@@ -21814,6 +21830,10 @@
     "outputs": {
       "testeranto/bundles/web/spacetrash/src/spacetrash/game/7-WithLoad.test.mjs": {
         "imports": [
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs",
+            "kind": "import-statement"
+          },
           {
             "path": "testeranto/bundles/web/spacetrash/chunk-WJBRD6KE.mjs",
             "kind": "import-statement"
@@ -21832,6 +21852,82 @@
           },
           {
             "path": "testeranto/bundles/web/spacetrash/chunk-FNHHR667.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-UN7UHN4N.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-2J273L3I.mjs",
+            "kind": "import-statement"
+          }
+        ],
+        "exports": [
+          "default",
+          "imp",
+          "spec"
+        ],
+        "entryPoint": "src/spacetrash/game/7-WithLoad.test.ts",
+        "inputs": {
+          "src/spacetrash/game/7-WithLoad.test.ts": {
+            "bytesInOutput": 2867
+          }
+        },
+        "bytes": 3326
+      },
+      "testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs": {
+        "imports": [
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-WJBRD6KE.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-HDW26HVJ.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-4LVMNFWN.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-3SR7JMTM.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-FNHHR667.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-UN7UHN4N.mjs",
+            "kind": "import-statement"
+          },
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-2J273L3I.mjs",
+            "kind": "import-statement"
+          }
+        ],
+        "exports": [
+          "default",
+          "imp",
+          "spec"
+        ],
+        "entryPoint": "src/spacetrash/game/7-5-WithLevel.test.ts",
+        "inputs": {
+          "src/spacetrash/game/7-5-WithLevel.test.ts": {
+            "bytesInOutput": 4165
+          }
+        },
+        "bytes": 4658
+      },
+      "testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs": {
+        "imports": [
+          {
+            "path": "testeranto/bundles/web/spacetrash/chunk-HDW26HVJ.mjs",
             "kind": "import-statement"
           },
           {
@@ -21860,15 +21956,13 @@
           }
         ],
         "exports": [
-          "default",
-          "imp",
-          "spec"
+          "GameWithLevel",
+          "SP_2d_Vector",
+          "SP_Polygon",
+          "Web_default",
+          "assert"
         ],
-        "entryPoint": "src/spacetrash/game/7-WithLoad.test.ts",
         "inputs": {
-          "node_modules/events/events.js": {
-            "bytesInOutput": 13213
-          },
           "node_modules/sat/SAT.js": {
             "bytesInOutput": 19614
           },
@@ -21911,20 +22005,23 @@
           "node_modules/area-polygon/index.js": {
             "bytesInOutput": 757
           },
+          "node_modules/events/events.js": {
+            "bytesInOutput": 13213
+          },
           "node_modules/chai/chai.js": {
-            "bytesInOutput": 134555
+            "bytesInOutput": 134557
           },
           "../testeranto/src/PM/index.ts": {
             "bytesInOutput": 20
           },
           "../testeranto/src/PM/web.ts": {
-            "bytesInOutput": 3057
+            "bytesInOutput": 3059
           },
           "../testeranto/src/lib/index.ts": {
             "bytesInOutput": 558
           },
           "../testeranto/src/lib/pmProxy.ts": {
-            "bytesInOutput": 3201
+            "bytesInOutput": 3231
           },
           "../testeranto/src/lib/abstractBase.ts": {
             "bytesInOutput": 6834
@@ -21936,40 +22033,97 @@
             "bytesInOutput": 2249
           },
           "../testeranto/src/lib/core.ts": {
-            "bytesInOutput": 2704
+            "bytesInOutput": 2684
           },
           "../testeranto/src/Web.ts": {
             "bytesInOutput": 1710
           },
-          "node_modules/graphology/dist/graphology.mjs": {
-            "bytesInOutput": 137266
+          "src/demiurge/physics/SP_2d_Vector.ts": {
+            "bytesInOutput": 2615
           },
-          "node_modules/detect-collisions/esm/index.js": {
-            "bytesInOutput": 76797
-          },
-          "node_modules/three/build/three.core.js": {
-            "bytesInOutput": 587752
-          },
-          "node_modules/three/build/three.module.js": {
-            "bytesInOutput": 543207
-          },
-          "src/spacetrash/game/7-WithLoad.ts": {
-            "bytesInOutput": 13620
-          },
-          "src/spacetrash/Constants.ts": {
-            "bytesInOutput": 188
-          },
-          "src/spacetrash/ECS/Components/v2/eid2PMC.ts": {
-            "bytesInOutput": 1238
+          "src/demiurge/physics/SP_Polygon.ts": {
+            "bytesInOutput": 4189
           },
           "src/demiurge/ecs/Store.ts": {
             "bytesInOutput": 1897
           },
+          "src/demiurge/ecs/Component.ts": {
+            "bytesInOutput": 27
+          },
+          "src/demiurge/game/physical.ts": {
+            "bytesInOutput": 1348
+          },
+          "src/spacetrash/ECS/Components/v4/TankMovingComponent.ts": {
+            "bytesInOutput": 384
+          },
+          "src/spacetrash/Constants.ts": {
+            "bytesInOutput": 167
+          },
+          "src/spacetrash/ECS/Components/v3/actors.ts": {
+            "bytesInOutput": 296
+          },
+          "src/spacetrash/ECS/Components/v2/nameable.ts": {
+            "bytesInOutput": 233
+          },
+          "src/spacetrash/ECS/Components/v2/eid2PMC.ts": {
+            "bytesInOutput": 872
+          },
+          "src/spacetrash/ECS/Components/v2/tileable.ts": {
+            "bytesInOutput": 104
+          },
+          "src/spacetrash/ECS/Components/v3/attack.ts": {
+            "bytesInOutput": 2141
+          },
+          "node_modules/rot-js/lib/rng.js": {
+            "bytesInOutput": 3389
+          },
+          "node_modules/rot-js/lib/index.js": {
+            "bytesInOutput": 0
+          },
+          "node_modules/rot-js/lib/display/backend.js": {
+            "bytesInOutput": 122
+          },
+          "node_modules/rot-js/lib/display/canvas.js": {
+            "bytesInOutput": 1264
+          },
+          "node_modules/rot-js/lib/util.js": {
+            "bytesInOutput": 938
+          },
+          "node_modules/rot-js/lib/display/hex.js": {
+            "bytesInOutput": 4008
+          },
+          "node_modules/rot-js/lib/display/rect.js": {
+            "bytesInOutput": 3283
+          },
+          "node_modules/rot-js/lib/display/tile.js": {
+            "bytesInOutput": 2687
+          },
+          "node_modules/rot-js/lib/color.js": {
+            "bytesInOutput": 5228
+          },
+          "node_modules/rot-js/lib/display/tile-gl.js": {
+            "bytesInOutput": 7144
+          },
+          "node_modules/rot-js/lib/display/term.js": {
+            "bytesInOutput": 2239
+          },
+          "node_modules/rot-js/lib/text.js": {
+            "bytesInOutput": 3503
+          },
+          "node_modules/rot-js/lib/constants.js": {
+            "bytesInOutput": 49
+          },
+          "node_modules/rot-js/lib/display/display.js": {
+            "bytesInOutput": 7285
+          },
+          "node_modules/rot-js/lib/noise/simplex.js": {
+            "bytesInOutput": 68
+          },
           "node_modules/pixi.js/lib/environment-browser/browserExt.mjs": {
-            "bytesInOutput": 217
+            "bytesInOutput": 210
           },
           "node_modules/pixi.js/lib/environment-webworker/webworkerExt.mjs": {
-            "bytesInOutput": 282
+            "bytesInOutput": 275
           },
           "node_modules/pixi.js/lib/utils/browser/isWebGLSupported.mjs": {
             "bytesInOutput": 923
@@ -21978,7 +22132,7 @@
             "bytesInOutput": 487
           },
           "node_modules/pixi.js/lib/rendering/renderers/autoDetectRenderer.mjs": {
-            "bytesInOutput": 1588
+            "bytesInOutput": 1574
           },
           "node_modules/pixi.js/lib/app/Application.mjs": {
             "bytesInOutput": 5776
@@ -21987,16 +22141,16 @@
             "bytesInOutput": 3184
           },
           "node_modules/pixi.js/lib/scene/text-bitmap/asset/bitmapFontTextParser.mjs": {
-            "bytesInOutput": 2909
+            "bytesInOutput": 2913
           },
           "node_modules/pixi.js/lib/scene/text-bitmap/asset/bitmapFontXMLParser.mjs": {
-            "bytesInOutput": 2778
+            "bytesInOutput": 2782
           },
           "node_modules/pixi.js/lib/scene/text-bitmap/asset/bitmapFontXMLStringParser.mjs": {
             "bytesInOutput": 307
           },
           "node_modules/pixi.js/lib/scene/text-bitmap/asset/loadBitmapFont.mjs": {
-            "bytesInOutput": 2106
+            "bytesInOutput": 2108
           },
           "node_modules/pixi.js/lib/assets/BackgroundLoader.mjs": {
             "bytesInOutput": 3252
@@ -22029,7 +22183,7 @@
             "bytesInOutput": 336
           },
           "node_modules/pixi.js/lib/assets/loader/Loader.mjs": {
-            "bytesInOutput": 4700
+            "bytesInOutput": 4699
           },
           "node_modules/pixi.js/lib/assets/utils/checkDataUrl.mjs": {
             "bytesInOutput": 233
@@ -22050,10 +22204,10 @@
             "bytesInOutput": 196
           },
           "node_modules/pixi.js/lib/assets/loader/parsers/textures/utils/createTexture.mjs": {
-            "bytesInOutput": 799
+            "bytesInOutput": 800
           },
           "node_modules/pixi.js/lib/assets/loader/parsers/textures/loadSVG.mjs": {
-            "bytesInOutput": 1925
+            "bytesInOutput": 1926
           },
           "node_modules/pixi.js/lib/_virtual/checkImageBitmap.worker.mjs": {
             "bytesInOutput": 1104
@@ -22065,10 +22219,10 @@
             "bytesInOutput": 2289
           },
           "node_modules/pixi.js/lib/assets/loader/parsers/textures/loadTextures.mjs": {
-            "bytesInOutput": 1999
+            "bytesInOutput": 2000
           },
           "node_modules/pixi.js/lib/assets/loader/parsers/textures/loadVideoTextures.mjs": {
-            "bytesInOutput": 3713
+            "bytesInOutput": 3714
           },
           "node_modules/pixi.js/lib/assets/resolver/parsers/resolveTextureUrl.mjs": {
             "bytesInOutput": 297
@@ -22077,82 +22231,13 @@
             "bytesInOutput": 242
           },
           "node_modules/pixi.js/lib/assets/Assets.mjs": {
-            "bytesInOutput": 23756
+            "bytesInOutput": 23755
           },
           "node_modules/pixi.js/lib/index.mjs": {
             "bytesInOutput": 42
           },
-          "src/demiurge/ecs/Component.ts": {
-            "bytesInOutput": 355
-          },
           "src/spacetrash/ECS/Components/v3/heat.ts": {
-            "bytesInOutput": 546
-          },
-          "src/spacetrash/ECS/Components/v3/setPieces.ts": {
-            "bytesInOutput": 1052
-          },
-          "src/demiurge/game/physical.ts": {
-            "bytesInOutput": 1350
-          },
-          "src/spacetrash/ECS/Components/v4/TankMovingComponent.ts": {
-            "bytesInOutput": 384
-          },
-          "src/spacetrash/ECS/Components/v3/actors.ts": {
-            "bytesInOutput": 551
-          },
-          "src/spacetrash/ECS/Components/v2/nameable.ts": {
-            "bytesInOutput": 235
-          },
-          "src/spacetrash/ECS/Components/v2/tileable.ts": {
-            "bytesInOutput": 104
-          },
-          "src/spacetrash/ECS/Components/v3/attack.ts": {
-            "bytesInOutput": 2141
-          },
-          "node_modules/rot-js/lib/rng.js": {
-            "bytesInOutput": 3389
-          },
-          "node_modules/rot-js/lib/index.js": {
-            "bytesInOutput": 0
-          },
-          "node_modules/rot-js/lib/display/backend.js": {
-            "bytesInOutput": 122
-          },
-          "node_modules/rot-js/lib/display/canvas.js": {
-            "bytesInOutput": 1258
-          },
-          "node_modules/rot-js/lib/util.js": {
-            "bytesInOutput": 938
-          },
-          "node_modules/rot-js/lib/display/hex.js": {
-            "bytesInOutput": 4002
-          },
-          "node_modules/rot-js/lib/display/rect.js": {
-            "bytesInOutput": 3276
-          },
-          "node_modules/rot-js/lib/display/tile.js": {
-            "bytesInOutput": 2680
-          },
-          "node_modules/rot-js/lib/color.js": {
-            "bytesInOutput": 5228
-          },
-          "node_modules/rot-js/lib/display/tile-gl.js": {
-            "bytesInOutput": 7129
-          },
-          "node_modules/rot-js/lib/display/term.js": {
-            "bytesInOutput": 2239
-          },
-          "node_modules/rot-js/lib/text.js": {
-            "bytesInOutput": 3503
-          },
-          "node_modules/rot-js/lib/constants.js": {
-            "bytesInOutput": 49
-          },
-          "node_modules/rot-js/lib/display/display.js": {
-            "bytesInOutput": 7285
-          },
-          "node_modules/rot-js/lib/noise/simplex.js": {
-            "bytesInOutput": 68
+            "bytesInOutput": 545
           },
           "src/spacetrash/lib.ts": {
             "bytesInOutput": 1565
@@ -22161,19 +22246,22 @@
             "bytesInOutput": 49
           },
           "src/spacetrash/ECS/Components/v1/casting/out.ts": {
-            "bytesInOutput": 859
+            "bytesInOutput": 858
           },
           "src/spacetrash/ECS/Components/v1/index.ts": {
-            "bytesInOutput": 56
+            "bytesInOutput": 55
           },
           "src/spacetrash/ECS/Components/v1/casting/in.ts": {
             "bytesInOutput": 1187
+          },
+          "src/spacetrash/ECS/Components/v3/setPieces.ts": {
+            "bytesInOutput": 580
           },
           "src/spacetrash/ECS/Components/v3/radiation.ts": {
             "bytesInOutput": 117
           },
           "src/demiurge/rendering/RenderableComponent.ts": {
-            "bytesInOutput": 166
+            "bytesInOutput": 165
           },
           "src/demiurge/rendering/threejs.ts": {
             "bytesInOutput": 579
@@ -22184,23 +22272,23 @@
           "src/demiurge/rendering/console.ts": {
             "bytesInOutput": 336
           },
-          "src/demiurge/physics/SP_2d_Vector.ts": {
-            "bytesInOutput": 2615
-          },
           "src/spacetrash/physics/BasePolygon.ts": {
             "bytesInOutput": 5106
           },
           "src/spacetrash/ECS/Components/v4/IntegerPosition.ts": {
             "bytesInOutput": 508
           },
-          "src/demiurge/physics/SP_Polygon.ts": {
-            "bytesInOutput": 4189
-          },
           "src/spacetrash/physics/SamuraiTile.ts": {
             "bytesInOutput": 919
           },
           "src/demiurge/physics/SP_Physical.ts": {
-            "bytesInOutput": 1813
+            "bytesInOutput": 1812
+          },
+          "node_modules/three/build/three.core.js": {
+            "bytesInOutput": 578877
+          },
+          "node_modules/three/build/three.module.js": {
+            "bytesInOutput": 543206
           },
           "src/spacetrash/game/1-DesktopGame.tsx": {
             "bytesInOutput": 15379
@@ -22460,6 +22548,9 @@
           "src/spacetrash/Scenes/Boot.ts": {
             "bytesInOutput": 413
           },
+          "node_modules/detect-collisions/esm/index.js": {
+            "bytesInOutput": 76818
+          },
           "src/demiurge/ecs/Entity.ts": {
             "bytesInOutput": 41
           },
@@ -22535,6 +22626,9 @@
           "src/spacetrash/game/Terminal.ts": {
             "bytesInOutput": 7292
           },
+          "node_modules/graphology/dist/graphology.mjs": {
+            "bytesInOutput": 137270
+          },
           "src/demiurge/game/DirectedGraph.ts": {
             "bytesInOutput": 227
           },
@@ -22571,12 +22665,6 @@
           "src/spacetrash/game/4-WithControls.ts": {
             "bytesInOutput": 2604
           },
-          "src/spacetrash/ECS/EntityComponents/tiles/index.ts": {
-            "bytesInOutput": 5389
-          },
-          "src/spacetrash/game/navmesh.ts": {
-            "bytesInOutput": 2157
-          },
           "node_modules/bignumber.js/bignumber.mjs": {
             "bytesInOutput": 42944
           },
@@ -22589,11 +22677,17 @@
           "src/demiurge/physics/SP_MultiPolygon.ts": {
             "bytesInOutput": 4258
           },
-          "src/spacetrash/game/7-WithLoad.test.ts": {
-            "bytesInOutput": 2866
+          "src/spacetrash/game/7-5-WithLevel.ts": {
+            "bytesInOutput": 2921
+          },
+          "src/spacetrash/game/navmesh.ts": {
+            "bytesInOutput": 2157
+          },
+          "src/spacetrash/ECS/EntityComponents/tiles/index.ts": {
+            "bytesInOutput": 5389
           }
         },
-        "bytes": 3385847
+        "bytes": 3361783
       },
       "testeranto/bundles/web/spacetrash/browserAll-HCKEDEOF.mjs": {
         "imports": [

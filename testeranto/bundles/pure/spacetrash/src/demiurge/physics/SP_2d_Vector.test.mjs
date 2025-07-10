@@ -3,7 +3,7 @@ import {
   Pure_default,
   SP_2d_Vector,
   assert
-} from "../../../chunk-QBT6DAMV.mjs";
+} from "../../../chunk-ID3V64M3.mjs";
 
 // src/demiurge/physics/SP_2d_Vector.test.ts
 var imp = {

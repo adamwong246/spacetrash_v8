@@ -1,12 +1,12 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
   SP_Polygon
-} from "../../../chunk-SJZOYZYM.mjs";
+} from "../../../chunk-PCXUUV2X.mjs";
 import {
   Pure_default,
   SP_2d_Vector,
   assert
-} from "../../../chunk-QBT6DAMV.mjs";
+} from "../../../chunk-ID3V64M3.mjs";
 
 // src/demiurge/physics/SP_Polygon.test.ts
 var imp = {

@@ -129,7 +129,7 @@
         "format": "esm"
       },
       "../testeranto/src/lib/classBuilder.ts": {
-        "bytes": 3492,
+        "bytes": 3529,
         "imports": [
           {
             "path": "../Types.js",
@@ -160,7 +160,7 @@
         "format": "esm"
       },
       "../testeranto/src/lib/core.ts": {
-        "bytes": 4755,
+        "bytes": 4918,
         "imports": [
           {
             "path": "../Types.js",
@@ -449,7 +449,7 @@
       "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs": {
         "imports": [
           {
-            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "path": "testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs",
             "kind": "import-statement"
           }
         ],
@@ -469,11 +469,11 @@
       "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs": {
         "imports": [
           {
-            "path": "testeranto/bundles/pure/spacetrash/chunk-SJZOYZYM.mjs",
+            "path": "testeranto/bundles/pure/spacetrash/chunk-PCXUUV2X.mjs",
             "kind": "import-statement"
           },
           {
-            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "path": "testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs",
             "kind": "import-statement"
           }
         ],
@@ -493,11 +493,11 @@
       "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_MultiPolygon.test.mjs": {
         "imports": [
           {
-            "path": "testeranto/bundles/pure/spacetrash/chunk-SJZOYZYM.mjs",
+            "path": "testeranto/bundles/pure/spacetrash/chunk-PCXUUV2X.mjs",
             "kind": "import-statement"
           },
           {
-            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "path": "testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs",
             "kind": "import-statement"
           }
         ],
@@ -526,10 +526,10 @@
         },
         "bytes": 110102
       },
-      "testeranto/bundles/pure/spacetrash/chunk-SJZOYZYM.mjs": {
+      "testeranto/bundles/pure/spacetrash/chunk-PCXUUV2X.mjs": {
         "imports": [
           {
-            "path": "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs",
+            "path": "testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs",
             "kind": "import-statement"
           }
         ],
@@ -543,7 +543,7 @@
         },
         "bytes": 4416
       },
-      "testeranto/bundles/pure/spacetrash/chunk-QBT6DAMV.mjs": {
+      "testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs": {
         "imports": [],
         "exports": [
           "Pure_default",
@@ -578,7 +578,7 @@
             "bytesInOutput": 2248
           },
           "../testeranto/src/lib/core.ts": {
-            "bytesInOutput": 2704
+            "bytesInOutput": 2684
           },
           "../testeranto/src/PM/index.ts": {
             "bytesInOutput": 20
@@ -590,7 +590,7 @@
             "bytesInOutput": 809
           }
         },
-        "bytes": 188387
+        "bytes": 188367
       }
     }
   }

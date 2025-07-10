@@ -1,0 +1,37 @@
+{
+  "name": "Testing basic GameWithLevel operations",
+  "givens": [
+    {
+      "key": "test0",
+      "name": "Default",
+      "whens": [],
+      "thens": [
+        {
+          "name": "hasNegativeSpace: false",
+          "error": false
+        },
+        {
+          "name": "spaceCount: 1",
+          "error": false
+        },
+        {
+          "name": "negativeSpaceCount: 1",
+          "error": false
+        }
+      ],
+      "error": [
+        {},
+        "Error: createRoot(...): Target container is not a DOM element.\n    at createRoot2 (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:23637:19)\n    at Object.createRoot$1 [as createRoot] (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:24018:18)\n    at exports.createRoot (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:24098:20)\n    at new DesktopGame (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:86395:51)\n    at new GamWithAssets (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:86915:5)\n    at new GameWithStores (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:87054:5)\n    at new GameWithControls (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:87065:5)\n    at new GameWithLevel (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/chunk-4M65ENHY.mjs:90980:21)\n    at new TestGameWithLevel (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs?cacheBust=1752173465833:21:5)\n    at Default (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs?cacheBust=1752173465833:40:20)"
+      ],
+      "features": [
+        "New instance has empty spaces"
+      ]
+    }
+  ],
+  "checks": [],
+  "fails": 1,
+  "failed": true,
+  "features": [
+    "New instance has empty spaces"
+  ]
+}

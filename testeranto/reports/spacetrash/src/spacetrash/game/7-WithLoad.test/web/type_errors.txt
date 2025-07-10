@@ -150,47 +150,22 @@
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<any>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (211,23): 'MapWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (214,13): Type '(props: IDockviewPanelHeaderProps<any>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<any>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (215,23): 'BotWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (217,13): Type '(props: IDockviewPanelHeaderProps<any>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<any>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (218,16): 'TerminalWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (220,13): Type '(props: IDockviewPanelHeaderProps<any>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<any>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (221,16): 'ArcadePhysicsWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (223,13): Type '(props: IDockviewPanelHeaderProps<any>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<any>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (224,16): 'CustomPhysicsWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (271,9): Property 'registerCanvas' in type 'DesktopGame<IRenderings, ICanvases>' is not assignable to the same property in base type 'MultiSurfaceGame<IRenderings>'.
   Type '(key: ICanvases, run: boolean, canvas: HTMLCanvasElement, callback: (data: any) => void, canvasContext: IRenderings | undefined, parentComponent: HTMLElement) => Promise<...>' is not assignable to type '(key: ICanvases, run: boolean, canvas?: HTMLCanvasElement | undefined, callback?: ((data: any) => void) | undefined, canvasContext?: IRenderings | undefined, parentComponent?: HTMLElement | undefined) => void'.
     Types of parameters 'key' and 'key' are incompatible.
@@ -207,41 +182,21 @@
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<IState>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (434,46): Cannot find name 'IState'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (435,17): 'MapWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (438,7): Type '(props: IDockviewPanelHeaderProps<IState>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<IState>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (438,46): Cannot find name 'IState'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (439,17): 'BotWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (442,7): Type '(props: IDockviewPanelHeaderProps<IState>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<IState>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (442,47): Cannot find name 'IState'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (443,10): 'TerminalWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (446,7): Type '(props: IDockviewPanelHeaderProps<IState>) => JSX.Element' is not assignable to type 'FunctionComponent<IDockviewPanelProps>'.
   Types of parameters 'props' and 'props' are incompatible.
     Type 'IDockviewPanelProps' is not assignable to type 'IDockviewPanelHeaderProps<IState>'.
       Property 'tabLocation' is missing in type 'IGroupPanelBaseProps<any>' but required in type '{ tabLocation: TabLocation; }'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (446,56): Cannot find name 'IState'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (447,10): 'CustomPhysicsWindow' cannot be used as a JSX component.
-  Its type '(props: { game: SpaceTrash; }) => JSX.Element' is not a valid JSX element type.
-    Type '(props: { game: SpaceTrash; }) => JSX.Element' is not assignable to type '(props: any, deprecatedLegacyContext?: any) => ReactNode'.
-      Type 'Element' is not assignable to type 'ReactNode'.
-        Property 'children' is missing in type 'Element' but required in type 'ReactPortal'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (553,22): Property 'component' is private and only accessible within class 'DockviewApi'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (564,22): Property 'component' is private and only accessible within class 'DockviewApi'.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/1-DesktopGame.tsx (587,5): Object is possibly 'null'.
@@ -264,36 +219,43 @@
           Type '(ic: ITiles, eid: number) => void' is not assignable to type '(pic: Partial<any>, ...a: any[]) => any'.
             Types of parameters 'ic' and 'pic' are incompatible.
               Type 'Partial<any>' is not assignable to type 'ITiles'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (62,22): Type '{}' is missing the following properties from type '{ tid: number; hFlip: boolean; vFlip: boolean; dFlip: boolean; tileset: ITiledMapTileset; }': tid, hFlip, vFlip, dFlip, tileset
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (94,39): Property 'bodies' does not exist on type 'SamuraiEngine'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (115,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-5-WithLevel.ts (28,3): Property 'NegativeSpaceCollapsed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-5-WithLevel.ts (29,3): Property 'PositiveSpaceCollapsed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-5-WithLevel.ts (34,3): Property 'centroids' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-5-WithLevel.ts (65,15): Argument of type 'Vector[]' is not assignable to parameter of type 'never'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (14,7): Non-abstract class 'TestGameWithLoad' does not implement inherited abstract member load from class 'GameWithLevel'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (19,5): Expected 3 arguments, but got 1.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (54,5): Type '() => TestGameWithLoad' is not assignable to type '() => GameWithLoad'.
+  Type 'TestGameWithLoad' is missing the following properties from type 'GameWithLoad': cullInteriorFaces, measureThreejs, mapEntitiesToPositions, initializeSetPieces, and 8 more.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (58,5): Type '() => TestGameWithLoad' is not assignable to type '() => GameWithLoad'.
+  Type 'TestGameWithLoad' is missing the following properties from type 'GameWithLoad': cullInteriorFaces, measureThreejs, mapEntitiesToPositions, initializeSetPieces, and 8 more.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (63,22): Type '{}' is missing the following properties from type '{ tid: number; hFlip: boolean; vFlip: boolean; dFlip: boolean; tileset: ITiledMapTileset; }': tid, hFlip, vFlip, dFlip, tileset
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (95,39): Property 'bodies' does not exist on type 'SamuraiEngine'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (101,20): Type 'TestGameWithLoad' is missing the following properties from type 'GameWithLoad': cullInteriorFaces, measureThreejs, mapEntitiesToPositions, initializeSetPieces, and 8 more.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (116,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
   Type 'Promise<void>' is not assignable to type 'Promise<null>'.
     Type 'void' is not assignable to type 'null'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (119,3): Type '(s: GameWithLoad, whenCB: (...x: any[]) => (game: GameWithLoad) => GameWithLoad, tr: ITTestResourceConfiguration, utils: IPM) => Promise<...>' is not assignable to type '(store: GameWithLoad, whenCB: (...x: any[]) => (game: GameWithLoad) => GameWithLoad, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<...>'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (120,3): Type '(s: GameWithLoad, whenCB: (...x: any[]) => (game: GameWithLoad) => GameWithLoad, tr: ITTestResourceConfiguration, utils: IPM) => Promise<...>' is not assignable to type '(store: GameWithLoad, whenCB: (...x: any[]) => (game: GameWithLoad) => GameWithLoad, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<...>'.
   Type 'Promise<(game: GameWithLoad) => GameWithLoad>' is not assignable to type 'Promise<GameWithLoad>'.
     Type '(game: GameWithLoad) => GameWithLoad' is not assignable to type 'GameWithLoad'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (160,11): Expected 3 arguments, but got 2.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (171,11): Expected 3 arguments, but got 2.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (182,11): Expected 3 arguments, but got 2.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (62,3): Property 'NegativeSpaceCollapsed' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (63,3): Property 'PositiveSpaceCollapsed' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (68,3): Property 'centroids' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (123,15): Argument of type 'Vector[]' is not assignable to parameter of type 'never'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (363,18): Property 'isMesh' does not exist on type 'Object3D<Object3DEventMap>'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (364,33): Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (387,13): Argument of type 'SP_PhysicalComponent' is not assignable to parameter of type 'PositionComponent'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (161,11): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (172,11): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.test.ts (183,11): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (242,18): Property 'isMesh' does not exist on type 'Object3D<Object3DEventMap>'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (243,33): Property 'geometry' does not exist on type 'Object3D<Object3DEventMap>'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (266,13): Argument of type 'SP_PhysicalComponent' is not assignable to parameter of type 'PositionComponent'.
   Type 'SP_PhysicalComponent' is missing the following properties from type 'PositionComponent': x, y
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (403,13): Argument of type 'SP_PhysicalComponent' is not assignable to parameter of type 'PositionComponent'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (282,13): Argument of type 'SP_PhysicalComponent' is not assignable to parameter of type 'PositionComponent'.
   Type 'SP_PhysicalComponent' is missing the following properties from type 'PositionComponent': x, y
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (439,25): Property 'tileType' does not exist on type 'ITiles'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (318,25): Property 'tileType' does not exist on type 'ITiles'.
   Property 'tileType' does not exist on type '"FloorTile"'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (781,14): Property 'SP_EID' does not exist on type 'Box<any> | Polygon<any> | Circle<any>'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (660,14): Property 'SP_EID' does not exist on type 'Box<any> | Polygon<any> | Circle<any>'.
   Property 'SP_EID' does not exist on type 'Box<any>'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (856,13): Cannot find name 'arcadeBodiesToAgentOnCollisionCallbacks'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (857,24): Property 'arcadeBody' does not exist on type 'ActorComponent'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (861,24): Property 'arcadeBody' does not exist on type 'ActorComponent'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (875,18): Property 'pixi2dThermalApp' does not exist on type 'GameWithLoad'.
-/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (884,39): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (735,13): Cannot find name 'arcadeBodiesToAgentOnCollisionCallbacks'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (736,24): Property 'arcadeBody' does not exist on type 'ActorComponent'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (740,24): Property 'arcadeBody' does not exist on type 'ActorComponent'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (754,18): Property 'pixi2dThermalApp' does not exist on type 'GameWithLoad'.
+/Users/adam/Code/spacetrash_v8/src/spacetrash/Game/7-WithLoad.ts (763,39): Expected 3 arguments, but got 2.
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/8-WithTicks.ts (114,31): Argument of type 'SP_PhysicalComponent' is not assignable to parameter of type 'PositionComponent'.
   Type 'SP_PhysicalComponent' is missing the following properties from type 'PositionComponent': x, y
 /Users/adam/Code/spacetrash_v8/src/spacetrash/Game/8-WithTicks.ts (263,17): Type 'string[] | undefined' must have a '[Symbol.iterator]()' method that returns an iterator.
@@ -362,17 +324,22 @@
     Type 'void' has no call signatures.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: { name: string; error: string; }[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; feat...'.
 /Users/adam/Code/testeranto/src/lib/classBuilder.ts (99,28): A spread argument must either have a tuple type or be passed to a rest parameter.
-/Users/adam/Code/testeranto/src/lib/core.ts (44,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: { [K in keyof O["suites"]]: string; }; givens: { [K in keyof O["givens"]]: (...Ig: O["givens"][K]) => I["given"]; }; whens: { [K in keyof O["whens"]]: (...Iw: O["whens"][K]) => (zel: I["iselection"], tr: ITTestResourceConfiguration, utils: PM) => Promise<...>; }; thens: { [K in keyof O["thens"]]: (......'.
-  Type 'Omit<{ suites: { [K in keyof O["suites"]]: string; }; givens: { [K in keyof O["givens"]]: (...Ig: O["givens"][K]) => I["given"]; }; whens: { [K in keyof O["whens"]]: (...Iw: O["whens"][K]) => (zel: I["iselection"], tr: ITTestResourceConfiguration, utils: PM) => Promise<...>; }; thens: { [K in keyof O["thens"]]: (......' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
 /Users/adam/Code/testeranto/src/lib/index.ts (34,3): Type '(store: IT["istore"], thenCb: (s: IT["iselection"]) => Promise<IT["isubject"]>) => Promise<unknown>' is not assignable to type '(store: unknown, thenCB: unknown, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<unknown>'.
   Types of parameters 'thenCb' and 'thenCB' are incompatible.
     Type 'unknown' is not assignable to type '(s: unknown) => Promise<unknown>'.
 /Users/adam/Code/testeranto/src/lib/index.ts (46,11): 'whenCB' is of type 'unknown'.
 /Users/adam/Code/testeranto/src/PM/index.ts (9,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/testeranto/src/PM/web.ts (47,3): Property 'screencast' in type 'PM_Web' is not assignable to the same property in base type 'PM'.
-  Type '(opts: ScreencastOptions, page: Page) => Promise<any>' is not assignable to type '(o: ScreenRecorderOptions, p: string | Page) => any'.
-    Types of parameters 'page' and 'p' are incompatible.
-      Type 'string | Page' is not assignable to type 'Page'.
-        Type 'string' is not assignable to type 'Page'.
+/Users/adam/Code/testeranto/src/PM/web.ts (53,3): Property 'screencast' in type 'PM_Web' is not assignable to the same property in base type 'PM'.
+  Type '(o: ScreencastOptions, p: string | Page) => any' is not assignable to type '(o: ScreenRecorderOptions, p: string | Page) => any'.
+    Types of parameters 'p' and 'p' are incompatible.
+      Type 'string | import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/types").Page' is not assignable to type 'string | import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page").Page'.
+        Type 'Page' is not assignable to type 'string | Page'.
+          Type 'import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/types").Page' is not assignable to type 'import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page").Page'.
+            Property '#private' in type 'Page' refers to a different member that cannot be accessed from within type 'Page'.
+/Users/adam/Code/testeranto/src/PM/web.ts (56,12): Cannot find name 'opts'.
+/Users/adam/Code/testeranto/src/PM/web.ts (57,57): Cannot find name 'opts'.
+/Users/adam/Code/testeranto/src/PM/web.ts (59,7): Cannot find name 'page'. Did you mean the instance member 'this.page'?
+/Users/adam/Code/testeranto/src/Web.ts (39,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M> & M & { ...; }'.
+  Type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M>' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
 /Users/adam/Code/testeranto/src/Web.ts (47,14): Expected 0 arguments, but got 1.
 /Users/adam/Code/testeranto/src/Web.ts (66,14): Expected 0 arguments, but got 1.

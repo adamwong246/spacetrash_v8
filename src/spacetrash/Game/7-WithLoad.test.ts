@@ -8,9 +8,10 @@ import {
   ITestSpecification,
 } from "testeranto/src/Types";
 import { GameWithLoad } from "./7-WithLoad";
+import { GameWithLevel } from "./7-5-WithLevel";
 
 // Test implementation that extends the abstract GameWithLoad
-class TestGameWithLoad extends GameWithLoad {
+class TestGameWithLoad extends GameWithLevel {
   uiHooks: any = {};
   tiledProjectImport: any = {};
 

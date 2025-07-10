@@ -1,30 +1,37 @@
 {
   "./src/demiurge/physics/SP_2d_Vector.test.ts": {
     "runTimeError": 1,
-    "typeErrors": 30,
+    "typeErrors": 33,
     "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/pure/./src/demiurge/physics/SP_2d_Vector.test/prompt.txt",
     "failingFeatures": {}
   },
   "./src/demiurge/physics/SP_Polygon.test.ts": {
     "runTimeError": 1,
-    "typeErrors": 44,
+    "typeErrors": 47,
     "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/pure/./src/demiurge/physics/SP_Polygon.test/prompt.txt",
     "failingFeatures": {}
   },
   "./src/demiurge/physics/SP_MultiPolygon.test.ts": {
     "runTimeError": 0,
-    "typeErrors": 38,
+    "typeErrors": 41,
     "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/pure/./src/demiurge/physics/SP_MultiPolygon.test/prompt.txt",
     "failingFeatures": {}
   },
   "./src/spacetrash/game/7-WithLoad.test.ts": {
     "runTimeError": -1,
-    "typeErrors": 252,
-    "staticErrors": 43,
+    "typeErrors": 251,
+    "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/web/./src/spacetrash/game/7-WithLoad.test/prompt.txt",
+    "failingFeatures": {}
+  },
+  "./src/spacetrash/game/7-5-WithLevel.test.ts": {
+    "runTimeError": -1,
+    "typeErrors": 249,
+    "staticErrors": 1,
+    "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/web/./src/spacetrash/game/7-5-WithLevel.test/prompt.txt",
     "failingFeatures": {}
   }
 }
