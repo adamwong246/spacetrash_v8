@@ -14,17 +14,22 @@ import Testeranto from "testeranto/src/Pure";
 
 type M = {
   givens: {
-    [K in keyof O["givens"]]: (...Iw: O["givens"][K]) => SP_2d_Vector;
+    Default: () => SP_2d_Vector;
+    ByXAndY: (x: number, y: number) => SP_2d_Vector;
   };
-  whens: {
-    [K in keyof O["whens"]]: (
-      ...Iw: O["whens"][K]
-    ) => (v: SP_2d_Vector, utils: PM) => SP_2d_Vector;
-  };
+  whens: Record<string, never>; // No whens defined
   thens: {
-    [K in keyof O["thens"]]: (
-      ...Iw: O["thens"][K]
-    ) => (v: SP_2d_Vector, utils: PM) => SP_2d_Vector;
+    magnitude: (expected: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+    add: (x: number, y: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+    multiply: (scalar: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+    dot: (x: number, y: number, expected: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+    distance: (x: number, y: number, expected: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+    rotate: (angle: number, x: number, y: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+    normalize: (expectedX: number, expectedY: number) => (v: SP_2d_Vector) => SP_2d_Vector;
+  };
+  checks: {
+    Default: () => SP_2d_Vector;
+    ByXAndY: (x: number, y: number) => SP_2d_Vector;
   };
 };
 
@@ -164,7 +169,7 @@ export const imp: ITestImplementation<I, O, M> = {
 
   checks: {
     Default: () => new SP_2d_Vector(0, 0),
-    // ByXAndY: (x, y) => new SP_2d_Vector(x, y),
+    ByXAndY: (x: number, y: number) => new SP_2d_Vector(x, y),
   },
 };
 
@@ -174,20 +179,26 @@ type I = Ibdd_in<
   SP_2d_Vector,
   SP_2d_Vector,
   SP_2d_Vector,
-  (...x) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector,
+  (...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector,
   (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector
 >;
 
 const interf: IPartialInterface<I> = {
-  beforeAll: async () => {},
-  beforeEach: async (subject, i, tr, iv: unknown[]) => {
+  beforeAll: async (): Promise<void> => {},
+  beforeEach: async (subject, i, tr, iv: unknown[]): Promise<SP_2d_Vector> => {
     return i(...(iv || []));
   },
-  andWhen: async function (s, whenCB, tr, utils) {
-    return whenCB(s)(s, utils);
+  andWhen: async function (s: SP_2d_Vector, whenCB: unknown, tr: unknown, utils: IPM): Promise<SP_2d_Vector> {
+    if (typeof whenCB === 'function') {
+      return (whenCB as (v: SP_2d_Vector) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector)(s)(s, utils);
+    }
+    return s;
   },
-  butThen: async (s, t, tr, pm) => {
-    return t(s, pm);
+  butThen: async (s: SP_2d_Vector, t, tr, pm): Promise<SP_2d_Vector> => {
+    if (t) {
+      return t(s, pm);
+    }
+    return s;
   },
 };
 
@@ -196,16 +207,30 @@ type O = Ibdd_out<
     Default: [string];
   },
   {
-    Default;
+    Default: [];
     ByXAndY: [number, number];
   },
-  {},
   {
     rotate: [number, number, number];
     normalize: [number, number];
+    magnitude: [number];
+    add: [number, number];
+    multiply: [number];
+    dot: [number, number, number];
+    distance: [number, number, number];
   },
   {
-    Default;
+    rotate: [number, number, number];
+    normalize: [number, number];
+    magnitude: [number];
+    add: [number, number];
+    multiply: [number];
+    dot: [number, number, number];
+    distance: [number, number, number];
+  },
+  {
+    Default: [];
+    ByXAndY: [number, number];
   }
 >;
 

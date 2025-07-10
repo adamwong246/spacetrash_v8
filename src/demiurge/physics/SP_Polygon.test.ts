@@ -20,12 +20,12 @@ type M = {
   whens: {
     [K in keyof O["whens"]]: (
       ...Iw: O["whens"][K]
-    ) => (p: SP_Polygon, utils: PM) => SP_Polygon;
+    ) => (p: SP_Polygon, utils: PM) => Promise<SP_Polygon>;
   };
   thens: {
     [K in keyof O["thens"]]: (
       ...Iw: O["thens"][K]
-    ) => (p: SP_Polygon, utils: PM) => SP_Polygon;
+    ) => (p: SP_Polygon, utils: PM) => Promise<SP_Polygon>;
   };
 };
 
@@ -168,8 +168,8 @@ type I = Ibdd_in<
   SP_Polygon,
   SP_Polygon,
   SP_Polygon,
-  (...x) => (p: SP_Polygon, utils: IPM) => SP_Polygon,
-  (p: SP_Polygon, utils: IPM) => SP_Polygon
+  (...x: any[]) => (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>,
+  (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>
 >;
 
 const interf: IPartialInterface<I> = {
@@ -226,7 +226,8 @@ export const spec: ITestSpecification<I, O> = (
       test0: Given.Default(
         ["Empty polygon has zero area"],
         [],
-        [Then.area(0), Then.pointCount(0)]
+        [Then.area(0), Then.pointCount(0)],
+        null
       ),
 
       test1: Given.Rectangle(
@@ -289,4 +290,4 @@ export const spec: ITestSpecification<I, O> = (
   ];
 };
 
-export default Testeranto<I, O, M>(null, spec, imp, interf);
+export default Testeranto<I, O, M>(null as unknown as I['input'], spec, imp, interf);

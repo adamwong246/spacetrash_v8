@@ -1,12 +1,36 @@
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (44,5): Type 'Vector' is not assignable to type 'this'.
   'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (58,26): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (61,24): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (64,26): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (76,28): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (91,25): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (101,29): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (111,30): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (121,42): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (133,35): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (143,41): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (149,31): Type '(polygon: SP_Polygon) => SP_Polygon' is not assignable to type '(p: SP_Polygon, utils: PM) => Promise<SP_Polygon>'.
+  Type 'SP_Polygon' is missing the following properties from type 'Promise<SP_Polygon>': then, catch, finally, [Symbol.toStringTag]
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (176,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
   Type 'Promise<void>' is not assignable to type 'Promise<null>'.
     Type 'void' is not assignable to type 'null'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (180,3): Type '(s: SP_Polygon, whenCB: (...x: any[]) => (p: SP_Polygon, utils: IPM) => SP_Polygon, tr: ITTestResourceConfiguration, utils: IPM) => Promise<...>' is not assignable to type '(store: SP_Polygon, whenCB: (...x: any[]) => (p: SP_Polygon, utils: IPM) => SP_Polygon, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<...>'.
-  Type 'Promise<(p: SP_Polygon, utils: IPM) => SP_Polygon>' is not assignable to type 'Promise<SP_Polygon>'.
-    Type '(p: SP_Polygon, utils: IPM) => SP_Polygon' is not assignable to type 'SP_Polygon'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (180,3): Type '(s: SP_Polygon, whenCB: (...x: any[]) => (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>, tr: ITTestResourceConfiguration, utils: IPM) => Promise<...>' is not assignable to type '(store: SP_Polygon, whenCB: (...x: any[]) => (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<...>'.
+  Type 'Promise<(p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>>' is not assignable to type 'Promise<SP_Polygon>'.
+    Type '(p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>' is not assignable to type 'SP_Polygon'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (225,11): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (230,9): Expected 3 arguments, but got 4.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.test.ts (293,57): Property 'input' does not exist on type 'I'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.ts (87,3): Property 'translate' in type 'SP_Polygon' is not assignable to the same property in base type 'Polygon'.
   Type '(offset: SP_2d_Vector) => this' is not assignable to type '(x: number, y: number) => Polygon'.
     Types of parameters 'offset' and 'x' are incompatible.

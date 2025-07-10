@@ -156,7 +156,8 @@ var spec = (Suite, Given, When, Then, Check) => {
       test0: Given.Default(
         ["Empty polygon has zero area"],
         [],
-        [Then.area(0), Then.pointCount(0)]
+        [Then.area(0), Then.pointCount(0)],
+        null
       ),
       test1: Given.Rectangle(
         ["Rectangles have width and height"],

@@ -264,7 +264,7 @@
         "format": "esm"
       },
       "src/demiurge/physics/SP_2d_Vector.test.ts": {
-        "bytes": 8378,
+        "bytes": 9624,
         "imports": [
           {
             "path": "node_modules/chai/chai.js",
@@ -311,7 +311,7 @@
         "format": "esm"
       },
       "src/demiurge/physics/SP_Polygon.test.ts": {
-        "bytes": 7351,
+        "bytes": 7433,
         "imports": [
           {
             "path": "node_modules/chai/chai.js",
@@ -461,10 +461,10 @@
         "entryPoint": "src/demiurge/physics/SP_2d_Vector.test.ts",
         "inputs": {
           "src/demiurge/physics/SP_2d_Vector.test.ts": {
-            "bytesInOutput": 6876
+            "bytesInOutput": 6970
           }
         },
-        "bytes": 7163
+        "bytes": 7257
       },
       "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs": {
         "imports": [
@@ -485,10 +485,10 @@
         "entryPoint": "src/demiurge/physics/SP_Polygon.test.ts",
         "inputs": {
           "src/demiurge/physics/SP_Polygon.test.ts": {
-            "bytesInOutput": 5774
+            "bytesInOutput": 5788
           }
         },
-        "bytes": 6117
+        "bytes": 6131
       },
       "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_MultiPolygon.test.mjs": {
         "imports": [

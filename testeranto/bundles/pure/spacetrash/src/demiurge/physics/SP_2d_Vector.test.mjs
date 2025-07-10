@@ -118,8 +118,8 @@ var imp = {
     }
   },
   checks: {
-    Default: () => new SP_2d_Vector(0, 0)
-    // ByXAndY: (x, y) => new SP_2d_Vector(x, y),
+    Default: () => new SP_2d_Vector(0, 0),
+    ByXAndY: (x, y) => new SP_2d_Vector(x, y)
   }
 };
 var interf = {
@@ -129,10 +129,16 @@ var interf = {
     return i(...iv || []);
   },
   andWhen: async function(s, whenCB, tr, utils) {
-    return whenCB(s)(s, utils);
+    if (typeof whenCB === "function") {
+      return whenCB(s)(s, utils);
+    }
+    return s;
   },
   butThen: async (s, t, tr, pm) => {
-    return t(s, pm);
+    if (t) {
+      return t(s, pm);
+    }
+    return s;
   }
 };
 var spec = (Suite, Given, When, Then, Check) => {

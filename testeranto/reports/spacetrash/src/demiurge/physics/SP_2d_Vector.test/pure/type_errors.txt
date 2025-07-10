@@ -1,15 +1,12 @@
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (121,30): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector, utils: PM) => SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (62,20): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector) => SP_2d_Vector'.
   Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (143,42): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector, utils: PM) => SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (126,30): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector) => SP_2d_Vector'.
   Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (182,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (148,42): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector) => SP_2d_Vector'.
+  Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (187,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
   Type 'Promise<void>' is not assignable to type 'Promise<null>'.
     Type 'void' is not assignable to type 'null'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (338,17): Property 'magnitude' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (346,17): Property 'add' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (354,17): Property 'multiply' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (362,17): Property 'dot' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (370,17): Property 'distance' does not exist on type '{ rotate: (xtrasD_0: number, xtrasD_1: number, xtrasD_2: number) => BaseThen<I>; normalize: (xtrasD_0: number, xtrasD_1: number) => BaseThen<I>; }'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (44,5): Type 'Vector' is not assignable to type 'this'.
   'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
