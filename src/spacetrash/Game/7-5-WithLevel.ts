@@ -23,13 +23,13 @@ export abstract class GameWithLevel extends GameWithControls {
           const polygon: SP_Polygon = t.polygon();
 
           // if (polygon.points.length) this.NegativeSpace.addPolygons([polygon]);
-          this.navmesh.negativeSpaceAddPolygons([polygon]);
+          this.navmesh.subtractSpace([polygon]);
 
           if (t) this.setEntitiesComponent([t]);
         }
       }
     }
 
-    this.navmesh.crunch();
+    this.navmesh.makeGraph();
   }
 }
