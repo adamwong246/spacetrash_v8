@@ -3,7 +3,7 @@ import * as THREE from "three";
 
 import { Component } from "../../../../demiurge/ecs/Component";
 
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { TileSize } from "../../../Constants";
 
 import { AiAgentComponent, IBehaviors } from "./ai";
@@ -35,7 +35,7 @@ export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
   }
 }
 
-export class ActorStore extends MapStoreV2<ActorComponent> {
+export class ActorStore extends SP_MapStore<ActorComponent> {
   byXandY(x: number, y: number): number[] {
     let toReturn: number[] = [];
 

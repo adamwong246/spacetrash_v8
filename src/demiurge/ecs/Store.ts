@@ -1,6 +1,6 @@
 import { Component } from "./Component";
 
-export abstract class StoreV2<IC> {
+export abstract class SP_Store<IC> {
   
   abstract store;
 
@@ -18,9 +18,9 @@ export abstract class StoreV2<IC> {
   abstract find(cb: (ic: IC) => boolean): IC;
 }
 
-export abstract class MapStoreV2<
+export abstract class SP_MapStore<
   IC extends Component<any, any>
-> extends StoreV2<IC> {
+> extends SP_Store<IC> {
   store: Map<number, IC> = new Map();
 
   each(cb: (ic: IC, k: number) => void) {
@@ -73,7 +73,7 @@ export abstract class MapStoreV2<
   }
 }
 
-export abstract class OneDStore<I extends []> extends StoreV2<I> {
+export abstract class SP_OneDStore<I extends []> extends SP_Store<I> {
   store: I[] = [];
 
   constructor() {
@@ -89,7 +89,7 @@ export abstract class OneDStore<I extends []> extends StoreV2<I> {
   }
 }
 
-export abstract class TwoDStore<I> extends StoreV2<I> {
+export abstract class SP_TwoDStore<I> extends SP_Store<I> {
   store: I[][] = [[]];
 
   

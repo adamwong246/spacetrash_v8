@@ -17,7 +17,7 @@
 // import { ArcadePhysicsComponent } from "./arcadePhysics";
 // import { ISpaceTrashComponents } from "../v1";
 // import { LightIncastingComponent } from "../v1/casting/in";
-// import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+// import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 
 // export type IChars = Text;
 
@@ -69,7 +69,7 @@
 //   }
 // }
 
-// export class DrawableStoreV2 extends MapStoreV2<DrawableComponent> {
+// export class DrawableStoreV2 extends SP_MapStore<DrawableComponent> {
 //   positionOf(eidOfLight: number): FloatPositionStore {
 //     throw new Error("Method not implemented.");
 //   }

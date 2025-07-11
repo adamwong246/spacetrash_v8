@@ -1,6 +1,6 @@
 import { ISpaceTrashComponents } from "..";
 import { Component } from "../../../../../demiurge/ecs/Component";
-import { MapStoreV2 } from "../../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../../demiurge/ecs/Store";
 
 
 
@@ -63,7 +63,7 @@ export class LightOutcastingComponent extends OutCastingComponent {
   }
 }
 
-export class LightOutcastingStore extends MapStoreV2<LightOutcastingComponent> {
+export class LightOutcastingStore extends SP_MapStore<LightOutcastingComponent> {
 
   // each(arg0: ([eid, le, ndx]: [number, LightOutcastingComponent, number]) => void) {
   //   Object.keys(this.store).forEach((k, ndx) => {

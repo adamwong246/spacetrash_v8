@@ -1,7 +1,7 @@
 // Gives an entity a name
 
 import { Component } from "react";
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { ISpaceTrashComponents } from "../v1";
 
 export class NameableComponent extends Component<
@@ -16,6 +16,6 @@ export class NameableComponent extends Component<
   }
 }
 
-export class NameableStore extends MapStoreV2<NameableComponent> {
+export class NameableStore extends SP_MapStore<NameableComponent> {
   
 }

@@ -1,0 +1,29 @@
+stdout > MARK9 Did you forget to register the store "TestComponent? Check the top level constructor for the implementation of Game."
+You have 1 entities
+MARK9 TypeError: Cannot read properties of undefined (reading 'constructor')
+    at TestECS.addComponent (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:5125:20)
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:5279:11
+    at Object.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:5336:12)
+    at When.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:718:42)
+    at When.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:407:23)
+    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:354:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:262:22)
+    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:512:19
+    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:540:29)
+MARK9 Did you forget to register the store "TestComponent? Check the top level constructor for the implementation of Game."
+stdout > toObj error Did you forget to register the store "TestComponent? Check the top level constructor for the implementation of Game."
+toObj error undefined
+toObj error TypeError: Cannot read properties of undefined (reading 'constructor')
+    at TestECS.addComponent (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:5125:20)
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:5279:11
+    at Object.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:5336:12)
+    at When.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:718:42)
+    at When.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:407:23)
+    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:354:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:262:22)
+    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:512:19
+    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/ecs/ECS.test.mjs:540:29)
+toObj error Did you forget to register the store "TestComponent? Check the top level constructor for the implementation of Game."
+stderr > goodbye node error 3

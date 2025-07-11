@@ -1,6 +1,6 @@
 import { Box, Circle, Polygon } from "detect-collisions";
 
-import { MapStoreV2 } from "../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../demiurge/ecs/Store";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 
 import { Component } from "../ecs/Component";
@@ -97,7 +97,7 @@ export class SP_PhysicalComponent extends Component<any, any> {
   }
 }
 
-export class SP_PhysicalStore extends MapStoreV2<SP_PhysicalComponent> {}
+export class SP_PhysicalStore extends SP_MapStore<SP_PhysicalComponent> {}
 
 // // the direction, given the vector <dx, dy>
 // direction() {

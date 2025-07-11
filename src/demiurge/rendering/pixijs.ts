@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import { Sprite } from "pixi.js";
 
 import { RenderableComponent } from "./RenderableComponent";
-import { MapStoreV2 } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/Store";
 import { ArcadePhysicsComponent } from "../../spacetrash/ECS/Components/v4/PhaserArcade";
 
 export class PixiJsRenderableComponent extends RenderableComponent {
@@ -28,4 +28,4 @@ export class PixiJsRenderableComponent extends RenderableComponent {
 
 }
 
-export class PixiJsRenderableStore extends MapStoreV2<PixiJsRenderableComponent> {}
+export class PixiJsRenderableStore extends SP_MapStore<PixiJsRenderableComponent> {}

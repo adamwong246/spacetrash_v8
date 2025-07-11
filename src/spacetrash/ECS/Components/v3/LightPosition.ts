@@ -1,13 +1,13 @@
 
 
-// import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+// import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 // import { TileSize } from "../../../Constants";
 // import { LightIncastingComponent } from "../v1/casting/in";
 // import { DrawableComponent } from "../v2/drawable";
 // import { IntegerPositionComponent } from "../v2/physical";
 
 
-// export class LightPositionStore extends MapStoreV2<IntegerPositionComponent> {
+// export class LightPositionStore extends SP_MapStore<IntegerPositionComponent> {
 
 
 //   // constructor() {

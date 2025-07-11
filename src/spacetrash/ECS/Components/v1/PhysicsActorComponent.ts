@@ -1,4 +1,4 @@
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 
 import { PhysicsComponent } from "./physics";
 
@@ -21,7 +21,7 @@ export class PhysicsActorComponent extends PhysicsComponent {
   }
 }
 
-export class PhysicsActorStore extends MapStoreV2<PhysicsActorComponent> {
+export class PhysicsActorStore extends SP_MapStore<PhysicsActorComponent> {
   constructor() {
     super();
   }

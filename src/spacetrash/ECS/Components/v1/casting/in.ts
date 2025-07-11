@@ -1,5 +1,5 @@
 import { SpaceTrashComponent } from "..";
-import { MapStoreV2 } from "../../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../../demiurge/ecs/Store";
 
 
 export type IRays =
@@ -22,7 +22,7 @@ export abstract class InCastingComponent extends SpaceTrashComponent {
 
 export class AttackableComponent extends InCastingComponent {}
 
-export class AttackableStore extends MapStoreV2<AttackableComponent> {
+export class AttackableStore extends SP_MapStore<AttackableComponent> {
   // make(...a: any[]): AttackableComponent {
   //   return new AttackableComponent();
   // }
@@ -32,7 +32,7 @@ export class MicrophoneComponent extends InCastingComponent {}
 
 export class CameraComponent extends InCastingComponent {}
 
-export class CameraStore extends MapStoreV2<CameraComponent> {
+export class CameraStore extends SP_MapStore<CameraComponent> {
   
 }
 
@@ -49,7 +49,7 @@ export class LightIncastingComponent extends InCastingComponent {
   }
 }
 
-export class LightIncastingStore extends MapStoreV2<any> {
+export class LightIncastingStore extends SP_MapStore<any> {
   // store: Record<number, LightIncastingComponent>;
 
   // constructor() {

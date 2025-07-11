@@ -1,4 +1,4 @@
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { ITiles } from "../../EntityComponents/tiles";
 
 
@@ -15,6 +15,6 @@ export class PhysicsSetPieceComponent extends PhysicsComponent {
   }
 }
 
-export class PhysicsSetPieceStore extends MapStoreV2<PhysicsSetPieceComponent> {
+export class PhysicsSetPieceStore extends SP_MapStore<PhysicsSetPieceComponent> {
   
 }

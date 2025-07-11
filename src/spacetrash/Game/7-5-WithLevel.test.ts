@@ -8,7 +8,6 @@ import {
   ITestSpecification,
 } from "testeranto/src/Types";
 import { GameWithLevel } from "./7-5-WithLevel";
-import { SP_MultiPolygon } from "../../demiurge/physics/SP_MultiPolygon";
 import { SP_Polygon } from "../../demiurge/physics/SP_Polygon";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 
@@ -17,13 +16,17 @@ class TestGameWithLevel extends GameWithLevel {
   uiHooks: any = {};
   tiledProjectImport: any = {};
 
-  constructor(domNode: HTMLElement, options = { performanceLogging: false, fps: 60, headless: false }, renderings = new Set()) {
+  constructor(
+    domNode: HTMLElement,
+    options = { performanceLogging: false, fps: 60, headless: false },
+    renderings = new Set()
+  ) {
     super(domNode, options, renderings);
     // Only mock what's absolutely required for compilation
     this.level = {
       tileLayer: () => ({
-        get: () => null
-      })
+        get: () => null,
+      }),
     };
   }
 
@@ -51,21 +54,23 @@ export const imp: ITestImplementation<I, O, M> = {
   suites: {
     Default: "Basic GameWithLevel functionality",
     SpaceGeneration: "Space generation and manipulation",
-    PolygonOperations: "Polygon operations and calculations"
+    PolygonOperations: "Polygon operations and calculations",
   },
 
   givens: {
-    Default: () => new TestGameWithLevel(),
-    WithMockLevel: () => {
-      const game = new TestGameWithLevel();
+    Default: (domnode) => new TestGameWithLevel(domnode),
+    WithMockLevel: (domnode) => {
+      const game = new TestGameWithLevel(domnode);
       // Mock level data
       game.level = {
         tileLayer: () => ({
-          get: () => ({ /* mock tile data */ })
-        })
+          get: () => ({
+            /* mock tile data */
+          }),
+        }),
       };
       return game;
-    }
+    },
   },
 
   whens: {
@@ -82,7 +87,7 @@ export const imp: ITestImplementation<I, O, M> = {
       game.Space.addMultiPolygon(game.NegativeSpaceCollapsed);
       game.PositiveSpaceCollapsed = game.Space.difference();
       return game;
-    }
+    },
   },
 
   thens: {
@@ -92,7 +97,7 @@ export const imp: ITestImplementation<I, O, M> = {
     },
     hasPositiveSpace: (expected: boolean) => (game) => {
       assert.equal(
-        game.PositiveSpaceCollapsed?.polygons?.length > 0 || false, 
+        game.PositiveSpaceCollapsed?.polygons?.length > 0 || false,
         expected
       );
       return game;
@@ -109,26 +114,33 @@ export const imp: ITestImplementation<I, O, M> = {
       const count = game.convexPositive?.length || 0;
       assert.equal(count, expected);
       return game;
-    }
+    },
   },
 
   checks: {
-    Default: () => new TestGameWithLevel()
-  }
+    Default: (domElement) => new TestGameWithLevel(domElement),
+  },
 };
 
 type I = Ibdd_in<
-  null,
-  null,
+  typeof TestGameWithLevel,
+  [HTMLElement, typeof TestGameWithLevel],
   TestGameWithLevel,
   TestGameWithLevel,
-  TestGameWithLevel,
+  (domnode) => TestGameWithLevel,
   (...x) => (game: TestGameWithLevel) => TestGameWithLevel,
   (game: TestGameWithLevel) => TestGameWithLevel
 >;
 
+debugger
+
 const interf: IPartialInterface<I> = {
-  beforeAll: async () => {},
+  beforeAll: async (input) => {
+    
+    const rootElement = document.getElementById("root");
+    if (!rootElement) throw "there was no html element";
+    return [rootElement, input];
+  },
   beforeEach: async (subject, i, tr, iv: unknown[]) => {
     return i(...(iv || []));
   },
@@ -178,7 +190,7 @@ export const spec: ITestSpecification<I, O> = (
     new SP_2d_Vector(0, 0),
     new SP_2d_Vector(10, 0),
     new SP_2d_Vector(10, 10),
-    new SP_2d_Vector(0, 10)
+    new SP_2d_Vector(0, 10),
   ]);
 
   return [
@@ -189,9 +201,9 @@ export const spec: ITestSpecification<I, O> = (
         [
           Then.hasNegativeSpace(false),
           Then.spaceCount(1), // Default space is initialized
-          Then.negativeSpaceCount(1) // Empty polygon is initialized
+          Then.negativeSpaceCount(1), // Empty polygon is initialized
         ]
-      )
+      ),
     }),
 
     Suite.SpaceGeneration("Testing space generation", {
@@ -200,21 +212,18 @@ export const spec: ITestSpecification<I, O> = (
         [When.addNegativePolygon(testPolygon)],
         [
           Then.hasNegativeSpace(true),
-          Then.negativeSpaceCount(2) // Original empty + new polygon
+          Then.negativeSpaceCount(2), // Original empty + new polygon
         ]
       ),
 
       test1: Given.Default(
         ["Calculating space differences"],
-        [
-          When.addNegativePolygon(testPolygon),
-          When.calculateSpaces()
-        ],
+        [When.addNegativePolygon(testPolygon), When.calculateSpaces()],
         [
           Then.hasPositiveSpace(true),
-          Then.polygonCount(1) // Should have convex partitions
+          Then.polygonCount(1), // Should have convex partitions
         ]
-      )
+      ),
     }),
 
     Suite.PolygonOperations("Testing polygon operations", {
@@ -224,11 +233,11 @@ export const spec: ITestSpecification<I, O> = (
         [
           Then.hasNegativeSpace(true),
           Then.hasPositiveSpace(true),
-          Then.polygonCount(1) // At least one convex partition
+          Then.polygonCount(1), // At least one convex partition
         ]
-      )
-    })
+      ),
+    }),
   ];
 };
 
-export default Testeranto<I, O, M>(null, spec, imp, interf);
+export default Testeranto<I, O, M>(TestGameWithLevel, spec, imp, interf);

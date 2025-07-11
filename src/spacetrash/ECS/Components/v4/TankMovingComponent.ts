@@ -1,4 +1,4 @@
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { MovingComponent } from "../../../../demiurge/game/physical";
 
 export type ITankDirections = {
@@ -28,6 +28,6 @@ export class TankMovingComponent extends MovingComponent {
   }
 }
 
-export class TankMovingStore extends MapStoreV2<TankMovingComponent> {
+export class TankMovingStore extends SP_MapStore<TankMovingComponent> {
   
 }

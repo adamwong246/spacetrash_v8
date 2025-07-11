@@ -55,13 +55,13 @@ export const imp: ITestImplementation<I, O, M> = {
   },
 
   whens: {
-    translate: (x, y) => (polygon) => {
-      return polygon.translate(new SP_2d_Vector(x, y));
+    translate: (x, y) => (polygon, _utils) => {
+      return Promise.resolve(polygon.translate(new SP_2d_Vector(x, y)));
     },
-    rotate: (angle) => (polygon) => {
-      return polygon.rotate(angle);
+    rotate: (angle) => (polygon, _utils) => {
+      return Promise.resolve(polygon.rotate(angle));
     },
-    setWidth: (width) => (polygon) => {
+    setWidth: (width) => (polygon, _utils) => {
       const currentHeight = polygon.points[2]?.y * 2 || 1; // Fallback if getHeight not available
       const halfW = width / 2;
       const halfH = currentHeight / 2;
@@ -73,7 +73,7 @@ export const imp: ITestImplementation<I, O, M> = {
       ]);
       return polygon;
     },
-    setHeight: (height) => (polygon) => {
+    setHeight: (height) => (polygon, _utils) => {
       const currentWidth = polygon.points[1]?.x * 2 || 1; // Fallback if getWidth not available
       const halfW = currentWidth / 2;
       const halfH = height / 2;
@@ -88,7 +88,7 @@ export const imp: ITestImplementation<I, O, M> = {
   },
 
   thens: {
-    area: (expected) => (polygon) => {
+    area: (expected) => (polygon, _utils) => {
       const actual = polygon.getArea();
       assert.closeTo(
         actual,
@@ -98,7 +98,7 @@ export const imp: ITestImplementation<I, O, M> = {
       );
       return polygon;
     },
-    getWidth: (expected) => (polygon) => {
+    getWidth: (expected) => (polygon, _utils) => {
       const actual = polygon.getWidth();
       assert.closeTo(
         actual,
@@ -108,7 +108,7 @@ export const imp: ITestImplementation<I, O, M> = {
       );
       return polygon;
     },
-    getHeight: (expected) => (polygon) => {
+    getHeight: (expected) => (polygon, _utils) => {
       const actual = polygon.getHeight();
       assert.closeTo(
         actual,
@@ -118,7 +118,7 @@ export const imp: ITestImplementation<I, O, M> = {
       );
       return polygon;
     },
-    AreaPlusCircumference: (expected) => (polygon) => {
+    AreaPlusCircumference: (expected) => (polygon, _utils) => {
       const area = polygon.getArea();
       const circumference = polygon.getCircumference();
       const actual = area + circumference;
@@ -130,7 +130,7 @@ export const imp: ITestImplementation<I, O, M> = {
       );
       return polygon;
     },
-    contains: (x, y, expected) => (polygon) => {
+    contains: (x, y, expected) => (polygon, _utils) => {
       const point = new SP_2d_Vector(x, y);
       const actual = polygon.contains(point);
       assert.equal(
@@ -140,13 +140,13 @@ export const imp: ITestImplementation<I, O, M> = {
       );
       return polygon;
     },
-    centroid: (expectedX, expectedY) => (polygon) => {
+    centroid: (expectedX, expectedY) => (polygon, _utils) => {
       const centroid = polygon.getCentroid();
       assert.closeTo(centroid.x, expectedX, 0.000001, `Centroid X coordinate`);
       assert.closeTo(centroid.y, expectedY, 0.000001, `Centroid Y coordinate`);
       return polygon;
     },
-    pointCount: (expected) => (polygon) => {
+    pointCount: (expected) => (polygon, _utils) => {
       const actual = polygon.points.length;
       assert.equal(
         actual,
@@ -168,7 +168,7 @@ type I = Ibdd_in<
   SP_Polygon,
   SP_Polygon,
   SP_Polygon,
-  (...x: any[]) => (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>,
+  (...x: unknown[]) => (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>,
   (p: SP_Polygon, utils: IPM) => Promise<SP_Polygon>
 >;
 
@@ -178,7 +178,7 @@ const interf: IPartialInterface<I> = {
     return i(...(iv || []));
   },
   andWhen: async function (s, whenCB, tr, utils) {
-    return whenCB(s, utils);
+    return whenCB(s, utils) as Promise<SP_Polygon>;
   },
   butThen: async (s, t, tr, pm) => {
     return t(s, pm);

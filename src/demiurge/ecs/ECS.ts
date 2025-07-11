@@ -3,7 +3,7 @@ var protochain = require("protochain");
 import { EntityComponent } from "./EntityComponent";
 import { IEntitiesStore } from "./types";
 import { Component } from "./Component";
-import { StoreV2 } from "./Store";
+import { SP_Store } from "./SP_Store";
 
 const EntityMax = 65535;
 
@@ -16,7 +16,7 @@ export type IPerformanceConfig = {
 export abstract class ECS {
   entities: IEntitiesStore;
 
-  abstract components: Record<string, StoreV2<any>>
+  abstract components: Record<string, SP_Store<any>>
 
   fps: number = 60;
   performanceLogging = false;
@@ -32,7 +32,7 @@ export abstract class ECS {
 
   addComponent(i: number, c: Component<any, any>) {
     const name = c.constructor.name;
-    const store: StoreV2<any> = this.components[name];
+    const store: SP_Store<any> = this.components[name];
 
     if (!store)
       throw `Did you forget to register the store "${name}? Check the top level constructor for the implementation of Game."`;

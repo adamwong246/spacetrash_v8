@@ -1,5 +1,5 @@
 
-import { MapStoreV2 } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/Store";
 import { RenderableComponent } from "./RenderableComponent";
 
 export class ConsoleRenderableComponent extends RenderableComponent {
@@ -22,4 +22,4 @@ export class ConsoleRenderableComponent extends RenderableComponent {
   }
 }
 
-export class ConsoleRenderableStore extends MapStoreV2<ConsoleRenderableComponent> {}
+export class ConsoleRenderableStore extends SP_MapStore<ConsoleRenderableComponent> {}

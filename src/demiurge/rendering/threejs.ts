@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import { RenderableComponent } from "./RenderableComponent";
-import { MapStoreV2 } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/Store";
 
 
 export class ThreeJsRenderableComponent extends RenderableComponent {
@@ -35,4 +35,4 @@ export class ThreeJsRenderableComponent extends RenderableComponent {
 
 }
 
-export class ThreeJsRenderableStore extends MapStoreV2<ThreeJsRenderableComponent> {}
+export class ThreeJsRenderableStore extends SP_MapStore<ThreeJsRenderableComponent> {}

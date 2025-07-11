@@ -31062,7 +31062,7 @@ var SP_Polygon = class extends import_sat2.default.Polygon {
 // src/demiurge/ecs/Store.ts
 var StoreV2 = class {
 };
-var MapStoreV2 = class extends StoreV2 {
+var SP_MapStore = class extends StoreV2 {
   store = /* @__PURE__ */ new Map();
   each(cb) {
     for (let [eid, ic] of this.store) {
@@ -31184,11 +31184,11 @@ var IntegerPositionComponent = class extends PositionComponent {
     super(x, y);
   }
 };
-var IntegerPositionStore = class extends MapStoreV2 {
+var IntegerPositionStore = class extends SP_MapStore {
 };
-var FloatPositionStore = class extends MapStoreV2 {
+var FloatPositionStore = class extends SP_MapStore {
 };
-var DegreesDirectionStore = class extends MapStoreV2 {
+var DegreesDirectionStore = class extends SP_MapStore {
   // each() {
   //   throw new Error("Method not implemented.");
   // }
@@ -31199,7 +31199,7 @@ var DegreesDirectionStore = class extends MapStoreV2 {
   //   return new DegreesDirectionComponent(r);
   // }
 };
-var OrdinalDirectionStore = class extends MapStoreV2 {
+var OrdinalDirectionStore = class extends SP_MapStore {
   // each() {
   //   throw new Error("Method not implemented.");
   // }
@@ -31212,9 +31212,9 @@ var OrdinalDirectionStore = class extends MapStoreV2 {
 };
 var MovingComponent = class extends Component {
 };
-var FloatMovingStore = class extends MapStoreV2 {
+var FloatMovingStore = class extends SP_MapStore {
 };
-var OridinalMovingStore = class extends MapStoreV2 {
+var OridinalMovingStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/ECS/Components/v4/TankMovingComponent.ts
@@ -31236,7 +31236,7 @@ var TankMovingComponent = class extends MovingComponent {
     this.j = j;
   }
 };
-var TankMovingStore = class extends MapStoreV2 {
+var TankMovingStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/Constants.ts
@@ -31248,7 +31248,7 @@ var ActorSize = TileSize * actorScaler;
 var MapBoundHigh = MapSize - 1;
 
 // src/spacetrash/ECS/Components/v3/actors.ts
-var ActorStore = class extends MapStoreV2 {
+var ActorStore = class extends SP_MapStore {
   byXandY(x, y) {
     let toReturn = [];
     this.each((ac, eid) => {
@@ -31269,12 +31269,12 @@ var NameableComponent = class extends import_react.Component {
     this.name = name;
   }
 };
-var NameableStore = class extends MapStoreV2 {
+var NameableStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/ECS/Components/v2/eid2PMC.ts
 var import_react2 = __toESM(require_react(), 1);
-var Eid2PMStore = class extends MapStoreV2 {
+var Eid2PMStore = class extends SP_MapStore {
   getAbsoluteXandY(eid) {
     const { classification, position } = this.take(eid);
     return position.getAbsoluteXandY();
@@ -31306,11 +31306,11 @@ var Eid2PMStore = class extends MapStoreV2 {
 
 // src/spacetrash/ECS/Components/v2/tileable.ts
 var import_react3 = __toESM(require_react(), 1);
-var TileComponentStore = class extends MapStoreV2 {
+var TileComponentStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/ECS/Components/v3/attack.ts
-var V3AttackComponentStore = class extends MapStoreV2 {
+var V3AttackComponentStore = class extends SP_MapStore {
   // store: Map<number, V3AttackComponent>;
   // constructor() {
   //   super();
@@ -35146,9 +35146,9 @@ extensions.handle(ExtensionType.Asset, (extension) => {
 extensions.add(browserExt, webworkerExt);
 
 // src/spacetrash/ECS/Components/v3/heat.ts
-var HeatEmitterStore = class extends MapStoreV2 {
+var HeatEmitterStore = class extends SP_MapStore {
 };
-var HeatDetectorStore = class extends MapStoreV2 {
+var HeatDetectorStore = class extends SP_MapStore {
 };
 var HeatConductorComponent = class extends Component {
   capacity;
@@ -35165,7 +35165,7 @@ var HeatConductorComponent = class extends Component {
     this.capacity = r;
   }
 };
-var HeatConductorStore = class extends MapStoreV2 {
+var HeatConductorStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/lib.ts
@@ -35214,7 +35214,7 @@ for (let i = 0; i < GRADES; i++) {
 var defToRad = (d2) => d2 * Math.PI / 180;
 
 // src/spacetrash/ECS/Components/v3/ai.ts
-var AiAgentStore = class extends MapStoreV2 {
+var AiAgentStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/ECS/Components/v1/casting/out.ts
@@ -35241,7 +35241,7 @@ var LightOutcastingComponent = class extends OutCastingComponent {
     this.radiance = r;
   }
 };
-var LightOutcastingStore = class extends MapStoreV2 {
+var LightOutcastingStore = class extends SP_MapStore {
   // each(arg0: ([eid, le, ndx]: [number, LightOutcastingComponent, number]) => void) {
   //   Object.keys(this.store).forEach((k, ndx) => {
   //       arg0([Number(k), this.take(k), ndx])
@@ -35266,7 +35266,7 @@ var InCastingComponent = class extends SpaceTrashComponent {
     return {};
   }
 };
-var AttackableStore = class extends MapStoreV2 {
+var AttackableStore = class extends SP_MapStore {
   // make(...a: any[]): AttackableComponent {
   //   return new AttackableComponent();
   // }
@@ -35278,7 +35278,7 @@ var LightIncastingComponent = class extends InCastingComponent {
     this.luminance = luminance;
   }
 };
-var LightIncastingStore = class extends MapStoreV2 {
+var LightIncastingStore = class extends SP_MapStore {
   // store: Record<number, LightIncastingComponent>;
   // constructor() {
   //   super();
@@ -35332,9 +35332,9 @@ var SetPieceStore = class extends TwoDStore {
 };
 
 // src/spacetrash/ECS/Components/v3/radiation.ts
-var RadiationEmitterStore = class extends MapStoreV2 {
+var RadiationEmitterStore = class extends SP_MapStore {
 };
-var RadiationDetectorStore = class extends MapStoreV2 {
+var RadiationDetectorStore = class extends SP_MapStore {
 };
 
 // src/demiurge/rendering/RenderableComponent.ts
@@ -35372,7 +35372,7 @@ var ThreeJsRenderableComponent = class extends RenderableComponent {
   //   }
   // }
 };
-var ThreeJsRenderableStore = class extends MapStoreV2 {
+var ThreeJsRenderableStore = class extends SP_MapStore {
 };
 
 // src/demiurge/rendering/pixijs.ts
@@ -35392,7 +35392,7 @@ var PixiJsRenderableComponent = class extends RenderableComponent {
     this.sprite.position.y = f.arcadeObject.position.y;
   }
 };
-var PixiJsRenderableStore = class extends MapStoreV2 {
+var PixiJsRenderableStore = class extends SP_MapStore {
 };
 
 // src/demiurge/rendering/console.ts
@@ -35412,7 +35412,7 @@ var ConsoleRenderableComponent = class extends RenderableComponent {
     this.dirty = true;
   }
 };
-var ConsoleRenderableStore = class extends MapStoreV2 {
+var ConsoleRenderableStore = class extends SP_MapStore {
 };
 
 // src/spacetrash/physics/BasePolygon.ts
@@ -35631,7 +35631,7 @@ var SamuraiTileComponent = class extends SP_IntegerPositionComponent {
     this.flippedVertically = flippedVertically;
   }
 };
-var SamuraiTileStore = class extends MapStoreV2 {
+var SamuraiTileStore = class extends SP_MapStore {
 };
 
 // src/demiurge/physics/SP_Physical.ts
@@ -35700,7 +35700,7 @@ var SP_PhysicalComponent = class extends Component {
     this.body.updateBody();
   }
 };
-var SP_PhysicalStore = class extends MapStoreV2 {
+var SP_PhysicalStore = class extends SP_MapStore {
 };
 
 // node_modules/three/build/three.core.js

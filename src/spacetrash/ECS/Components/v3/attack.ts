@@ -1,5 +1,5 @@
 import { Component } from "../../../../demiurge/ecs/Component";
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 
 import { PhysicsActorComponent } from "../v1/PhysicsActorComponent";
 import { PhysicsSetPieceComponent } from "../v1/PhysicsSetPieceComponent";
@@ -26,7 +26,7 @@ export class Kamkikaze extends V3AttackComponent {
   };
 }
 
-export class V3AttackComponentStore extends MapStoreV2<V3AttackComponent> {
+export class V3AttackComponentStore extends SP_MapStore<V3AttackComponent> {
   // store: Map<number, V3AttackComponent>;
 
   // constructor() {

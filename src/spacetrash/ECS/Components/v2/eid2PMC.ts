@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { PositionComponent } from "../../../../demiurge/game/physical";
 import { ISpaceTrashComponents } from "../v1";
 
@@ -23,7 +23,7 @@ export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
   }
 }
 
-export class Eid2PMStore extends MapStoreV2<Eid2PMComponent> {
+export class Eid2PMStore extends SP_MapStore<Eid2PMComponent> {
   getAbsoluteXandY(eid: number) {
     const { classification, position } = this.take(eid);
     return position.getAbsoluteXandY();

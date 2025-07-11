@@ -10,7 +10,7 @@ $ node esbuild.build.js
 ✘ [ERROR] Could not resolve "../../../demiurge/ecs/Store"
 
     src/spacetrash/ECS/Components/v4/TankMovingComponent.ts:2:27:
-      2 │ import { MapStoreV2 } from "../../../demiurge/ecs/Store";
+      2 │ import { SP_MapStore } from "../../../demiurge/ecs/Store";
         ╵                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ✘ [ERROR] Could not resolve "../../../demiurge/ecs/Component"

@@ -1,5 +1,5 @@
 import { Component } from "../ecs/Component";
-import { MapStoreV2 } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/Store";
 
 // Gives an entity a position on the map
 export abstract class PositionComponent extends Component<unknown, any> {
@@ -41,7 +41,7 @@ export class IntegerPositionComponent extends PositionComponent {
   }
 }
 
-export class IntegerPositionStore extends MapStoreV2<IntegerPositionComponent> {}
+export class IntegerPositionStore extends SP_MapStore<IntegerPositionComponent> {}
 
 // Gives an entity a position above the grid
 export class FloatPositionComponent extends PositionComponent {
@@ -69,7 +69,7 @@ export class FloatPositionComponent extends PositionComponent {
   }
 }
 
-export class FloatPositionStore extends MapStoreV2<FloatPositionComponent> {}
+export class FloatPositionStore extends SP_MapStore<FloatPositionComponent> {}
 
 /////////////////////////////////////////////////////////////
 
@@ -90,7 +90,7 @@ export class DegreesDirectionComponent extends DirectionComponent {
   }
 }
 
-export class DegreesDirectionStore extends MapStoreV2<DegreesDirectionComponent> {
+export class DegreesDirectionStore extends SP_MapStore<DegreesDirectionComponent> {
   // each() {
   //   throw new Error("Method not implemented.");
   // }
@@ -111,7 +111,7 @@ export class OrdinalDirectionComponent extends DirectionComponent {
   }
 }
 
-export class OrdinalDirectionStore extends MapStoreV2<OrdinalDirectionComponent> {
+export class OrdinalDirectionStore extends SP_MapStore<OrdinalDirectionComponent> {
   // each() {
   //   throw new Error("Method not implemented.");
   // }
@@ -163,7 +163,7 @@ export class FloatMovingComponent extends MovingComponent {
   
 }
 
-export class FloatMovingStore extends MapStoreV2<FloatMovingComponent> {}
+export class FloatMovingStore extends SP_MapStore<FloatMovingComponent> {}
 
 // Gives the entity movement within the grid
 // moves in the d direction every v ticks
@@ -187,7 +187,7 @@ export class OridinalMovingComponent extends MovingComponent {
   }
 }
 
-export class OridinalMovingStore extends MapStoreV2<OridinalMovingComponent> {}
+export class OridinalMovingStore extends SP_MapStore<OridinalMovingComponent> {}
 
 /////////////////////////////////////////////////////////////
 

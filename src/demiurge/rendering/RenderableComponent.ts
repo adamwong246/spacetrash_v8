@@ -1,6 +1,6 @@
 import { Component } from "../ecs/Component";
 import { ISpaceTrashComponents } from "../../spacetrash/ECS/Components/v1";
-import { MapStoreV2 } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/Store";
 
 export abstract class RenderableComponent extends Component<
   any,
@@ -18,4 +18,4 @@ export abstract class RenderableComponent extends Component<
   }
 }
 
-export abstract class RenderableStore extends MapStoreV2<RenderableComponent> {}
+export abstract class RenderableStore extends SP_MapStore<RenderableComponent> {}

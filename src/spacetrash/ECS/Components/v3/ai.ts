@@ -1,7 +1,7 @@
 import { FOV } from "rot-js";
 
 import { Component } from "../../../../demiurge/ecs/Component";
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { MapSize, TileSize } from "../../../Constants";
 import { ActorComponent } from "./actors";
 import { SetPieceComponent, SetPieceStore } from "./setPieces";
@@ -430,4 +430,4 @@ export class AiAgentComponent extends Component<any, any> {
   }
 }
 
-export class AiAgentStore extends MapStoreV2<AiAgentComponent> {}
+export class AiAgentStore extends SP_MapStore<AiAgentComponent> {}

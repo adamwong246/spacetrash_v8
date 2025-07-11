@@ -1,5 +1,5 @@
 import { Component } from "../../../../demiurge/ecs/Component";
-import { MapStoreV2, StoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore, StoreV2 } from "../../../../demiurge/ecs/Store";
 
 export class FlipComponent extends Component<any, any> {
 
@@ -19,6 +19,6 @@ export class FlipComponent extends Component<any, any> {
   }
 }
 
-export class FlipStore extends MapStoreV2<FlipComponent>{
+export class FlipStore extends SP_MapStore<FlipComponent>{
 
 }

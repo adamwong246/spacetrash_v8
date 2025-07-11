@@ -1,7 +1,7 @@
 import { Component } from "../../../../demiurge/ecs/Component";
 
 import { ISpaceTrashComponents } from "../v1";
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 
 export class RadiationEmitterComponent extends Component<
   unknown,
@@ -15,7 +15,7 @@ export class RadiationEmitterComponent extends Component<
   }
 }
 
-export class RadiationEmitterStore extends MapStoreV2<RadiationEmitterComponent> {}
+export class RadiationEmitterStore extends SP_MapStore<RadiationEmitterComponent> {}
 
 export class RadiationDetectorComponent extends Component<
   unknown,
@@ -29,4 +29,4 @@ export class RadiationDetectorComponent extends Component<
   }
 }
 
-export class RadiationDetectorStore extends MapStoreV2<RadiationDetectorComponent> {}
+export class RadiationDetectorStore extends SP_MapStore<RadiationDetectorComponent> {}

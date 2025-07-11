@@ -1,5 +1,5 @@
 
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 
 import { FloatPositionComponent } from "./physical";
 
@@ -7,7 +7,7 @@ import { FloatPositionComponent } from "./physical";
 export type LightComponent = FloatPositionComponent;
 
 // map light id to position
-export class LightComponentStore extends MapStoreV2<any> {
+export class LightComponentStore extends SP_MapStore<any> {
   // sstore: Map<number, LightComponentStore>;
 
   // constructor() {
@@ -38,5 +38,5 @@ export class LightComponentStore extends MapStoreV2<any> {
 export type LightingComponent = FloatPositionComponent;
 
 // map light id to position
-export class LightingComponentStore extends MapStoreV2<any> {
+export class LightingComponentStore extends SP_MapStore<any> {
   // store: Record<

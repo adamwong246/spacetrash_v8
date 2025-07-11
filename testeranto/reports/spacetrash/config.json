@@ -26,16 +26,8 @@
       []
     ],
     [
-      "./src/spacetrash/game/7-WithLoad.test.ts",
-      "web",
-      {
-        "ports": 0
-      },
-      []
-    ],
-    [
-      "./src/spacetrash/game/7-5-WithLevel.test.ts",
-      "web",
+      "./src/demiurge/ecs/ECS.test.ts",
+      "node",
       {
         "ports": 0
       },

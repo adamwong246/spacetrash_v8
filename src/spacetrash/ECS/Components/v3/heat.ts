@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { Component } from "../../../../demiurge/ecs/Component";
 
 import { ISpaceTrashComponents } from "../v1";
-import { MapStoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { TileSize } from "../../../Constants";
 
 export class HeatEmitterComponent extends Component<
@@ -17,7 +17,7 @@ export class HeatEmitterComponent extends Component<
   }
 }
 
-export class HeatEmitterStore extends MapStoreV2<HeatEmitterComponent> {}
+export class HeatEmitterStore extends SP_MapStore<HeatEmitterComponent> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 export class HeatDetectorComponent extends Component<
@@ -29,7 +29,7 @@ export class HeatDetectorComponent extends Component<
   }
 }
 
-export class HeatDetectorStore extends MapStoreV2<HeatDetectorComponent> {}
+export class HeatDetectorStore extends SP_MapStore<HeatDetectorComponent> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,4 +81,4 @@ export class HeatConductorComponent extends Component<
   }
 }
 
-export class HeatConductorStore extends MapStoreV2<HeatConductorComponent> {}
+export class HeatConductorStore extends SP_MapStore<HeatConductorComponent> {}

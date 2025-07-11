@@ -33,13 +33,13 @@ var imp = {
     }
   },
   whens: {
-    translate: (x, y) => (polygon) => {
-      return polygon.translate(new SP_2d_Vector(x, y));
+    translate: (x, y) => (polygon, _utils) => {
+      return Promise.resolve(polygon.translate(new SP_2d_Vector(x, y)));
     },
-    rotate: (angle) => (polygon) => {
-      return polygon.rotate(angle);
+    rotate: (angle) => (polygon, _utils) => {
+      return Promise.resolve(polygon.rotate(angle));
     },
-    setWidth: (width) => (polygon) => {
+    setWidth: (width) => (polygon, _utils) => {
       const currentHeight = polygon.points[2]?.y * 2 || 1;
       const halfW = width / 2;
       const halfH = currentHeight / 2;
@@ -51,7 +51,7 @@ var imp = {
       ]);
       return polygon;
     },
-    setHeight: (height) => (polygon) => {
+    setHeight: (height) => (polygon, _utils) => {
       const currentWidth = polygon.points[1]?.x * 2 || 1;
       const halfW = currentWidth / 2;
       const halfH = height / 2;
@@ -65,7 +65,7 @@ var imp = {
     }
   },
   thens: {
-    area: (expected) => (polygon) => {
+    area: (expected) => (polygon, _utils) => {
       const actual = polygon.getArea();
       assert.closeTo(
         actual,
@@ -75,7 +75,7 @@ var imp = {
       );
       return polygon;
     },
-    getWidth: (expected) => (polygon) => {
+    getWidth: (expected) => (polygon, _utils) => {
       const actual = polygon.getWidth();
       assert.closeTo(
         actual,
@@ -85,7 +85,7 @@ var imp = {
       );
       return polygon;
     },
-    getHeight: (expected) => (polygon) => {
+    getHeight: (expected) => (polygon, _utils) => {
       const actual = polygon.getHeight();
       assert.closeTo(
         actual,
@@ -95,7 +95,7 @@ var imp = {
       );
       return polygon;
     },
-    AreaPlusCircumference: (expected) => (polygon) => {
+    AreaPlusCircumference: (expected) => (polygon, _utils) => {
       const area = polygon.getArea();
       const circumference = polygon.getCircumference();
       const actual = area + circumference;
@@ -107,7 +107,7 @@ var imp = {
       );
       return polygon;
     },
-    contains: (x, y, expected) => (polygon) => {
+    contains: (x, y, expected) => (polygon, _utils) => {
       const point = new SP_2d_Vector(x, y);
       const actual = polygon.contains(point);
       assert.equal(
@@ -117,13 +117,13 @@ var imp = {
       );
       return polygon;
     },
-    centroid: (expectedX, expectedY) => (polygon) => {
+    centroid: (expectedX, expectedY) => (polygon, _utils) => {
       const centroid = polygon.getCentroid();
       assert.closeTo(centroid.x, expectedX, 1e-6, `Centroid X coordinate`);
       assert.closeTo(centroid.y, expectedY, 1e-6, `Centroid Y coordinate`);
       return polygon;
     },
-    pointCount: (expected) => (polygon) => {
+    pointCount: (expected) => (polygon, _utils) => {
       const actual = polygon.points.length;
       assert.equal(
         actual,

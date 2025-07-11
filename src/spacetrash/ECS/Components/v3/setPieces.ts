@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import * as PIXI from "pixi.js";
+
 
 import { TwoDOneD_Component } from "../../../../demiurge/ecs/Component";
 
 import { ISpaceTrashComponents } from "../v1";
 // import { DrawableComponent } from "../v2/drawable";
-import { TwoDStore } from "../../../../demiurge/ecs/Store";
+import { SP_OneDStore, SP_TwoDStore } from "../../../../demiurge/ecs/Store";
 import { MapSize } from "../../../Constants";
 import { HeatConductorComponent, HeatEmitterComponent } from "./heat";
 import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
@@ -53,7 +53,7 @@ export class SetPieceComponent extends TwoDOneD_Component<
   }
 }
 
-export class SetPieceStore extends TwoDStore<SetPieceComponent> {
+export class SetPieceStore extends SP_TwoDStore<SetPieceComponent> {
   // // constructor() {
   // //   super();
   // //   this.store = [[]];

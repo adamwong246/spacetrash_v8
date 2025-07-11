@@ -1,0 +1,60 @@
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (44,26): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (56,28): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (119,26): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (143,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
+  Type 'Promise<void>' is not assignable to type 'Promise<null>'.
+    Type 'void' is not assignable to type 'null'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (148,12): Conversion of type '(p: ECS, utils: IPM) => Promise<ECS>' to type 'Promise<ECS>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (189,11): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (194,9): Expected 3 arguments, but got 4.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (197,20): Expected 4 arguments, but got 3.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (201,13): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (211,20): Expected 4 arguments, but got 3.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (214,26): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (224,20): Expected 4 arguments, but got 3.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (228,13): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (246,24): Property 'input' does not exist on type 'I'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.ts (6,26): Cannot find module './SP_Store' or its corresponding type declarations.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.ts (55,36): Argument of type 'string' is not assignable to parameter of type 'string[]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/types.ts (2,10): Module '"./Store"' has no exported member 'StoreV2'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (25,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (176,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (178,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (179,3): Property 'recommendedFsPath' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (182,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (183,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (272,7): Type 'unknown' is not assignable to type 'Error'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (304,12): 'e' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (317,9): Type 'unknown' is not assignable to type 'boolean'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (330,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (434,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (439,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (37,3): Property 'assertThis' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (48,3): Property 'puppetMaster' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (84,13): Argument of type '(fPath: string, value: string | Buffer | PassThrough) => any' is not assignable to parameter of type '(fPath: string, value: unknown) => void'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | Buffer<ArrayBufferLike> | PassThrough'.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (85,15): This expression is not callable.
+  Not all constituents of type 'void | ((fPath: string, value: string | Buffer<ArrayBufferLike> | PassThrough) => void)' are callable.
+    Type 'void' has no call signatures.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: { name: string; error: string; }[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; feat...'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (99,28): A spread argument must either have a tuple type or be passed to a rest parameter.
+/Users/adam/Code/testeranto/src/lib/index.ts (34,3): Type '(store: IT["istore"], thenCb: (s: IT["iselection"]) => Promise<IT["isubject"]>) => Promise<unknown>' is not assignable to type '(store: unknown, thenCB: unknown, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<unknown>'.
+  Types of parameters 'thenCb' and 'thenCB' are incompatible.
+    Type 'unknown' is not assignable to type '(s: unknown) => Promise<unknown>'.
+/Users/adam/Code/testeranto/src/lib/index.ts (46,11): 'whenCB' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/Node.ts (34,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M> & M & { ...; }'.
+  Type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M>' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
+/Users/adam/Code/testeranto/src/PM/index.ts (9,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/PM/web.ts (53,3): Property 'screencast' in type 'PM_Web' is not assignable to the same property in base type 'PM'.
+  Type '(o: ScreencastOptions, p: string | Page) => any' is not assignable to type '(o: ScreenRecorderOptions, p: string | Page) => any'.
+    Types of parameters 'p' and 'p' are incompatible.
+      Type 'string | import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/types").Page' is not assignable to type 'string | import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page").Page'.
+        Type 'Page' is not assignable to type 'string | Page'.
+          Type 'import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/types").Page' is not assignable to type 'import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page").Page'.
+            Property '#private' in type 'Page' refers to a different member that cannot be accessed from within type 'Page'.
+/Users/adam/Code/testeranto/src/PM/web.ts (56,12): Cannot find name 'opts'.
+/Users/adam/Code/testeranto/src/PM/web.ts (57,57): Cannot find name 'opts'.
+/Users/adam/Code/testeranto/src/PM/web.ts (59,7): Cannot find name 'page'. Did you mean the instance member 'this.page'?

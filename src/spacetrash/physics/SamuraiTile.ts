@@ -1,6 +1,6 @@
 import { BasePolygons, IBasePolygons } from "./BasePolygon";
 
-import { MapStoreV2 } from "../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../demiurge/ecs/Store";
 import { SamuraiTile } from "./BasePolygon";
 import { SP_IntegerPositionComponent } from "../ECS/Components/v4/IntegerPosition";
 import { SP_Polygon } from "../../demiurge/physics/SP_Polygon";
@@ -48,4 +48,4 @@ export class SamuraiTileComponent extends SP_IntegerPositionComponent {
   }
 }
 
-export class SamuraiTileStore extends MapStoreV2<SamuraiTileComponent> {}
+export class SamuraiTileStore extends SP_MapStore<SamuraiTileComponent> {}

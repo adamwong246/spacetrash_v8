@@ -311,7 +311,7 @@
         "format": "esm"
       },
       "src/demiurge/physics/SP_Polygon.test.ts": {
-        "bytes": 7433,
+        "bytes": 7582,
         "imports": [
           {
             "path": "node_modules/chai/chai.js",
@@ -485,10 +485,10 @@
         "entryPoint": "src/demiurge/physics/SP_Polygon.test.ts",
         "inputs": {
           "src/demiurge/physics/SP_Polygon.test.ts": {
-            "bytesInOutput": 5788
+            "bytesInOutput": 5910
           }
         },
-        "bytes": 6131
+        "bytes": 6253
       },
       "testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_MultiPolygon.test.mjs": {
         "imports": [
