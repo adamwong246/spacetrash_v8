@@ -1,10 +1,13 @@
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (42,18): Cannot create an instance of an abstract class.
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (44,21): Cannot create an instance of an abstract class.
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (77,20): Cannot create an instance of an abstract class.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (22,58): Cannot find name 'SP_MapStore'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (27,18): Cannot find name 'SP_MapStore'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (27,68): Cannot find name 'SP_MapStore'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (32,18): Cannot find name 'SP_MapStore'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (32,68): Cannot find name 'SP_MapStore'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (93,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
   Type 'Promise<void>' is not assignable to type 'Promise<null>'.
     Type 'void' is not assignable to type 'null'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (98,12): Conversion of type '(p: SP_MapStore<TestComponent>, utils: IPM) => Promise<SP_MapStore<TestComponent>>' to type 'Promise<SP_MapStore<TestComponent>>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (98,12): Conversion of type '(p: TestMapStore<TestComponent>, utils: IPM) => Promise<TestMapStore<TestComponent>>' to type 'Promise<SP_MapStore<TestComponent>>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (98,40): Cannot find name 'SP_MapStore'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (135,11): Expected 3 arguments, but got 2.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (140,9): Expected 3 arguments, but got 4.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (143,20): Expected 5 arguments, but got 4.
@@ -12,6 +15,11 @@
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (167,10): Type 'number' is not assignable to type 'BaseWhen<I>'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (167,13): Type 'string' is not assignable to type 'BaseWhen<I>'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_Store.test.ts (180,57): Property 'input' does not exist on type 'I'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (113,23): Cannot find name 'IC'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (114,33): Property 'get' does not exist on type 'I[][]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (116,18): Property 'set' does not exist on type 'I[][]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (147,23): Argument of type 'I[]' is not assignable to parameter of type 'I'.
+  'I' could be instantiated with an arbitrary type which could be unrelated to 'I[]'.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (25,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.

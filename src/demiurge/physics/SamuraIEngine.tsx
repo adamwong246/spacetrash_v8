@@ -1,19 +1,6 @@
-import { render } from "graphology-canvas";
+import { System } from "detect-collisions";
 
-const polyPart = require("poly-partition");
-var centroid = require("polygon-centroid");
-
-import { intersectLineLine, polygonInPolygon } from "detect-collisions";
-
-import * as THREE from "three";
-import * as SAT from "sat";
-
-var area = require("area-polygon");
-
-import { Polygon, System, drawPolygon } from "detect-collisions";
-
-import { SP_MultiPolygon } from "./SP_Polygon";
-import { TileSize } from "../../spacetrash/Constants";
+import { SP_MultiPolygon } from "./SP_MultiPolygon";
 import { SP_PhysicalComponent } from "./SP_Physical";
 import { renderGraphToCanvas } from "./renderGraphToCanvas";
 

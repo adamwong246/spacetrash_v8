@@ -13,7 +13,7 @@ import {
 import { ECS } from "./ECS";
 import { EntityComponent } from "./EntityComponent";
 import { Component } from "./Component";
-import { SP_MapStore } from "./Store";
+import { TestMapStore } from "./TestMapStore.test";
 
 // Test implementation
 type M = {
@@ -41,7 +41,7 @@ export const imp: ITestImplementation<I, O, M> = {
     Default: () => {
       class TestECS extends ECS {
         components = {
-          TestComponent: new SP_MapStore<any>(),
+          TestComponent: new TestMapStore<any>(),
         };
       }
       return new TestECS({
@@ -53,7 +53,7 @@ export const imp: ITestImplementation<I, O, M> = {
     WithComponent: (componentName: string) => {
       class TestECS extends ECS {
         components = {
-          [componentName]: new SP_MapStore<any>(),
+          [componentName]: new TestMapStore<any>(),
         };
       }
       return new TestECS({
@@ -116,7 +116,7 @@ export const imp: ITestImplementation<I, O, M> = {
     Default: () => {
       class TestECS extends ECS {
         components = {
-          TestComponent: new SP_MapStore<any>(),
+          TestComponent: new TestMapStore<any>(),
         };
       }
       return new TestECS({

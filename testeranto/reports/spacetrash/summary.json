@@ -22,14 +22,14 @@
   },
   "./src/demiurge/ecs/ECS.test.ts": {
     "runTimeError": 3,
-    "typeErrors": 45,
+    "typeErrors": 46,
     "staticErrors": 4,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/node/./src/demiurge/ecs/ECS.test/prompt.txt",
     "failingFeatures": {}
   },
   "./src/demiurge/ecs/SP_Store.test.ts": {
     "runTimeError": 0,
-    "typeErrors": 40,
+    "typeErrors": 47,
     "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/node/./src/demiurge/ecs/SP_Store.test/prompt.txt",
     "failingFeatures": {}

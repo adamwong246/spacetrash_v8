@@ -8,7 +8,7 @@ import {
   ITestImplementation,
   ITestSpecification,
 } from "testeranto/src/Types";
-import { SP_MapStore } from "./Store";
+import { TestMapStore } from "./TestMapStore.test";
 import Testeranto from "testeranto/src/Pure";
 
 // Minimal test component
@@ -39,20 +39,20 @@ export const imp: ITestImplementation<I, O, M> = {
   },
 
   givens: {
-    Empty: () => new SP_MapStore<TestComponent>(),
+    Empty: () => new TestMapStore<TestComponent>(),
     WithComponent: (eid: number, value: string) => {
-      const store = new SP_MapStore<TestComponent>();
+      const store = new TestMapStore<TestComponent>();
       store.make(new TestComponent(value), eid);
       return store;
     },
   },
 
   whens: {
-    addComponent: (eid: number, value: string) => (store, _utils) => {
+    addComponent: (eid: number, value: string) => (store) => {
       store.make(new TestComponent(value), eid);
       return Promise.resolve(store);
     },
-    updateComponent: (eid: number, newValue: string) => (store, _utils) => {
+    updateComponent: (eid: number, newValue: string) => (store) => {
       const component = store.take(eid);
       component.value = newValue;
       store.update(component, eid);
@@ -61,12 +61,12 @@ export const imp: ITestImplementation<I, O, M> = {
   },
 
   thens: {
-    hasComponent: (eid: number, expected: boolean) => (store, _utils) => {
+    hasComponent: (eid: number, expected: boolean) => (store) => {
       const exists = !!store.get(eid);
       assert.equal(exists, expected, `Component ${eid} should ${expected ? '' : 'not '}exist`);
       return Promise.resolve(store);
     },
-    componentValue: (eid: number, expected: string) => (store, _utils) => {
+    componentValue: (eid: number, expected: string) => (store) => {
       const component = store.take(eid);
       assert.equal(component.value, expected, `Component ${eid} should have value "${expected}"`);
       return Promise.resolve(store);
@@ -74,7 +74,7 @@ export const imp: ITestImplementation<I, O, M> = {
   },
 
   checks: {
-    Default: () => new SP_MapStore<TestComponent>(),
+    Default: () => new TestMapStore<TestComponent>(),
   },
 };
 
@@ -82,11 +82,11 @@ export const imp: ITestImplementation<I, O, M> = {
 type I = Ibdd_in<
   null,
   null,
-  SP_MapStore<TestComponent>,
-  SP_MapStore<TestComponent>,
-  SP_MapStore<TestComponent>,
-  (...x: unknown[]) => (p: SP_MapStore<TestComponent>, utils: IPM) => Promise<SP_MapStore<TestComponent>>,
-  (p: SP_MapStore<TestComponent>, utils: IPM) => Promise<SP_MapStore<TestComponent>>
+  TestMapStore<TestComponent>,
+  TestMapStore<TestComponent>, 
+  TestMapStore<TestComponent>,
+  (...x: unknown[]) => (p: TestMapStore<TestComponent>, utils: IPM) => Promise<TestMapStore<TestComponent>>,
+  (p: TestMapStore<TestComponent>, utils: IPM) => Promise<TestMapStore<TestComponent>>
 >;
 
 const interf: IPartialInterface<I> = {

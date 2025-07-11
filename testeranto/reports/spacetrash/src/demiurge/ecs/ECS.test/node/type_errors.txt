@@ -1,6 +1,3 @@
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (44,26): Cannot create an instance of an abstract class.
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (56,28): Cannot create an instance of an abstract class.
-/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (119,26): Cannot create an instance of an abstract class.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (143,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
   Type 'Promise<void>' is not assignable to type 'Promise<null>'.
     Type 'void' is not assignable to type 'null'.
@@ -16,6 +13,11 @@
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.test.ts (246,24): Property 'input' does not exist on type 'I'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.ts (6,26): Cannot find module './SP_Store' or its corresponding type declarations.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/ECS.ts (55,36): Argument of type 'string' is not assignable to parameter of type 'string[]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (113,23): Cannot find name 'IC'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (114,33): Property 'get' does not exist on type 'I[][]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (116,18): Property 'set' does not exist on type 'I[][]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (147,23): Argument of type 'I[]' is not assignable to parameter of type 'I'.
+  'I' could be instantiated with an arbitrary type which could be unrelated to 'I[]'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/ecs/types.ts (2,10): Module '"./Store"' has no exported member 'StoreV2'.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.

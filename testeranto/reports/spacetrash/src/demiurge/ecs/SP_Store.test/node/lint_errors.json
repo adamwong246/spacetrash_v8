@@ -5,50 +5,6 @@
       {
         "ruleId": "@typescript-eslint/no-unused-vars",
         "severity": 2,
-        "message": "'_utils' is defined but never used.",
-        "line": 51,
-        "column": 59,
-        "nodeType": null,
-        "messageId": "unusedVar",
-        "endLine": 51,
-        "endColumn": 65
-      },
-      {
-        "ruleId": "@typescript-eslint/no-unused-vars",
-        "severity": 2,
-        "message": "'_utils' is defined but never used.",
-        "line": 55,
-        "column": 65,
-        "nodeType": null,
-        "messageId": "unusedVar",
-        "endLine": 55,
-        "endColumn": 71
-      },
-      {
-        "ruleId": "@typescript-eslint/no-unused-vars",
-        "severity": 2,
-        "message": "'_utils' is defined but never used.",
-        "line": 64,
-        "column": 63,
-        "nodeType": null,
-        "messageId": "unusedVar",
-        "endLine": 64,
-        "endColumn": 69
-      },
-      {
-        "ruleId": "@typescript-eslint/no-unused-vars",
-        "severity": 2,
-        "message": "'_utils' is defined but never used.",
-        "line": 69,
-        "column": 64,
-        "nodeType": null,
-        "messageId": "unusedVar",
-        "endLine": 69,
-        "endColumn": 70
-      },
-      {
-        "ruleId": "@typescript-eslint/no-unused-vars",
-        "severity": 2,
         "message": "'Check' is defined but never used.",
         "line": 132,
         "column": 3,
@@ -59,7 +15,7 @@
       }
     ],
     "suppressedMessages": [],
-    "errorCount": 5,
+    "errorCount": 1,
     "fatalErrorCount": 0,
     "warningCount": 0,
     "fixableErrorCount": 0,

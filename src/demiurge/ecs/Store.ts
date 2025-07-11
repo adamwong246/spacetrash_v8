@@ -110,8 +110,13 @@ export abstract class SP_TwoDStore<I> extends SP_Store<I> {
     });
   }
 
-  upsert(...a: any[]) {
-    throw new Error("Method not implemented.");
+  upsert(pic: Partial<IC>, eid: number) {
+    const existing = this.store.get(eid);
+    if (existing) {
+      this.store.set(eid, { ...existing, ...pic });
+    } else {
+      throw new Error(`Cannot upsert - no component found for entity ${eid}`);
+    }
   }
   each(callback: (ic: I, x: number, y: number) => void) {
     for (let rowIndex = 0; rowIndex < this.store.length; rowIndex++) {
@@ -131,8 +136,16 @@ export abstract class SP_TwoDStore<I> extends SP_Store<I> {
       }
     }
   }
-  withIf(cb: (ic: I) => void, x: any) {
-    throw new Error("Method not implemented.");
+  withIf(cb: (ic: I) => void, x: number, y?: number) {
+    if (y !== undefined) {
+      // 2D case
+      const element = this.store[y]?.[x];
+      if (element) cb(element);
+    } else {
+      // 1D case
+      const element = this.store[x];
+      if (element) cb(element);
+    }
   }
   find(cb: (ic: I) => boolean): I {
     throw new Error("Method not implemented.");
