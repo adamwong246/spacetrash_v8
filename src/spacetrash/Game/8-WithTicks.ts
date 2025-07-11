@@ -13,6 +13,7 @@ import {
 import { TankMovingComponent } from "../ECS/Components/v4/TankMovingComponent";
 import { GameWithLoad } from "./7-WithLoad";
 import { SP_PhysicalComponent } from "../../demiurge/physics/SP_Physical";
+import { renderGraphToCanvas } from "../../demiurge/physics/renderGraphToCanvas";
 
 export abstract class GameWithTicks extends GameWithLoad {
   constructor(domNode: HTMLElement) {
@@ -309,17 +310,8 @@ export abstract class GameWithTicks extends GameWithLoad {
           return;
         }
       },
-      this.Space, // works
-      this.PositiveSpaceCollapsed,
-      this.NegativeSpace, // nothing
-      this.NegativeSpaceCollapsed, // works
+      this.navmesh
       
-      
-      this.convexPositive,
-      this.triangleNegative,
-
-      this.centroids,
-      this.graphOfCentroid,
     );
 
     // this.samuraiEngine.system.separate();
@@ -973,4 +965,6 @@ export abstract class GameWithTicks extends GameWithLoad {
     //   rd.rads = 0;
     // });
   }
+
+
 }
