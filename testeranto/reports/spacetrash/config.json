@@ -32,6 +32,14 @@
         "ports": 0
       },
       []
+    ],
+    [
+      "./src/demiurge/ecs/SP_Store.test.ts",
+      "node",
+      {
+        "ports": 0
+      },
+      []
     ]
   ],
   "ports": [
