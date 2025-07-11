@@ -1,0 +1,98 @@
+{
+  "name": "NavMesh pathfinding tests",
+  "givens": [
+    {
+      "key": "test0",
+      "name": "Empty",
+      "whens": [
+        {
+          "name": "findPath: SP_2d_Vector(0, 0)",
+          "error": "TypeErrorTypeError: navmesh.findPath is not a function\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9482:15\n    at Object.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9515:12)\n    at When.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4813:42)\n    at When.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4502:23)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4449:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4357:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4607:19\n    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4635:29)\n    at async NodeTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-KTKZG7MJ.mjs:234:12)"
+        }
+      ],
+      "thens": [
+        {
+          "name": "pathExists: true",
+          "error": false
+        },
+        {
+          "name": "pathLength: 14.142",
+          "error": false
+        },
+        {
+          "name": "waypointCount: 2",
+          "error": false
+        }
+      ],
+      "error": null,
+      "failed": {},
+      "features": [
+        "Empty navmesh should find direct path"
+      ]
+    },
+    {
+      "key": "test1",
+      "name": "FromPolygons",
+      "whens": [
+        {
+          "name": "addObstacle: [object Object]",
+          "error": "TypeErrorTypeError: Spread syntax requires ...iterable[Symbol.iterator] to be a function\n    at SP_MultiPolygon.addPolygons (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9113:19)\n    at SP_NavMesh.subtractSpace (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9321:24)\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9478:15\n    at Object.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9515:12)\n    at When.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4813:42)\n    at When.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4502:23)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4449:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4357:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4607:19"
+        },
+        {
+          "name": "findPath: SP_2d_Vector(0, 0)"
+        }
+      ],
+      "thens": [
+        {
+          "name": "pathExists: true",
+          "error": false
+        },
+        {
+          "name": "waypointCount: 4",
+          "error": false
+        }
+      ],
+      "error": null,
+      "failed": {},
+      "features": [
+        "Path around simple obstacle"
+      ]
+    },
+    {
+      "key": "test2",
+      "name": "Empty",
+      "whens": [
+        {
+          "name": "subtractSpace: [object Object]",
+          "error": "TypeErrorTypeError: Spread syntax requires ...iterable[Symbol.iterator] to be a function\n    at SP_MultiPolygon.addPolygons (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9113:19)\n    at SP_NavMesh.subtractSpace (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9321:24)\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9486:15\n    at Object.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/src/demiurge/physics/SP_NavMesh.test.mjs:9515:12)\n    at When.andWhen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4813:42)\n    at When.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4502:23)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4449:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4357:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4607:19"
+        },
+        {
+          "name": "findPath: SP_2d_Vector(0, 0)"
+        }
+      ],
+      "thens": [
+        {
+          "name": "pathExists: true",
+          "error": false
+        },
+        {
+          "name": "waypointCount: 4",
+          "error": false
+        }
+      ],
+      "error": null,
+      "failed": {},
+      "features": [
+        "Path around subtracted space"
+      ]
+    }
+  ],
+  "checks": [],
+  "fails": 3,
+  "failed": true,
+  "features": [
+    "Empty navmesh should find direct path",
+    "Path around simple obstacle",
+    "Path around subtracted space"
+  ]
+}

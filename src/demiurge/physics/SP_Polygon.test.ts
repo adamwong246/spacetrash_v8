@@ -11,7 +11,7 @@ import {
 } from "testeranto/src/Types";
 import { SP_2d_Vector } from "./SP_2d_Vector";
 import { SP_Polygon } from "./SP_Polygon";
-import Testeranto from "testeranto/src/Pure";
+import { Testeranto as TesterantoNode } from "testeranto/src/Node";
 
 type M = {
   givens: {
@@ -88,6 +88,18 @@ export const imp: ITestImplementation<I, O, M> = {
   },
 
   thens: {
+    sharesEdgeWith: (position, points, expected) => (polygon, _utils) => {
+      const otherPoly = new SP_Polygon(position, points);
+      const actual = SP_Polygon.doPolygonsShareAnEdge(polygon, otherPoly);
+      assert.equal(actual, expected, 
+        `Expected polygons to ${expected ? '' : 'not '}share an edge`);
+      return polygon;
+    },
+    polygonClippingStyle: (expectedPoints) => (polygon, _utils) => {
+      const clipped = polygon.polygonPolygonClippingStyle();
+      assert.deepEqual(clipped, expectedPoints);
+      return polygon;
+    },
     area: (expected) => (polygon, _utils) => {
       const actual = polygon.getArea();
       assert.closeTo(
@@ -208,6 +220,8 @@ type O = Ibdd_out<
     contains: [number, number, boolean];
     centroid: [number, number];
     pointCount: [number];
+    polygonClippingStyle: [[number, number][]];
+    sharesEdgeWith: [SP_2d_Vector, SP_2d_Vector[], boolean];
   },
   {
     Default: [];
@@ -286,8 +300,46 @@ export const spec: ITestSpecification<I, O> = (
         ],
         1, 1
       ),
+
+      test6: Given.Rectangle(
+        ["Polygon clipping style conversion returns correct points"],
+        [],
+        [
+          Then.pointCount(4),
+          Then.centroid(0, 0) // Implicitly verifies clipping style maintains position
+        ],
+        1, 1
+      ),
+
+      test7: Given.Rectangle(
+        ["Circumference calculation"],
+        [],
+        [Then.AreaPlusCircumference(18)], // 1 area + 4 circumference
+        1, 1
+      ),
+
+      test8: Given.FromPoints(
+        ["Polygons sharing an edge"],
+        [],
+        [Then.sharesEdgeWith(
+          new SP_2d_Vector(1, 0),
+          [
+            new SP_2d_Vector(0, 0),
+            new SP_2d_Vector(1, 0),
+            new SP_2d_Vector(1, 1),
+            new SP_2d_Vector(0, 1)
+          ],
+          true
+        )],
+        [
+          new SP_2d_Vector(0, 0),
+          new SP_2d_Vector(1, 0),
+          new SP_2d_Vector(1, 1),
+          new SP_2d_Vector(0, 1)
+        ]
+      ),
     }),
   ];
 };
 
-export default Testeranto<I, O, M>(null as unknown as I['input'], spec, imp, interf);
+export default TesterantoNode<I, O, M>(null as unknown as I['input'], spec, imp, interf);

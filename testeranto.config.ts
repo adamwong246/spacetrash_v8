@@ -10,8 +10,11 @@ const config: IProject = {
         ["./src/demiurge/physics/SP_2d_Vector.test.ts", "pure", { ports: 0 }, []],
         ["./src/demiurge/physics/SP_Polygon.test.ts", "pure", { ports: 0 }, []],
         ["./src/demiurge/physics/SP_MultiPolygon.test.ts", "pure", { ports: 0 }, []],
+        ["./src/demiurge/physics/SP_NavMesh.test.ts", "node", { ports: 0 }, []],
+        
         ["./src/demiurge/ecs/ECS.test.ts", "node", { ports: 0 }, []],
         ["./src/demiurge/ecs/SP_Store.test.ts", "node", { ports: 0 }, []],
+        
         // ["./src/spacetrash/game/7-WithLoad.test.ts", "web", { ports: 0 }, []],
         // ["./src/spacetrash/game/7-5-WithLevel.test.ts", "web", { ports: 0 }, []],
       ],

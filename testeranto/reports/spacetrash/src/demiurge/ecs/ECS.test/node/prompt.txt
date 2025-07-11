@@ -1,6 +1,4 @@
 
-/add ../testeranto/src/PM/node.ts
-/add ../testeranto/src/Node.ts
 /add src/demiurge/ecs/ECS.ts
 /add src/demiurge/ecs/EntityComponent.ts
 /add src/demiurge/ecs/Component.ts

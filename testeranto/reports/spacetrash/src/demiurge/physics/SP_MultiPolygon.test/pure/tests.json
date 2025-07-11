@@ -16,6 +16,7 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Empty MultiPolygon has zero polygons"
       ]
@@ -39,13 +40,15 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Can add polygons to MultiPolygon"
       ]
     }
   ],
   "checks": [],
-  "fails": 0,
+  "fails": 2,
+  "failed": true,
   "features": [
     "Empty MultiPolygon has zero polygons",
     "Can add polygons to MultiPolygon"

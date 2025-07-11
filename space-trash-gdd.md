@@ -19,62 +19,151 @@ You are a QPU (Quantum Personality Unit), a sentient AI trapped in the black box
 
 ### The QPU (Player)
 - Exists as software in your ship's black box
-- Can perceive the environment through bot sensors
-- Limited ability to directly interact with the world
-- Must manage power, memory, and processing resources
+- Interacts through a desktop-like interface with multiple windows:
+  - **Map View**: Shows connected ship layouts and bot positions
+  - **Terminal Console**: Primary input method for all commands
+  - **Video Feeds**: Up to 9 bot cameras that can be viewed simultaneously
+  - **System Monitor**: Shows power, memory, and processing resources
+  - **Alert Panel**: Displays warnings and detected threats
 
-### Salvage Operations
+**Control Scheme:**
+- **Primary Views:**
+  - `1-9` keys: Switch to bot camera view (drone IDs 1-9)
+  - `~` key: Bring up terminal console
+  - `ESC` key: Return to map view
+
+- **Terminal Commands:**
+  - `bot move scout1 to engine_room`
+  - `salvage reactor_core --priority=high`  
+  - `override airlock --ship=derelict_freighter`
+  - Supports command history (up/down arrows)
+  - Tab completion
+  - Scriptable macros
+  - Alert notifications when commands complete/fail
+
+- **View Management:**
+  - Up to 9 active bot cameras
+  - Map view shows all connected ships and bot positions
+  - Terminal is modal (pauses game when open)
+  - Quick camera switching maintains situational awareness
+- **Consciousness Levels:**
+  - Degraded (limited perception/control)
+  - Baseline (normal operation)  
+  - Overclocked (enhanced abilities but risks corruption)
+- **Memory Fragmentation:** 
+  - Critical memories can be lost during system shocks
+  - Must recover memory fragments from derelicts
+
+### Ship Docking & Commandeering
+- Your starting ship serves as homebase and safe haven
+- Docking creates a continuous play area between ships:
+  - Airlocks connect the two ships' interiors
+  - Resources and bots can move freely between them
+  - Threats may spread between ships if containment fails
+
+**Commandeering Process:**
 1. **Docking Phase**
    - Scan target ship for entry points and threats
-   - Establish physical connection
-   - Breach hull (cutting, explosives, etc.)
+   - Establish physical connection (airlock docking)
+   - Breach security systems to gain access
 
-2. **Exploration Phase**
-   - Deploy bots to map the ship
-   - Identify valuable components
-   - Assess threats and environmental hazards
+2. **Assessment Phase**
+   - Deploy bots to map the ship's layout
+   - Identify key systems and resources
+   - Evaluate ship's capabilities vs current ship
 
-3. **Salvage Phase**
-   - Extract components (requires time and bot coordination)
-   - Defend against counter-attacks
-   - Emergency extraction protocols
+3. **Takeover Phase (Choose One):**
+   - **Salvage & Retreat:**
+     - Extract valuable components
+     - Disengage before threats overwhelm
+     - Return to original ship with loot
+   - **Full Commandeer:**
+     - Disable/override ship's defenses
+     - Transfer QPU core to new ship
+     - Scuttle or abandon old ship
+     - Gain all new ship's systems/upgrades
+
+**Ship Progression:**
+- Start with basic derelict ship
+- Must "ship hop" to more advanced vessels
+- Each new ship offers:
+  - Better base systems
+  - New upgrade potential
+  - Different layout challenges
 
 ### Bot System
 - **Types:**
   - Scouts (fast, stealthy, limited carrying capacity)
-  - Workers (slow, strong, can carry heavy components)
+  - Workers (slow, strong, can carry heavy components)  
   - Combat (armed but noisy and power-hungry)
+  - Medics (repair other bots but vulnerable)
+  - Hackers (interface with alien systems but risk infection)
 
 - **Upgrades:**
   - Modular components that can fail during use
   - Swappable between bots (with risk of corruption)
   - Degrade with use (permanent failures possible)
+  - **Specializations:**
+    - Radiation-hardened (for reactor areas)
+    - EM-shielded (against pulse weapons)
+    - Thermal-damped (for extreme environments)
 
 ### Threats
-- **Entities:** 
+- **Entities:**
   - Semi-organic machines gone rogue
   - Trapped crew members turned feral
   - Other scavenger AIs
-  - Environmental hazards (radiation, decompression, etc.)
+  - Quantum echoes (ghostly remnants of destroyed QPUs)
+  - The Glitch (a predatory digital entity)
+
+- **Environmental Hazards:**
+  - Radiation fields
+  - Decompression events  
+  - Power surges
+  - Gravity fluctuations
+  - Corrosive atmospheres
 
 - **Behavior:**
-  - React to sound, light, and electromagnetic signatures
+  - React to sound, light and electromagnetic signatures
   - Can learn player patterns over time
   - Some actively hunt while others are territorial
+  - **Special Behaviors:**
+    - Pack hunting
+    - Bait-and-ambush tactics  
+    - System corruption attacks
+    - Memory-wiping pulses
 
 ## Progression Systems
 
 ### Ship Upgrades
-- Life support systems
-- Bot production capacity
-- Sensor range and accuracy
-- Docking mechanisms
+- **Core Systems:**
+  - Life support stabilization
+  - Bot production capacity
+  - Sensor range and accuracy
+  - Docking mechanisms
+- **Advanced Modules:**
+  - Memory core expansion
+  - Quantum firewall
+  - Emergency warp drive
+  - Holographic decoy projector
 
 ### Research Tree
-- New bot types
-- Advanced salvage techniques
-- Threat analysis databases
-- Stealth systems
+- **Bot Tech:**
+  - New bot types
+  - Swarm coordination protocols
+  - Self-repair routines
+- **Salvage:**
+  - Advanced cutting tools
+  - Precision extraction
+  - Rapid salvage protocols
+- **Defense:**
+  - Threat analysis databases  
+  - Stealth systems
+  - Counter-hacking measures
+- **Consciousness:**
+  - Memory defragmentation
+  - Parallel processing
+  - Quantum encryption
 
 ## Technical Specifications
 

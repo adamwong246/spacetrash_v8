@@ -16,6 +16,7 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Empty polygon has zero area"
       ]
@@ -50,6 +51,7 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Rectangles have width and height"
       ]
@@ -69,6 +71,7 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Triangle area calculation"
       ]
@@ -96,6 +99,7 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Square contains point check"
       ]
@@ -119,7 +123,7 @@
             "operator": "strictEqual",
             "name": "AssertionError",
             "ok": false,
-            "stack": "AssertionError: Point SP_2d_Vector(2.4, 3.4) should be contained: expected false to equal true\n    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752198823425:113:14)\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5144:29\n    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752198823425:150:12)\n    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5435:42)\n    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5139:17)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5070:34)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:4969:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5219:19\n    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5247:29)\n    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-ID3V64M3.mjs:5616:12)"
+            "stack": "AssertionError: Point SP_2d_Vector(2.4, 3.4) should be contained: expected false to equal true\n    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752218167833:128:14)\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5177:29\n    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752218167833:165:12)\n    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5468:42)\n    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5172:17)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5103:34)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5002:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5252:19\n    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5280:29)\n    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5649:12)"
           }
         },
         {
@@ -132,7 +136,7 @@
         }
       ],
       "error": null,
-      "failed": true,
+      "failed": {},
       "features": [
         "Translated rectangle"
       ]
@@ -160,13 +164,74 @@
         }
       ],
       "error": null,
+      "failed": {},
       "features": [
         "Rotated rectangle"
+      ]
+    },
+    {
+      "key": "test6",
+      "name": "Rectangle",
+      "whens": [],
+      "thens": [
+        {
+          "name": "pointCount: 4",
+          "error": false
+        },
+        {
+          "name": "centroid: 0",
+          "error": false
+        }
+      ],
+      "error": null,
+      "failed": {},
+      "features": [
+        "Polygon clipping style conversion returns correct points"
+      ]
+    },
+    {
+      "key": "test7",
+      "name": "Rectangle",
+      "whens": [],
+      "thens": [
+        {
+          "name": "AreaPlusCircumference: 18",
+          "error": {
+            "message": "Expected area+circumference 18 but got 5: expected 5 to be close to 18 +/- 0.000001",
+            "actual": 5,
+            "showDiff": false,
+            "operator": "strictEqual",
+            "name": "AssertionError",
+            "ok": false,
+            "stack": "AssertionError: Expected area+circumference 18 but got 5: expected 5 to be close to 18 +/- 0.000001\n    at Then.thenCB (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752218167833:117:14)\n    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5177:29\n    at Object.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_Polygon.test.mjs?cacheBust=1752218167833:165:12)\n    at Then.butThen (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5468:42)\n    at Then.test (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5172:17)\n    at Given.give (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5103:34)\n    at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5002:22)\n    at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5252:19\n    at async Object.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5280:29)\n    at async PureTesteranto.receiveTestResourceConfig (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5649:12)"
+          }
+        }
+      ],
+      "error": null,
+      "failed": {},
+      "features": [
+        "Circumference calculation"
+      ]
+    },
+    {
+      "key": "test8",
+      "name": "FromPoints",
+      "whens": [],
+      "thens": [
+        {
+          "name": "sharesEdgeWith: SP_2d_Vector(1, 0)",
+          "error": false
+        }
+      ],
+      "error": null,
+      "failed": {},
+      "features": [
+        "Polygons sharing an edge"
       ]
     }
   ],
   "checks": [],
-  "fails": 1,
+  "fails": 9,
   "failed": true,
   "features": [
     "Empty polygon has zero area",
@@ -174,6 +239,9 @@
     "Triangle area calculation",
     "Square contains point check",
     "Translated rectangle",
-    "Rotated rectangle"
+    "Rotated rectangle",
+    "Polygon clipping style conversion returns correct points",
+    "Circumference calculation",
+    "Polygons sharing an edge"
   ]
 }

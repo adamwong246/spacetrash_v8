@@ -1,0 +1,288 @@
+[
+  {
+    "filePath": "/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_NavMesh.test.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_tr' is defined but never used.",
+        "line": 62,
+        "column": 47,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 62,
+        "endColumn": 50
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_utils' is defined but never used.",
+        "line": 62,
+        "column": 52,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 62,
+        "endColumn": 58
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_tr' is defined but never used.",
+        "line": 66,
+        "column": 49,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 66,
+        "endColumn": 52
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_utils' is defined but never used.",
+        "line": 66,
+        "column": 54,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 66,
+        "endColumn": 60
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_utils' is defined but never used.",
+        "line": 73,
+        "column": 41,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 73,
+        "endColumn": 47
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_utils' is defined but never used.",
+        "line": 77,
+        "column": 41,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 77,
+        "endColumn": 47
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_utils' is defined but never used.",
+        "line": 81,
+        "column": 44,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 81,
+        "endColumn": 50
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 2,
+        "message": "'_Check' is defined but never used.",
+        "line": 105,
+        "column": 74,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 105,
+        "endColumn": 80
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 8,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_NavMesh.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-require-imports",
+        "severity": 2,
+        "message": "A `require()` style import is forbidden.",
+        "line": 7,
+        "column": 18,
+        "nodeType": "CallExpression",
+        "messageId": "noRequireImports",
+        "endLine": 7,
+        "endColumn": 43
+      },
+      {
+        "ruleId": "@typescript-eslint/no-require-imports",
+        "severity": 2,
+        "message": "A `require()` style import is forbidden.",
+        "line": 8,
+        "column": 18,
+        "nodeType": "CallExpression",
+        "messageId": "noRequireImports",
+        "endLine": 8,
+        "endColumn": 45
+      },
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 32,
+        "column": 19,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 32,
+        "endColumn": 22,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": {
+              "range": [
+                1151,
+                1154
+              ],
+              "text": "unknown"
+            },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": {
+              "range": [
+                1151,
+                1154
+              ],
+              "text": "never"
+            },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 33,
+        "column": 21,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 33,
+        "endColumn": 24,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": {
+              "range": [
+                1176,
+                1179
+              ],
+              "text": "unknown"
+            },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": {
+              "range": [
+                1176,
+                1179
+              ],
+              "text": "never"
+            },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 4,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_Polygon.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 20,
+        "column": 34,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 20,
+        "endColumn": 37,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": {
+              "range": [
+                664,
+                667
+              ],
+              "text": "unknown"
+            },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": {
+              "range": [
+                664,
+                667
+              ],
+              "text": "never"
+            },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 20,
+        "column": 42,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 20,
+        "endColumn": 45,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": {
+              "range": [
+                672,
+                675
+              ],
+              "text": "unknown"
+            },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": {
+              "range": [
+                672,
+                675
+              ],
+              "text": "never"
+            },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]

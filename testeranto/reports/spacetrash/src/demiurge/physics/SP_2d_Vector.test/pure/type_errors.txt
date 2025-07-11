@@ -1,14 +1,68 @@
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (61,20): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector) => SP_2d_Vector'.
-  Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (125,30): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector) => SP_2d_Vector'.
-  Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (147,42): Type '(vector: SP_2d_Vector) => Vector' is not assignable to type '(v: SP_2d_Vector) => SP_2d_Vector'.
-  Type 'Vector' is missing the following properties from type 'SP_2d_Vector': magnitude, multiply, distance
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (186,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
-  Type 'Promise<void>' is not assignable to type 'Promise<null>'.
-    Type 'void' is not assignable to type 'null'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (44,5): Type 'Vector' is not assignable to type 'this'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (7,3): Module '"testeranto/src/Types"' has no exported member 'IPartialInterface'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (25,24): Type '(vector: SP_2d_Vector, _tr: ITTestResourceConfiguration, _utils: PM) => Promise<Vector>' is not assignable to type '(zel: SP_2d_Vector, tr: ITTestResourceConfiguration, utils: PM) => Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+  Type 'Promise<Vector>' is not assignable to type 'Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+    Type 'Vector' is not assignable to type '(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+      Type 'Vector' provides no match for the signature '(...args: unknown[]): (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (28,20): Type '(vector: SP_2d_Vector, _tr: ITTestResourceConfiguration, _utils: PM) => Promise<Vector>' is not assignable to type '(zel: SP_2d_Vector, tr: ITTestResourceConfiguration, utils: PM) => Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+  Type 'Promise<Vector>' is not assignable to type 'Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+    Type 'Vector' is not assignable to type '(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+      Type 'Vector' provides no match for the signature '(...args: unknown[]): (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (31,27): Type '(vector: SP_2d_Vector, _tr: ITTestResourceConfiguration, _utils: PM) => Promise<SP_2d_Vector>' is not assignable to type '(zel: SP_2d_Vector, tr: ITTestResourceConfiguration, utils: PM) => Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+  Type 'Promise<SP_2d_Vector>' is not assignable to type 'Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+    Type 'SP_2d_Vector' is not assignable to type '(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+      Type 'SP_2d_Vector' provides no match for the signature '(...args: unknown[]): (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (34,18): Type '(vector: SP_2d_Vector, _tr: ITTestResourceConfiguration, _utils: PM) => Promise<SP_2d_Vector>' is not assignable to type '(zel: SP_2d_Vector, tr: ITTestResourceConfiguration, utils: PM) => Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+  Type 'Promise<SP_2d_Vector>' is not assignable to type 'Promise<(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector>'.
+    Type 'SP_2d_Vector' is not assignable to type '(...args: unknown[]) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+      Type 'SP_2d_Vector' provides no match for the signature '(...args: unknown[]): (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (40,30): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (41,52): Cannot find name 'EPSILON'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (44,24): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (45,46): Cannot find name 'EPSILON'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (48,30): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (49,68): Cannot find name 'EPSILON'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (52,35): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (53,73): Cannot find name 'EPSILON'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (56,41): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (57,43): Cannot find name 'EPSILON'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (58,43): Cannot find name 'EPSILON'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (61,53): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (67,29): Type '(vector: SP_2d_Vector, _utils: PM) => SP_2d_Vector' is not assignable to type '(ssel: SP_2d_Vector, utils: PM) => (v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+  Type 'SP_2d_Vector' is not assignable to type '(v: SP_2d_Vector, utils: IPM) => SP_2d_Vector'.
+    Type 'SP_2d_Vector' provides no match for the signature '(v: SP_2d_Vector, utils: IPM): SP_2d_Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (155,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (161,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (170,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (178,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (186,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (194,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (202,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (210,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (218,17): Property 'rotate' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (226,17): Property 'normalize' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (233,17): Property 'normalize' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (240,17): Property 'normalize' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (247,17): Property 'normalize' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (254,17): Property 'normalize' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (271,17): Property 'add' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (279,17): Property 'multiply' does not exist on type 'ThenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (365,33): Cannot find name 'M'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (80,5): Type 'Vector' is not assignable to type 'this'.
   'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,15): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,19): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (25,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
@@ -23,6 +77,8 @@
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (330,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (434,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (439,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,10): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,34): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (37,3): Property 'assertThis' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (48,3): Property 'puppetMaster' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (84,13): Argument of type '(fPath: string, value: string | Buffer | PassThrough) => any' is not assignable to parameter of type '(fPath: string, value: unknown) => void'.
@@ -32,21 +88,26 @@
   Not all constituents of type 'void | ((fPath: string, value: string | Buffer<ArrayBufferLike> | PassThrough) => void)' are callable.
     Type 'void' has no call signatures.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: { name: string; error: string; }[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; feat...'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,10): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,55): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
 /Users/adam/Code/testeranto/src/lib/classBuilder.ts (99,28): A spread argument must either have a tuple type or be passed to a rest parameter.
-/Users/adam/Code/testeranto/src/lib/index.ts (34,3): Type '(store: IT["istore"], thenCb: (s: IT["iselection"]) => Promise<IT["isubject"]>) => Promise<unknown>' is not assignable to type '(store: unknown, thenCB: unknown, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<unknown>'.
-  Types of parameters 'thenCb' and 'thenCB' are incompatible.
-    Type 'unknown' is not assignable to type '(s: unknown) => Promise<unknown>'.
-/Users/adam/Code/testeranto/src/lib/index.ts (46,11): 'whenCB' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/lib/core.ts (5,3): Module '"../Types.js"' has no exported member 'ITestInterface'.
+/Users/adam/Code/testeranto/src/lib/core.ts (6,3): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/core.ts (7,3): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/index.ts (9,3): Module '"../Types.js"' has no exported member 'ITestInterface'.
+/Users/adam/Code/testeranto/src/lib/index.ts (14,3): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/index.ts (15,3): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/types.ts (5,15): Module '"../Types"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/types.ts (5,19): Module '"../Types"' declares 'OT' locally, but it is not exported.
 /Users/adam/Code/testeranto/src/PM/index.ts (9,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/testeranto/src/PM/web.ts (53,3): Property 'screencast' in type 'PM_Web' is not assignable to the same property in base type 'PM'.
-  Type '(o: ScreencastOptions, p: string | Page) => any' is not assignable to type '(o: ScreenRecorderOptions, p: string | Page) => any'.
-    Types of parameters 'p' and 'p' are incompatible.
-      Type 'string | import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/types").Page' is not assignable to type 'string | import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page").Page'.
-        Type 'Page' is not assignable to type 'string | Page'.
-          Type 'import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/types").Page' is not assignable to type 'import("/Users/adam/Code/testeranto/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page").Page'.
-            Property '#private' in type 'Page' refers to a different member that cannot be accessed from within type 'Page'.
 /Users/adam/Code/testeranto/src/PM/web.ts (56,12): Cannot find name 'opts'.
 /Users/adam/Code/testeranto/src/PM/web.ts (57,57): Cannot find name 'opts'.
 /Users/adam/Code/testeranto/src/PM/web.ts (59,7): Cannot find name 'page'. Did you mean the instance member 'this.page'?
+/Users/adam/Code/testeranto/src/Pure.ts (8,3): Module '"./Types.js"' has no exported member 'INodeTestInterface'.
+/Users/adam/Code/testeranto/src/Pure.ts (9,3): Module '"./Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/Pure.ts (11,3): Module '"./Types.js"' has no exported member 'ITestInterface'.
+/Users/adam/Code/testeranto/src/Pure.ts (13,3): Module '"./Types.js"' declares 'OT' locally, but it is not exported.
 /Users/adam/Code/testeranto/src/Pure.ts (33,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M> & M & { ...; }'.
   Type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M>' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
+/Users/adam/Code/testeranto/src/Types.ts (5,10): Module '"../dist/types/src/Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/Types.ts (5,14): Module '"../dist/types/src/Types.js"' declares 'OT' locally, but it is not exported.

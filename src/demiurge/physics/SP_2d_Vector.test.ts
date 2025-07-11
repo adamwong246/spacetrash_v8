@@ -11,164 +11,68 @@ import {
 import { SP_2d_Vector } from "./SP_2d_Vector";
 import Testeranto from "testeranto/src/Pure";
 
-type M = {
-  givens: {
-    Default: () => SP_2d_Vector;
-    ByXAndY: (x: number, y: number) => SP_2d_Vector;
-  };
-  whens: Record<string, never>; // No whens defined
-  thens: {
-    magnitude: (expected: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-    add: (x: number, y: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-    multiply: (scalar: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-    dot: (x: number, y: number, expected: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-    distance: (x: number, y: number, expected: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-    rotate: (angle: number, x: number, y: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-    normalize: (expectedX: number, expectedY: number) => (v: SP_2d_Vector) => SP_2d_Vector;
-  };
-  checks: {
-    Default: () => SP_2d_Vector;
-    ByXAndY: (x: number, y: number) => SP_2d_Vector;
-  };
-};
-
-export const imp: ITestImplementation<I, O, M> = {
+export const imp: ITestImplementation<I, O> = {
   suites: {
-    Default: "a default suite",
+    Default: "Testing SP_2d_Vector implementation",
   },
 
   givens: {
     Default: () => new SP_2d_Vector(0, 0),
-    ByXAndY: (x, y) => {
-      return new SP_2d_Vector(x, y);
+    ByXAndY: (x, y) => new SP_2d_Vector(x, y),
+  },
+
+  whens: {
+    rotate: (angle) => async (vector, _tr, _utils) => {
+      return vector.rotate(angle);
+    },
+    add: (x, y) => async (vector, _tr, _utils) => {
+      return vector.add(new SP_2d_Vector(x, y));
+    },
+    multiply: (scalar) => async (vector, _tr, _utils) => {
+      return vector.multiply(scalar);
+    },
+    clone: () => async (vector, _tr, _utils) => {
+      return vector.clone();
     },
   },
 
-  whens: {},
-
   thens: {
-    magnitude: (expected) => (vector) => {
-      const actual = vector.magnitude();
-      assert.closeTo(
-        actual,
-        expected,
-        0.000001,
-        `Expected magnitude ${expected} but got ${actual}`
-      );
+    magnitude: (expected) => (vector, _utils) => {
+      assert.closeTo(vector.magnitude(), expected, EPSILON);
       return vector;
     },
-
-    add: (x, y) => (vector) => {
-      const oldVector = Object.assign({}, vector);
-      const result = vector.add(new SP_2d_Vector(x, y));
-      
-      assert.closeTo(
-        result.x,
-        oldVector.x + x,
-        0.000001,
-        `X component after addition`
-      );
-
-      assert.closeTo(
-        result.y,
-        oldVector.y + y,
-        0.000001,
-        `Y component after addition`
-      );
-
-      return result;
-    },
-
-    multiply: (scalar) => (vector) => {
-      const oldVector = Object.assign({}, vector);
-      const result = vector.multiply(scalar);
-      
-      assert.closeTo(
-        result.x,
-        oldVector.x * scalar,
-        0.000001,
-        `X component after multiplication`
-      );
-
-      assert.closeTo(
-        result.y,
-        oldVector.y * scalar,
-        0.000001,
-        `Y component after multiplication`
-      );
-
-      return result;
-    },
-
-    dot: (x, y, expected) => (vector) => {
-      const actual = vector.dot(new SP_2d_Vector(x, y));
-      assert.closeTo(
-        actual,
-        expected,
-        0.000001,
-        `Dot product calculation`
-      );
+    len: (expected) => (vector, _utils) => {
+      assert.closeTo(vector.len(), expected, EPSILON);
       return vector;
     },
-
-    distance: (x, y, expected) => (vector) => {
-      const actual = vector.distance(new SP_2d_Vector(x, y));
-      assert.closeTo(
-        actual,
-        expected,
-        0.000001,
-        `Distance calculation`
-      );
+    dot: (x, y, expected) => (vector, _utils) => {
+      assert.closeTo(vector.dot(new SP_2d_Vector(x, y)), expected, EPSILON);
       return vector;
     },
-
-    rotate: (angle, x, y) => (vector) => {
-      const oldVector = Object.assign({}, vector);
-
-      const rotatedVector = vector.rotate(angle);
-
-      assert.closeTo(
-        rotatedVector.x,
-        x,
-        0.000001,
-        `${JSON.stringify(oldVector)}, rotated by ${angle}, x component`
-      );
-
-      assert.closeTo(
-        rotatedVector.y,
-        y,
-        0.000001,
-        `${JSON.stringify(oldVector)}, rotated by ${angle}, y component`
-      );
-
-      return rotatedVector;
+    distance: (x, y, expected) => (vector, _utils) => {
+      assert.closeTo(vector.distance(new SP_2d_Vector(x, y)), expected, EPSILON);
+      return vector;
     },
-
-    normalize: (expectedX, expectedY) => (vector) => {
-      const oldVector = Object.assign({}, vector);
-      const normalizedVector = vector.normalize();
-      
-      assert.closeTo(
-        normalizedVector.x,
-        expectedX,
-        0.000001,
-        `${JSON.stringify(oldVector)} normalized x component`
-      );
-
-      assert.closeTo(
-        normalizedVector.y,
-        expectedY,
-        0.000001,
-        `${JSON.stringify(oldVector)} normalized y component`
-      );
-
-      return normalizedVector;
+    position: (expectedX, expectedY) => (vector, _utils) => {
+      assert.closeTo(vector.x, expectedX, EPSILON);
+      assert.closeTo(vector.y, expectedY, EPSILON);
+      return vector;
+    },
+    isPointOnSegment: (aX, aY, bX, bY, expected) => (vector, _utils) => {
+      const a = new SP_2d_Vector(aX, aY);
+      const b = new SP_2d_Vector(bX, bY);
+      assert.equal(SP_2d_Vector.isPointOnSegment(vector, a, b), expected);
+      return vector;
+    },
+    toString: (expected) => (vector, _utils) => {
+      assert.equal(vector.toString(), expected);
+      return vector;
     },
   },
 
   checks: {
     Default: () => new SP_2d_Vector(0, 0),
-    ByXAndY: (x: number, y: number) => new SP_2d_Vector(x, y),
+    ByXAndY: (x, y) => new SP_2d_Vector(x, y),
   },
 };
 
@@ -203,29 +107,26 @@ const interf: IPartialInterface<I> = {
 
 type O = Ibdd_out<
   {
-    Default: [string];
+    Default: ["Testing SP_2d_Vector implementation"];
   },
   {
     Default: [];
     ByXAndY: [number, number];
   },
   {
-    rotate: [number, number, number];
-    normalize: [number, number];
-    magnitude: [number];
+    rotate: [number];
     add: [number, number];
     multiply: [number];
-    dot: [number, number, number];
-    distance: [number, number, number];
+    clone: [];
   },
   {
-    rotate: [number, number, number];
-    normalize: [number, number];
     magnitude: [number];
-    add: [number, number];
-    multiply: [number];
+    len: [number];
     dot: [number, number, number];
     distance: [number, number, number];
+    position: [number, number];
+    isPointOnSegment: [number, number, number, number, boolean];
+    toString: [string];
   },
   {
     Default: [];
@@ -394,6 +295,66 @@ export const spec: ITestSpecification<I, O> = (
           [Then.distance(4, 5, 5)],
           1,
           1
+        ),
+
+        test20: Given.ByXAndY(
+          ["Clone creates identical vector"],
+          [When.clone()],
+          [Then.position(3, 4)],
+          3,
+          4
+        ),
+
+        test21: Given.ByXAndY(
+          ["Magnitude matches len()"],
+          [],
+          [Then.magnitude(5), Then.len(5)],
+          3,
+          4
+        ),
+
+        test22: Given.ByXAndY(
+          ["toString() returns expected format"],
+          [],
+          [Then.toString("SP_2d_Vector(1.5, 2.5)")],
+          1.5,
+          2.5
+        ),
+
+        test23: Given.ByXAndY(
+          ["Point (5,5) is on segment from (0,0) to (10,10)"],
+          [],
+          [Then.isPointOnSegment(0, 0, 10, 10, true)],
+          5,
+          5
+        ),
+        test24: Given.ByXAndY(
+          ["Point (15,15) is beyond segment from (0,0) to (10,10)"],
+          [],
+          [Then.isPointOnSegment(0, 0, 10, 10, false)],
+          15,
+          15
+        ),
+        test25: Given.ByXAndY(
+          ["Point (5,6) is not collinear with segment from (0,0) to (10,10)"],
+          [],
+          [Then.isPointOnSegment(0, 0, 10, 10, false)],
+          5,
+          6
+        ),
+        test26: Given.ByXAndY(
+          ["Point (0,0) is exactly at start of segment from (0,0) to (10,10)"],
+          [],
+          [Then.isPointOnSegment(0, 0, 10, 10, true)],
+          0,
+          0
+        ),
+        test27: Given.ByXAndY(
+          ["Point (10,10) is exactly at end of segment from (0,0) to (10,10)"],
+          [],
+          [Then.isPointOnSegment(0, 0, 10, 10, true)],
+          10,
+          10
         ),
       },
       []
