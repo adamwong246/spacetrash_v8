@@ -1,0 +1,6 @@
+Failed to load resource: net::ERR_FILE_NOT_FOUND
+{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs"}
+[{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs"}]
+Failed to load resource: net::ERR_FILE_NOT_FOUND
+{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs?cacheBust=1752449133170"}
+[{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-5-WithLevel.test.mjs?cacheBust=1752449133170"}]

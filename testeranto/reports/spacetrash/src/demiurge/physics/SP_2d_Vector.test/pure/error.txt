@@ -1,11 +1,11 @@
 TypeError: Then.rotate is not a function
-    at spec (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752446931104:96:17)
-    at new BaseBuilder (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5243:18)
-    at new ClassBuilder (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5399:5)
-    at new Testeranto (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5416:5)
-    at new PureTesteranto (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5636:5)
-    at Pure_default (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-42AD3QO4.mjs:5653:10)
-    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752446931104:287:33
+    at spec (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752449146843:96:17)
+    at new BaseBuilder (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-DTCTAPMS.mjs:5249:18)
+    at new ClassBuilder (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-DTCTAPMS.mjs:5407:5)
+    at new Testeranto (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-DTCTAPMS.mjs:5424:5)
+    at new PureTesteranto (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-DTCTAPMS.mjs:5644:5)
+    at Pure_default (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-DTCTAPMS.mjs:5661:10)
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752449146843:287:33
     at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
     at async CustomizedModuleLoader.import (node:internal/modules/esm/loader:228:24)
     at PM_Main.launchPure (/Users/adam/Code/testeranto/dist/prebuild/run.mjs:755:9)

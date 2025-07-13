@@ -1,9 +1,10 @@
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (80,5): Type 'Vector' is not assignable to type 'this'.
   'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (7,3): Module '"testeranto/src/Types"' declares 'Ibdd_in' locally, but it is not exported.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (8,3): Module '"testeranto/src/Types"' declares 'Ibdd_out' locally, but it is not exported.
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (9,3): Module '"testeranto/src/Types"' has no exported member 'IPartialInterface'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (184,11): Expected 3 arguments, but got 2.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (205,11): Expected 3 arguments, but got 2.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (218,11): Expected 3 arguments, but got 2.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (10,3): '"testeranto/src/Types"' has no exported member named 'ITestImplementation'. Did you mean 'TestWhenImplementation'?
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (11,3): '"testeranto/src/Types"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.ts (68,7): Type 'MultiPoly' is not assignable to type '[number, number][][]'.
   Type 'Poly' is not assignable to type '[number, number][]'.
     Type 'Ring' is not assignable to type '[number, number]'.
@@ -37,8 +38,8 @@
           Type '(offset: SP_2d_Vector) => this' is not assignable to type '(x: number, y: number) => Polygon'.
             Types of parameters 'offset' and 'x' are incompatible.
               Type 'number' is not assignable to type 'SP_2d_Vector'.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,15): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,19): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,15): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,19): Module '"../Types.js"' has no exported member 'OT'.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (25,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
@@ -47,14 +48,15 @@
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (179,3): Property 'recommendedFsPath' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (182,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (183,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (272,7): Type 'unknown' is not assignable to type 'Error'.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (304,12): 'e' is of type 'unknown'.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (317,9): Type 'unknown' is not assignable to type 'boolean'.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (330,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (434,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/testeranto/src/lib/abstractBase.ts (439,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
-/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,10): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,34): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (277,7): Type 'unknown' is not assignable to type 'Error'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (309,12): 'e' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (322,9): Type 'unknown' is not assignable to type 'boolean'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (335,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (439,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (444,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,10): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,14): '"../Types.js"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,34): Module '"../Types.js"' has no exported member 'OT'.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (37,3): Property 'assertThis' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (48,3): Property 'puppetMaster' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (84,13): Argument of type '(fPath: string, value: string | Buffer | PassThrough) => any' is not assignable to parameter of type '(fPath: string, value: unknown) => void'.
@@ -63,27 +65,43 @@
 /Users/adam/Code/testeranto/src/lib/basebuilder.ts (85,15): This expression is not callable.
   Not all constituents of type 'void | ((fPath: string, value: string | Buffer<ArrayBufferLike> | PassThrough) => void)' are callable.
     Type 'void' has no call signatures.
-/Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: { name: string; error: string; }[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; feat...'.
-/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,10): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,55): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/classBuilder.ts (99,28): A spread argument must either have a tuple type or be passed to a rest parameter.
-/Users/adam/Code/testeranto/src/lib/core.ts (5,3): Module '"../Types.js"' has no exported member 'ITestInterface'.
-/Users/adam/Code/testeranto/src/lib/core.ts (6,3): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/core.ts (7,3): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: {}[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; features: string[]; }; runner: (pu...'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,10): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,14): '"../Types.js"' has no exported member named 'ITestImplementation'. Did you mean 'TestWhenImplementation'?
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,35): '"../Types.js"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,55): Module '"../Types.js"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (81,7): No overload matches this call.
+  Overload 1 of 3, '(callbackfn: (previousValue: [string, unknown], currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => [string, unknown], initialValue: [string, unknown]): [string, unknown]', gave the following error.
+    Argument of type '(a: {}, [key, whEn]: [string, (x: any) => any]) => {}' is not assignable to parameter of type '(previousValue: [string, unknown], currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => [string, unknown]'.
+      Types of parameters '__1' and 'currentValue' are incompatible.
+        Type '[string, unknown]' is not assignable to type '[string, (x: any) => any]'.
+          Type at position 1 in source is not compatible with type at position 1 in target.
+            Type 'unknown' is not assignable to type '(x: any) => any'.
+  Overload 2 of 3, '(callbackfn: (previousValue: {}, currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => {}, initialValue: {}): {}', gave the following error.
+    Argument of type '(a: {}, [key, whEn]: [string, (x: any) => any]) => {}' is not assignable to parameter of type '(previousValue: {}, currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => {}'.
+      Types of parameters '__1' and 'currentValue' are incompatible.
+        Type '[string, unknown]' is not assignable to type '[string, (x: any) => any]'.
+          Type at position 1 in source is not compatible with type at position 1 in target.
+            Type 'unknown' is not assignable to type '(x: any) => any'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (85,18): A spread argument must either have a tuple type or be passed to a rest parameter.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (100,28): A spread argument must either have a tuple type or be passed to a rest parameter.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (127,7): Argument of type '[string, unknown]' is not assignable to parameter of type 'Record<string, IWhenKlasser<I>>'.
+  Index signature for type 'string' is missing in type '[string, unknown]'.
+/Users/adam/Code/testeranto/src/lib/core.ts (25,13): Cannot find name 'IT'.
+/Users/adam/Code/testeranto/src/lib/core.ts (26,13): Cannot find name 'OT'.
+/Users/adam/Code/testeranto/src/lib/index.ts (8,3): Module '"../Types.js"' declares 'Ibdd_in' locally, but it is not exported.
 /Users/adam/Code/testeranto/src/lib/index.ts (9,3): Module '"../Types.js"' has no exported member 'ITestInterface'.
-/Users/adam/Code/testeranto/src/lib/index.ts (14,3): Module '"../Types.js"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/index.ts (15,3): Module '"../Types.js"' declares 'OT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/types.ts (5,15): Module '"../Types"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/lib/types.ts (5,19): Module '"../Types"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/index.ts (14,3): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/index.ts (15,3): Module '"../Types.js"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/lib/types.ts (5,15): Module '"../Types"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/types.ts (5,19): Module '"../Types"' has no exported member 'OT'.
 /Users/adam/Code/testeranto/src/PM/index.ts (9,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
 /Users/adam/Code/testeranto/src/PM/web.ts (56,12): Cannot find name 'opts'.
 /Users/adam/Code/testeranto/src/PM/web.ts (57,57): Cannot find name 'opts'.
 /Users/adam/Code/testeranto/src/PM/web.ts (59,7): Cannot find name 'page'. Did you mean the instance member 'this.page'?
 /Users/adam/Code/testeranto/src/Pure.ts (8,3): Module '"./Types.js"' has no exported member 'INodeTestInterface'.
-/Users/adam/Code/testeranto/src/Pure.ts (9,3): Module '"./Types.js"' declares 'IT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/Pure.ts (9,3): Module '"./Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/Pure.ts (10,3): '"./Types.js"' has no exported member named 'ITestImplementation'. Did you mean 'TestWhenImplementation'?
 /Users/adam/Code/testeranto/src/Pure.ts (11,3): Module '"./Types.js"' has no exported member 'ITestInterface'.
-/Users/adam/Code/testeranto/src/Pure.ts (13,3): Module '"./Types.js"' declares 'OT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/Pure.ts (33,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M> & M & { ...; }'.
-  Type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M>' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
-/Users/adam/Code/testeranto/src/Types.ts (5,10): Module '"../dist/types/src/Types.js"' declares 'IT' locally, but it is not exported.
-/Users/adam/Code/testeranto/src/Types.ts (5,14): Module '"../dist/types/src/Types.js"' declares 'OT' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/Pure.ts (12,3): '"./Types.js"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
+/Users/adam/Code/testeranto/src/Pure.ts (13,3): Module '"./Types.js"' has no exported member 'OT'.

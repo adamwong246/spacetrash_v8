@@ -1,13 +1,7 @@
 
-/add ../testeranto/src/PM/pure.ts
-/add ../testeranto/src/Pure.ts
 /add src/demiurge/ecs/SP_Store.test.ts
 
-/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/lint_errors.json
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/tests.json
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/console_log.txt
 /read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/type_errors.txt
-/read testeranto/reports/spacetrash/node/src/demiurge/ecs/SP_Store.test/tests.json
-
-/load testeranto/reports/spacetrash/node/src/demiurge/ecs/SP_Store.test/featurePrompt.txt
-
-/code Fix the failing tests described in testeranto/reports/spacetrash/node/src/demiurge/ecs/SP_Store.test/tests.json. Correct any type signature errors described in the files testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/type_errors.txt. Implement any method which throws "Function not implemented. Resolve the lint errors described in testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/lint_errors.json"
-          
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/node/lint_errors.json

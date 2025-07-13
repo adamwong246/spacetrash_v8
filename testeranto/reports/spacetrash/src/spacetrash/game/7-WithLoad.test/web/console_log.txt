@@ -1,0 +1,6 @@
+Failed to load resource: net::ERR_FILE_NOT_FOUND
+{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-WithLoad.test.mjs"}
+[{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-WithLoad.test.mjs"}]
+Failed to load resource: net::ERR_FILE_NOT_FOUND
+{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-WithLoad.test.mjs?cacheBust=1752449117067"}
+[{"url":"file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/web/spacetrash/src/spacetrash/game/7-WithLoad.test.mjs?cacheBust=1752449117067"}]

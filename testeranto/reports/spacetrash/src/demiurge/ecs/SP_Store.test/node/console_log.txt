@@ -1,0 +1,7 @@
+stdout > toObj error undefined
+toObj error undefined
+toObj error undefined
+toObj error undefined
+toObj error undefined
+toObj error undefined
+stderr > goodbye node with failures 0
