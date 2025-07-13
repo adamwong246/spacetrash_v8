@@ -42,6 +42,10 @@ import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 
 import { SP_PhysicalStore } from "../../demiurge/physics/SP_Physical";
 import { GamWithAssets as GameWithAssets } from "./2-WithAssets";
+import { NavSenseStore } from "../ECS/Stores/NavSenseStore";
+import { NearSenseStore } from "../ECS/Stores/NearSenseStore";
+import { UpgradeStore } from "../ECS/Stores/UpgradeStore";
+
 
 export type ICanvases =
   | "map"
@@ -63,7 +67,8 @@ export type IRenderings =
 
 export abstract class GameWithStores extends GameWithAssets<IRenderings> {
   components = {
-    Actors: new ActorStore(),
+    Upgrades: new UpgradeStore(), // Handles all upgrade components
+    Actors: new ActorStore(), // Handles all actor entities
     AiAgentComponent: new AiAgentStore(),
     AttackableComponent: new AttackableStore(),
     ConsoleRenderableComponent: new ConsoleRenderableStore(),

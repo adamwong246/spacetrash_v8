@@ -21,7 +21,7 @@ export class SamuraiEngine {
     // // navmesh.negativeSpaceToCanvas(context)
     // // navmesh.positiveSpaceCollapsedToCanvas(context)
     // navmesh.convexPolygonsToCanvas(context)
-    // navmesh.centroidsToCanvas(context)
+    navmesh.centroidsToCanvas(context);
 
     context.strokeStyle = "#FFFFFF";
     context.beginPath();
@@ -30,5 +30,8 @@ export class SamuraiEngine {
     // draw bounding volume hierarchy of the system
     this.system.drawBVH(context);
     context.stroke();
+    if (this.system.checkAll(callback)) {
+      // Do something yourself
+    }
   }
 }

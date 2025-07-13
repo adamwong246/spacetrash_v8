@@ -27,7 +27,7 @@
     ],
     [
       "./src/demiurge/physics/SP_NavMesh.test.ts",
-      "node",
+      "pure",
       {
         "ports": 0
       },
@@ -35,7 +35,7 @@
     ],
     [
       "./src/demiurge/ecs/ECS.test.ts",
-      "node",
+      "pure",
       {
         "ports": 0
       },
@@ -43,6 +43,14 @@
     ],
     [
       "./src/demiurge/ecs/SP_Store.test.ts",
+      "pure",
+      {
+        "ports": 0
+      },
+      []
+    ],
+    [
+      "./src/demiurge/ecs/SP_MapStore.test.ts",
       "node",
       {
         "ports": 0

@@ -1,79 +1,81 @@
 import { Component } from "./Component";
 
-export abstract class SP_Store<IC> {
-  
-  abstract store;
+/**
+ * Base Store Class
+ * 
+ * All concrete stores must implement:
+ * - store: The underlying data structure
+ * - make(): Create/store new items
+ * - take(): Retrieve items (throws if not found) 
+ * - get(): Safe retrieval (returns false if not found)
+ * - update(): Modify existing items
+ * - each(): Iterate through items
+ * - find(): Locate items by predicate
+ * - withIf(): Conditional execution
+ *
+ * Follows the Repository pattern - stores should be:
+ * - Simple data containers without business logic
+ * - Type-safe for the components they manage
+ * - Efficient for querying operations
+ */
+export abstract class SP_Store<IC extends Component<unknown, unknown>> {
+  abstract store: unknown;
 
-  // set
-  abstract make(ic: IC, ...a: any);
-  // get
-  abstract take(...a): IC | undefined;
-  // update existing
-  abstract update(pic: Partial<IC>, ...a): any;
-  // update existing or create new
-  // abstract upsert(...a): any;
+  /**
+   * Creates and stores a new item
+   * @param ic The item to store
+   * @param a Additional creation parameters 
+   */
+  abstract make(ic: IC, eid: number);
 
-  abstract each(cb: (ic: IC, ...a: any) => void);
-  abstract withIf(cb: (ic: IC) => void, x: any);
+  /**
+   * Retrieves an item, throws if not found
+   * @param a Lookup parameters
+   * @returns The item
+   * @throws Error if item not found
+   */
+  abstract take( eid: number): IC;
+
+  /**
+   * Safely retrieves an item
+   * @param a Lookup parameters
+   * @returns The item or false if not found
+   */
+  abstract get( eid: number): IC | false;
+
+  /**
+   * Updates an existing item
+   * @param pic Partial item data to merge
+   * @param a Lookup parameters
+   */
+  abstract update(pic: unknown,  eid: number): IC;
+
+
+  /**
+   * Enumerates over all components in the store
+   * @param cb Callback that receives each component and its lookup keys
+   */
+  abstract each(cb: (ic: IC,  eid: number) => void);
+
+  /**
+   * Finds the first component matching a predicate
+   * @param cb Predicate function to test components
+   * @returns The first matching component
+   * @throws Error if no component matches
+   */
   abstract find(cb: (ic: IC) => boolean): IC;
+
+  /**
+   * Conditionally executes a callback if a component exists
+   * @param cb Callback to execute if component exists
+   * @param x Lookup key(s) for the component
+   */
+  abstract withIf(cb: (ic: IC) => void,  eid: number);
 }
 
-export abstract class SP_MapStore<
-  IC extends Component<any, any>
-> extends SP_Store<IC> {
-  store: Map<number, IC> = new Map();
 
-  each(cb: (ic: IC, k: number) => void) {
-    for (let [eid, ic] of this.store) {
-      cb(ic, eid);
-    }
-  }
-
-  find(cb: (x: IC) => boolean): IC {
-    for (let [eid, ic] of this.store) {
-      if (cb(ic)) return ic;
-    }
-
-    throw "not found";
-  }
-
-  get(eid: number) {
-    const x = this.store.get(eid);
-    if (!x) return false;
-    return x;
-  }
-
-  take(eid: number, message?: string) {
-    const x = this.store.get(eid);
-    if (!x) {
-      const errorMessage = `${this.constructor.name} #${eid} not found. ${message || ""}`
-      throw errorMessage
-    };
-    return x;
-  }
-
-  update(ic: IC, eid: number) {
-    this.store.set(eid, ic);
-  }
-
-  make(c: IC, eid: number) {
-    this.store.set(eid, c);
-  }
-
-  // upsert(p: Partial<IC>, eid: number) {
-  //   this.store.set(eid, {
-  //     ...this.store.get(eid),
-  //     ...p,
-  //   });
-  // }
-
-  withIf(cb: (x: IC) => void, eid: number) {
-    const x = this.store.get(eid);
-    if (x) cb(x);
-  }
-}
-
-export abstract class SP_OneDStore<I extends []> extends SP_Store<I> {
+export abstract class SP_OneDStore<I extends Component<unknown, unknown>> extends SP_Store<I> {
+  declare store: I[];
   store: I[] = [];
 
   constructor() {
@@ -89,10 +91,10 @@ export abstract class SP_OneDStore<I extends []> extends SP_Store<I> {
   }
 }
 
-export abstract class SP_TwoDStore<I> extends SP_Store<I> {
+export abstract class SP_TwoDStore<I extends Component<unknown, unknown>> extends SP_Store<I> {
+  declare store: I[][];
   store: I[][] = [[]];
 
-  
   make(ic: I, x: number, y: number) {
     return (this.store[y][x] = ic);
   }
@@ -110,8 +112,8 @@ export abstract class SP_TwoDStore<I> extends SP_Store<I> {
     });
   }
 
-  upsert(pic: Partial<IC>, eid: number) {
-    const existing = this.store.get(eid);
+  upsert(pic: Partial<I>, x: number, y: number) {
+    const existing = this.store[y]?.[x];
     if (existing) {
       this.store.set(eid, { ...existing, ...pic });
     } else {

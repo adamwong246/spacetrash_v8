@@ -209,36 +209,44 @@ export abstract class GameWithTicks extends GameWithLoad {
     this.samuraiEngine.update(
       this.samuraiCanvasContext,
       (result) => {
-        // ball to wall
+
+        // AI bot to static obstacle collision
         if (!result.a.isStatic && result.b.isStatic) {
-          // const motionA = this.components.FloatMovingComponent.take(result.a.SP_EID);
-          // const samuraiTile = this.components.SamuraiTileComponent.take(result.b.SP_EID);
-
           const body = result.a;
-          // const spc = this.components.SP_PhysicalComponent.take(body.SP_EID);
-
-          // const z = this.samuraiEngine.system.getCollisionPoints(result.a, result.b);
-
-          let mover = this.components.SP_PhysicalComponent.get(body.SP_EID);
-
+          const mover = this.components.SP_PhysicalComponent.get(body.SP_EID);
+          
           if (mover) {
-            const position = this.components.SP_PhysicalComponent.take(
-              result.a.SP_EID
-            );
-
-            if (!position.body.setPosition) throw "idk";
-
-            // this.samuraiEngine.system.separate();
-            // bounce the object base on normal vector
+            // First handle the physics bounce
             mover.bounce(result.overlapN);
-            // update the physics body
-            position.body.updateBody();
-          }
+            mover.body.updateBody();
 
-          // mover = this.components.TankMovingComponent.get(body.SP_EID);
-          // if (mover) {
-          //   // this.tankColide();
-          // }
+            // Then handle AI movement component if it exists
+            const floatMove = this.components.FloatMovingComponent.get(body.SP_EID);
+            if (floatMove) {
+              // Calculate bounce direction based on collision normal
+              const normal = result.overlapN;
+              const dot = floatMove.dx * normal.x + floatMove.dy * normal.y;
+              
+              // Reflect movement vector
+              floatMove.dx = floatMove.dx - 2 * dot * normal.x;
+              floatMove.dy = floatMove.dy - 2 * dot * normal.y;
+              
+              // Reduce speed after collision
+              const speedReduction = 0.7;
+              floatMove.dx *= speedReduction;
+              floatMove.dy *= speedReduction;
+            }
+
+            // Force path recalculation for AI bots
+            const aiComp = this.components.AiAgentComponent.get(body.SP_EID);
+            if (aiComp) {
+              aiComp._currentPath = [];
+              console.log('AI bot hit obstacle - recalculating path');
+            }
+
+            // Ensure physics body is properly separated
+            this.samuraiEngine.system.separate();
+          }
         }
 
         // // ball to ball

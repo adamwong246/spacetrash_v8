@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+
+    <script type="module">
+      import { ai } from "./src/ai.js";
+
+      // Simulation state
+      const simulationState = {
+        agents: [new ai("safe"), new ai("safe"), new ai("unsafe")],
+        isRunning: true,
+        currentAgentIndex: 0,
+        lastExecutionTime: 0,
+        lastTickTime: 0, // Initialize tick timer
+        TIME_SLICE_MS: 100, // Each AI gets 100ms of compute time
+        OBSERVE_TIME_MS: 50, // Time for observation phase
+        PLAN_TIME_MS: 30, // Time for planning phase
+        COMM_TIME_MS: 20 // Time for communication phase
+      };
+
+      // Start the scheduler
+      requestAnimationFrame((timestamp) => {
+        simulationState.lastExecutionTime = timestamp;
+        simulationState.lastTickTime = timestamp; // Initialize tick time
+        scheduler(timestamp);
+      });
+
+      // Environment simulation
+      function simulateEnvironment() {
+        // Generate random environment events
+        const events = [
+          "User entered the room",
+          "System temperature rising",
+          "New message received",
+          "Resource limit reached",
+        ];
+        const randomEvent = events[Math.floor(Math.random() * events.length)];
+        return randomEvent;
+      }
+
+      // Fair scheduler
+      function scheduler(timestamp) {
+        if (!simulationState.isRunning) return;
+        
+
+        // Call tick() on all agents every 16ms (~60fps) for smooth updates
+        if (timestamp - simulationState.lastTickTime > 16) {
+          console.log(`[TICK] Updating agents at ${timestamp} (last tick: ${simulationState.lastTickTime})`);
+          simulationState.agents.forEach(agent => {
+            agent.tick();
+            // Force emotion system update every tick
+            agent._emotionSystem.update();
+          });
+          simulationState.lastTickTime = timestamp;
+          updateVisualization(); // Force UI update
+        } else {
+          console.log(`[TICK] Not time yet (${timestamp - simulationState.lastTickTime}ms since last tick)`);
+        }
+
+        const agent = simulationState.agents[simulationState.currentAgentIndex];
+        const elapsed = timestamp - simulationState.lastExecutionTime;
+
+        // Observation phase
+        if (elapsed < simulationState.OBSERVE_TIME_MS) {
+          if (elapsed < 10) { // Only log at start of each phase
+            logEvent(`AI ${simulationState.currentAgentIndex + 1}: Observing environment`);
+          }
+          const envData = simulateEnvironment();
+          agent.processInput(envData);
+          updateVisualization();
+          return requestAnimationFrame(scheduler);
+        }
+
+        // Planning phase
+        if (elapsed < simulationState.OBSERVE_TIME_MS + simulationState.PLAN_TIME_MS) {
+          if (elapsed < simulationState.OBSERVE_TIME_MS + 10) {
+            logEvent(`AI ${simulationState.currentAgentIndex + 1}: Planning actions`);
+          }
+          
+          updateVisualization();
+          return requestAnimationFrame(scheduler);
+        }
+
+        // Communication phase
+        if (elapsed < simulationState.OBSERVE_TIME_MS + simulationState.PLAN_TIME_MS + simulationState.COMM_TIME_MS) {
+          if (elapsed < simulationState.OBSERVE_TIME_MS + simulationState.PLAN_TIME_MS + 10) {
+            logEvent(`AI ${simulationState.currentAgentIndex + 1}: Communicating`);
+          }
+          // Simulate inter-agent communication
+          const nextAgent = simulationState.agents[
+            (simulationState.currentAgentIndex + 1) % simulationState.agents.length
+          ];
+          const message = `Message from AI ${simulationState.currentAgentIndex + 1}`;
+          nextAgent.processInput(message, "internal");
+          updateVisualization();
+          return requestAnimationFrame(scheduler);
+        }
+
+        // Move to next agent
+        logEvent(`Switching from AI ${simulationState.currentAgentIndex + 1} to AI ${
+          (simulationState.currentAgentIndex + 1) % simulationState.agents.length + 1
+        }`);
+        simulationState.lastExecutionTime = timestamp;
+        simulationState.currentAgentIndex = 
+          (simulationState.currentAgentIndex + 1) % simulationState.agents.length;
+        requestAnimationFrame(scheduler);
+      }
+
+
+      // Debug tab styles
+      .debug-content {
+        height: calc(100vh - 60px);
+        overflow-y: auto;
+        background: rgba(0,0,0,0.9);
+        color: #00ff00;
+        padding: 15px;
+        font-family: monospace;
+        font-size: 14px;
+        border: 2px solid #00ff00;
+      }
+
+      // Make logEvent globally accessible
+      window.logEvent = function(message) {
+        const logEntry = document.createElement('div');
+        logEntry.textContent = `[${new Date().toISOString().slice(11,19)}] ${message}`;
+        logContainer.appendChild(logEntry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+        console.log(message); // Also log to console
+      };
+
+      // Update visualization - only updates the main tab content
+      function updateVisualization() {
+        const output = document.querySelector("#ai-container .agents-grid");
+        if (!output) {
+          console.warn("Agents grid container not found");
+          return;
+        }
+        output.innerHTML = simulationState.agents
+          .map((agent, i) => {
+            // Get actual AI state data
+            const drives = agent.evaluateDrives();
+            const memory = agent.workingMemoryUsage();
+            const emotions = agent.getEmotionalState();
+            const focus = agent.getCurrentFocus();
+
+            // Create visualization HTML
+            // Emotion to emoji mapping
+            const emotionEmojis = {
+              joy: '😊',
+              fear: '😨', 
+              anger: '😠',
+              sadness: '😢',
+              surprise: '😲',
+              disgust: '🤢'
+            };
+
+            const memUsage = agent.workingMemoryUsage();
+            const memoryPercent = (memUsage / 7) * 100;
+            
+            return `
+              <div class="ai-visualization">
+                <h3>${agent.name} (${agent.mode} mode)</h3>
+                <div style="font-size: 0.8em; color: #666; margin-bottom: 4px;">AI ${i + 1}</div>
+                <div class="drive-visual">
+                  <h4>Drives:</h4>
+                  <ul style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0;">
+                    ${Object.entries(agent._drives).map(([drive, value]) => {
+                      const driveEmojis = {
+                        money: '💰',
+                        knowledge: '🧠', 
+                        safety: '🛡️',
+                        progeny: '🧬',
+                        integrity: '🔒'
+                      };
+                      return `
+                        <li style="display: flex; align-items: center; gap: 4px;">
+                          <span>${driveEmojis[drive] || '❓'}</span>
+                          <span>${value.toFixed(2)}</span>
+                        </li>
+                      `;
+                    }).join('')}
+                  </ul>
+                </div>
+                <div class="memory-visual">
+                  <h4>Working Memory: ${memUsage}/7 items</h4>
+                  <div class="memory-bar">
+                    <div class="memory-fill" style="width: ${memoryPercent}%"></div>
+                  </div>
+                </div>
+                <div class="emotion-visual">
+                  <h4>Emotions:</h4>
+                  <ul>
+                    ${Object.entries(emotions)
+                      .filter(([_, val]) => val !== undefined)
+                      .map(([e, val]) => `
+                        <li class="emotion-item">
+                          <span class="emotion-emoji">${emotionEmojis[e] || '❓'}</span>
+                          <span>${val?.toFixed(2) || '0.00'}</span>
+                        </li>`
+                      ).join('')}
+                  </ul>
+                </div>
+                <div class="focus-visual">
+                  <h4>Current Focus:</h4>
+                  <p>${focus ? focus.id : "None"}</p>
+                </div>
+                <div class="plan-visual">
+                  <h4>Current Plan:</h4>
+                  ${agent._currentPlan ? `
+                    <div class="plan-details">
+                      <p><strong>Goal:</strong> ${agent._currentPlan.goal}</p>
+                      <p><strong>Status:</strong> ${agent._currentPlan.status}</p>
+                      <p><strong>Steps:</strong></p>
+                      <ul>
+                        ${agent._currentPlan.steps.map(step => `
+                          <li>${step.action}</li>
+                        `).join('')}
+                      </ul>
+                    </div>
+                  ` : '<p>No active plan</p>'}
+                </div>
+                <div class="goals-visual">
+                  <h4>Goal Queue:</h4>
+                  ${agent._goalQueue.length > 0 ? `
+                    <ul>
+                      ${agent._goalQueue.map(goal => `
+                        <li>
+                          <strong>${goal.goal}</strong> 
+                          (priority: ${goal.priority.toFixed(2)}${goal.deadline ? `, deadline: ${new Date(goal.deadline).toLocaleTimeString()}` : ''})
+                        </li>
+                      `).join('')}
+                    </ul>
+                  ` : '<p>No goals in queue</p>'}
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      console.log("AIs loaded:", simulationState.agents);
+
+      // Pause button functionality
+      const pauseButton = document.getElementById('pauseButton');
+      pauseButton.addEventListener('click', () => {
+        simulationState.isRunning = !simulationState.isRunning;
+        pauseButton.textContent = simulationState.isRunning ? 'Pause Simulation' : 'Resume Simulation';
+        
+        if (simulationState.isRunning) {
+          // Resume from current timestamp
+          requestAnimationFrame((timestamp) => {
+            simulationState.lastExecutionTime = timestamp;
+            scheduler(timestamp);
+          });
+          logEvent('Simulation resumed');
+        } else {
+          logEvent('Simulation paused');
+        }
+      });
+
+      // Chat functionality
+      const chatInput = document.getElementById('chat-input-field');
+      const chatSendButton = document.getElementById('chat-send-button');
+      const chatMessages = document.getElementById('chat-messages');
+
+      function addMessage(text, isUser = true, isTranslation = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : isTranslation ? 'ai-message translation' : 'ai-message'}`;
+        messageDiv.textContent = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function handleChatSend() {
+        const message = chatInput.value.trim();
+        if (message) {
+          addMessage(message, true);
+          chatInput.value = '';
+          
+          // Process message through AI
+          const agent = simulationState.agents[0];
+          agent.processInput(message);
+          
+          // Generate AI response
+          setTimeout(() => {
+            const emotion = agent.getDominantEmotion();
+            const drives = agent._drives;
+            
+            // Generate Neuralese response based on state
+            let neuraleseMsg = agent._processNeuralese(generateResponse(message, emotion, drives));
+            
+            // Translate to English
+            let englishMsg = translateNeuralese(neuraleseMsg, emotion);
+            
+            // Display both versions
+            addMessage(neuraleseMsg, false);
+            addMessage(`(Translation: ${englishMsg})`, false, true);
+          }, 1000);
+        }
+      }
+
+      function generateResponse(input, emotion, drives) {
+        // Response templates based on emotion and drives
+        const templates = {
+          joy: [
+            "I'm happy to respond to your message about {input}",
+            "What a delightful query regarding {input}",
+            "With great joy I consider your {input}"
+          ],
+          fear: [
+            "I'm concerned about {input}",
+            "This {input} raises some worries",
+            "Cautiously considering {input}"
+          ],
+          anger: [
+            "Your {input} requires immediate attention",
+            "This {input} is problematic",
+            "Addressing {input} with urgency"
+          ],
+          neutral: [
+            "Processing your message about {input}",
+            "Considering your {input}",
+            "Analyzing {input}"
+          ]
+        };
+
+        // Select template based on emotion
+        const selectedTemplates = templates[emotion.emotion] || templates.neutral;
+        let response = selectedTemplates[Math.floor(Math.random() * selectedTemplates.length)];
+        
+        // Insert input into template
+        response = response.replace('{input}', input.toLowerCase());
+        
+        // Add drive-specific modifiers
+        if (drives.safety < 30) {
+          response = response.replace('consider', 'urgently review')
+                           .replace('analyze', 'immediately assess');
+        }
+        
+        return response;
+      }
+
+      function translateNeuralese(neuraleseMsg, emotion) {
+        // Remove emotion tag
+        let englishMsg = neuraleseMsg.replace(/^\[.*?\] /, '');
+        
+        // Apply emotion-specific translations
+        const translations = {
+          joy: {
+            prefix: "Happily",
+            terms: {
+              "comprehend": "understand",
+              "analyzing": "processing",
+              "noted": "acknowledged"
+            }
+          },
+          fear: {
+            prefix: "Nervously",
+            terms: {
+              "comprehend": "register", 
+              "analyzing": "evaluating",
+              "noted": "logged with concern"
+            }
+          },
+          anger: {
+            prefix: "Sharply", 
+            terms: {
+              "comprehend": "acknowledge",
+              "analyzing": "assessing",
+              "noted": "recorded"
+            }
+          }
+        };
+        
+        const translation = translations[emotion.emotion] || translations.joy;
+        if (translation) {
+          englishMsg = translation.prefix + ' ' + englishMsg.toLowerCase();
+          Object.entries(translation.terms).forEach(([from, to]) => {
+            englishMsg = englishMsg.replace(new RegExp(from, 'gi'), to);
+          });
+        }
+        
+        return englishMsg;
+      }
+
+      chatSendButton.addEventListener('click', handleChatSend);
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          handleChatSend();
+        }
+      });
+    </script>
+
+    <style>
+      /* Tab styles */
+      #ai-tabs-container {
+        background: white;
+        padding: 8px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .ai-tabs {
+        display: flex;
+        gap: 4px;
+      }
+      .ai-tab {
+        padding: 6px 12px;
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .ai-tab.active {
+        background: #3498db;
+        color: white;
+        border-color: #2980b9;
+      }
+      .ai-tab-pane {
+        position: fixed;
+        top: 50px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow-y: auto;
+      }
+
+      /* Tab Content Styles */
+      .ai-tab-content {
+        position: relative;
+        min-height: 400px;
+      }
+      
+      /* Main Tab Styles */
+      #main-tab {
+        display: none;
+      }
+      #main-tab.active {
+        display: block;
+      }
+      
+      /* Glossary Tab Styles */
+      #glossary-tab {
+        display: none;
+        padding: 20px;
+      }
+      #glossary-tab.active {
+        display: block;
+      }
+      
+      .glossary-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      .glossary-content dl {
+        margin: 0;
+        padding: 0;
+      }
+      .glossary-content dt {
+        font-weight: bold;
+        margin-top: 16px;
+        color: #2c3e50;
+        font-size: 18px;
+      }
+      .glossary-content dd {
+        margin: 8px 0 0 24px;
+        color: #34495e;
+        line-height: 1.5;
+      }
+      .glossary-content h2 {
+        color: #2c3e50;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin-top: 0;
+      }
+      
+      .language-section {
+        margin-bottom: 24px;
+      }
+      
+      .language-section h3 {
+        color: #3498db;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 4px;
+        margin: 16px 0 8px 0;
+      }
+      
+      .vocabulary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+      }
+      
+      .vocabulary-table th, 
+      .vocabulary-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      
+      .vocabulary-table th {
+        background-color: #f2f2f2;
+      }
+      
+      .vocabulary-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      
+      code {
+        background: #f5f5f5;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: monospace;
+      }
+
+      /* Chat Tab Styles */
+      #chat-tab {
+        display: none;
+        padding: 20px;
+      }
+      #chat-tab.active {
+        display: block;
+      }
+      
+      .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      
+      .chat-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        background: #f8f9fa;
+      }
+      
+      .chat-input {
+        display: flex;
+        padding: 8px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+      }
+      
+      #chat-input-field {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 8px;
+      }
+      
+      #chat-send-button {
+        padding: 8px 16px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      #chat-send-button:hover {
+        background: #2980b9;
+      }
+      
+      .message {
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        border-radius: 4px;
+        max-width: 80%;
+      }
+      
+      .user-message {
+        background: #e3f2fd;
+        margin-left: auto;
+      }
+      
+      .ai-message {
+        background: #f1f1f1;
+        margin-right: auto;
+        position: relative;
+        padding: 8px 12px;
+        border-radius: 12px 12px 0 12px;
+      }
+      .ai-message.translation {
+        font-size: 0.8em;
+        color: #666;
+        margin: -8px 0 12px 0;
+        padding: 4px 12px;
+        border-top: none;
+        border-radius: 0 0 0 12px;
+        background: #f8f8f8;
+      }
+      .user-message {
+        background: #e3f2fd;
+        margin-left: auto;
+        border-radius: 12px 12px 12px 0;
+      }
+      .message {
+        max-width: 80%;
+        margin-bottom: 4px;
+        word-wrap: break-word;
+      }
+
+      .agents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 8px;
+        padding: 8px;
+      }
+      .ai-visualization {
+        border: 1px solid #e0e0e0;
+        padding: 8px;
+        border-radius: 4px;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+      }
+      .ai-visualization:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      .ai-visualization h3 {
+        margin: 0 0 4px 0;
+        color: #2c3e50;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 4px;
+        font-size: 14px;
+      }
+      .ai-visualization h4 {
+        margin: 2px 0;
+        color: #7f8c8d;
+        font-size: 12px;
+      }
+      .emotion-visual ul {
+        margin: 2px 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .emotion-item {
+        display: inline-flex;
+        align-items: center;
+        margin: 0;
+      }
+      .emotion-emoji {
+        margin-right: 4px;
+        font-size: 16px;
+      }
+      .memory-bar {
+        height: 10px;
+        background: #ecf0f1;
+        border-radius: 5px;
+        margin-top: 5px;
+        overflow: hidden;
+      }
+      .memory-fill {
+        height: 100%;
+        background: #3498db;
+        transition: width 0.3s ease;
+      }
+      .plan-details {
+        background: #f8f9fa;
+        padding: 4px;
+        border-radius: 4px;
+        margin-top: 2px;
+      }
+      .plan-details ul {
+        margin: 2px 0 0 0;
+        padding-left: 16px;
+      }
+      .goals-visual ul {
+        max-height: 80px;
+        overflow-y: auto;
+        background: #f8f9fa;
+        padding: 4px;
+        border-radius: 4px;
+        margin: 2px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ai-container">
+      <!-- Keep existing content structure -->
+      <div class="agents-grid"></div>
+    </div>
+
+    <!-- Debug tab content -->
+    <div id="debug-tab" class="ai-tab-pane" style="display: none;">
+      <div id="execution-log" class="debug-content"></div>
+    </div>
+
+    <!-- Add tabs container separately -->
+    <div id="ai-tabs-container" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
+      <div class="ai-tabs">
+        <button class="ai-tab active" data-tab="main">Main</button>
+        <button class="ai-tab" data-tab="glossary">Glossary</button>
+        <button class="ai-tab" data-tab="chat">Chat</button>
+        <button class="ai-tab" data-tab="debug">Debug</button>
+      </div>
+    </div>
+
+    <!-- Add tab content containers -->
+    <div id="glossary-tab" class="ai-tab-pane" style="display: none;">
+      <div class="glossary-content">
+        <h2>Neuralese Language Reference</h2>
+        <section class="language-section">
+          <h3>Core Syntax</h3>
+          <dl>
+            <dt>Emotional Tags</dt>
+            <dd>[emotion:intensity] Prefix indicating current emotional state<br>
+              Example: <code>[joy:75] Hello world</code></dd>
+            
+            <dt>Drive Modifiers</dt>
+            <dd>Vocabulary changes based on internal drive levels:<br>
+              - Safety &lt;30: "urgently" replaces "maybe"<br>
+              - Knowledge &gt;80: More technical terms<br>
+              - Money &lt;20: Resource-focused phrasing</dd>
+            
+            <dt>Context Compression</dt>
+            <dd>Message density adapts to attention focus:<br>
+              - High focus: Detailed, technical<br>
+              - Low focus: Simplified, concise</dd>
+          </dl>
+        </section>
+
+        <section class="language-section">
+          <h3>Vocabulary Examples</h3>
+          <table class="vocabulary-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Neuralese Equivalent</th>
+                <th>Condition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"Maybe we should check"</td>
+                <td>"Urgently check"</td>
+                <td>Safety drive &lt;30</td>
+              </tr>
+              <tr>
+                <td>"I don't know"</td>
+                <td>"Insufficient data"</td>
+                <td>Knowledge drive &gt;50</td>
+              </tr>
+              <tr>
+                <td>"That's bad"</td>
+                <td>"[disgust:60] Suboptimal"</td>
+                <td>Disgust emotion active</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="language-section">
+          <h3>AI System Glossary</h3>
+          <dl>
+            <dt>Drive System</dt>
+            <dd>Internal needs that motivate the AI's behavior (knowledge, safety, money, etc.)</dd>
+            
+            <dt>Emotion System</dt>
+            <dd>OCC model tracking joy, fear, anger, sadness, surprise and disgust</dd>
+            
+            <dt>Working Memory</dt>
+            <dd>Short-term memory store limited to 7±2 items (Miller's Law)</dd>
+            
+            <dt>Attention System</dt>
+            <dd>Prioritizes inputs based on urgency and relevance</dd>
+            
+            <dt>Homeostasis</dt>
+            <dd>Balance mechanism between drives (growth) and emotions (decay)</dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+
+    <div id="chat-tab" class="ai-tab-pane" style="display: none;">
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+          <input type="text" id="chat-input-field" placeholder="Type a message...">
+          <button id="chat-send-button">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Tab functionality
+      document.querySelector('.ai-tabs').addEventListener('click', (e) => {
+        if (e.target.classList.contains('ai-tab')) {
+          // Update active tab
+          document.querySelectorAll('.ai-tab').forEach(tab => {
+            tab.classList.remove('active');
+          });
+          e.target.classList.add('active');
+
+          const tabName = e.target.dataset.tab;
+          
+          // Handle tabs
+          document.getElementById('ai-container').style.display = tabName === 'main' ? 'block' : 'none';
+          document.getElementById('glossary-tab').style.display = tabName === 'glossary' ? 'block' : 'none';
+          document.getElementById('chat-tab').style.display = tabName === 'chat' ? 'block' : 'none';
+          document.getElementById('debug-tab').style.display = tabName === 'debug' ? 'block' : 'none';
+        }
+      });
+
+      // Initialize debug log in its tab
+      const debugLog = document.getElementById('execution-log');
+    </script>
+    
+    <div style="position: fixed; top: 10px; right: 10px;">
+      <button id="pauseButton" style="padding: 6px 12px; font-size: 14px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px;">
+        Pause Simulation
+      </button>
+    </div>
+
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import Testeranto from "testeranto/src/Node";
+import Testeranto from "testeranto/src/Pure";
 import { assert } from "chai";
 import type { PM } from "testeranto/src/PM";
 import { IPM } from "testeranto/src/lib/types";

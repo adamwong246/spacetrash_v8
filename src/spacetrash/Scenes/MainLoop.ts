@@ -51,10 +51,9 @@ class MainScene extends SpaceTrashScene {
 
       // game.setEntitiesComponent(puckBots);
 
-      const aiBots = [...new Array(1)].map(() => {
+      const aiBots = [...new Array(10)].map(() => {
         return new AiBot(
-          (MapSize * TileSize) / 2,
-          (MapSize * TileSize) / 2,
+          200, 200,
           two_d_images,
           three_d_textures
         );

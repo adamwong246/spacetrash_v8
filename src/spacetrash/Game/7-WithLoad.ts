@@ -724,7 +724,7 @@ export abstract class GameWithLoad extends GameWithLevel {
   // Setup AI's before the first game tick
   loadAiAgents() {
     this.components.AiAgentComponent.each((a, aeid) => {
-      a.load();
+      a.load(aeid);
     });
   }
 

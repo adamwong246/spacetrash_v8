@@ -1,0 +1,19 @@
+
+/add ../testeranto/src/lib/index.ts
+/add ../testeranto/src/lib/pmProxy.ts
+/add ../testeranto/src/lib/abstractBase.ts
+/add ../testeranto/src/lib/basebuilder.ts
+/add ../testeranto/src/lib/classBuilder.ts
+/add ../testeranto/src/lib/core.ts
+/add ../testeranto/src/PM/index.ts
+/add ../testeranto/src/PM/pure.ts
+/add ../testeranto/src/Pure.ts
+/add src/demiurge/ecs/Component.ts
+/add src/demiurge/ecs/Store.test.ts
+/add src/demiurge/ecs/Store.ts
+/add src/demiurge/ecs/SP_Store.test.ts
+
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/pure/tests.json
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/pure/console_log.txt
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/pure/type_errors.txt
+/read testeranto/reports/spacetrash/src/demiurge/ecs/SP_Store.test/pure/lint_errors.json

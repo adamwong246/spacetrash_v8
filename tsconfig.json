@@ -1,5 +1,5 @@
 {
-  "include": ["src"],
+  "include": ["src", "scripts/GLTFGenerator.ts"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node",

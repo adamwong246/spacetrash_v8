@@ -31,11 +31,21 @@ export abstract class ECS {
   }
 
   addComponent(i: number, c: Component<any, any>) {
-    const name = c.constructor.name;
-    const store: SP_Store<any> = this.components[name];
 
-    if (!store)
-      throw `Did you forget to register the store "${name}? Check the top level constructor for the implementation of Game."`;
+    let storeKey;
+    const cnstrctr = (c.constructor as any);
+
+    if (cnstrctr.getStoreKey) {
+      storeKey = (c.constructor as any).getStoreKey();  
+    } else {
+      storeKey = cnstrctr.name;
+    }
+    
+    const store: SP_Store<any> = this.components[storeKey];
+
+    if (!store) {
+      throw `Did you forget to register the store "${storeKey}" for component ${c.constructor.name}?`;
+    }
     store.make(c, i);
   }
 

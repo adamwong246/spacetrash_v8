@@ -1,0 +1,112 @@
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_MapStore.test.ts (16,3): Argument of type 'SP_MapStore<any>' is not assignable to parameter of type 'null'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_MapStore.ts (12,37): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_MapStore.ts (48,11): The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/SP_MapStore.ts (60,11): The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (16,37): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (28,43): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (155,40): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (166,12): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (167,12): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (168,12): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (169,37): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (169,99): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (170,16): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (170,78): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (180,3): Type '() => void' is not assignable to type '(store: SP_Store<any>, key: string, pm: IPM) => Promise<unknown>'.
+  Type 'void' is not assignable to type 'Promise<unknown>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (186,3): Type '() => Promise<void>' is not assignable to type '(input: null, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<null>'.
+  Type 'Promise<void>' is not assignable to type 'Promise<null>'.
+    Type 'void' is not assignable to type 'null'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (190,3): Type '(s: SP_Store<any>, whenCB: (...x: unknown[]) => (p: SP_Store<any>, utils: IPM) => Promise<SP_Store<any>>, tr: ITTestResourceConfiguration, utils: IPM) => Promise<...>' is not assignable to type '(store: SP_Store<any>, whenCB: (...x: unknown[]) => (p: SP_Store<any>, utils: IPM) => Promise<SP_Store<any>>, testResource: ITTestResourceConfiguration, pm: IPM) => Promise<...>'.
+  Type 'Promise<(p: SP_Store<any>, utils: IPM) => Promise<SP_Store<any>>>' is not assignable to type 'Promise<SP_Store<any>>'.
+    Type '(p: SP_Store<any>, utils: IPM) => Promise<SP_Store<any>>' is not assignable to type 'SP_Store<any>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (232,67): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (237,27): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (237,88): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (242,27): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.test.ts (242,88): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (21,43): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (77,46): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (79,3): Duplicate identifier 'store'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (94,46): Type 'Component' is not generic.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (96,3): Duplicate identifier 'store'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (98,3): Property 'make' in type 'SP_TwoDStore<I>' is not assignable to the same property in base type 'SP_Store<I>'.
+  Type '(ic: I, x: number, y: number) => I' is not assignable to type '(ic: I, eid: number) => any'.
+    Target signature provides too few arguments. Expected 3 or more, but got 2.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (102,3): Property 'take' in type 'SP_TwoDStore<I>' is not assignable to the same property in base type 'SP_Store<I>'.
+  Type '(x: number, y: number) => NonNullable<I>' is not assignable to type '(eid: number) => I'.
+    Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (108,3): Property 'update' in type 'SP_TwoDStore<I>' is not assignable to the same property in base type 'SP_Store<I>'.
+  Type '(pic: Partial<I>, x: number, y: number) => I & Partial<I>' is not assignable to type '(pic: unknown, eid: number) => I'.
+    Target signature provides too few arguments. Expected 3 or more, but got 2.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (118,18): Property 'set' does not exist on type 'I[][]'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (118,22): Cannot find name 'eid'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (120,72): Cannot find name 'eid'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/ecs/Store.ts (149,23): Argument of type 'I[]' is not assignable to parameter of type 'I'.
+  'I[]' is assignable to the constraint of type 'I', but 'I' could be instantiated with a different subtype of constraint 'any'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,15): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,19): Module '"../Types.js"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (22,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (23,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (25,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (176,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (178,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (179,3): Property 'recommendedFsPath' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (182,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (183,3): Property 'failed' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (277,7): Type 'unknown' is not assignable to type 'Error'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (309,12): 'e' is of type 'unknown'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (322,9): Type 'unknown' is not assignable to type 'boolean'.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (335,3): Property 'error' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (439,3): Property 'key' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/abstractBase.ts (444,3): Property 'store' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,10): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,14): '"../Types.js"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (7,34): Module '"../Types.js"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (37,3): Property 'assertThis' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (48,3): Property 'puppetMaster' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (84,13): Argument of type '(fPath: string, value: string | Buffer | PassThrough) => any' is not assignable to parameter of type '(fPath: string, value: unknown) => void'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | Buffer<ArrayBufferLike> | PassThrough'.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (85,15): This expression is not callable.
+  Not all constituents of type 'void | ((fPath: string, value: string | Buffer<ArrayBufferLike> | PassThrough) => void)' are callable.
+    Type 'void' has no call signatures.
+/Users/adam/Code/testeranto/src/lib/basebuilder.ts (164,29): Property 'artifacts' does not exist on type '{ test: BaseSuite<I, O>; toObj: () => { name: string; givens: { key: string; name: string; whens: {}[]; thens: { name: string; error: boolean; }[]; error: (string | Error | undefined)[] | null; failed: boolean; features: string[]; }[]; checks: any[]; fails: number; failed: boolean; features: string[]; }; runner: (pu...'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,10): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,14): '"../Types.js"' has no exported member named 'ITestImplementation'. Did you mean 'TestWhenImplementation'?
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,35): '"../Types.js"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (3,55): Module '"../Types.js"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (81,7): No overload matches this call.
+  Overload 1 of 3, '(callbackfn: (previousValue: [string, unknown], currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => [string, unknown], initialValue: [string, unknown]): [string, unknown]', gave the following error.
+    Argument of type '(a: {}, [key, whEn]: [string, (x: any) => any]) => {}' is not assignable to parameter of type '(previousValue: [string, unknown], currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => [string, unknown]'.
+      Types of parameters '__1' and 'currentValue' are incompatible.
+        Type '[string, unknown]' is not assignable to type '[string, (x: any) => any]'.
+          Type at position 1 in source is not compatible with type at position 1 in target.
+            Type 'unknown' is not assignable to type '(x: any) => any'.
+  Overload 2 of 3, '(callbackfn: (previousValue: {}, currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => {}, initialValue: {}): {}', gave the following error.
+    Argument of type '(a: {}, [key, whEn]: [string, (x: any) => any]) => {}' is not assignable to parameter of type '(previousValue: {}, currentValue: [string, unknown], currentIndex: number, array: [string, unknown][]) => {}'.
+      Types of parameters '__1' and 'currentValue' are incompatible.
+        Type '[string, unknown]' is not assignable to type '[string, (x: any) => any]'.
+          Type at position 1 in source is not compatible with type at position 1 in target.
+            Type 'unknown' is not assignable to type '(x: any) => any'.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (85,18): A spread argument must either have a tuple type or be passed to a rest parameter.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (100,28): A spread argument must either have a tuple type or be passed to a rest parameter.
+/Users/adam/Code/testeranto/src/lib/classBuilder.ts (127,7): Argument of type '[string, unknown]' is not assignable to parameter of type 'Record<string, IWhenKlasser<I>>'.
+  Index signature for type 'string' is missing in type '[string, unknown]'.
+/Users/adam/Code/testeranto/src/lib/core.ts (25,13): Cannot find name 'IT'.
+/Users/adam/Code/testeranto/src/lib/core.ts (26,13): Cannot find name 'OT'.
+/Users/adam/Code/testeranto/src/lib/index.ts (8,3): Module '"../Types.js"' declares 'Ibdd_in' locally, but it is not exported.
+/Users/adam/Code/testeranto/src/lib/index.ts (9,3): Module '"../Types.js"' has no exported member 'ITestInterface'.
+/Users/adam/Code/testeranto/src/lib/index.ts (14,3): Module '"../Types.js"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/index.ts (15,3): Module '"../Types.js"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/lib/types.ts (5,15): Module '"../Types"' has no exported member 'IT'.
+/Users/adam/Code/testeranto/src/lib/types.ts (5,19): Module '"../Types"' has no exported member 'OT'.
+/Users/adam/Code/testeranto/src/Node.ts (48,7): Argument of type 'ITestImplementation<I, O, M>' is not assignable to parameter of type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M> & M & { ...; }'.
+  Type 'Omit<{ suites: TestSuiteImplementation<O>; givens: TestGivenImplementation<I, O>; whens: TestWhenImplementation<I, O>; thens: TestThenImplementation<...>; checks: TestCheckImplementation<...>; }, keyof M>' is missing the following properties from type '{ suites: Record<string, any>; givens: Record<string, any>; whens: Record<string, any>; thens: Record<string, any>; checks: Record<string, any>; }': suites, givens, whens, thens, checks
+/Users/adam/Code/testeranto/src/Node.ts (68,37): Cannot find name 'IT'.
+/Users/adam/Code/testeranto/src/Node.ts (68,51): Cannot find name 'OT'.
+/Users/adam/Code/testeranto/src/Node.ts (72,26): Cannot find name 'INodeTestInterface'. Did you mean 'ITestInterface'?
+/Users/adam/Code/testeranto/src/PM/index.ts (9,3): Property 'testResourceConfiguration' has no initializer and is not definitely assigned in the constructor.
+/Users/adam/Code/testeranto/src/PM/web.ts (56,12): Cannot find name 'opts'.
+/Users/adam/Code/testeranto/src/PM/web.ts (57,57): Cannot find name 'opts'.
+/Users/adam/Code/testeranto/src/PM/web.ts (59,7): Cannot find name 'page'. Did you mean the instance member 'this.page'?

@@ -1,0 +1,15 @@
+src/demiurge/ecs/SP_MapStore.test.ts
+12:10 'Component' is defined but never used. (@typescript-eslint/no-unused-vars)
+45:17 '_eid' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+
+src/demiurge/ecs/SP_MapStore.ts
+22:17 '_eid' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+
+src/demiurge/ecs/Store.test.ts
+155:3 'Check' is defined but never used. (@typescript-eslint/no-unused-vars)
+
+src/demiurge/ecs/Store.ts
+49:48 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+- undefined (fix)
+- undefined (fix)
+148:8 'cb' is defined but never used. (@typescript-eslint/no-unused-vars)

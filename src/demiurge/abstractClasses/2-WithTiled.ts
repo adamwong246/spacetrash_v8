@@ -39,8 +39,11 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
 
   currentLevel: string;
 
+
+
+  // (x: number, y: number) => { tid: number; hFlip: boolean; vFlip: boolean; dFlip: boolean; tileset: ITiledMapTileset; } | undefined
   level = {
-    tileLayer: (layerName: string) => {
+    tileLayer: (layerName: string): {get: (x: number, y: number) => { tid: number; hFlip: boolean; vFlip: boolean; dFlip: boolean; tileset: ITiledMapTileset; }  | undefined} => {
       const level = this.tiledProject.levels.get(this.currentLevel);
       if (!level) throw `level "${this.currentLevel}" does not exist`;
 
@@ -63,8 +66,29 @@ export abstract class GameWithTiledEditor extends GameWithScenes {
       };
     },
 
-    objectLayer: (layerName: string) => {
-      throw "not yet implemented";
+    objectLayer: (layerName: string): {
+      get: (id: number) => {
+        id: number; name: string; type: string; rotation: number; visible: boolean; x: number; y: number;
+      } | undefined
+    } => {
+      const level = this.tiledProject.levels.get(this.currentLevel);
+      if (!level) throw `level "${this.currentLevel}" does not exist`;
+
+      let foundLayer;
+      for (let l of level.layers) {
+        if (l.name === layerName && l.type === "objectgroup") {
+          foundLayer = l;
+          break;
+        }
+      }
+
+      if (!foundLayer) throw `object layer "${layerName}" was not found`;
+
+      return {
+        get: (id: number) => {
+          return foundLayer.objects.find(obj => obj.id === id);
+        }
+      };
     },
   };
 
