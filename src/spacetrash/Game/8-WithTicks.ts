@@ -13,7 +13,7 @@ import {
 import { TankMovingComponent } from "../ECS/Components/v4/TankMovingComponent";
 import { GameWithLoad } from "./7-WithLoad";
 import { SP_PhysicalComponent } from "../../demiurge/physics/SP_Physical";
-import { renderGraphToCanvas } from "../../demiurge/physics/renderGraphToCanvas";
+
 
 export abstract class GameWithTicks extends GameWithLoad {
   constructor(domNode: HTMLElement) {
@@ -27,35 +27,19 @@ export abstract class GameWithTicks extends GameWithLoad {
       this.runTankPhysics(delta);
       this.runFloatingMotion();
       this.runPhysics(delta);
-      // this.resetIllumination();
-      // this.resetRadiation();
-      // this.runAI(delta);
-      // this.runArcadePhysics();
-      // this.runRadiationScan();
-      // this.runHeatSpread();
-      // this.runUpdateUI();
-      // this.rotLighting();
+      this.tickAI(delta);
+    });
+  }
 
-      // rot += 0.00001;
-      // this.components.ThreeJsRenderableComponent.each((x, i) => {
-      //   // if (Math.random() > 0.01) {
-      //   //     x.mesh.visible = false;
-      //   // } else {
-      //   //     x.mesh.visible = true;
-      //   // }
-
-      //   const c = this.entities.get(i)[0];
-      //   if (c === "WallTile") {
-      //     for (let mesh of x.meshes) {
-      //       // mesh.rotateZ(rot);
-      //       // mesh.rotateX(rot);
-      //       // mesh.rotateY(rot);
-      //     }
-
-      //     // x.mesh.rotateZ(rot);
-      //     // x.mesh.rotateZ(rot);
-      //   }
-      // });
+  tickAI(delta: number) {
+    this.components.AiAgentComponent.each((agent, eid) => {
+      agent.tick(this, delta);
+      
+      // Debug logging
+      const physical = this.components.SP_PhysicalComponent.get(eid);
+      if (physical) {
+        console.log(`AiBot ${eid} position:`, physical.X(), physical.Y());
+      }
     });
   }
 
@@ -210,6 +194,7 @@ export abstract class GameWithTicks extends GameWithLoad {
 
       if (!sppc.body.isStatic) {
         sppc.move(delta);
+        sppc.markPhysicsActive();
 
         // if (this.components.TankMovingComponent.get(eid)) {
         //   // no-op
@@ -311,7 +296,6 @@ export abstract class GameWithTicks extends GameWithLoad {
         }
       },
       this.navmesh
-      
     );
 
     // this.samuraiEngine.system.separate();
@@ -319,16 +303,16 @@ export abstract class GameWithTicks extends GameWithLoad {
 
   boundarySP_Physics(fpc: SP_PhysicalComponent) {
     if (fpc.X() < 0) {
-      fpc.setX(MapSize * TileSize);
+      fpc.teleportX(MapSize * TileSize);
     }
     if (fpc.X() > MapSize * TileSize) {
-      fpc.setX(0);
+      fpc.teleportX(0);
     }
     if (fpc.Y() < 0) {
-      fpc.setY(MapSize * TileSize);
+      fpc.teleportY(MapSize * TileSize);
     }
     if (fpc.Y() > MapSize * TileSize) {
-      fpc.setY(0);
+      fpc.teleportY(0);
     }
   }
 
@@ -458,7 +442,7 @@ export abstract class GameWithTicks extends GameWithLoad {
     // let repaintLights = false;
     this.components.FloatMovingComponent.each((f, eid) => {
       const { position, classification } = this.components.Eid2PM.get(eid);
-      if (classification === "PuckBot" || classification === "SpaceTrashBot") {
+      if (classification === "PuckBot" || classification === "SpaceTrashBot"|| classification === "AiBot") {
         // const p = fps.get(eid);
         // if (!p) throw "floating position component not found";
         this.boundaryCheckBot(position);
@@ -610,16 +594,16 @@ export abstract class GameWithTicks extends GameWithLoad {
 
   boundaryCheckBot(fpc: PositionComponent) {
     if (fpc.X() < 0) {
-      fpc.setX(MapSize * TileSize);
+      fpc.teleport(MapSize * TileSize, fpc.Y());
     }
     if (fpc.X() > MapSize * TileSize) {
-      fpc.setX(0);
+      fpc.teleport(0, fpc.Y());
     }
     if (fpc.Y() < 0) {
-      fpc.setY(MapSize * TileSize);
+      fpc.teleport(fpc.X(), MapSize * TileSize);
     }
     if (fpc.Y() > MapSize * TileSize) {
-      fpc.setY(0);
+      fpc.teleport(fpc.X(), 0);
     }
   }
 
@@ -827,16 +811,6 @@ export abstract class GameWithTicks extends GameWithLoad {
   //   });
   // }
 
-  // runAI(delta: number) {
-  //   this.components.AiAgentComponent.each((a, aeid) => {
-  //     a.tick(this, delta);
-  //   });
-
-  //   // attacks.each((eid, attack) => {
-
-  //   // });
-  // }
-
   // runArcadePhysics() {
 
   //   this.components.ArcadePhysicsComponent.each((f, feid) => {
@@ -965,6 +939,4 @@ export abstract class GameWithTicks extends GameWithLoad {
     //   rd.rads = 0;
     // });
   }
-
-
 }

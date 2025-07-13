@@ -107,5 +107,5 @@ stdout > toObj error TypeError: Spread syntax requires ...iterable[Symbol.iterat
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async Testeranto.constructor.run (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4357:22)
     at async file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/node/spacetrash/chunk-375DLY6U.mjs:4607:19
-stdout > toObj error undefined
+toObj error undefined
 stderr > goodbye node error 3

@@ -5,12 +5,12 @@
     },
     "activeFile": "src/spacetrash/tiled/level23.tmj",
     "expandedProjectPaths": [
-        "src/engine/game",
         ".",
+        "src/engine/game",
         "src/spacetrash",
-        "src/spacetrash/Assets",
         "src/spacetrash/tiled",
-        "src"
+        "src",
+        "src/spacetrash/Assets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -125,8 +125,8 @@
             "scale": 0.5636,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1497.515968772179,
-                "y": 346.8772178850249
+                "x": -741.6607523066004,
+                "y": 877.3953158268275
             }
         },
         "src/spacetrash/tiled/level7.tmj": {

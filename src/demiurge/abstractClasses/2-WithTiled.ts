@@ -6,6 +6,7 @@
 
 import { GameWithScenes } from "./1-WithScenes";
 import { MapSize } from "../../spacetrash/Constants";
+import { ITiledMapTileset } from "@workadventure/tiled-map-type-guard/dist/ITiledMapTileset";
 
 export abstract class GameWithTiledEditor extends GameWithScenes {
   static formats = ["tsj", "tmj", "tj"];

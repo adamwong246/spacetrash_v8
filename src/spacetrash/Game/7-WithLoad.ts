@@ -52,7 +52,7 @@ export abstract class GameWithLoad extends GameWithLevel {
     // this.cullInteriorFaces();
 
     this.loadPhysics();
-    this.setupAiAgents();
+    this.loadAiAgents();
     this.setupHeat();
     this.measureThreejs();
   }
@@ -721,26 +721,10 @@ export abstract class GameWithLoad extends GameWithLevel {
     // });
   };
 
-  setupAiAgents() {
-    this.components.Actors.each((ac, eid) => {
-      if (!ac.friendly) {
-        this.components.AiAgentComponent.each((ai, eid2) => {
-          if (eid === eid2) {
-            // const onCollide = () => { };
-
-            // ac.onCollision = onCollide;
-            // ai.
-
-            ac.agent = ai;
-            arcadeBodiesToAgentOnCollisionCallbacks.push({
-              body: ac.arcadeBody,
-              callback: ai.collideCallback,
-            });
-            // ac.arcadeBody.setData('onCollide', ai.onCollide)
-            ai.boot(ac.arcadeBody, eid);
-          }
-        });
-      }
+  // Setup AI's before the first game tick
+  loadAiAgents() {
+    this.components.AiAgentComponent.each((a, aeid) => {
+      a.load();
     });
   }
 

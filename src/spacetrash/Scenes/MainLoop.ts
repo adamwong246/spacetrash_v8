@@ -1,10 +1,11 @@
 import { SpaceTrashScene } from ".";
 
 import { MapSize, TileSize } from "../Constants";
-import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot.ts";
-import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot.ts";
-import { SpaceTrash } from "../Game/9-WithTiled.ts";
-import { DesktopGame } from "../Game/1-DesktopGame.tsx";
+import { AiBot } from "../ECS/EntityComponents/bots/AiBot";
+import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot";
+import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot";
+import { DesktopGame } from "../Game/1-DesktopGame";
+import { SpaceTrash } from "../Game/9-WithTiled";
 
 class MainScene extends SpaceTrashScene {
   
@@ -39,8 +40,19 @@ class MainScene extends SpaceTrashScene {
       };
 
       // the physics engine cannot do more than 3000
-      const puckBots = [...new Array(100)].map((n) => {
-        return new PuckBot(
+      // const puckBots = [...new Array(100)].map((n) => {
+      //   return new PuckBot(
+      //     (MapSize * TileSize) / 2,
+      //     (MapSize * TileSize) / 2,
+      //     two_d_images,
+      //     three_d_textures
+      //   );
+      // });
+
+      // game.setEntitiesComponent(puckBots);
+
+      const aiBots = [...new Array(1)].map(() => {
+        return new AiBot(
           (MapSize * TileSize) / 2,
           (MapSize * TileSize) / 2,
           two_d_images,
@@ -48,7 +60,7 @@ class MainScene extends SpaceTrashScene {
         );
       });
 
-      game.setEntitiesComponent(puckBots);
+      game.setEntitiesComponent(aiBots);
 
 
     });

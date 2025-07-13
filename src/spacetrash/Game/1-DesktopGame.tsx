@@ -135,7 +135,7 @@ export abstract class DesktopGame<
       75,
       600 / 400,
       0.5,
-      1000
+      10000
     );
     this.camera.rotateX(defToRad(-90));
     this.camera.rotateY(defToRad(90));

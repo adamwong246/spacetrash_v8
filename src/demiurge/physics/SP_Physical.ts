@@ -7,24 +7,31 @@ import { Component } from "../ecs/Component";
 
 export class SP_PhysicalComponent extends Component<any, any> {
   static swapMotion(a: SP_PhysicalComponent, b: SP_PhysicalComponent) {
-    let av = a.body.angle;
-    let bv = b.body.angle;
-    let temp = av;
-
-    a.body.setAngle(b.body.angle);
-    b.body.setAngle(temp);
-
+    const aAngle = a.body.angle;
+    const bAngle = b.body.angle;
+    
+    a.body.setAngle(bAngle);
+    b.body.setAngle(aAngle);
+    
     a.body.updateBody();
     b.body.updateBody();
   }
 
+  private _physicsActive = false;
   body: Box | Polygon | Circle;
-  speed: number = 0;
+  speed: number = 2000; // Default constant speed
+  friction: number = 0.1; // Default friction
 
-  constructor(body: Box | Polygon | Circle, speed: number = 0) {
+  constructor(body: Box | Polygon | Circle, friction: number = 0.1) {
     super();
     this.body = body;
-    this.speed = speed;
+    this.friction = friction;
+    
+    // Ensure body is properly initialized
+    if (!body.isStatic) {
+      body.setAngle(body.angle || 0);
+      body.updateBody();
+    }
   }
 
   X() {
@@ -43,16 +50,66 @@ export class SP_PhysicalComponent extends Component<any, any> {
     this.body.setPosition(this.body.pos.x, this.body.pos.y + y);
   }
 
+  markPhysicsActive() {
+    this._physicsActive = true;
+  }
+
   setX(x: number) {
+    if (this._physicsActive) {
+      throw new Error("Cannot use setX after physics simulation has started - use teleport() if intentional");
+    }
     this.body.setPosition(x, this.body.pos.y);
   }
 
   setY(y: number) {
+    if (this._physicsActive) {
+      throw new Error("Cannot use setY after physics simulation has started - use teleport() if intentional");
+    }
     this.body.setPosition(this.body.pos.x, y);
   }
 
+  teleportX(x: number) {
+    this.body.setPosition(x, this.body.pos.y);
+    this.body.updateBody();
+  }
+
+  teleportY(y: number) {
+    this.body.setPosition(this.body.pos.x, y);
+    this.body.updateBody();
+  }
+
+  setPosition(x: number, y: number) {
+    if (this._physicsActive) {
+      throw new Error("Cannot use setPosition after physics simulation has started - use teleport() if intentional");
+    }
+    this.body.setPosition(x, y);
+  }
+
+  teleport(x: number, y: number) {
+    this.body.setPosition(x, y);
+    this.body.updateBody();
+  }
+
   move(delta: number) {
-    this.body.move(this.speed * delta);
+    if (!this.body.isStatic) {
+      // Mark physics as active on first move
+      if (!this._physicsActive) {
+        this._physicsActive = true;
+      }
+
+      // Move forward in current direction
+      this.body.move(this.speed * delta);
+        
+      // Apply friction by reducing speed
+      this.speed *= (1 - this.friction);
+      
+      // Ensure we don't go below minimum speed
+      if (this.speed < 0.01) {
+        this.speed = 0;
+      }
+      
+      this.body.updateBody();
+    }
   }
 
   // setVelocity(v: {x: number, y: number}) {
