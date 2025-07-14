@@ -1,11 +1,11 @@
 TypeError: Then.rotatedItIs is not a function
-    at spec (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752457032547:97:17)
+    at spec (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752457750791:97:17)
     at new BaseBuilder (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-MEI7AQW7.mjs:5247:18)
     at new ClassBuilder (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-MEI7AQW7.mjs:5405:5)
     at new Testeranto (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-MEI7AQW7.mjs:5422:5)
     at new PureTesteranto (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-MEI7AQW7.mjs:5642:5)
     at Pure_default (file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/chunk-MEI7AQW7.mjs:5659:10)
-    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752457032547:288:33
+    at file:///Users/adam/Code/spacetrash_v8/testeranto/bundles/pure/spacetrash/src/demiurge/physics/SP_2d_Vector.test.mjs?cacheBust=1752457750791:288:33
     at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
     at async CustomizedModuleLoader.import (node:internal/modules/esm/loader:228:24)
     at PM_Main.launchPure (/Users/adam/Code/testeranto/dist/prebuild/run.mjs:755:9)
