@@ -3,8 +3,6 @@ import { IProject } from "testeranto/src/Types";
 const config: IProject = {
   projects: {
     spacetrash: {
-      reportDomain: "https://adamwong246.github.io/testeranto-starter/",
-
       tests: [
 
         ["./src/demiurge/physics/SP_2d_Vector.test.ts", "pure", { ports: 0 }, []],
@@ -36,5 +34,7 @@ const config: IProject = {
       
     },
   },
+
+  reportDomain: "https://adamwong246.github.io/spacetrash_v8/"
 };
 export default config;

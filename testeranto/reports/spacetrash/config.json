@@ -1,5 +1,4 @@
 {
-  "reportDomain": "https://adamwong246.github.io/testeranto-starter/",
   "tests": [
     [
       "./src/demiurge/physics/SP_2d_Vector.test.ts",
