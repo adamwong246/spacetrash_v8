@@ -27390,9 +27390,7 @@
         );
       })();
     }, []);
-    console.log("bddErrors", bddErrors);
-    console.log("log", log);
-    if (!bddErrors || !log) {
+    if (bddErrors === void 0 || log === void 0) {
       return /* @__PURE__ */ import_react33.default.createElement("div", null, "loading...");
     }
     return /* @__PURE__ */ import_react33.default.createElement("div", null, " ", /* @__PURE__ */ import_react33.default.createElement(Row_default, null, /* @__PURE__ */ import_react33.default.createElement(Col_default, { sm: 12 }, /* @__PURE__ */ import_react33.default.createElement("h2", null, bddErrors.name))), /* @__PURE__ */ import_react33.default.createElement(Row_default, null, /* @__PURE__ */ import_react33.default.createElement(Tab_default.Container, { id: "root-tab-container", defaultActiveKey: "log" }, /* @__PURE__ */ import_react33.default.createElement(Row_default, null, /* @__PURE__ */ import_react33.default.createElement(Col_default, { sm: 1 }, /* @__PURE__ */ import_react33.default.createElement(Nav_default2, { variant: "pills", className: "flex-column" }, /* @__PURE__ */ import_react33.default.createElement(Nav_default2.Item, null, /* @__PURE__ */ import_react33.default.createElement(Nav_default2.Link, { eventKey: "log" }, "log"), /* @__PURE__ */ import_react33.default.createElement(Nav_default2.Link, { eventKey: "steps" }, "steps")))), /* @__PURE__ */ import_react33.default.createElement(Col_default, { sm: 11 }, /* @__PURE__ */ import_react33.default.createElement(Tab_default.Content, null, /* @__PURE__ */ import_react33.default.createElement(Tab_default.Pane, { eventKey: "log" }, /* @__PURE__ */ import_react33.default.createElement("pre", null, /* @__PURE__ */ import_react33.default.createElement("code", null, log))), /* @__PURE__ */ import_react33.default.createElement(Tab_default.Pane, { eventKey: "steps" }, /* @__PURE__ */ import_react33.default.createElement(
