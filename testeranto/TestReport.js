@@ -27390,6 +27390,8 @@
         );
       })();
     }, []);
+    console.log("bddErrors", bddErrors);
+    console.log("log", log);
     if (!bddErrors || !log) {
       return /* @__PURE__ */ import_react33.default.createElement("div", null, "loading...");
     }
