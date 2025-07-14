@@ -1,13 +1,8 @@
 // Gives an entity a name
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
+import { Component } from "../../../../demiurge/ecs/Component";
 
-import { Component } from "react";
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
-import { ISpaceTrashComponents } from "../v1";
-
-export class NameableComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class NameableComponent extends Component {
   name: string
 
   constructor(name: string) {

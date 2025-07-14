@@ -1,5 +1,6 @@
 import { SpaceTrashComponent } from "..";
-import { SP_MapStore } from "../../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../../demiurge/ecs/SP_MapStore";
+
 
 
 export type IRays =

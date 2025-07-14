@@ -3,14 +3,17 @@ import * as THREE from "three";
 
 import { Component } from "../../../../demiurge/ecs/Component";
 
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { TileSize } from "../../../Constants";
 
-import { AiAgentComponent, IBehaviors } from "./ai";
-import { ISpaceTrashComponents } from "../v1";
-import { FloatMovingComponent, FloatPositionComponent } from "../../../../demiurge/game/physical";
+import { AiAgentComponent } from "./ai";
 
-export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
+import {
+  FloatMovingComponent,
+  FloatPositionComponent,
+} from "../../../../demiurge/game/physical";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
+
+export class ActorComponent extends Component {
   actorId: number;
   agent: AiAgentComponent;
   friendly: boolean;
@@ -27,7 +30,6 @@ export class ActorComponent extends Component<unknown, ISpaceTrashComponents> {
     physical: Box | Polygon | Circle;
     meshes: THREE.Mesh[];
   }) {
-    
     super();
 
     this.physical = physical;

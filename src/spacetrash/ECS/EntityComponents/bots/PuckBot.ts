@@ -11,7 +11,7 @@ import { ThreeJsRenderableComponent } from "../../../../demiurge/rendering/three
 import { Actor, bunnySprite } from ".";
 import { degToRad } from "three/src/math/MathUtils.js";
 
-const redMaterial = new THREE.MeshBasicMaterial({ color: "FF0000" });
+// const redMaterial = new THREE.MeshBasicMaterial({ color: "FF0000" });
 
 export class PuckBot extends Actor {
   constructor(

@@ -1,11 +1,10 @@
 // Gives an entity the name of it's EntityComponent
 
-import { Component } from "react";
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
+import { Component } from "../../../../demiurge/ecs/Component";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
 import { ITiles } from "../../EntityComponents/tiles";
-import { ISpaceTrashComponents } from "../v1";
 
-export class TileComponent extends Component<unknown, ISpaceTrashComponents> {
+export class TileComponent extends Component {
   tileType: ITiles;
 
   constructor(tileType: ITiles) {
@@ -14,6 +13,4 @@ export class TileComponent extends Component<unknown, ISpaceTrashComponents> {
   }
 }
 
-export class TileComponentStore extends SP_MapStore<ITiles> {
-  
-}
+export class TileComponentStore extends SP_MapStore<ITiles> {}

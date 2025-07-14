@@ -1,27 +1,23 @@
 import { MapSize } from "./Constants";
-import {
-  generateRandomHexColor,
-  HeatConductorComponent,
-} from "./ECS/Components/v3/heat";
-import { SetPieceComponent, SetPieceStore } from "./ECS/Components/v3/setPieces";
-import { ThermalColors, getColorGrade } from "./ECS/System/ThermalColors";
+import { HeatConductorComponent } from "./ECS/Components/v3/heat";
+import { SetPieceStore } from "./ECS/Components/v3/setPieces";
 
 let largest = 0;
 
 let colors = [
-    "#0000FF",  // Blue
-    "#1A00E5",
-    "#3300CC",
-    "#4D00B2",
-    "#660099",
-    "#800080",
-    "#990066",
-    "#B2004D",
-    "#CC0033",
-    "#E5001A",
-    "#FF0000"   // Red
-]
-  
+  "#0000FF", // Blue
+  "#1A00E5",
+  "#3300CC",
+  "#4D00B2",
+  "#660099",
+  "#800080",
+  "#990066",
+  "#B2004D",
+  "#CC0033",
+  "#E5001A",
+  "#FF0000", // Red
+];
+
 export function averageNeighborsInPlace(s: SetPieceStore, GAME) {
   const numRows = MapSize;
   const numCols = MapSize;
@@ -58,7 +54,7 @@ export function averageNeighborsInPlace(s: SetPieceStore, GAME) {
       }
 
       if (sum > largest) {
-        largest = sum
+        largest = sum;
         // console.log("largest", largest)
       }
       // console.log("sum", sum)
@@ -83,7 +79,7 @@ export function averageNeighborsInPlace(s: SetPieceStore, GAME) {
 
       // ThermalColors[newGrade];
       // console.log(generateRandomHexColor(), ThermalColors[newGrade])
-      console.log(oldHeat, newHeat, oldGrade,newGrade)
+      console.log(oldHeat, newHeat, oldGrade, newGrade);
       if (oldGrade !== newGrade) {
         GAME.pixi2dThermalApp.stage.addChild(
           HeatConductorComponent.thermalGraphic(
@@ -122,7 +118,7 @@ export function interpolateColor(
   // Real-world implementation might include validation.
 
   // Normalize X to a value between 0 and 1
-  const normalizedX = (X - LOWER_BOUND) / (HIGHER_BOUND - LOWER_BOUND) * 4;
+  const normalizedX = ((X - LOWER_BOUND) / (HIGHER_BOUND - LOWER_BOUND)) * 4;
 
   // Convert hex colors to RGB values
   const coldRgb = hexToRgb(COLD_COLOR);
@@ -163,7 +159,6 @@ function rgbToHex(r: number, g: number, b: number): string {
   return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
 }
 
-
 export function distanceV2(x: number, y: number, x2: number, y2: number) {
   const distance = (x - x2) * (x - x2) + (y - y2) * (y - y2);
   if (isNaN(distance)) throw `distance cannot be NaN`;
@@ -172,7 +167,6 @@ export function distanceV2(x: number, y: number, x2: number, y2: number) {
 }
 
 // export const SpaceTrashMainSystem = new MainSystem(MapSize);
-
 
 // // Example Usage:
 // const LOWER_BOUND = -10;

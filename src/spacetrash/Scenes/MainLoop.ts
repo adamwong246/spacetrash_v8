@@ -1,8 +1,8 @@
 import { SpaceTrashScene } from ".";
 
-import { MapSize, TileSize } from "../Constants";
+
 import { AiBot } from "../ECS/EntityComponents/bots/AiBot";
-import { PuckBot } from "../ECS/EntityComponents/bots/PuckBot";
+
 import { SpaceTrashBot } from "../ECS/EntityComponents/bots/TankBot";
 import { DesktopGame } from "../Game/1-DesktopGame";
 import { SpaceTrash } from "../Game/9-WithTiled";

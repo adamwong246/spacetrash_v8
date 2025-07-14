@@ -6,7 +6,7 @@ import {
   IPartialInterface,
   ITestImplementation,
   ITestSpecification,
-} from "testeranto/src/Types";
+} from "testeranto/src/CoreTypes";
 import { GameWithLevel } from "./7-5-WithLevel";
 import { SP_Polygon } from "../../demiurge/physics/SP_Polygon";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
@@ -132,11 +132,10 @@ type I = Ibdd_in<
   (game: TestGameWithLevel) => TestGameWithLevel
 >;
 
-debugger
+debugger;
 
 const interf: IPartialInterface<I> = {
   beforeAll: async (input) => {
-    
     const rootElement = document.getElementById("root");
     if (!rootElement) throw "there was no html element";
     return [rootElement, input];

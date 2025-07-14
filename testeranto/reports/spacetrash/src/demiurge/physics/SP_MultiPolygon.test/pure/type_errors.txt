@@ -1,10 +1,6 @@
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (80,5): Type 'Vector' is not assignable to type 'this'.
   'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (7,3): Module '"testeranto/src/Types"' declares 'Ibdd_in' locally, but it is not exported.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (8,3): Module '"testeranto/src/Types"' declares 'Ibdd_out' locally, but it is not exported.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (9,3): Module '"testeranto/src/Types"' has no exported member 'IPartialInterface'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (10,3): '"testeranto/src/Types"' has no exported member named 'ITestImplementation'. Did you mean 'TestWhenImplementation'?
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (11,3): '"testeranto/src/Types"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.test.ts (9,3): Module '"testeranto/src/CoreTypes"' has no exported member 'IPartialInterface'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_MultiPolygon.ts (68,7): Type 'MultiPoly' is not assignable to type '[number, number][][]'.
   Type 'Poly' is not assignable to type '[number, number][]'.
     Type 'Ring' is not assignable to type '[number, number]'.

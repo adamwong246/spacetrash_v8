@@ -1,10 +1,5 @@
-import level4 from "../ECS/EntityComponents/ships/Ship4"
-
-import React, { useEffect, useRef } from "react";
-
-import { MapSize, TileSize } from "../Constants";
-import { SpaceTrash } from "../Game/8-WithTicks";
-
+import { useRef, useEffect } from "react";
+import { SpaceTrash } from "../Game/9-WithTiled";
 
 export const CustomPhysicsWindow = (props: { game: SpaceTrash }) => {
   const parentRef = useRef(null);

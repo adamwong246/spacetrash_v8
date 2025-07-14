@@ -1,8 +1,7 @@
 import * as THREE from "three";
 
 import { RenderableComponent } from "./RenderableComponent";
-import { SP_MapStore } from "../ecs/Store";
-
+import { SP_MapStore } from "../ecs/SP_MapStore";
 
 export class ThreeJsRenderableComponent extends RenderableComponent {
   
@@ -24,14 +23,6 @@ export class ThreeJsRenderableComponent extends RenderableComponent {
     this.dirty = true;
   }
 
-  // updateFromArcadePhysics(f: ArcadePhysicsComponent) {
-
-  //   for (let mesh of this.meshes) {
-  //     mesh.position.x = f.arcadeObject.position.x;
-  //     mesh.position.y = f.arcadeObject.position.y;
-  //   }
-    
-  // }
 
 }
 

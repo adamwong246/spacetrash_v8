@@ -6,12 +6,15 @@ import {
   IPartialInterface,
   ITestImplementation,
   ITestSpecification,
-} from "testeranto/src/Types";
+} from "testeranto/src/CoreTypes";
 import { GameWithLoad } from "./7-WithLoad";
 import { GameWithLevel } from "./7-5-WithLevel";
 
 // Test implementation that extends the abstract GameWithLoad
 class TestGameWithLoad extends GameWithLevel {
+  load() {
+    throw new Error("Method not implemented.");
+  }
   uiHooks: any = {};
   tiledProjectImport: any = {};
 

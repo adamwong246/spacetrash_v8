@@ -1,6 +1,6 @@
-import { ISpaceTrashComponents } from "..";
+
 import { Component } from "../../../../../demiurge/ecs/Component";
-import { SP_MapStore } from "../../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../../demiurge/ecs/SP_MapStore";
 
 
 
@@ -13,10 +13,7 @@ export enum ERays {
   'visible',
 }
 
-export abstract class OutCastingComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export abstract class OutCastingComponent extends Component {
   // fov: number;
   // ray: ERays;
   // intensity: number;
@@ -65,14 +62,4 @@ export class LightOutcastingComponent extends OutCastingComponent {
 
 export class LightOutcastingStore extends SP_MapStore<LightOutcastingComponent> {
 
-  // each(arg0: ([eid, le, ndx]: [number, LightOutcastingComponent, number]) => void) {
-  //   Object.keys(this.store).forEach((k, ndx) => {
-  //       arg0([Number(k), this.take(k), ndx])
-  //     });
-  // }
-  
-  // make(...a: any[]): LightOutcastingComponent {
-  //   return new LightOutcastingComponent([...a]);
-  //   // throw new Error("Method not implemented.");
-  // }
 }

@@ -9,7 +9,7 @@ import {
   IPartialInterface,
   ITestImplementation,
   ITestSpecification,
-} from "testeranto/src/Types";
+} from "testeranto/src/CoreTypes";
 
 type M = {
   givens: {
@@ -31,53 +31,41 @@ export const imp: ITestImplementation<I, O, M> = {
   suites: {
     Default: "MultiPolygon basic operations",
     Union: "MultiPolygon union operations",
-    Difference: "MultiPolygon difference operations"
+    Difference: "MultiPolygon difference operations",
   },
 
   givens: {
     Default: () => new SP_MultiPolygon([]),
     TwoSquares: () => {
-      const square1 = new SP_Polygon(
+      const square1 = new SP_Polygon(new SP_2d_Vector(0, 0), [
         new SP_2d_Vector(0, 0),
-        [
-          new SP_2d_Vector(0, 0),
-          new SP_2d_Vector(1, 0),
-          new SP_2d_Vector(1, 1),
-          new SP_2d_Vector(0, 1)
-        ]
-      );
-      const square2 = new SP_Polygon(
-        new SP_2d_Vector(0.5, 0.5),
-        [
-          new SP_2d_Vector(0, 0),
-          new SP_2d_Vector(1, 0),
-          new SP_2d_Vector(1, 1),
-          new SP_2d_Vector(0, 1)
-        ]
-      );
+        new SP_2d_Vector(1, 0),
+        new SP_2d_Vector(1, 1),
+        new SP_2d_Vector(0, 1),
+      ]);
+      const square2 = new SP_Polygon(new SP_2d_Vector(0.5, 0.5), [
+        new SP_2d_Vector(0, 0),
+        new SP_2d_Vector(1, 0),
+        new SP_2d_Vector(1, 1),
+        new SP_2d_Vector(0, 1),
+      ]);
       return new SP_MultiPolygon([square1, square2]);
     },
     OverlappingRectangles: () => {
-      const rect1 = new SP_Polygon(
+      const rect1 = new SP_Polygon(new SP_2d_Vector(0, 0), [
         new SP_2d_Vector(0, 0),
-        [
-          new SP_2d_Vector(0, 0),
-          new SP_2d_Vector(2, 0),
-          new SP_2d_Vector(2, 1),
-          new SP_2d_Vector(0, 1)
-        ]
-      );
-      const rect2 = new SP_Polygon(
-        new SP_2d_Vector(1, 0),
-        [
-          new SP_2d_Vector(0, 0),
-          new SP_2d_Vector(2, 0),
-          new SP_2d_Vector(2, 1),
-          new SP_2d_Vector(0, 1)
-        ]
-      );
+        new SP_2d_Vector(2, 0),
+        new SP_2d_Vector(2, 1),
+        new SP_2d_Vector(0, 1),
+      ]);
+      const rect2 = new SP_Polygon(new SP_2d_Vector(1, 0), [
+        new SP_2d_Vector(0, 0),
+        new SP_2d_Vector(2, 0),
+        new SP_2d_Vector(2, 1),
+        new SP_2d_Vector(0, 1),
+      ]);
       return new SP_MultiPolygon([rect1, rect2]);
-    }
+    },
   },
 
   whens: {
@@ -94,33 +82,43 @@ export const imp: ITestImplementation<I, O, M> = {
     },
     difference: () => (mp) => {
       return mp.difference();
-    }
+    },
   },
 
   thens: {
     polygonCount: (expected: number) => (mp) => {
-      assert.equal(mp.polygons.length, expected, 
-        `Expected ${expected} polygons but got ${mp.polygons.length}`);
+      assert.equal(
+        mp.polygons.length,
+        expected,
+        `Expected ${expected} polygons but got ${mp.polygons.length}`
+      );
       return mp;
     },
     totalArea: (expected: number) => (mp) => {
       const actual = mp.polygons.reduce((sum, p) => sum + p.getArea(), 0);
-      assert.closeTo(actual, expected, 0.0001,
-        `Expected total area ${expected} but got ${actual}`);
+      assert.closeTo(
+        actual,
+        expected,
+        0.0001,
+        `Expected total area ${expected} but got ${actual}`
+      );
       return mp;
     },
     containsPoint: (x: number, y: number, expected: boolean) => (mp) => {
       const point = new SP_2d_Vector(x, y);
-      const contains = mp.polygons.some(p => p.contains(point));
-      assert.equal(contains, expected,
-        `Point (${x},${y}) should ${expected ? "" : "not "}be contained`);
+      const contains = mp.polygons.some((p) => p.contains(point));
+      assert.equal(
+        contains,
+        expected,
+        `Point (${x},${y}) should ${expected ? "" : "not "}be contained`
+      );
       return mp;
-    }
+    },
   },
 
   checks: {
     Default: () => new SP_MultiPolygon([]),
-  }
+  },
 };
 
 type I = Ibdd_in<
@@ -181,52 +179,53 @@ export const spec: ITestSpecification<I, O> = (
   Check
 ) => {
   return [
-    Suite.Default("Testing basic MultiPolygon operations", {
-      test0: Given.Default(
-        ["Empty MultiPolygon has zero polygons"],
-        [],
-        [Then.polygonCount(0), Then.totalArea(0)]
-      ),
+    Suite.Default(
+      "Testing basic MultiPolygon operations",
+      {
+        test0: Given.Default(
+          ["Empty MultiPolygon has zero polygons"],
+          [],
+          [Then.polygonCount(0), Then.totalArea(0)]
+        ),
 
-      test1: Given.Default(
-        ["Can add polygons to MultiPolygon"],
-        [When.addPolygon(new SP_Polygon(
-          new SP_2d_Vector(0, 0),
+        test1: Given.Default(
+          ["Can add polygons to MultiPolygon"],
           [
-            new SP_2d_Vector(0, 0),
-            new SP_2d_Vector(1, 0),
-            new SP_2d_Vector(1, 1)
+            When.addPolygon(
+              new SP_Polygon(new SP_2d_Vector(0, 0), [
+                new SP_2d_Vector(0, 0),
+                new SP_2d_Vector(1, 0),
+                new SP_2d_Vector(1, 1),
+              ])
+            ),
+          ],
+          [Then.polygonCount(1), Then.totalArea(0.5)]
+        ),
+
+        test2: Given.TwoSquares(
+          ["Union of two squares"],
+          [When.union()],
+          [
+            Then.polygonCount(1),
+            Then.totalArea(1.75),
+            Then.containsPoint(0.25, 0.25, true),
+            Then.containsPoint(1.25, 1.25, false),
           ]
-        ))],
-        [Then.polygonCount(1), Then.totalArea(0.5)]
-      )
-    }),
+        ),
 
-    Suite.Union("Testing MultiPolygon union operations", {
-      test0: Given.TwoSquares(
-        ["Union of two squares"],
-        [When.union()],
-        [
-          Then.polygonCount(1),
-          Then.totalArea(1.75),
-          Then.containsPoint(0.25, 0.25, true),
-          Then.containsPoint(1.25, 1.25, false)
-        ]
-      )
-    }),
-
-    Suite.Difference("Testing MultiPolygon difference operations", {
-      test0: Given.OverlappingRectangles(
-        ["Difference of overlapping rectangles"],
-        [When.difference()],
-        [
-          Then.polygonCount(1),
-          Then.totalArea(1),
-          Then.containsPoint(0.5, 0.5, true),
-          Then.containsPoint(1.5, 0.5, false)
-        ]
-      )
-    })
+        test3: Given.OverlappingRectangles(
+          ["Difference of overlapping rectangles"],
+          [When.difference()],
+          [
+            Then.polygonCount(1),
+            Then.totalArea(1),
+            Then.containsPoint(0.5, 0.5, true),
+            Then.containsPoint(1.5, 0.5, false),
+          ]
+        ),
+      },
+      []
+    ),
   ];
 };
 

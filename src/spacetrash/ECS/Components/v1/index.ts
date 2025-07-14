@@ -16,6 +16,6 @@ export const SpaceTrashComponents: Record<ISpaceTrashComponents, any> = {
   'Melee': MeleeComponent,
 }
 
-export abstract class SpaceTrashComponent extends Component<unknown, ISpaceTrashComponents> {
+export abstract class SpaceTrashComponent extends Component {
   
 }

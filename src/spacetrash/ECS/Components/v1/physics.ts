@@ -1,10 +1,6 @@
-import { ISpaceTrashComponents } from ".";
 import { Component } from "../../../../demiurge/ecs/Component";
 
-export class PhysicsComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class PhysicsComponent extends Component {
   x: number;
   y: number;
 

@@ -1,6 +1,5 @@
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
 import { ITiles } from "../../EntityComponents/tiles";
-
 
 import { PhysicsComponent } from "./physics";
 

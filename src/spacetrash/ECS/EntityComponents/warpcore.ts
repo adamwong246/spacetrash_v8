@@ -1,21 +1,17 @@
 import * as THREE from "three";
-
-import { ArcadePhysics } from "../../vendor/arcade-physics-main/src";
+import { degToRad } from "three/src/math/MathUtils";
 import { SpaceTrashEntityComponent } from ".";
-import { AttackableComponent } from "../Components/v1/casting/in";
-import { IntegerPositionComponent } from "../../../engine/game/physical";
-import { SpaceTrashEntity } from "../Entity";
-import { Component } from "../../../demiurge/ecs/Component";
-import { RadiationEmitterComponent } from "../Components/v3/radiation";
+import { IntegerPositionComponent } from "../../../demiurge/game/physical";
+import { PixiJsRenderableComponent } from "../../../demiurge/rendering/pixijs";
+import { ThreeJsRenderableComponent } from "../../../demiurge/rendering/threejs";
 import { TileSize } from "../../Constants";
-import { bunnySprite, cylinder } from "./bots";
-import { degToRad } from "three/src/math/MathUtils.js";
-import { blueMaterial, greenMaterial } from "../../threejs";
+import { AttackableComponent } from "../Components/v1/casting/in";
 import { HeatEmitterComponent } from "../Components/v3/heat";
-import { ArcadePhysicsComponent } from "../Components/v4/PhaserArcade";
+import { RadiationEmitterComponent } from "../Components/v3/radiation";
 import { SP_IntegerPositionComponent } from "../Components/v4/IntegerPosition";
-import { PixiJsRenderableComponent } from "../../../engine/rendering/pixijs";
-import { ThreeJsRenderableComponent } from "../../../engine/rendering/threejs";
+import { SpaceTrashEntity } from "../Entity";
+import { bunnySprite } from "./bots";
+import { Component } from "../../../demiurge/ecs/Component";
 
 export class WarpCore extends SpaceTrashEntityComponent {
   rads: number;
@@ -23,7 +19,7 @@ export class WarpCore extends SpaceTrashEntityComponent {
   constructor(rads: number, x: number, y: number) {
     const spe = new SpaceTrashEntity();
 
-    const comps: Component<any, any>[] = [
+    const comps: Component[] = [
       new SP_IntegerPositionComponent(x, y),
 
       new AttackableComponent(),
@@ -47,16 +43,7 @@ export class WarpCore extends SpaceTrashEntityComponent {
         })()
       ),
 
-      new ArcadePhysicsComponent((ap: ArcadePhysics) => {
-        const cube = ap.add.staticBody(
-          x * TileSize,
-          y * TileSize,
-          TileSize,
-          TileSize
-        );
-        cube.immovable = true;
-        return cube;
-      }),
+      
     ];
 
     super(spe, comps);

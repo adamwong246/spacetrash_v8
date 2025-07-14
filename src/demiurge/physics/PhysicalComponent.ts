@@ -1,6 +1,6 @@
-import { FloatPositionComponent, PositionComponent } from "../game/physical";
-import { Component } from "../ecs/Component";
-import { SP_MapStore } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/SP_MapStore";
+import { FloatPositionComponent } from "../game/physical";
+
 
 export abstract class PhysicalComponent extends FloatPositionComponent {
   constructor(x, y) {

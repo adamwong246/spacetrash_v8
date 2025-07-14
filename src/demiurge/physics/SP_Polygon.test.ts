@@ -8,10 +8,10 @@ import {
   IPartialInterface,
   ITestImplementation,
   ITestSpecification,
-} from "testeranto/src/Types";
+} from "testeranto/src/CoreTypes";
 import { SP_2d_Vector } from "./SP_2d_Vector";
 import { SP_Polygon } from "./SP_Polygon";
-import { Testeranto as TesterantoNode } from "testeranto/src/Node";
+import Testeranto from "testeranto/src/Node";
 
 type M = {
   givens: {
@@ -241,7 +241,6 @@ export const spec: ITestSpecification<I, O> = (
         ["Empty polygon has zero area"],
         [],
         [Then.area(0), Then.pointCount(0)],
-        null
       ),
 
       test1: Given.Rectangle(
@@ -342,4 +341,4 @@ export const spec: ITestSpecification<I, O> = (
   ];
 };
 
-export default TesterantoNode<I, O, M>(null as unknown as I['input'], spec, imp, interf);
+export default Testeranto<I, O, M>(SP_Polygon.prototype, spec, imp, interf);

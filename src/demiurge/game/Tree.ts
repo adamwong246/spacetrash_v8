@@ -1,6 +1,3 @@
-import { DirectedGraph as GraphologyDirectedGraph } from "graphology";
-
-import { DirectedGraph } from "./DirectedGraph";
 import { Scene } from "./Scene";
 
 export abstract class Tree   {

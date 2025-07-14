@@ -17,7 +17,7 @@ import { LightIncastingComponent } from "../../Components/v1/casting/in";
 import { HeatConductorComponent } from "../../Components/v3/heat";
 
 import { SpaceTrashEntityComponent } from "..";
-import { SP_MultiPolygon, SP_Polygon } from "../../../../demiurge/physics/SP_Polygon";
+import {  SP_Polygon } from "../../../../demiurge/physics/SP_Polygon";
 
 export class Tile extends SpaceTrashEntityComponent {
 
@@ -41,7 +41,7 @@ export class Tile extends SpaceTrashEntityComponent {
 
     
 
-    const comps: Component<any, any>[] = [
+    const comps: Component[] = [
       pixi,
       threejs,
       samurai,

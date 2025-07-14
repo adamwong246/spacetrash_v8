@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { SpaceTrash } from "../Game/8-WithTicks";
+
 import { rad2deg } from "detect-collisions";
+import { SpaceTrash } from "../Game/9-WithTiled";
 
 export type IBotWindowState = {
   rads: number;

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from "react";
-
-import { SpaceTrash } from "../Game/6-WithStateSpace";
-import { MapSize, TileSize } from "../Constants";
+import { SpaceTrash } from "../Game/9-WithTiled";
 
 export const ArcadePhysicsWindow = (props: { game: SpaceTrash }) => {
   const parentRef = useRef(null);

@@ -2,8 +2,9 @@ import { FOV } from "rot-js";
 import { Sense } from ".";
 import { TileSize, MapSize } from "../../../../Constants";
 import { SetPieceComponent } from "../setPieces";
-import { SpaceTrash } from "../../../../Game/6-WithStateSpace";
+
 import { AiAgentComponent } from "../ai";
+import { SpaceTrash } from "../../../../Game/9-WithTiled";
 
 export class FovSense extends Sense {
   memory: {

@@ -1,8 +1,7 @@
 import { Component } from "../../../../demiurge/ecs/Component";
-import { SP_MapStore, StoreV2 } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
 
-export class FlipComponent extends Component<any, any> {
-
+export class FlipComponent extends Component {
   flippedHorizontally: boolean;
   flippedVertically: boolean;
   flippedDiagonally: boolean;
@@ -10,7 +9,7 @@ export class FlipComponent extends Component<any, any> {
   constructor(
     flippedHorizontally: boolean,
     flippedVertically: boolean,
-    flippedDiagonally: boolean,
+    flippedDiagonally: boolean
   ) {
     super();
     this.flippedHorizontally = flippedHorizontally;
@@ -19,6 +18,4 @@ export class FlipComponent extends Component<any, any> {
   }
 }
 
-export class FlipStore extends SP_MapStore<FlipComponent>{
-
-}
+export class FlipStore extends SP_MapStore<FlipComponent> {}

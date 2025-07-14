@@ -9,7 +9,7 @@ import {
   Ibdd_out,
   ITestImplementation,
   ITestSpecification,
-} from "testeranto/src/Types";
+} from "testeranto/src/CoreTypes";
 
 type I = Ibdd_in<
   null,
@@ -158,7 +158,7 @@ export const spec: ITestSpecification<I, O> = (Suite, Given, When, Then, _Check)
         Then.waypointCount(4), // start, 2 waypoints around subtracted area, end
       ]
     ),
-  }),
+  }, []),
 ];
 
-export default Testeranto<I, O>(null as unknown as I['input'], spec, imp, interf);
+export default Testeranto<I, O, unknown>(SP_NavMesh.prototype, spec, imp, interf);

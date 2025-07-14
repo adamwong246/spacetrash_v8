@@ -1,7 +1,7 @@
 import { AM } from "../../../../demiurge/ai/ai";
 import { Component } from "../../../../demiurge/ecs/Component";
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
-import { FloatMovingComponent } from "../../../../demiurge/game/physical";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
+
 import { SpaceTrash } from "../../../Game/9-WithTiled";
 import { SpaceTrashEntity } from "../../Entity";
 
@@ -18,7 +18,7 @@ function simulateEnvironment() {
   return randomEvent;
 }
 
-export class AiAgentComponent extends Component<any, any> {
+export class AiAgentComponent extends Component {
   // AiAgentComponent is unique in storing the entity id
   // entityId: number = -1;
 

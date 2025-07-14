@@ -1,4 +1,4 @@
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
 import { MovingComponent } from "../../../../demiurge/game/physical";
 
 export type ITankDirections = {

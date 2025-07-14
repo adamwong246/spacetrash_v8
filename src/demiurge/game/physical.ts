@@ -1,8 +1,8 @@
 import { Component } from "../ecs/Component";
-import { SP_MapStore } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/SP_MapStore";
 
 // Gives an entity a position on the map
-export abstract class PositionComponent extends Component<unknown, any> {
+export abstract class PositionComponent extends Component {
   x: number;
   y: number;
 
@@ -74,7 +74,7 @@ export class FloatPositionStore extends SP_MapStore<FloatPositionComponent> {}
 /////////////////////////////////////////////////////////////
 
 // Gives an entity a rotation
-export abstract class DirectionComponent extends Component<unknown, any> {
+export abstract class DirectionComponent extends Component {
   r: any;
 
   constructor(r: any) {
@@ -126,7 +126,7 @@ export class OrdinalDirectionStore extends SP_MapStore<OrdinalDirectionComponent
 /////////////////////////////////////////////////////////////
 
 // Gives the entity movement
-export abstract class MovingComponent extends Component<unknown, any> {
+export abstract class MovingComponent extends Component {
   abstract DX();
   abstract DY();
   abstract direction();

@@ -1,7 +1,8 @@
 import { System } from "detect-collisions";
 
 import { SP_PhysicalComponent } from "./SP_Physical";
-import { NavMesh } from "../nav";
+import { SP_NavMesh } from "./SP_NavMesh";
+
 
 export class SamuraiEngine {
   system: System;
@@ -14,7 +15,7 @@ export class SamuraiEngine {
     this.system.insert(v.body);
   }
 
-  update(context, callback, navmesh: NavMesh) {
+  update(context, callback, navmesh: SP_NavMesh) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     // navmesh.negativeSpaceCollapsedToCanvas(context);
     // // navmesh.positiveSpaceToCanvas(context)

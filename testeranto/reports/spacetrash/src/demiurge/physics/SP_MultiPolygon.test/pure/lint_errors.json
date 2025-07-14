@@ -1,9 +1,9 @@
 src/demiurge/physics/SP_MultiPolygon.test.ts
-141:39 'tr' is defined but never used. (@typescript-eslint/no-unused-vars)
-141:43 'utils' is defined but never used. (@typescript-eslint/no-unused-vars)
-144:25 'tr' is defined but never used. (@typescript-eslint/no-unused-vars)
-144:29 'pm' is defined but never used. (@typescript-eslint/no-unused-vars)
-181:3 'Check' is defined but never used. (@typescript-eslint/no-unused-vars)
+139:39 'tr' is defined but never used. (@typescript-eslint/no-unused-vars)
+139:43 'utils' is defined but never used. (@typescript-eslint/no-unused-vars)
+142:25 'tr' is defined but never used. (@typescript-eslint/no-unused-vars)
+142:29 'pm' is defined but never used. (@typescript-eslint/no-unused-vars)
+179:3 'Check' is defined but never used. (@typescript-eslint/no-unused-vars)
 
 src/demiurge/physics/SP_Polygon.ts
 20:34 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)

@@ -29,7 +29,7 @@ export class SpaceTrashBot extends Actor {
     dx: number = 0,
     dy: number = 0,
     name?: string,
-    upgrades?: Component<any, any>[] = [],
+    upgrades?: Component[] = [],
     images,
     textures,
   ) {

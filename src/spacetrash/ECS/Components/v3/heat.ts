@@ -1,14 +1,10 @@
 import * as PIXI from "pixi.js";
 import { Component } from "../../../../demiurge/ecs/Component";
 
-import { ISpaceTrashComponents } from "../v1";
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
 import { TileSize } from "../../../Constants";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
 
-export class HeatEmitterComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class HeatEmitterComponent extends Component {
   power: number;
 
   constructor(r: number) {
@@ -20,10 +16,7 @@ export class HeatEmitterComponent extends Component<
 export class HeatEmitterStore extends SP_MapStore<HeatEmitterComponent> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////
-export class HeatDetectorComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class HeatDetectorComponent extends Component{
   constructor() {
     super();
   }
@@ -49,10 +42,7 @@ export function generateRandomHexColor(): string {
   return hexColor;
 }
 
-export class HeatConductorComponent extends Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class HeatConductorComponent extends Component{
   capacity: number;
   pixiThermalGraphic: PIXI.Graphics;
 

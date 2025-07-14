@@ -1,54 +1,56 @@
 import React, { useEffect, useRef } from "react";
+import { SpaceTrash } from "../Game/9-WithTiled";
 
-import { SpaceTrash } from "../Game/6-WithStateSpace";
-
-export const MapWindow = (props: {game: SpaceTrash}) => {
+export const MapWindow = (props: { game: SpaceTrash }) => {
   const parentRef = useRef(null);
   const canvasRef = useRef(null);
 
   useEffect(() => {
     if (canvasRef.current && parentRef.current) {
-      props.game.registerCanvas("map", false, canvasRef.current, () => { }, "pixi2d", parentRef.current);
-      parentRef.current.addEventListener("keydown", function(e) {
+      props.game.registerCanvas(
+        "map",
+        false,
+        canvasRef.current,
+        () => {},
+        "pixi2d",
+        parentRef.current
+      );
+      parentRef.current.addEventListener("keydown", function (e) {
         // Check if the pressed key is an arrow key (e.code values)
-        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
+        if (
+          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)
+        ) {
           e.preventDefault(); // Prevent the default scrolling behavior
         }
       });
     }
   }, [canvasRef, parentRef]);
 
-
-  return (<div
-    ref={parentRef}
-    style={{
-
-      height: "100%",
-      width: "100%",
-      position: "relative",
-    }}
-  >
+  return (
     <div
+      ref={parentRef}
       style={{
-        height: '100%',
-        color: 'white',
-        overflow: 'auto',
+        height: "100%",
+        width: "100%",
+        position: "relative",
       }}
     >
-      <canvas
-        tabIndex={1}
-        ref={canvasRef}
-        height={'100%'}
-        color={'white'}
-
-
-      ></canvas>
+      <div
+        style={{
+          height: "100%",
+          color: "white",
+          overflow: "auto",
+        }}
+      >
+        <canvas
+          tabIndex={1}
+          ref={canvasRef}
+          height={"100%"}
+          color={"white"}
+        ></canvas>
+      </div>
     </div>
-
-
-
-
-  </div>);
+  );
 
   // return (<div
 
@@ -84,4 +86,4 @@ export const MapWindow = (props: {game: SpaceTrash}) => {
   //       height="600"></canvas> */}
 
   //   </div>);
-}
+};

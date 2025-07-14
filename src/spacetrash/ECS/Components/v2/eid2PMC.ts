@@ -1,10 +1,8 @@
-import { Component } from "react";
-import { SP_MapStore } from "../../../../demiurge/ecs/Store";
+import { Component } from "../../../../demiurge/ecs/Component";
+import { SP_MapStore } from "../../../../demiurge/ecs/SP_MapStore";
 import { PositionComponent } from "../../../../demiurge/game/physical";
-import { ISpaceTrashComponents } from "../v1";
 
-
-export class Eid2PMComponent extends Component<any, ISpaceTrashComponents> {
+export class Eid2PMComponent extends Component {
   position: PositionComponent;
   classification: string;
 
@@ -33,28 +31,4 @@ export class Eid2PMStore extends SP_MapStore<Eid2PMComponent> {
     const { classification, position } = this.take(eid);
     return position.getTileXAndY();
   }
-
-
-  // positionOf(eidOfLight: number): FloatPositionStore {
-  //   throw new Error("Method not implemented.");
-  // }
-
-  // updatePostion(eid: number, p: FloatPositionComponent) {
-  //   const d = this.get(eid);
-
-  //   // console.log("mark2", d.sprite)
-
-  //   if (d.sprite) {
-  //     d.sprite.position.x = p.x;
-  //     d.sprite.position.y = p.y;
-  //   }
-  //   if (d.mesh) {
-  //     d.mesh.position.x = p.x;
-  //     d.mesh.position.y = p.y;
-  //   }
-  //   //
-  //   // d.x = p.x;
-  //   // d.y = p.y;
-  //   // this.sp
-  // }
 }

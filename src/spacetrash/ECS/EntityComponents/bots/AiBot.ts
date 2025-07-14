@@ -13,6 +13,7 @@ import { FloatMovingComponent } from "../../../../demiurge/game/physical";
 import { AiAgentComponent } from "../../Components/v3/ai";
 import { NearSenseComponent } from "../../Components/v4/NearSenseComponent";
 import { NavSenseComponent } from "../../Components/v4/NavSenseComponent";
+import { UpgradeSlotType, UpgradeComponent } from "../../Components/v4/UpgradeComponent";
 
 /**
  * AI Bot Entity
@@ -135,7 +136,7 @@ export class AiBot extends Actor {
     super(
       spe,
       [
-        new AiAgentComponent('langdonsAnt', spe),
+        new AiAgentComponent(spe),
         new SP_PhysicalComponent(physical, 0.1),
         new LightIncastingComponent(1),
         new PixiJsRenderableComponent(bunnySprite()),

@@ -1,18 +1,18 @@
 import { Box, Circle, Polygon } from "detect-collisions";
 
-import { SP_MapStore } from "../../demiurge/ecs/Store";
 import { SP_2d_Vector } from "../../demiurge/physics/SP_2d_Vector";
 
 import { Component } from "../ecs/Component";
+import { SP_MapStore } from "../ecs/SP_MapStore";
 
-export class SP_PhysicalComponent extends Component<any, any> {
+export class SP_PhysicalComponent extends Component {
   static swapMotion(a: SP_PhysicalComponent, b: SP_PhysicalComponent) {
     const aAngle = a.body.angle;
     const bAngle = b.body.angle;
-    
+
     a.body.setAngle(bAngle);
     b.body.setAngle(aAngle);
-    
+
     a.body.updateBody();
     b.body.updateBody();
   }
@@ -26,7 +26,7 @@ export class SP_PhysicalComponent extends Component<any, any> {
     super();
     this.body = body;
     this.friction = friction;
-    
+
     // Ensure body is properly initialized
     if (!body.isStatic) {
       body.setAngle(body.angle || 0);
@@ -56,14 +56,18 @@ export class SP_PhysicalComponent extends Component<any, any> {
 
   setX(x: number) {
     if (this._physicsActive) {
-      throw new Error("Cannot use setX after physics simulation has started - use teleport() if intentional");
+      throw new Error(
+        "Cannot use setX after physics simulation has started - use teleport() if intentional"
+      );
     }
     this.body.setPosition(x, this.body.pos.y);
   }
 
   setY(y: number) {
     if (this._physicsActive) {
-      throw new Error("Cannot use setY after physics simulation has started - use teleport() if intentional");
+      throw new Error(
+        "Cannot use setY after physics simulation has started - use teleport() if intentional"
+      );
     }
     this.body.setPosition(this.body.pos.x, y);
   }
@@ -80,7 +84,9 @@ export class SP_PhysicalComponent extends Component<any, any> {
 
   setPosition(x: number, y: number) {
     if (this._physicsActive) {
-      throw new Error("Cannot use setPosition after physics simulation has started - use teleport() if intentional");
+      throw new Error(
+        "Cannot use setPosition after physics simulation has started - use teleport() if intentional"
+      );
     }
     this.body.setPosition(x, y);
   }
@@ -99,15 +105,15 @@ export class SP_PhysicalComponent extends Component<any, any> {
 
       // Move forward in current direction
       this.body.move(this.speed * delta);
-        
+
       // Apply friction by reducing speed
-      this.speed *= (1 - this.friction);
-      
+      this.speed *= 1 - this.friction;
+
       // Ensure we don't go below minimum speed
       if (this.speed < 0.01) {
         this.speed = 0;
       }
-      
+
       this.body.updateBody();
     }
   }
@@ -155,37 +161,3 @@ export class SP_PhysicalComponent extends Component<any, any> {
 }
 
 export class SP_PhysicalStore extends SP_MapStore<SP_PhysicalComponent> {}
-
-// // the direction, given the vector <dx, dy>
-// direction() {
-//   // Math.atan2(y, x) is the standard way to calculate the angle in all quadrants
-//   const radians = Math.atan2(this.dy, this.dx);
-//   // If you need the angle in degrees (0 to 360)
-//   let degrees = (radians * 180) / Math.PI;
-//   if (degrees < 0) {
-//     degrees += 360;
-//   }
-//   return degrees;
-// }
-
-// // the magnitude of the vector
-// magnitude() {
-//   // You can use multiplication for squaring for a minor optimization
-//   return Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-// }
-
-// // the unit vector
-// unit() {
-//   const m = this.magnitude();
-
-//   // Handle the case where the magnitude is zero (zero vector)
-//   if (m === 0) {
-//     // You can return a zero vector or a specific value indicating a zero vector
-//     return { x: 0, y: 0 };
-//   }
-
-//   return {
-//     x: this.dx / m,
-//     y: this.dy / m,
-//   };
-// }

@@ -1,14 +1,14 @@
 {
   "./src/demiurge/physics/SP_2d_Vector.test.ts": {
     "runTimeError": -1,
-    "typeErrors": 63,
+    "typeErrors": 61,
     "staticErrors": 1,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/pure/./src/demiurge/physics/SP_2d_Vector.test/prompt.txt",
     "failingFeatures": {}
   },
   "./src/demiurge/physics/SP_MultiPolygon.test.ts": {
-    "runTimeError": 2,
-    "typeErrors": 67,
+    "runTimeError": 4,
+    "typeErrors": 63,
     "staticErrors": 2,
     "prompt": "aider --model deepseek/deepseek-chat --load testeranto/spacetrash/reports/pure/./src/demiurge/physics/SP_MultiPolygon.test/prompt.txt",
     "failingFeatures": {}

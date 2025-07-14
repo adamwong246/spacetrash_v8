@@ -1,11 +1,7 @@
 import { Component } from "../ecs/Component";
-import { ISpaceTrashComponents } from "../../spacetrash/ECS/Components/v1";
-import { SP_MapStore } from "../ecs/Store";
+import { SP_MapStore } from "../ecs/SP_MapStore";
 
-export abstract class RenderableComponent extends Component<
-  any,
-  ISpaceTrashComponents
-> {
+export abstract class RenderableComponent extends Component {
   dirty: boolean;
 
   constructor() {

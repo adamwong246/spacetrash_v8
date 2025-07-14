@@ -42,8 +42,7 @@ import { IPerformanceConfig } from "../../demiurge/ecs/ECS";
 
 import { SP_PhysicalStore } from "../../demiurge/physics/SP_Physical";
 import { GamWithAssets as GameWithAssets } from "./2-WithAssets";
-import { NavSenseStore } from "../ECS/Stores/NavSenseStore";
-import { NearSenseStore } from "../ECS/Stores/NearSenseStore";
+
 import { UpgradeStore } from "../ECS/Stores/UpgradeStore";
 
 
@@ -67,8 +66,7 @@ export type IRenderings =
 
 export abstract class GameWithStores extends GameWithAssets<IRenderings> {
   components = {
-    Upgrades: new UpgradeStore(), // Handles all upgrade components
-    Actors: new ActorStore(), // Handles all actor entities
+    Actors: new ActorStore(), 
     AiAgentComponent: new AiAgentStore(),
     AttackableComponent: new AttackableStore(),
     ConsoleRenderableComponent: new ConsoleRenderableStore(),
@@ -83,6 +81,8 @@ export abstract class GameWithStores extends GameWithAssets<IRenderings> {
     LightIncastingComponent: new LightIncastingStore(),
     LightOutcastingComponent: new LightOutcastingStore(),
     NameableComponent: new NameableStore(),
+    // NavSenseComponent: new NavSenseStore(),
+    // NearSenseComponent: new NearSenseStore(),
     OrdinalDirectionComponent: new OrdinalDirectionStore(),
     OridinalMovingComponent: new OridinalMovingStore(),
     PixiJsRenderableComponent: new PixiJsRenderableStore(),
@@ -95,6 +95,7 @@ export abstract class GameWithStores extends GameWithAssets<IRenderings> {
     TankMovingComponent: new TankMovingStore(),
     ThreeJsRenderableComponent: new ThreeJsRenderableStore(),
     TileComponent: new TileComponentStore(),
+    Upgrades: new UpgradeStore(), 
     V3AttackComponent: new V3AttackComponentStore(),
   };
 
@@ -105,5 +106,4 @@ export abstract class GameWithStores extends GameWithAssets<IRenderings> {
   ) {
     super(domNode, performanceConfig, renderings);
   }
-
 }

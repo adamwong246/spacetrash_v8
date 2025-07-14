@@ -1,19 +1,13 @@
 import * as THREE from "three";
 
-
 import { TwoDOneD_Component } from "../../../../demiurge/ecs/Component";
 
-import { ISpaceTrashComponents } from "../v1";
-// import { DrawableComponent } from "../v2/drawable";
-import { SP_OneDStore, SP_TwoDStore } from "../../../../demiurge/ecs/Store";
+import { SP_TwoDStore } from "../../../../demiurge/ecs/Store";
 import { MapSize } from "../../../Constants";
 import { HeatConductorComponent, HeatEmitterComponent } from "./heat";
 import { SamuraiTileComponent } from "../../../physics/SamuraiTile";
 
-export class SetPieceComponent extends TwoDOneD_Component<
-  unknown,
-  ISpaceTrashComponents
-> {
+export class SetPieceComponent extends TwoDOneD_Component {
   eid = -1;
   actorIds = [];
   litIds = [];
@@ -27,7 +21,6 @@ export class SetPieceComponent extends TwoDOneD_Component<
   FOV: number[][];
   samuraiTile: SamuraiTileComponent;
   meshes: THREE.Mesh[];
-
 
   // drawing: DrawableComponent;
   pixiElement;
@@ -54,6 +47,9 @@ export class SetPieceComponent extends TwoDOneD_Component<
 }
 
 export class SetPieceStore extends SP_TwoDStore<SetPieceComponent> {
+  get(eid: number): false | SetPieceComponent {
+    throw new Error("Method not implemented.");
+  }
   // // constructor() {
   // //   super();
   // //   this.store = [[]];

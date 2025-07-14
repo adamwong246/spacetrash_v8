@@ -11,13 +11,9 @@ export abstract class GameWithControls extends GameWithStores {
   constructor(
     domNode: HTMLElement,
     performanceConfig: IPerformanceConfig,
-    renderings: Set<any>,
+    renderings: Set<any>
   ) {
-    super(
-      domNode,
-      performanceConfig,
-      renderings,
-    );
+    super(domNode, performanceConfig, renderings);
 
     const self = this;
     document.addEventListener("keydown", function (event) {
@@ -50,7 +46,6 @@ export abstract class GameWithControls extends GameWithStores {
         // console.log(event);
       }
     });
-
   }
 
   driveForward() {

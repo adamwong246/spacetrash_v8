@@ -3,11 +3,9 @@ import * as PIXI from "pixi.js";
 import { Sprite } from "pixi.js";
 
 import { RenderableComponent } from "./RenderableComponent";
-import { SP_MapStore } from "../ecs/Store";
-import { ArcadePhysicsComponent } from "../../spacetrash/ECS/Components/v4/PhaserArcade";
+import { SP_MapStore } from "../ecs/SP_MapStore";
 
 export class PixiJsRenderableComponent extends RenderableComponent {
-  
   sprite: PIXI.Sprite;
 
   constructor(sprite: PIXI.Sprite) {
@@ -20,12 +18,6 @@ export class PixiJsRenderableComponent extends RenderableComponent {
     this.sprite = s;
     this.dirty = true;
   }
-
-  updateFromArcadePhysics(f: ArcadePhysicsComponent) {
-    this.sprite.position.x = f.arcadeObject.position.x;
-    this.sprite.position.y = f.arcadeObject.position.y;
-  }
-
 }
 
 export class PixiJsRenderableStore extends SP_MapStore<PixiJsRenderableComponent> {}

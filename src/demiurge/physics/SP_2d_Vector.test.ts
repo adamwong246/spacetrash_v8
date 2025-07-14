@@ -4,14 +4,31 @@ import { IPM } from "testeranto/src/lib/types";
 import {
   Ibdd_in,
   Ibdd_out,
-  IPartialInterface,
+  // IPartialInterface,
   ITestImplementation,
   ITestSpecification,
-} from "testeranto/src/Types";
+} from "testeranto/src/CoreTypes";
 import { SP_2d_Vector } from "./SP_2d_Vector";
 import Testeranto from "testeranto/src/Pure";
+import { EPSILON } from ".";
 
-export const imp: ITestImplementation<I, O> = {
+type M = {
+  givens: {
+    [K in keyof O["givens"]]: (...Iw: O["givens"][K]) => SP_2d_Vector;
+  };
+  whens: {
+    [K in keyof O["whens"]]: (
+      ...Iw: O["whens"][K]
+    ) => (mp: SP_2d_Vector) => SP_2d_Vector;
+  };
+  thens: {
+    [K in keyof O["thens"]]: (
+      ...Iw: O["thens"][K]
+    ) => (mp: SP_2d_Vector) => SP_2d_Vector;
+  };
+};
+
+export const imp: ITestImplementation<I, O, M> = {
   suites: {
     Default: "Testing SP_2d_Vector implementation",
   },
@@ -22,6 +39,7 @@ export const imp: ITestImplementation<I, O> = {
   },
 
   whens: {
+
     rotate: (angle) => async (vector, _tr, _utils) => {
       return vector.rotate(angle);
     },
@@ -114,12 +132,13 @@ type O = Ibdd_out<
     ByXAndY: [number, number];
   },
   {
-    rotate: [number];
-    add: [number, number];
-    multiply: [number];
-    clone: [];
+    // add: [number, number];
+    // multiply: [number];
+    // clone: [];
+    // rotate: [number];
   },
   {
+    
     magnitude: [number];
     len: [number];
     dot: [number, number, number];
@@ -127,6 +146,10 @@ type O = Ibdd_out<
     position: [number, number];
     isPointOnSegment: [number, number, number, number, boolean];
     toString: [string];
+    rotatedItIs: [number, number, number]
+    normalizedItIs: [number, number]
+    addedItIs: [number, number, number, number]
+    multipliedItIs: [number, number, number]
   },
   {
     Default: [];
@@ -152,13 +175,13 @@ export const spec: ITestSpecification<I, O> = (
         test0: Given.Default(
           ["The zero vector rotated by 1.2 is still the zero vector"],
           [],
-          [Then.rotate(1.2, 0, 0)]
+          [Then.rotatedItIs(1.2, 0, 0)]
         ),
 
         test1: Given.ByXAndY(
           ["The vector [3, 4] rotated by 1.2 is not zero"],
           [],
-          [Then.rotate(1.2, -2.641083080438884, 4.245548275808373)],
+          [Then.rotatedItIs(1.2, -2.641083080438884, 4.245548275808373)],
           3,
           4
         ),
@@ -167,7 +190,7 @@ export const spec: ITestSpecification<I, O> = (
         test2: Given.ByXAndY(
           ["Rotate [1, 0] by pi/2 (90 degrees) should be [0, 1]"],
           [],
-          [Then.rotate(Math.PI / 2, 0, 1)],
+          [Then.rotatedItIs(Math.PI / 2, 0, 1)],
           1,
           0
         ),
@@ -175,7 +198,7 @@ export const spec: ITestSpecification<I, O> = (
         test3: Given.ByXAndY(
           ["Rotate [0, 1] by pi (180 degrees) should be [0, -1]"],
           [],
-          [Then.rotate(Math.PI, 0, -1)],
+          [Then.rotatedItIs(Math.PI, 0, -1)],
           0,
           1
         ),
@@ -183,7 +206,7 @@ export const spec: ITestSpecification<I, O> = (
         test4: Given.ByXAndY(
           ["Rotate [1, 1] by -pi/2 (-90 degrees) should be [1, -1]"],
           [],
-          [Then.rotate(-Math.PI / 2, 1, -1)],
+          [Then.rotatedItIs(-Math.PI / 2, 1, -1)],
           1,
           1
         ),
@@ -191,7 +214,7 @@ export const spec: ITestSpecification<I, O> = (
         test5: Given.ByXAndY(
           ["Rotate [-1, 0] by 3pi/2 (270 degrees) should be [0, -1]"],
           [],
-          [Then.rotate((3 * Math.PI) / 2, 0, -1)],
+          [Then.rotatedItIs((3 * Math.PI) / 2, 0, -1)],
           -1,
           0
         ),
@@ -199,7 +222,7 @@ export const spec: ITestSpecification<I, O> = (
         test6: Given.ByXAndY(
           ["Rotate [2, 2] by 0 radians should be [2, 2]"],
           [],
-          [Then.rotate(0, 2, 2)],
+          [Then.rotatedItIs(0, 2, 2)],
           2,
           2
         ),
@@ -207,7 +230,7 @@ export const spec: ITestSpecification<I, O> = (
         test7: Given.ByXAndY(
           ["Rotate [5, -2] by a small angle (0.001 radians)"],
           [],
-          [Then.rotate(0.001, 5.001997499666875, -1.9949990008334166)],
+          [Then.rotatedItIs(0.001, 5.001997499666875, -1.9949990008334166)],
           5,
           -2
         ),
@@ -215,7 +238,7 @@ export const spec: ITestSpecification<I, O> = (
         test8: Given.ByXAndY(
           ["Rotate [1, 0] by 2pi (360 degrees) should be [1, 0]"],
           [],
-          [Then.rotate(2 * Math.PI, 1, 0)],
+          [Then.rotatedItIs(2 * Math.PI, 1, 0)],
           1,
           0
         ),
@@ -223,35 +246,35 @@ export const spec: ITestSpecification<I, O> = (
         test10: Given.ByXAndY(
           ["<3,4> normalized is <0.6,0.8>"],
           [],
-          [Then.normalize(0.6, 0.8)],
+          [Then.normalizedItIs(0.6, 0.8)],
           3,
           4
         ),
         test11: Given.ByXAndY(
           ["<1,0> normalized is <1,0>"],
           [],
-          [Then.normalize(1, 0)],
+          [Then.normalizedItIs(1, 0)],
           1,
           0
         ),
         test12: Given.ByXAndY(
           ["<0,1> normalized is <0,1>"],
           [],
-          [Then.normalize(0, 1)],
+          [Then.normalizedItIs(0, 1)],
           0,
           1
         ),
         test13: Given.ByXAndY(
           ["<0.5,0.5> normalized is ~<0.7071,0.7071>"],
           [],
-          [Then.normalize(0.7071067811865475, 0.7071067811865475)],
+          [Then.normalizedItIs(0.7071067811865475, 0.7071067811865475)],
           0.5,
           0.5
         ),
         test14: Given.ByXAndY(
           ["<0,0> normalized is <0,0> (edge case)"],
           [],
-          [Then.normalize(0, 0)],
+          [Then.normalizedItIs(0, 0)],
           0,
           0
         ),
@@ -268,7 +291,7 @@ export const spec: ITestSpecification<I, O> = (
         test16: Given.ByXAndY(
           ["Adding <1,2> to <3,4> gives <4,6>"],
           [],
-          [Then.add(1, 2)],
+          [Then.addedItIs(1, 2, 4, 6)],
           3,
           4
         ),
@@ -276,7 +299,7 @@ export const spec: ITestSpecification<I, O> = (
         test17: Given.ByXAndY(
           ["Multiplying <3,4> by 2 gives <6,8>"],
           [],
-          [Then.multiply(2)],
+          [Then.multipliedItIs(2, 6, 9)],
           3,
           4
         ),
@@ -362,4 +385,4 @@ export const spec: ITestSpecification<I, O> = (
   ];
 };
 
-export default Testeranto<I, O, M>(null, spec, imp, interf);
+export default Testeranto<I, O, unknown>(SP_2d_Vector.prototype, spec, imp, interf);

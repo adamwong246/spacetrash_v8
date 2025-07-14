@@ -38,7 +38,7 @@ export abstract class GameWithTicks extends GameWithLoad {
       // Debug logging
       const physical = this.components.SP_PhysicalComponent.get(eid);
       if (physical) {
-        console.log(`AiBot ${eid} position:`, physical.X(), physical.Y());
+        // console.log(`AiBot ${eid} position:`, physical.X(), physical.Y());
       }
     });
   }
@@ -120,7 +120,6 @@ export abstract class GameWithTicks extends GameWithLoad {
       } else if (classification === "Tile") {
         // throw "not implemented";
       } else {
-        debugger;
         throw "idk";
       }
     });

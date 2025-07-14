@@ -1,8 +1,9 @@
+import { Component } from "../../../demiurge/ecs/Component";
+import { FloatMovingComponent } from "../../../demiurge/game/physical";
+import { AiAgentComponent } from "../Components/v3/ai";
+import { Actor } from "./bots";
 import { SpaceTrashEntityComponent } from "./SpaceTrashEntityComponent";
-import { Actor } from "./Actor";
-import { Component } from "../../../../demiurge/ecs/Component";
-import { FloatMovingComponent } from "../../../../demiurge/game/physical";
-import { AiAgentComponent } from "../../Components/v3/ai";
+
 
 /**
  * Spawner EntityComponent
@@ -25,7 +26,7 @@ export class Spawner extends SpaceTrashEntityComponent {
     /**
      * Creates components for a new spawned actor
      */
-    private createSpawnableComponents(): Component<any, any>[] {
+    private createSpawnableComponents(): Component[] {
         const actor = this.actorTemplate();
         return [
             ...actor.components,

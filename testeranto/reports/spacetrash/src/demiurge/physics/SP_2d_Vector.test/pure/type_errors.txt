@@ -1,15 +1,24 @@
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (5,3): Module '"testeranto/src/Types"' declares 'Ibdd_in' locally, but it is not exported.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (6,3): Module '"testeranto/src/Types"' declares 'Ibdd_out' locally, but it is not exported.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (7,3): Module '"testeranto/src/Types"' has no exported member 'IPartialInterface'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (8,3): '"testeranto/src/Types"' has no exported member named 'ITestImplementation'. Did you mean 'TestWhenImplementation'?
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (9,3): '"testeranto/src/Types"' has no exported member named 'ITestSpecification'. Did you mean 'SuiteSpecification'?
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (41,52): Cannot find name 'EPSILON'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (45,46): Cannot find name 'EPSILON'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (49,68): Cannot find name 'EPSILON'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (53,73): Cannot find name 'EPSILON'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (57,43): Cannot find name 'EPSILON'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (58,43): Cannot find name 'EPSILON'.
-/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (365,33): Cannot find name 'M'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (58,30): Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+  Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (62,24): Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+  Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (66,10): Type '(x: number, y: number, expected: number) => (vector: any, _utils: any) => any' is not assignable to type '(Iw_0: number, Iw_1: number, Iw_2: number) => (mp: SP_2d_Vector) => SP_2d_Vector'.
+  Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+    Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (70,15): Type '(x: number, y: number, expected: number) => (vector: any, _utils: any) => any' is not assignable to type '(Iw_0: number, Iw_1: number, Iw_2: number) => (mp: SP_2d_Vector) => SP_2d_Vector'.
+  Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+    Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (74,15): Type '(expectedX: number, expectedY: number) => (vector: any, _utils: any) => any' is not assignable to type '(Iw_0: number, Iw_1: number) => (mp: SP_2d_Vector) => SP_2d_Vector'.
+  Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+    Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (79,23): Type '(aX: number, aY: number, bX: number, bY: number, expected: boolean) => (vector: any, _utils: any) => any' is not assignable to type '(Iw_0: number, Iw_1: number, Iw_2: number, Iw_3: number, Iw_4: boolean) => (mp: SP_2d_Vector) => SP_2d_Vector'.
+  Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+    Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (85,29): Type '(vector: any, _utils: any) => any' is not assignable to type '(mp: SP_2d_Vector) => SP_2d_Vector'.
+  Target signature provides too few arguments. Expected 2 or more, but got 1.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (107,15): Cannot find name 'IPartialInterface'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (325,17): Property 'clone' does not exist on type 'WhenSpecification<I, O>'.
+/Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.test.ts (388,42): Argument of type 'SP_2d_Vector' is not assignable to parameter of type 'null'.
 /Users/adam/Code/spacetrash_v8/src/demiurge/physics/SP_2d_Vector.ts (80,5): Type 'Vector' is not assignable to type 'this'.
   'this' could be instantiated with an arbitrary type which could be unrelated to 'Vector'.
 /Users/adam/Code/testeranto/src/lib/abstractBase.ts (3,15): Module '"../Types.js"' has no exported member 'IT'.
