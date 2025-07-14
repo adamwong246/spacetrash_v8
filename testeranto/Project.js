@@ -27424,8 +27424,8 @@
         const x = projects.map(async (p) => {
           return [
             p,
-            await (await fetch(`./testerato/${p}/config.json`)).json(),
-            await (await fetch(`./testerato/${p}/summary.json`)).json()
+            await (await fetch(`./testeranto/config.json`)).json(),
+            await (await fetch(`./testeranto/summary.json`)).json()
           ];
         });
         Promise.all(x).then((v) => {
