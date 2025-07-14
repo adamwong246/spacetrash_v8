@@ -35,6 +35,6 @@ const config: IProject = {
     },
   },
 
-  reportDomain: "https://adamwong246.github.io/spacetrash_v8/testeranto"
+  reportDomain: "https://adamwong246.github.io/spacetrash_v8/"
 };
 export default config;
